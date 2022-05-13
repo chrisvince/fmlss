@@ -1,0 +1,59 @@
+import { init } from 'next-firebase-auth'
+
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+const daysToMilliseconds = (days: number) => days * 60 * 60 * 24 * 1000
+
+const initAuth = () => {
+  init({
+    authPageURL: '/',
+    appPageURL: '/home',
+    loginAPIEndpoint: '/api/auth/login',
+    logoutAPIEndpoint: '/api/auth/logout',
+    onLoginRequestError: (err) => {
+      console.error(err)
+    },
+    onLogoutRequestError: (err) => {
+      console.error(err)
+    },
+    firebaseAuthEmulatorHost: 'localhost:9099',
+    firebaseAdminInitConfig: {
+      // @ts-ignore
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      credential: {
+        projectId: <string>process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        clientEmail: <string>process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: <string>process.env.FIREBASE_ADMIN_PRIVATE_KEY,
+      },
+      databaseURL: <string>process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+    },
+    useFirebaseAdminDefaultCredential: true,
+    firebaseClientInitConfig: {
+      apiKey: <string>process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    },
+    cookies: {
+      name: 'Fameless',
+      keys: [
+        process.env.AUTH_COOKIE_SECRET_CURRENT,
+        process.env.AUTH_COOKIE_SECRET_PREVIOUS,
+      ],
+      httpOnly: true,
+      maxAge: daysToMilliseconds(12),
+      overwrite: true,
+      path: '/',
+      sameSite: 'strict',
+      secure: IS_PRODUCTION,
+      signed: true,
+    },
+    onVerifyTokenError: (err) => {
+      console.error(err)
+    },
+    onTokenRefreshError: (err) => {
+      console.error(err)
+    },
+  })
+}
+
+export default initAuth

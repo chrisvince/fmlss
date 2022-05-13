@@ -33,3 +33,10 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+*.env
+!.env.example
+
+firestore-debug.log
+firebase-debug.log
+ui-debug.log
