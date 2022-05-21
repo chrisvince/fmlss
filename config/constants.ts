@@ -1,5 +1,5 @@
 const constants = {
-  BRAND_NAME: 'Fameless'
+  BRAND_NAME: 'FAMELESS'
 }
 
 export default constants
