@@ -15,7 +15,8 @@ const initAuth = () => {
     onLogoutRequestError: (err) => {
       console.error(err)
     },
-    firebaseAuthEmulatorHost: 'localhost:9099',
+    firebaseAuthEmulatorHost:
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST,
     firebaseAdminInitConfig: {
       // @ts-ignore
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
@@ -26,7 +27,6 @@ const initAuth = () => {
       },
       databaseURL: <string>process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
     },
-    useFirebaseAdminDefaultCredential: true,
     firebaseClientInitConfig: {
       apiKey: <string>process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
