@@ -1,4 +1,3 @@
-import styles from '../styles/Home.module.css'
 import {
   AuthAction,
   withAuthUser,
@@ -9,7 +8,7 @@ import Page from '../components/Page'
 const Home = () => {
   return (
     <Page pageTitle="Home">
-      <h1 className={styles.title}>Home</h1>
+      <h1>Home</h1>
     </Page>
   )
 }

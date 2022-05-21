@@ -6,7 +6,6 @@ import {
   withAuthUserTokenSSR,
   AuthAction,
 } from 'next-firebase-auth'
-import useIsSignedIn from '../utils/useIsSignedIn'
 import Page from '../components/Page'
 
 const Profile = () => {
