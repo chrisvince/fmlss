@@ -1,0 +1,8 @@
+export default {
+  EMAIL_VERIFICATION_REQUESTS_COLLECTION: 'emailVerificationRequests',
+  USERS_COLLECTION: 'users',
+  PASSWORD_RESET_REQUESTS_COLLECTION: 'passwordResetRequests',
+  APP_URL: 'https://fameless.app',
+  PASSWORD_RESET_EMAIL_TEMPLATE_ID: 'd-e65568311be84ceda0b5cbc47dd368b9',
+  EMAIL_VERIFICATION_EMAIL_TEMPLATE_ID: 'd-8d25bc3f764e478cbb2a4ec05a458b4a',
+}

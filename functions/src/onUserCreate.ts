@@ -1,26 +1,20 @@
 import * as functions from 'firebase-functions'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
+import { randomUUID } from 'crypto'
 
 import SendGrid from './api/sendGrid'
-import md5 from './utils/md5'
+import constants from './constants'
 
 const db = getFirestore()
 
 const sendVerificationEmail = async (
-    email: string | undefined,
+    email: string,
     verificationLink: string,
 ) => {
-  if (!email) {
-    throw new Error('Could not send verification email. No email.')
-  }
-  if (!verificationLink) {
-    throw new Error('Could not send verification email. No verificationLink.')
-  }
-
   const sendGrid = new SendGrid()
   await sendGrid.sendTemplateEmail({
     email,
-    templateId: 'd-8d25bc3f764e478cbb2a4ec05a458b4a',
+    templateId: constants.EMAIL_VERIFICATION_EMAIL_TEMPLATE_ID,
     dynamicTemplateData: {
       verificationLink,
     },
@@ -30,27 +24,36 @@ const sendVerificationEmail = async (
 export const onUserCreate = functions
     .runWith({ secrets: ['SENDGRID_API_KEY'] })
     .auth.user().onCreate(async (user) => {
-      const confirmationCode = md5(user.uid)
-      const verificationLink =
-        `https://fameless.app/confirm-email/${confirmationCode}`
-
-      await db.collection('users').doc(user.uid).set({
-        id: user.uid,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
+      // create user doc
+      const userDoc = db.collection(constants.USERS_COLLECTION).doc(user.uid)
+      await userDoc.set({
         createdAt: FieldValue.serverTimestamp(),
-        updatedAt: FieldValue.serverTimestamp(),
-        disabled: false,
         deleted: false,
+        uid: user.uid,
+        updatedAt: FieldValue.serverTimestamp(),
       })
 
-      await db.collection('emailVerifications').doc(confirmationCode).set({
-        userId: user.uid,
-        invalid: false,
+      // create emailVerificationRequest doc and send email
+      if (!user.email) {
+        return
+      }
+
+      const emailVerificationId = randomUUID()
+
+      const emailVerificationRequestDoc = db
+          .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)
+          .doc(emailVerificationId)
+
+      await emailVerificationRequestDoc.set({
         complete: false,
         createdAt: FieldValue.serverTimestamp(),
+        invalid: false,
         updatedAt: FieldValue.serverTimestamp(),
+        uid: user.uid,
       })
+
+      const verificationLink =
+        `${constants.APP_URL}/confirm-email/${emailVerificationId}`
 
       await sendVerificationEmail(user.email, verificationLink)
     })

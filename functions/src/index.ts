@@ -5,3 +5,4 @@ admin.initializeApp()
 export * from './onUserCreate'
 export * from './onUserDelete'
 export * from './verifyEmail'
+export * from './forgotPassword'
