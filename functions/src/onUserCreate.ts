@@ -1,9 +1,9 @@
 import * as functions from 'firebase-functions'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
-import { randomUUID } from 'crypto'
 
 import SendGrid from './api/sendGrid'
 import constants from './constants'
+import generateRandomKey from './util/generateRandomKey'
 
 const db = getFirestore()
 
@@ -38,7 +38,7 @@ export const onUserCreate = functions
         return
       }
 
-      const emailVerificationId = randomUUID()
+      const emailVerificationId = generateRandomKey()
 
       const emailVerificationRequestDoc = db
           .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)

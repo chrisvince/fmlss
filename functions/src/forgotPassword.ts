@@ -1,10 +1,10 @@
 import * as functions from 'firebase-functions'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
-import { randomUUID } from 'crypto'
 
 import constants from './constants'
 import SendGrid from './api/sendGrid'
+import generateRandomKey from './util/generateRandomKey'
 
 const auth = getAuth()
 const db = getFirestore()
@@ -46,11 +46,11 @@ export const forgotPassword = functions
         throw error
       }
 
-      const passwordResetId = randomUUID()
+      const passwordResetRequestId = generateRandomKey()
 
       const passwordResetRequestDoc = db
           .collection(constants.PASSWORD_RESET_REQUESTS_COLLECTION)
-          .doc(passwordResetId)
+          .doc(passwordResetRequestId)
 
       await passwordResetRequestDoc.set({
         complete: false,
@@ -61,7 +61,7 @@ export const forgotPassword = functions
       })
 
       const resetPasswordLink =
-        `${constants.APP_URL}/reset-password/${passwordResetId}`
+        `${constants.APP_URL}/reset-password/${passwordResetRequestId}`
 
       await sendPasswordResetEmail(email, resetPasswordLink)
     })
