@@ -6,12 +6,14 @@ import {
 import Page from '../components/Page'
 
 import FirebaseAuth from '../components/LoginForm'
+import Link from 'next/link'
 
 const Login = () => {
   return (
     <Page pageTitle="Login">
       <h1>Login</h1>
       <FirebaseAuth />
+      <Link href="/forgot-password">Forgot your password?</Link>
     </Page>
   )
 }
