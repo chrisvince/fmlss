@@ -1,5 +1,4 @@
 import React from 'react'
-
 import {
   useAuthUser,
   withAuthUser,
@@ -7,15 +6,23 @@ import {
   AuthAction,
 } from 'next-firebase-auth'
 import Page from '../components/Page'
+import EmailVerificationLink from '../components/EmailVerificationLink'
 
 const Profile = () => {
   const AuthUser = useAuthUser()
-
   const handleSignOutClick = () => AuthUser.signOut()
+
   return (
     <Page pageTitle="Profile">
       <p>Your email is {AuthUser.email ? AuthUser.email : 'unknown'}.</p>
-      <a onClick={handleSignOutClick}>Sign out</a>
+      <div>
+        {!AuthUser.emailVerified && (
+          <EmailVerificationLink />
+        )}
+      </div>
+      <div>
+        <a onClick={handleSignOutClick}>Sign out</a>
+      </div>
     </Page>
   )
 }
