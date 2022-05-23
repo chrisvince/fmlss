@@ -1,14 +1,6 @@
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 
-export const createSendGridApi = () => axios.create({
-  baseURL: 'https://api.sendgrid.com/',
-  headers: {
-    'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`,
-    'Content-Type': 'application/json',
-  },
-})
-
 /** A SendGrid API client */
 export default class SendGrid {
   api: AxiosInstance
@@ -24,7 +16,6 @@ export default class SendGrid {
     })
   }
 
-  /** Send SendGrid dynamic transactional email */
   /**
    * Send SendGrid dynamic transactional email.
    * @param {object} dynamicTemplateData Dynamic template data for email.

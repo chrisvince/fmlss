@@ -4,13 +4,13 @@ import { GetServerSidePropsContext } from 'next'
 
 const verifyEmail = firebase.functions().httpsCallable('verifyEmail')
 
-const STATUS = {
+const UI_STATES = {
   VERIFIED: 'verified',
   ALREADY_VERIFIED: 'already-verified',
   ERROR: 'error',
 }
-type StatusKeys = keyof typeof STATUS
-type StatusValues = typeof STATUS[StatusKeys]
+type StatusKeys = keyof typeof UI_STATES
+type StatusValues = typeof UI_STATES[StatusKeys]
 
 
 const createGetServerSidePropsPayload = (emailVerificationStatus: string) => ({
@@ -25,13 +25,13 @@ const EmailConfirmation = ({
   emailVerificationStatus: StatusValues
 }) => {
   switch (emailVerificationStatus) {
-    case STATUS.ERROR:
+    case UI_STATES.ERROR:
       return <p>There was an error verifying your email.</p>
 
-    case STATUS.ALREADY_VERIFIED:
+    case UI_STATES.ALREADY_VERIFIED:
       return <p>Your email has already been verified.</p>
 
-    case STATUS.VERIFIED:
+    case UI_STATES.VERIFIED:
       return <p>Your email has been verified.</p>
 
     default:
@@ -43,18 +43,18 @@ export const getServerSideProps =
   async (context: GetServerSidePropsContext) => {
     const { confirmationCode } = context.params ?? {}
     if (!confirmationCode) {
-      return createGetServerSidePropsPayload(STATUS.ERROR)
+      return createGetServerSidePropsPayload(UI_STATES.ERROR)
     }
 
     try {
       await verifyEmail({ confirmationCode })
+      return createGetServerSidePropsPayload(UI_STATES.VERIFIED)
     } catch (error: any) {
       if (error.code === 'already-exists') {
-        return createGetServerSidePropsPayload(STATUS.ALREADY_VERIFIED)
+        return createGetServerSidePropsPayload(UI_STATES.ALREADY_VERIFIED)
       }
-      return createGetServerSidePropsPayload(STATUS.ERROR)
+      return createGetServerSidePropsPayload(UI_STATES.ERROR)
     }
-    return createGetServerSidePropsPayload(STATUS.VERIFIED)
   }
 
 export default EmailConfirmation

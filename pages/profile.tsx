@@ -7,21 +7,26 @@ import {
 } from 'next-firebase-auth'
 import Page from '../components/Page'
 import EmailVerificationLink from '../components/EmailVerificationLink'
+import ChangePasswordForm from '../components/ChangePasswordForm'
 
 const Profile = () => {
-  const AuthUser = useAuthUser()
-  const handleSignOutClick = () => AuthUser.signOut()
+  const authUser = useAuthUser()
+  const handleSignOutClick = () => authUser.signOut()
 
   return (
     <Page pageTitle="Profile">
-      <p>Your email is {AuthUser.email ? AuthUser.email : 'unknown'}.</p>
+      <p>Your email is {authUser.email ? authUser.email : 'unknown'}.</p>
       <div>
-        {!AuthUser.emailVerified && (
+        {!authUser.emailVerified && (
           <EmailVerificationLink />
         )}
       </div>
       <div>
         <a onClick={handleSignOutClick}>Sign out</a>
+      </div>
+      <div>
+        <h2>Change password</h2>
+        <ChangePasswordForm />
       </div>
     </Page>
   )

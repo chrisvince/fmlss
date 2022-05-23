@@ -5,14 +5,14 @@ import {
 } from 'next-firebase-auth'
 import Page from '../components/Page'
 
-import FirebaseAuth from '../components/LoginForm'
+import LoginForm from '../components/LoginForm'
 import Link from 'next/link'
 
 const Login = () => {
   return (
     <Page pageTitle="Login">
       <h1>Login</h1>
-      <FirebaseAuth />
+      <LoginForm />
       <Link href="/forgot-password">Forgot your password?</Link>
     </Page>
   )

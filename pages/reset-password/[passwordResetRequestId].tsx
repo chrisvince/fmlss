@@ -1,6 +1,7 @@
 import firebase from 'firebase'
 import 'firebase/functions'
 import { GetServerSidePropsContext } from 'next'
+import Link from 'next/link'
 import { SyntheticEvent, useState } from 'react'
 
 const resetPassword = firebase.functions().httpsCallable('resetPassword')
@@ -8,16 +9,23 @@ const checkPasswordResetRequestValid = firebase
   .functions()
   .httpsCallable('checkPasswordResetRequestValid')
 
-const STATUS = {
+const UI_STATES = {
   INVALID_CODE: 'invalid-code',
+  LOADING: 'loading',
   NOT_CHANGED: 'not-changed',
   CHANGED: 'changed',
   PASSWORD_MATCH_ERROR: 'password-match-error',
   ERROR: 'error',
   PASSWORD_RESET_REQUEST_USED: 'password-reset-request-used',
 }
-type StatusKeys = keyof typeof STATUS
-type StatusValues = typeof STATUS[StatusKeys]
+type StatusKeys = keyof typeof UI_STATES
+type StatusValues = typeof UI_STATES[StatusKeys]
+
+const NEW_PASSWORD_ID = 'new-password'
+const NEW_PASSWORD_LABEL = 'New password'
+
+const CONFIRM_NEW_PASSWORD_ID = 'confirm-new-password'
+const CONFIRM_NEW_PASSWORD_LABEL = 'Confirm new password'
 
 const createGetServerSidePropsPayload = ({
   passwordResetRequestValidationStatus,
@@ -44,64 +52,80 @@ const ResetPassword = ({
   const handleFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
-    const password = formData.get('password')
-    const confirmPassword = formData.get('confirm-password')
+    const newPassword = formData.get(NEW_PASSWORD_ID)
+    const confirmNewPassword = formData.get(CONFIRM_NEW_PASSWORD_ID)
 
-    if (password !== confirmPassword) {
+    if (newPassword !== confirmNewPassword) {
       console.error('passwords must match')
-      setUiState(STATUS.PASSWORD_MATCH_ERROR)
+      setUiState(UI_STATES.PASSWORD_MATCH_ERROR)
       return
     }
 
     try {
+      setUiState(UI_STATES.LOADING)
       await resetPassword({
-        password,
-        confirmPassword,
+        newPassword,
+        confirmNewPassword,
         passwordResetRequestId,
       })
-      setUiState(STATUS.CHANGED)
+      setUiState(UI_STATES.CHANGED)
     } catch (error) {
-      setUiState(STATUS.ERROR)
+      setUiState(UI_STATES.ERROR)
+      console.error(error)
     }
   }
 
   switch (uiState) {
-    case STATUS.INVALID_CODE:
+    case UI_STATES.INVALID_CODE:
       return <p>The password change code is not valid.</p>
 
-    case STATUS.ERROR:
+    case UI_STATES.LOADING:
+      return <p>Loading...</p>
+
+    case UI_STATES.ERROR:
       return <p>There was an error.</p>
 
-    case STATUS.NOT_CHANGED:
-    case STATUS.PASSWORD_MATCH_ERROR:
+    case UI_STATES.NOT_CHANGED:
+    case UI_STATES.PASSWORD_MATCH_ERROR:
       return (
         <div>
           <p>Please enter your new password.</p>
           <form onSubmit={handleFormSubmit}>
             <div>
-              <label htmlFor="password">Password</label>
-              <input type="password" id="password" name="password" />
-            </div>
-            <div>
-              <label htmlFor="confirm-password">Confirm Password</label>
+              <label htmlFor={NEW_PASSWORD_ID}>{NEW_PASSWORD_LABEL}</label>
               <input
                 type="password"
-                id="confirm-password"
-                name="confirm-password"
+                id={NEW_PASSWORD_ID}
+                name={NEW_PASSWORD_ID}
+              />
+            </div>
+            <div>
+              <label htmlFor={CONFIRM_NEW_PASSWORD_ID}>
+                {CONFIRM_NEW_PASSWORD_LABEL}
+              </label>
+              <input
+                type="password"
+                id={CONFIRM_NEW_PASSWORD_ID}
+                name={CONFIRM_NEW_PASSWORD_ID}
               />
             </div>
             <button type="submit">Submit</button>
-            {uiState === STATUS.PASSWORD_MATCH_ERROR && (
+            {uiState === UI_STATES.PASSWORD_MATCH_ERROR && (
               <p>Passwords must match.</p>
             )}
           </form>
         </div>
       )
 
-    case STATUS.CHANGED:
-      return <p>Your password has been updated.</p>
+    case UI_STATES.CHANGED:
+      return (
+        <div>
+          <p>Your password has been updated.</p>
+          <Link href="/">Go to login</Link>
+        </div>
+    )
 
-    case STATUS.PASSWORD_RESET_REQUEST_USED:
+    case UI_STATES.PASSWORD_RESET_REQUEST_USED:
       return <p>The password reset request has already been used.</p>
 
     default:
@@ -116,7 +140,7 @@ export const getServerSideProps =
 
     if (!passwordResetRequestId) {
       return createGetServerSidePropsPayload({
-        passwordResetRequestValidationStatus: STATUS.ERROR,
+        passwordResetRequestValidationStatus: UI_STATES.ERROR,
       })
     }
 
@@ -126,24 +150,24 @@ export const getServerSideProps =
       if (error.code === 'not-found') {
         return createGetServerSidePropsPayload({
           passwordResetRequestId,
-          passwordResetRequestValidationStatus: STATUS.INVALID_CODE,
+          passwordResetRequestValidationStatus: UI_STATES.INVALID_CODE,
         })
       }
       if (error.code === 'resource-exhausted') {
         return createGetServerSidePropsPayload({
           passwordResetRequestId,
           passwordResetRequestValidationStatus:
-              STATUS.PASSWORD_RESET_REQUEST_USED,
+              UI_STATES.PASSWORD_RESET_REQUEST_USED,
         })
       }
       return createGetServerSidePropsPayload({
         passwordResetRequestId,
-        passwordResetRequestValidationStatus: STATUS.ERROR,
+        passwordResetRequestValidationStatus: UI_STATES.ERROR,
       })
     }
     return createGetServerSidePropsPayload({
       passwordResetRequestId,
-      passwordResetRequestValidationStatus: STATUS.NOT_CHANGED,
+      passwordResetRequestValidationStatus: UI_STATES.NOT_CHANGED,
     })
   }
 

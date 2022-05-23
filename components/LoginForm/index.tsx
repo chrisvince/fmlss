@@ -1,40 +1,78 @@
-import React, { useEffect, useState } from 'react'
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
+import React, { SyntheticEvent, useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-const firebaseAuthConfig = {
-  signInFlow: 'popup',
-  signInOptions: [
-    {
-      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      requireDisplayName: false,
-    },
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-  ],
-  signInSuccessUrl: '/',
-  credentialHelper: 'none',
-  callbacks: {
-    signInSuccessWithAuthResult: () => false,
-  },
+const auth = firebase.auth()
+
+const UI_STATES = {
+  NOT_SUBMITTED: 'not-submitted',
+  LOADING: 'loading',
+  SUBMITTED: 'submitted',
+  CREDENTIAL_ERROR: 'credential-error',
+  ERROR: 'error',
 }
 
+const CREDENTIAL_ERRORS = ['auth/wrong-password', 'auth/user-not-found']
+
+const EMAIL_ID = 'email'
+const EMAIL_LABEL = 'Email'
+
+const PASSWORD_ID = 'password'
+const PASSWORD_LABEL = 'Password'
+
 const LoginForm = () => {
-  const [renderAuth, setRenderAuth] = useState(false)
+  const [uiState, setUiState] = useState(UI_STATES.NOT_SUBMITTED)
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setRenderAuth(true)
+  const onSubmit = async (event: SyntheticEvent) => {
+    event.preventDefault()
+    const formData = new FormData(event.target as HTMLFormElement)
+    const email = formData.get(EMAIL_ID)
+    const password = formData.get(PASSWORD_ID)
+
+    if (!email || !password) {
+      setUiState(UI_STATES.CREDENTIAL_ERROR)
+      return
     }
-  }, [])
 
-  if (!renderAuth) return null
+    try {
+      setUiState(UI_STATES.LOADING)
+      await auth.signInWithEmailAndPassword(email as string, password as string)
+    } catch (error: any) {
+      if (CREDENTIAL_ERRORS.includes(error.code)) {
+        setUiState(UI_STATES.CREDENTIAL_ERROR)
+        return
+      }
+      setUiState(UI_STATES.ERROR)
+      console.error(error)
+    }
+  }
+
+  if (uiState === UI_STATES.LOADING) {
+    return <p>Loading...</p>
+  }
+
+  if (uiState === UI_STATES.SUBMITTED) {
+    return <p>Success.</p>
+  }
 
   return (
-    <StyledFirebaseAuth
-      uiConfig={firebaseAuthConfig}
-      firebaseAuth={firebase.auth()}
-    />
+    <form onSubmit={onSubmit}>
+      <div>
+        <label htmlFor={EMAIL_ID}>{EMAIL_LABEL}</label>
+        <input id={EMAIL_ID} name={EMAIL_ID} type="email" />
+      </div>
+      <div>
+        <label htmlFor={EMAIL_ID}>{PASSWORD_LABEL}</label>
+        <input id={PASSWORD_ID} name={PASSWORD_ID} type="password" />
+      </div>
+      <button type="submit">Login</button>
+      {uiState === UI_STATES.CREDENTIAL_ERROR && (
+        <p>Your email or password is incorrect. Please try again.</p>
+      )}
+      {uiState === UI_STATES.ERROR && (
+        <p>There was an error. Please try again later.</p>
+      )}
+    </form>
   )
 }
 

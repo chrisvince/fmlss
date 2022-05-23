@@ -5,26 +5,26 @@ import { getAuth } from 'firebase-admin/auth'
 const auth = getAuth()
 
 interface Data {
-  password: string
-  confirmPassword: string
+  newPassword: string
+  confirmNewPassword: string
   passwordResetRequestId: string
 }
 
 export const resetPassword = functions.https.onCall(
     async (data) => {
       const {
-        password,
-        confirmPassword,
+        newPassword,
+        confirmNewPassword,
         passwordResetRequestId,
       }: Data = data
 
-      if (!password || !confirmPassword) {
+      if (!newPassword || !confirmNewPassword) {
         throw new functions.https.HttpsError(
             'invalid-argument',
             'Both `password` and `confirmPassword` must be provided.'
         )
       }
-      if (password !== confirmPassword) {
+      if (newPassword !== confirmNewPassword) {
         throw new functions.https.HttpsError(
             'invalid-argument',
             'Both `password` and `confirmPassword` must match.'
@@ -50,7 +50,11 @@ export const resetPassword = functions.https.onCall(
         )
       }
 
-      await auth.updateUser(passwordResetRequestData.uid, { password })
+      await auth.updateUser(
+          passwordResetRequestData.uid,
+          { password: newPassword }
+      )
+
       await passwordResetRequestRef.update({ complete: true })
     }
 )
