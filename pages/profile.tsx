@@ -6,7 +6,7 @@ import {
 } from 'next-firebase-auth'
 import Page from '../components/Page'
 import EmailVerificationLink from '../components/EmailVerificationLink'
-import ChangePasswordForm from '../components/ChangePasswordForm'
+import Link from 'next/link'
 
 const Profile = () => {
   const authUser = useAuthUser()
@@ -14,18 +14,17 @@ const Profile = () => {
 
   return (
     <Page pageTitle="Profile">
-      <p>Your email is {authUser.email ? authUser.email : 'unknown'}.</p>
+      <p>Your email is {authUser.email}.</p>
       <div>
         {!authUser.emailVerified && (
           <EmailVerificationLink />
         )}
       </div>
       <div>
-        <a onClick={handleSignOutClick}>Sign out</a>
+        <Link href="/change-password">Change password</Link>
       </div>
       <div>
-        <h2>Change password</h2>
-        <ChangePasswordForm />
+        <button onClick={handleSignOutClick}>Sign out</button>
       </div>
     </Page>
   )
@@ -37,4 +36,4 @@ export const getServerSideProps = withAuthUserTokenSSR({
 
 export default withAuthUser({
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(Profile)
+})(Profile as any)

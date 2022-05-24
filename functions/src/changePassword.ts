@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions'
 import { getAuth } from 'firebase-admin/auth'
 import FirebaseAuthRestApi from './api/firebaseAuthRestApi'
+import checkUserHasPassword from './auth/checkUserHasPassword'
 
 const auth = getAuth()
 
@@ -15,17 +16,17 @@ export const changePassword = functions
     .https.onCall(async (data, context) => {
       const { currentPassword, newPassword, confirmNewPassword }: Data = data
 
-      if (![currentPassword, newPassword, confirmNewPassword].every((x) => x)) {
+      if (!newPassword || !confirmNewPassword) {
         throw new functions.https.HttpsError(
             'invalid-argument',
-            '`currentPassword`, `newPassword` and `confirmNewPassword` must ' +
-            'be provided.'
+            '`newPassword` and `confirmNewPassword` must be provided.'
         )
       }
+
       if (newPassword !== confirmNewPassword) {
         throw new functions.https.HttpsError(
             'invalid-argument',
-            'Both `password` and `confirmPassword` must match.'
+            '`password` and `confirmPassword` must match.'
         )
       }
 
@@ -46,9 +47,25 @@ export const changePassword = functions
       const uid = context.auth.uid
       const email = context.auth.token.email
 
-      if (!email) {
+      const userHasPassword = await checkUserHasPassword(uid)
+
+      if (!userHasPassword) {
+        console.log('User has no existing password, setting password')
+        await auth.updateUser(uid, { password: newPassword })
+        return
+      }
+      console.log('User has existing password.')
+
+      if (!currentPassword) {
         throw new functions.https.HttpsError(
             'invalid-argument',
+            '`currentPassword` is required.'
+        )
+      }
+
+      if (!email) {
+        throw new functions.https.HttpsError(
+            'internal',
             'No user email present.'
         )
       }
@@ -62,7 +79,7 @@ export const changePassword = functions
       if (!credentialsVerified) {
         throw new functions.https.HttpsError(
             'invalid-argument',
-            'Current password is incorrect.'
+            '`currentPassword` is incorrect.'
         )
       }
 

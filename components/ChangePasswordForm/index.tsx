@@ -25,11 +25,16 @@ const NEW_PASSWORD_LABEL = 'New password'
 const CONFIRM_NEW_PASSWORD_ID = 'confirm-new-password'
 const CONFIRM_NEW_PASSWORD_LABEL = 'Confirm new password'
 
-const ChangePasswordForm = () => {
+interface PropTypes {
+  userHasPassword: boolean
+}
+
+const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
   const [uiState, setUiState] = useState(UI_STATES.NOT_SUBMITTED)
   const authUser = useAuthUser()
 
   const handleSubmit = async (event: SyntheticEvent) => {
+    const { email } = authUser
     const formData = new FormData(event.target as HTMLFormElement)
     const currentPassword = formData.get(CURRENT_PASSWORD_ID)
     const newPassword = formData.get(NEW_PASSWORD_ID)
@@ -42,7 +47,10 @@ const ChangePasswordForm = () => {
         newPassword,
         confirmNewPassword,
       })
-      await authUser.firebaseUser?.reload()
+      await auth.signInWithEmailAndPassword(
+        email as string,
+        newPassword as string
+      )
       setUiState(UI_STATES.SUBMITTED)
     } catch (error: any) {
       if (
@@ -75,25 +83,19 @@ const ChangePasswordForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {userHasPassword && (
+        <div>
+          <label htmlFor={CURRENT_PASSWORD_ID}>{CURRENT_PASSWORD_LABEL}</label>
+          <input
+            id={CURRENT_PASSWORD_ID}
+            name={CURRENT_PASSWORD_ID}
+            type="password"
+          />
+        </div>
+      )}
       <div>
-        <label htmlFor={CURRENT_PASSWORD_ID}>
-          {CURRENT_PASSWORD_LABEL}
-        </label>
-        <input
-          id={CURRENT_PASSWORD_ID}
-          name={CURRENT_PASSWORD_ID}
-          type="password"
-        />
-      </div>
-      <div>
-        <label htmlFor={NEW_PASSWORD_ID}>
-          {NEW_PASSWORD_LABEL}
-        </label>
-        <input
-          id={NEW_PASSWORD_ID}
-          name={NEW_PASSWORD_ID}
-          type="password"
-        />
+        <label htmlFor={NEW_PASSWORD_ID}>{NEW_PASSWORD_LABEL}</label>
+        <input id={NEW_PASSWORD_ID} name={NEW_PASSWORD_ID} type="password" />
       </div>
       <div>
         <label htmlFor={CONFIRM_NEW_PASSWORD_ID}>
