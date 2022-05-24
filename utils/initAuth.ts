@@ -7,8 +7,8 @@ const initAuth = () => {
   init({
     authPageURL: '/',
     appPageURL: '/home',
-    loginAPIEndpoint: '/api/auth/login',
-    logoutAPIEndpoint: '/api/auth/logout',
+    loginAPIEndpoint: '/api/auth/signIn',
+    logoutAPIEndpoint: '/api/auth/signOut',
     onLoginRequestError: (err) => {
       console.error(err)
     },

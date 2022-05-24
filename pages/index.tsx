@@ -5,14 +5,14 @@ import {
 } from 'next-firebase-auth'
 import Page from '../components/Page'
 
-import LoginForm from '../components/LoginForm'
+import SignInForm from '../components/SignInForm'
 import Link from 'next/link'
 
-const Login = () => {
+const SignIn = () => {
   return (
-    <Page pageTitle="Login">
+    <Page pageTitle="Sign in">
       <h1>Sign in</h1>
-      <LoginForm />
+      <SignInForm />
       <Link href="/forgot-password">Forgot your password?</Link>
       <p>
         Don&apos;t have an account? <Link href="/sign-up">Sign up</Link>
@@ -27,4 +27,4 @@ export const getServerSideProps = withAuthUserTokenSSR({
 
 export default withAuthUser({
   whenAuthed: AuthAction.REDIRECT_TO_APP,
-})(Login)
+})(SignIn)

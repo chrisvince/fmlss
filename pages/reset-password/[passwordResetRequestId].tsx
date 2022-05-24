@@ -121,7 +121,7 @@ const ResetPassword = ({
       return (
         <div>
           <p>Your password has been updated.</p>
-          <Link href="/">Go to login</Link>
+          <Link href="/">Go to sign in page</Link>
         </div>
     )
 
