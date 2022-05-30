@@ -1,18 +1,8 @@
 import firebase from 'firebase'
 import 'firebase/functions'
 import { GetServerSidePropsContext } from 'next'
-import {
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
 
 const verifyEmail = firebase.functions().httpsCallable('verifyEmail')
-
-const ROUTE_MODE = 'public'
 
 const UI_STATES = {
   VERIFIED: 'verified',
@@ -48,9 +38,7 @@ const EmailConfirmation = ({
   }
 }
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-)(async (context: GetServerSidePropsContext) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const { confirmationCode } = context.params ?? {}
   if (!confirmationCode) {
     return createGetServerSidePropsPayload(UI_STATES.ERROR)
@@ -65,8 +53,6 @@ export const getServerSideProps = withAuthUserTokenSSR(
     }
     return createGetServerSidePropsPayload(UI_STATES.ERROR)
   }
-})
+}
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
-  EmailConfirmation as any
-)
+export default EmailConfirmation

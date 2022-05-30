@@ -11,7 +11,7 @@ import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAu
 const functions = firebase.functions()
 const checkUserHasPassword = functions.httpsCallable('checkUserHasPassword')
 
-const ROUTE_MODE = 'private'
+const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface PropTypes {
   userHasPassword: boolean

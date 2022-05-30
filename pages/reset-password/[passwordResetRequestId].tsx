@@ -14,7 +14,7 @@ const checkPasswordResetRequestValid = firebase
   .functions()
   .httpsCallable('checkPasswordResetRequestValid')
 
-const ROUTE_MODE = 'public'
+const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
 
 const UI_STATES = {
   INVALID_CODE: 'invalid-code',

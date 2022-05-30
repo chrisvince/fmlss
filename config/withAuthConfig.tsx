@@ -1,35 +1,37 @@
 import { AuthAction } from 'next-firebase-auth'
 
-type Modes = 'public' | 'private'
+type Modes = 'SEND_AUTHED_TO_APP' | 'SEND_UNAUTHED_TO_LOGIN'
 
 const LoaderComponent = () => <p>Loading...</p>
 
 type ConfigType = (mode: Modes) => any
 
-export const withAuthUserTokenSSRConfig: ConfigType = (mode = 'public') => {
+export const withAuthUserTokenSSRConfig: ConfigType = (
+  mode = 'SEND_AUTHED_TO_APP'
+) => {
   switch (mode) {
-    case 'public':
+    case 'SEND_AUTHED_TO_APP':
       return {
         whenAuthed: AuthAction.REDIRECT_TO_APP,
       }
 
-    case 'private':
+    case 'SEND_UNAUTHED_TO_LOGIN':
       return {
         whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
       }
   }
 }
 
-export const withAuthUserConfig: ConfigType = (mode = 'public') => {
+export const withAuthUserConfig: ConfigType = (mode = 'SEND_AUTHED_TO_APP') => {
   switch (mode) {
-    case 'public':
+    case 'SEND_AUTHED_TO_APP':
       return {
         whenAuthedBeforeRedirect: AuthAction.SHOW_LOADER,
         whenAuthed: AuthAction.REDIRECT_TO_APP,
         LoaderComponent,
       }
 
-    case 'private':
+    case 'SEND_UNAUTHED_TO_LOGIN':
       return {
         whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
         whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,

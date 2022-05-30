@@ -9,7 +9,7 @@ import SignUpForm from '../components/SignUpForm'
 import Link from 'next/link'
 import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
 
-const ROUTE_MODE = 'public'
+const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
 
 const SignUp = () => {
   return (

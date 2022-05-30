@@ -6,7 +6,7 @@ import {
 import Page from '../components/Page'
 import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
 
-const ROUTE_MODE = 'private'
+const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 const Home = () => {
   return (

@@ -9,7 +9,7 @@ import EmailVerificationLink from '../components/EmailVerificationLink'
 import Link from 'next/link'
 import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
 
-const ROUTE_MODE = 'private'
+const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 const Profile = () => {
   const authUser = useAuthUser()
