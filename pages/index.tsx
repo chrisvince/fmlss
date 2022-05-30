@@ -7,6 +7,9 @@ import Page from '../components/Page'
 
 import SignInForm from '../components/SignInForm'
 import Link from 'next/link'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+
+const ROUTE_MODE = 'public'
 
 const SignIn = () => {
   return (
@@ -21,10 +24,8 @@ const SignIn = () => {
   )
 }
 
-export const getServerSideProps = withAuthUserTokenSSR({
-  whenAuthed: AuthAction.REDIRECT_TO_APP,
-})()
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)()
 
-export default withAuthUser({
-  whenAuthed: AuthAction.REDIRECT_TO_APP,
-})(SignIn)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(SignIn)

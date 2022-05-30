@@ -1,8 +1,18 @@
 import firebase from 'firebase'
 import 'firebase/functions'
 import { GetServerSidePropsContext } from 'next'
+import {
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from 'next-firebase-auth'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 
 const verifyEmail = firebase.functions().httpsCallable('verifyEmail')
+
+const ROUTE_MODE = 'public'
 
 const UI_STATES = {
   VERIFIED: 'verified',
@@ -11,7 +21,6 @@ const UI_STATES = {
 }
 type StatusKeys = keyof typeof UI_STATES
 type StatusValues = typeof UI_STATES[StatusKeys]
-
 
 const createGetServerSidePropsPayload = (emailVerificationStatus: string) => ({
   props: {
@@ -39,22 +48,25 @@ const EmailConfirmation = ({
   }
 }
 
-export const getServerSideProps =
-  async (context: GetServerSidePropsContext) => {
-    const { confirmationCode } = context.params ?? {}
-    if (!confirmationCode) {
-      return createGetServerSidePropsPayload(UI_STATES.ERROR)
-    }
-
-    try {
-      await verifyEmail({ confirmationCode })
-      return createGetServerSidePropsPayload(UI_STATES.VERIFIED)
-    } catch (error: any) {
-      if (error.code === 'already-exists') {
-        return createGetServerSidePropsPayload(UI_STATES.ALREADY_VERIFIED)
-      }
-      return createGetServerSidePropsPayload(UI_STATES.ERROR)
-    }
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)(async (context: GetServerSidePropsContext) => {
+  const { confirmationCode } = context.params ?? {}
+  if (!confirmationCode) {
+    return createGetServerSidePropsPayload(UI_STATES.ERROR)
   }
 
-export default EmailConfirmation
+  try {
+    await verifyEmail({ confirmationCode })
+    return createGetServerSidePropsPayload(UI_STATES.VERIFIED)
+  } catch (error: any) {
+    if (error.code === 'already-exists') {
+      return createGetServerSidePropsPayload(UI_STATES.ALREADY_VERIFIED)
+    }
+    return createGetServerSidePropsPayload(UI_STATES.ERROR)
+  }
+})
+
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
+  EmailConfirmation as any
+)

@@ -3,11 +3,18 @@ import 'firebase/functions'
 import { GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
 import { SyntheticEvent, useState } from 'react'
+import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 
 const resetPassword = firebase.functions().httpsCallable('resetPassword')
 const checkPasswordResetRequestValid = firebase
   .functions()
   .httpsCallable('checkPasswordResetRequestValid')
+
+const ROUTE_MODE = 'public'
 
 const UI_STATES = {
   INVALID_CODE: 'invalid-code',
@@ -133,42 +140,45 @@ const ResetPassword = ({
   }
 }
 
-export const getServerSideProps =
-  async (context: GetServerSidePropsContext) => {
-    const { passwordResetRequestId }: { passwordResetRequestId?: string } =
-        context.params ?? {}
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)(async (context: GetServerSidePropsContext) => {
+  const { passwordResetRequestId }: { passwordResetRequestId?: string } =
+    context.params ?? {}
 
-    if (!passwordResetRequestId) {
-      return createGetServerSidePropsPayload({
-        passwordResetRequestValidationStatus: UI_STATES.ERROR,
-      })
-    }
+  if (!passwordResetRequestId) {
+    return createGetServerSidePropsPayload({
+      passwordResetRequestValidationStatus: UI_STATES.ERROR,
+    })
+  }
 
-    try {
-      await checkPasswordResetRequestValid({ passwordResetRequestId })
-    } catch (error: any) {
-      if (error.code === 'not-found') {
-        return createGetServerSidePropsPayload({
-          passwordResetRequestId,
-          passwordResetRequestValidationStatus: UI_STATES.INVALID_CODE,
-        })
-      }
-      if (error.code === 'resource-exhausted') {
-        return createGetServerSidePropsPayload({
-          passwordResetRequestId,
-          passwordResetRequestValidationStatus:
-              UI_STATES.PASSWORD_RESET_REQUEST_USED,
-        })
-      }
+  try {
+    await checkPasswordResetRequestValid({ passwordResetRequestId })
+  } catch (error: any) {
+    if (error.code === 'not-found') {
       return createGetServerSidePropsPayload({
         passwordResetRequestId,
-        passwordResetRequestValidationStatus: UI_STATES.ERROR,
+        passwordResetRequestValidationStatus: UI_STATES.INVALID_CODE,
+      })
+    }
+    if (error.code === 'resource-exhausted') {
+      return createGetServerSidePropsPayload({
+        passwordResetRequestId,
+        passwordResetRequestValidationStatus:
+          UI_STATES.PASSWORD_RESET_REQUEST_USED,
       })
     }
     return createGetServerSidePropsPayload({
       passwordResetRequestId,
-      passwordResetRequestValidationStatus: UI_STATES.NOT_CHANGED,
+      passwordResetRequestValidationStatus: UI_STATES.ERROR,
     })
   }
+  return createGetServerSidePropsPayload({
+    passwordResetRequestId,
+    passwordResetRequestValidationStatus: UI_STATES.NOT_CHANGED,
+  })
+})
 
-export default ResetPassword
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
+  ResetPassword as any
+)

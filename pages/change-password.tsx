@@ -3,13 +3,15 @@ import 'firebase/functions'
 import {
   withAuthUser,
   withAuthUserTokenSSR,
-  AuthAction,
   AuthUser,
 } from 'next-firebase-auth'
 import ChangePasswordForm from '../components/ChangePasswordForm'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
 
 const functions = firebase.functions()
 const checkUserHasPassword = functions.httpsCallable('checkUserHasPassword')
+
+const ROUTE_MODE = 'private'
 
 interface PropTypes {
   userHasPassword: boolean
@@ -34,10 +36,10 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   }
 }
 
-export const getServerSideProps = withAuthUserTokenSSR({
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(getServerSidePropsFn as any)
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)(getServerSidePropsFn as any)
 
-export default withAuthUser({
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(ChangePassword as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
+  ChangePassword as any
+)

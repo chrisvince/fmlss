@@ -7,6 +7,9 @@ import {
 import Page from '../components/Page'
 import EmailVerificationLink from '../components/EmailVerificationLink'
 import Link from 'next/link'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+
+const ROUTE_MODE = 'private'
 
 const Profile = () => {
   const authUser = useAuthUser()
@@ -30,10 +33,7 @@ const Profile = () => {
   )
 }
 
-export const getServerSideProps = withAuthUserTokenSSR({
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})()
+export const getServerSideProps =
+  withAuthUserTokenSSR(withAuthUserTokenSSRConfig(ROUTE_MODE))()
 
-export default withAuthUser({
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(Profile as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Profile as any)

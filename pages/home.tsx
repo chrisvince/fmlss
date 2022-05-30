@@ -4,6 +4,9 @@ import {
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
 import Page from '../components/Page'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+
+const ROUTE_MODE = 'private'
 
 const Home = () => {
   return (
@@ -13,10 +16,8 @@ const Home = () => {
   )
 }
 
-export const getServerSideProps = withAuthUserTokenSSR({
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})()
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)()
 
-export default withAuthUser({
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-})(Home)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Home)

@@ -7,6 +7,9 @@ import Link from 'next/link'
 
 import Page from '../components/Page'
 import ForgotPasswordForm from '../components/ForgotPasswordForm'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+
+const ROUTE_MODE = 'public'
 
 const ForgotPassword = () => {
   return (
@@ -18,10 +21,8 @@ const ForgotPassword = () => {
   )
 }
 
-export const getServerSideProps = withAuthUserTokenSSR({
-  whenAuthed: AuthAction.REDIRECT_TO_APP,
-})()
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)()
 
-export default withAuthUser({
-  whenAuthed: AuthAction.REDIRECT_TO_APP,
-})(ForgotPassword)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(ForgotPassword)
