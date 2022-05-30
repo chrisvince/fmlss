@@ -13,7 +13,7 @@ const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 const Profile = () => {
   const authUser = useAuthUser()
-  const handleSignOutClick = () => authUser.signOut()
+  const handleSignOutClick = authUser.signOut
 
   return (
     <Page pageTitle="Profile">
