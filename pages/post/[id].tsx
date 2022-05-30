@@ -12,11 +12,15 @@ interface PropTypes {
 }
 
 const PostPage = ({ post }: PropTypes) => {
+  const hasComments = !!post.comments.length
   return (
     <div>
       <h1>Post</h1>
       <div>id: {post.id}</div>
       <div>test: {post.test}</div>
+      {hasComments && (
+        <div>comments: {post.comments.map(({ id }) => id).join(', ')}</div>
+      )}
     </div>
   )
 }
@@ -29,8 +33,11 @@ interface Path {
 
 export const getStaticPaths = async () => {
   const docs = await db.collection(constants.POSTS_COLLECTION).get()
-  const paths: Path[] = []
-  docs.forEach((doc) => paths.push({ params: { id: doc.id } }))
+  const paths = docs.docs.map(doc => ({
+    params: {
+      id: doc.id,
+    },
+  }))
 
   return {
     paths,
@@ -40,14 +47,27 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const { id } = context.params as { id: string }
-  const doc = await db.collection(constants.POSTS_COLLECTION).doc(id).get()
-  if (!doc.exists) return { notFound: true }
+
+  const postRef = db.collection(constants.POSTS_COLLECTION).doc(id)
+  const commentsRef = postRef.collection(constants.COMMENTS_COLLECTION)
+
+  const postDoc = await postRef.get()
+  if (!postDoc.exists) return { notFound: true }
+
+  const commentDocs = await commentsRef.get()
+
+  const post = postDoc.data()
+  const comments = commentDocs.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  }))
 
   return {
     props: {
       post: {
-        id: doc.id,
-        ...doc.data(),
+        id: postDoc.id,
+        ...post,
+        comments,
       },
     },
     revalidate: constants.REVALIDATE_TIME,
