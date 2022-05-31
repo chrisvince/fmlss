@@ -2,12 +2,14 @@ import { GetStaticPropsContext } from 'next'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import type { Post } from '../../types'
 import constants from '../../constants'
 import PostReplyForm from '../../components/PostReplyForm'
 import mapPostDbToClient from '../../utils/mapPostDbToClient'
+import useWatchPosts from '../../utils/useWatchPosts'
+import useWatchPost from '../../utils/useWatchPost'
 
 const db = firebase.firestore()
 
@@ -23,31 +25,14 @@ const PostPage = ({ post: postProp }: PropTypes) => {
   const createdAt =
     post.createdAt &&
     new Date(post.createdAt).toLocaleString()
-
-  useEffect(() => {
-    const unsubscribeReplies = db
-      .collection(`${post.reference}/posts`)
-      .orderBy('createdAt')
-      .onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(({ type }) => {
-          if (type !== 'added') return
-          const docData = snapshot.docs.map(doc => mapPostDbToClient(doc))
-          setReplies(docData)
-        })
-      })
-
-    const unsubscribePost = db
-      .doc(post.reference)
-      .onSnapshot(doc => {
-        const newPost = mapPostDbToClient(doc)
-        setPost(newPost)
-      })
-
-      return () => {
-        unsubscribeReplies()
-        unsubscribePost()
-      }
-  }, [post.reference])
+  
+  useWatchPosts(posts => setReplies(posts), {
+    reference: `${post.reference}/posts`,
+    sortDirection: 'asc',
+  })
+  useWatchPost((post) => setPost(post), {
+    reference: post.reference,
+  })
 
   return (
     <div>

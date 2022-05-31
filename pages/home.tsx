@@ -4,6 +4,8 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
+import { useState } from 'react'
+
 import ComposePostButton from '../components/ComposePostButton'
 import Feed from '../components/Feed'
 
@@ -15,6 +17,7 @@ import {
 import constants from '../functions/src/constants'
 import type { Post } from '../types'
 import mapPostDbToClient from '../utils/mapPostDbToClient'
+import useWatchPosts from '../utils/useWatchPosts'
 
 const db = firebase.firestore()
 
@@ -23,7 +26,10 @@ interface PropTypes {
   posts: Post[]
 }
 
-const Home = ({ posts }: PropTypes) => {
+const Home = ({ posts: postsProp }: PropTypes) => {
+  const [posts, setPosts] = useState<Post[]>(postsProp)
+  useWatchPosts(posts => setPosts(posts))
+
   return (
     <Page pageTitle="Home">
       <h1>Home</h1>
