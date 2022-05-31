@@ -17,7 +17,10 @@ const SignUp = () => {
       <h1>Sign up</h1>
       <SignUpForm />
       <p>
-        Already have an account? <Link href="/">Sign in</Link>
+        Already have an account?{' '}
+        <Link href="/">
+          <a>Sign in</a>
+        </Link>
       </p>
     </Page>
   )

@@ -16,7 +16,9 @@ const ForgotPassword = () => {
     <Page pageTitle="Forgot Password">
       <h1>Forgot password</h1>
       <ForgotPasswordForm />
-      <Link href="/">Already know your password?</Link>
+      <Link href="/">
+        <a>Already know your password?</a>
+      </Link>
     </Page>
   )
 }

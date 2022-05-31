@@ -18,7 +18,10 @@ const SignIn = () => {
       <SignInForm />
       <Link href="/forgot-password">Forgot your password?</Link>
       <p>
-        Don&apos;t have an account? <Link href="/sign-up">Sign up</Link>
+        Don&apos;t have an account?{' '}
+        <Link href="/sign-up">
+          <a>Sign up</a>
+        </Link>
       </p>
     </Page>
   )

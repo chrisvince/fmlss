@@ -18,13 +18,11 @@ const Profile = () => {
   return (
     <Page pageTitle="Profile">
       <p>Your email is {authUser.email}.</p>
+      <div>{!authUser.emailVerified && <EmailVerificationLink />}</div>
       <div>
-        {!authUser.emailVerified && (
-          <EmailVerificationLink />
-        )}
-      </div>
-      <div>
-        <Link href="/change-password">Change password</Link>
+        <Link href="/change-password">
+          <a>Change password</a>
+        </Link>
       </div>
       <div>
         <button onClick={handleSignOutClick}>Sign out</button>

@@ -128,9 +128,11 @@ const ResetPassword = ({
       return (
         <div>
           <p>Your password has been updated.</p>
-          <Link href="/">Go to sign in page</Link>
+          <Link href="/">
+            <a>Go to sign in page</a>
+          </Link>
         </div>
-    )
+      )
 
     case UI_STATES.PASSWORD_RESET_REQUEST_USED:
       return <p>The password reset request has already been used.</p>
