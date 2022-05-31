@@ -16,7 +16,6 @@ const ComposePostForm = () => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
     const body = formData.get(BODY_ID)
-    console.log(body)
 
     try {
       const response = await createPost({ body })
