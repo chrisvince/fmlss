@@ -1,7 +1,10 @@
-import type { Comment } from '.'
-
 export interface Post {
+  body: string
+  createdAt: string
   id: string
-  test: string
-  comments: Comment[]
+  parentId: string
+  posts?: Post[]
+  postsCount?: number
+  reference: string
+  updatedAt: string
 }
