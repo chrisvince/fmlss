@@ -38,6 +38,7 @@ export const forgotPassword = functions
       let user
       try {
         user = await auth.getUserByEmail(email)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         if (error.code === 'auth/user-not-found') {
           console.log(`No user found for email: ${email}. Aborting.`)
