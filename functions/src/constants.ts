@@ -6,4 +6,7 @@ export default {
   PASSWORD_RESET_REQUESTS_COLLECTION: 'passwordResetRequests',
   POSTS_COLLECTION: 'posts',
   USERS_COLLECTION: 'users',
+  POSTING_REQUIRES_ACCOUNT: false,
+  AUTHORED_POSTS_COLLECTION: 'authoredPosts',
+  AUTHORED_REPLIES_COLLECTION: 'authoredReplies',
 }

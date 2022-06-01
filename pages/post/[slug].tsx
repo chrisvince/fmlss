@@ -75,11 +75,17 @@ export const getStaticPaths = async () => {
     .collectionGroup(constants.POSTS_COLLECTION)
     .get()
 
-  const paths = docs.docs.map(doc => ({
-    params: {
-      id: doc.id,
-    },
-  }))
+  const paths = docs.docs.reduce((acc, doc) => {
+    if (!doc.exists) return acc
+    return [
+      ...acc,
+      {
+        params: {
+          slug: doc.data().slug,
+        },
+      },
+    ]
+  }, [] as any[])
 
   return {
     paths,
@@ -88,17 +94,17 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const { id } = context.params as { id: string }
+  const { slug } = context.params as { slug: string }
 
   const postsRef = await db
     .collectionGroup(constants.POSTS_COLLECTION)
-    .where('id', '==', id)
+    .where('slug', '==', slug)
     .limit(1)
     .get()
 
   const postDoc = postsRef.docs[0]
   
-  if (!postDoc.exists) return { notFound: true }
+  if (!postDoc?.exists) return { notFound: true }
 
   const postRef = postDoc.ref
   const repliesRef = postRef.collection(constants.POSTS_COLLECTION)
