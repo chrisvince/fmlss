@@ -3,6 +3,8 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 import constants from './constants'
 
+const { EMAIL_VERIFICATION_REQUESTS_COLLECTION } = constants
+
 const auth = getAuth()
 const db = getFirestore()
 
@@ -18,7 +20,7 @@ export const verifyEmail = functions.https.onCall(async (data) => {
 
   const emailVerificationRequestDoc =
     await db
-        .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)
+        .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
         .doc(confirmationCode)
         .get()
 
@@ -30,8 +32,6 @@ export const verifyEmail = functions.https.onCall(async (data) => {
   }
 
   const emailVerificationRequestData = emailVerificationRequestDoc.data()
-
-  // future feature: check createdAt date to see if request expired.
 
   if (
     !emailVerificationRequestData ||
@@ -47,7 +47,7 @@ export const verifyEmail = functions.https.onCall(async (data) => {
   if (user.emailVerified) {
     if (!emailVerificationRequestData.complete) {
       await db
-          .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)
+          .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
           .doc(confirmationCode)
           .update({
             complete: true,
@@ -66,7 +66,7 @@ export const verifyEmail = functions.https.onCall(async (data) => {
   })
 
   await db
-      .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)
+      .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
       .doc(confirmationCode)
       .update({
         complete: true,

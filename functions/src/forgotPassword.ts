@@ -6,6 +6,12 @@ import constants from './constants'
 import SendGrid from './api/sendGrid'
 import generateRandomKey from './util/generateRandomKey'
 
+const {
+  APP_URL,
+  PASSWORD_RESET_EMAIL_TEMPLATE_ID,
+  PASSWORD_RESET_REQUESTS_COLLECTION,
+} = constants
+
 const auth = getAuth()
 const db = getFirestore()
 
@@ -16,7 +22,7 @@ const sendPasswordResetEmail = async (
   const sendGrid = new SendGrid()
   await sendGrid.sendTemplateEmail({
     email,
-    templateId: constants.PASSWORD_RESET_EMAIL_TEMPLATE_ID,
+    templateId: PASSWORD_RESET_EMAIL_TEMPLATE_ID,
     dynamicTemplateData: {
       resetPasswordLink,
     },
@@ -50,7 +56,7 @@ export const forgotPassword = functions
       const passwordResetRequestId = generateRandomKey()
 
       const passwordResetRequestDoc = db
-          .collection(constants.PASSWORD_RESET_REQUESTS_COLLECTION)
+          .collection(PASSWORD_RESET_REQUESTS_COLLECTION)
           .doc(passwordResetRequestId)
 
       await passwordResetRequestDoc.set({
@@ -62,7 +68,7 @@ export const forgotPassword = functions
       })
 
       const resetPasswordLink =
-        `${constants.APP_URL}/reset-password/${passwordResetRequestId}`
+        `${APP_URL}/reset-password/${passwordResetRequestId}`
 
       await sendPasswordResetEmail(email, resetPasswordLink)
     })

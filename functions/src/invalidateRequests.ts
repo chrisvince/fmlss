@@ -2,6 +2,11 @@ import * as functions from 'firebase-functions'
 import { getFirestore } from 'firebase-admin/firestore'
 import constants from './constants'
 
+const {
+  EMAIL_VERIFICATION_REQUESTS_COLLECTION,
+  PASSWORD_RESET_REQUESTS_COLLECTION,
+} = constants
+
 const db = getFirestore()
 
 const daysToMiliseconds = (days: number) => 1000 * 60 * 60 * 24 * days
@@ -17,12 +22,12 @@ export const invalidateRequests = functions.pubsub
       const expiryCutoff = new Date(Date.now() - daysToMiliseconds(14))
 
       const emailVerificationRequestDocs = await db
-          .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)
+          .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
           .where('createdAt', '<', expiryCutoff)
           .get()
 
       const passwordResetRequestDocs = await db
-          .collection(constants.PASSWORD_RESET_REQUESTS_COLLECTION)
+          .collection(PASSWORD_RESET_REQUESTS_COLLECTION)
           .where('createdAt', '<', expiryCutoff)
           .get()
 
@@ -43,12 +48,12 @@ export const invalidateRequests = functions.pubsub
 
       console.log(
           `Invalidating ${emailVerificationRequestCount}` +
-          `\`${constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION}\` documents.`
+          `\`${EMAIL_VERIFICATION_REQUESTS_COLLECTION}\` documents.`
       )
 
       console.log(
           `Invalidating ${passwordResetRequestCount} ` +
-          `\`${constants.PASSWORD_RESET_REQUESTS_COLLECTION}\` documents.`
+          `\`${PASSWORD_RESET_REQUESTS_COLLECTION}\` documents.`
       )
 
       await batch.commit()

@@ -6,6 +6,12 @@ import SendGrid from '../api/sendGrid'
 import constants from '../constants'
 import generateRandomKey from '../util/generateRandomKey'
 
+const {
+  APP_URL,
+  EMAIL_VERIFICATION_EMAIL_TEMPLATE_ID,
+  EMAIL_VERIFICATION_REQUESTS_COLLECTION,
+} = constants
+
 const db = getFirestore()
 
 export default async (user: UserRecord | DecodedIdToken) => {
@@ -16,7 +22,7 @@ export default async (user: UserRecord | DecodedIdToken) => {
   const emailVerificationId = generateRandomKey()
 
   const emailVerificationRequestDoc = db
-      .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)
+      .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
       .doc(emailVerificationId)
 
   await emailVerificationRequestDoc.set({
@@ -28,12 +34,12 @@ export default async (user: UserRecord | DecodedIdToken) => {
   })
 
   const verificationLink =
-      `${constants.APP_URL}/confirm-email/${emailVerificationId}`
+      `${APP_URL}/confirm-email/${emailVerificationId}`
 
   const sendGrid = new SendGrid()
   await sendGrid.sendTemplateEmail({
     email: user.email,
-    templateId: constants.EMAIL_VERIFICATION_EMAIL_TEMPLATE_ID,
+    templateId: EMAIL_VERIFICATION_EMAIL_TEMPLATE_ID,
     dynamicTemplateData: {
       verificationLink,
     },

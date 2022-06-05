@@ -3,16 +3,22 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 
 import constants from './constants'
 
+const {
+  EMAIL_VERIFICATION_REQUESTS_COLLECTION,
+  PASSWORD_RESET_REQUESTS_COLLECTION,
+  USERS_COLLECTION,
+} = constants
+
 const db = getFirestore()
 
 export const onUserDelete = functions.auth.user().onDelete(async (user) => {
-  await db.collection(constants.USERS_COLLECTION).doc(user.uid).update({
+  await db.collection(USERS_COLLECTION).doc(user.uid).update({
     deleted: true,
     updatedAt: FieldValue.serverTimestamp(),
   })
 
   const emailVerificationRequestsSnapshot = await db
-      .collection(constants.EMAIL_VERIFICATION_REQUESTS_COLLECTION)
+      .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
       .where('uid', '==', user.uid)
       .get()
 
@@ -24,7 +30,7 @@ export const onUserDelete = functions.auth.user().onDelete(async (user) => {
   })
 
   const passwordResetRequestsSnapshot = await db
-      .collection(constants.PASSWORD_RESET_REQUESTS_COLLECTION)
+      .collection(PASSWORD_RESET_REQUESTS_COLLECTION)
       .where('uid', '==', user.uid)
       .get()
 
