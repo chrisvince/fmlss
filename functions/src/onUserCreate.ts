@@ -17,5 +17,5 @@ export const onUserCreate = functions
         updatedAt: FieldValue.serverTimestamp(),
       })
 
-      sendEmailVerificationEmail(user)
+      await sendEmailVerificationEmail(user)
     })

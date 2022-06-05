@@ -1,6 +1,6 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
 import {
+  AuthUser,
+  getFirebaseAdmin,
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
@@ -14,12 +14,15 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../config/withAuthConfig'
-import constants from '../functions/src/constants'
+import constants from '../constants'
 import type { Post } from '../types'
 import mapPostDbToClient from '../utils/mapPostDbToClient'
-import useWatchPosts from '../utils/useWatchPosts'
 
-const db = firebase.firestore()
+const {
+  POSTS_COLLECTION,
+  USERS_COLLECTION,
+  AUTHORED_POSTS_COLLECTION,
+} = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 interface PropTypes {
@@ -28,7 +31,6 @@ interface PropTypes {
 
 const Home = ({ posts: postsProp }: PropTypes) => {
   const [posts, setPosts] = useState<Post[]>(postsProp)
-  useWatchPosts(posts => setPosts(posts))
 
   return (
     <Page pageTitle="Home">
@@ -39,18 +41,34 @@ const Home = ({ posts: postsProp }: PropTypes) => {
   )
 }
 
-const getServerSidePropsFn = async () => {
+const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
+  const db = getFirebaseAdmin().firestore()
+  const uid = AuthUser.id
+
   const postsRef = await db
-    .collection(constants.POSTS_COLLECTION)
+    .collection(POSTS_COLLECTION)
     .orderBy('createdAt', 'desc')
     .limit(20)
     .get()
+  
+  const postsPromise = postsRef.docs.map(async (doc) => {
+    const authoredPostsRef = await db
+      .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
+      .where('originReference', '==', doc.ref)
+      .limit(1)
+      .get()
 
-  const posts = postsRef.docs.map((doc) => mapPostDbToClient(doc))
+    const createdByUser = !authoredPostsRef.empty
+
+    return mapPostDbToClient(doc, createdByUser)
+  })
+
+  const posts = await Promise.all(postsPromise)
+
   return {
     props: {
       posts,
-    }
+    },
   }
 }
 
