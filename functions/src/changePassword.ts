@@ -6,7 +6,7 @@ import checkUserHasPassword from './auth/checkUserHasPassword'
 const auth = getAuth()
 
 interface Data {
-  currentPassword: string
+  currentPassword?: string
   newPassword: string
   confirmNewPassword: string
 }

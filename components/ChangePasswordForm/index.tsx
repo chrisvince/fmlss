@@ -1,12 +1,11 @@
 import { SyntheticEvent, useState } from 'react'
 import firebase from 'firebase/app'
-import 'firebase/functions'
 import 'firebase/auth'
 import { useAuthUser } from 'next-firebase-auth'
 
+import { changePassword } from '../../utils/callableFirebaseFunctions'
+
 const auth = firebase.auth()
-const functions = firebase.functions()
-const changePassword = functions.httpsCallable('changePassword')
 
 const UI_STATES = {
   NOT_SUBMITTED: 'not-submitted',
@@ -36,9 +35,23 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
   const handleSubmit = async (event: SyntheticEvent) => {
     const { email } = authUser
     const formData = new FormData(event.target as HTMLFormElement)
-    const currentPassword = formData.get(CURRENT_PASSWORD_ID)
-    const newPassword = formData.get(NEW_PASSWORD_ID)
-    const confirmNewPassword = formData.get(CONFIRM_NEW_PASSWORD_ID)
+    const currentPassword =
+      formData.get(CURRENT_PASSWORD_ID) as string | undefined
+
+    const newPassword =
+      formData.get(NEW_PASSWORD_ID) as string | undefined
+
+    const confirmNewPassword =
+      formData.get(CONFIRM_NEW_PASSWORD_ID) as string | undefined
+
+    if (!newPassword || !confirmNewPassword) {
+      console.error('Both new password and confirm new password are required')
+      return
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      console.error('New password and confirm new password do not match')
+    }
 
     try {
       setUiState(UI_STATES.LOADING)

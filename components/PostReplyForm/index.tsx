@@ -1,10 +1,7 @@
 import { SyntheticEvent, useRef } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/functions'
 import type { Post } from '../../types'
 
-const functions = firebase.functions()
-const createPost = functions.httpsCallable('createPost')
+import { createPost } from '../../utils/callableFirebaseFunctions'
 
 const BODY_ID = 'body'
 
@@ -17,7 +14,12 @@ const PostReplyForm = ({ replyingToReference }: PropTypes) => {
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
-    const body = formData.get(BODY_ID)
+    const body = formData.get(BODY_ID) as string | undefined
+
+    if (!body) {
+      console.error('Must have a body')
+      return
+    }
 
     try {
       await createPost({

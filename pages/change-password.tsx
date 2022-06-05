@@ -1,15 +1,12 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
 import {
   withAuthUser,
   withAuthUserTokenSSR,
   AuthUser,
 } from 'next-firebase-auth'
+
 import ChangePasswordForm from '../components/ChangePasswordForm'
 import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
-
-const functions = firebase.functions()
-const checkUserHasPassword = functions.httpsCallable('checkUserHasPassword')
+import { checkUserHasPassword } from '../utils/callableFirebaseFunctions'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -27,7 +24,7 @@ const ChangePassword = ({ userHasPassword }: PropTypes) => {
 }
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
-  const response = await checkUserHasPassword({ uid: AuthUser.id })
+  const response = await checkUserHasPassword({ uid: AuthUser.id as string })
   const userHasPassword = response.data
   return {
     props: {

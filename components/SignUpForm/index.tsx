@@ -23,8 +23,8 @@ const SignUpForm = () => {
 
   const onSubmit = async (event: SyntheticEvent) => {
     const formData = new FormData(event.target as HTMLFormElement)
-    const email = formData.get(EMAIL_ID)
-    const password = formData.get(PASSWORD_ID)
+    const email = formData.get(EMAIL_ID) as string | undefined
+    const password = formData.get(PASSWORD_ID) as string | undefined
 
     try {
       setUiState(UI_STATES.LOADING)

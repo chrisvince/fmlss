@@ -27,8 +27,8 @@ const SignInForm = () => {
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
-    const email = formData.get(EMAIL_ID)
-    const password = formData.get(PASSWORD_ID)
+    const email = formData.get(EMAIL_ID) as string | undefined
+    const password = formData.get(PASSWORD_ID) as string | undefined
 
     if (!email || !password) {
       setUiState(UI_STATES.CREDENTIAL_ERROR)

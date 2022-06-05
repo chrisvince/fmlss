@@ -1,11 +1,6 @@
 import { useState } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/functions'
 
-const functions = firebase.functions()
-const sendEmailVerificationEmail = functions.httpsCallable(
-  'sendEmailVerificationEmail'
-)
+import { sendEmailVerificationEmail } from '../../utils/callableFirebaseFunctions'
 
 const UI_STATES = {
   NOT_SUBMITTED: 'not-submitted',

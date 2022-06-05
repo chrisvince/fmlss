@@ -1,9 +1,6 @@
 import React, { SyntheticEvent, useState } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/functions'
 
-const functions = firebase.functions()
-const forgotPassword = functions.httpsCallable('forgotPassword')
+import { forgotPassword } from '../../utils/callableFirebaseFunctions'
 
 const UI_STATES = {
   NOT_SUBMITTED: 'not-submitted',
@@ -22,7 +19,11 @@ const ForgotPasswordForm = () => {
     event.preventDefault()
     try {
       const formData = new FormData(event.target as HTMLFormElement)
-      const email = formData.get(EMAIL_ID)
+      const email = formData.get(EMAIL_ID) as string | undefined
+      if (!email) {
+        console.error('Must have an email')
+        return
+      }
       await forgotPassword({ email })
       setUiState(UI_STATES.SUBMITTED)
     } catch (error) {

@@ -59,11 +59,18 @@ const ResetPassword = ({
   const handleFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
-    const newPassword = formData.get(NEW_PASSWORD_ID)
-    const confirmNewPassword = formData.get(CONFIRM_NEW_PASSWORD_ID)
+    const newPassword = formData.get(NEW_PASSWORD_ID) as string | undefined
+
+    const confirmNewPassword =
+      formData.get(CONFIRM_NEW_PASSWORD_ID) as string | undefined
+    
+    if (!newPassword || !confirmNewPassword) {
+      console.error('Both new password and confirm new password are required')
+      return
+    }
 
     if (newPassword !== confirmNewPassword) {
-      console.error('passwords must match')
+      console.error('New password and confirm new password do not match')
       setUiState(UI_STATES.PASSWORD_MATCH_ERROR)
       return
     }
