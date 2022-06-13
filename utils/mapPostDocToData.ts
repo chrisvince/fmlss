@@ -1,18 +1,18 @@
-import type { Post } from '../types'
+import firebase from 'firebase/app'
+
+import type { PostData } from '../types'
 import { getParentIdFromDbReference } from './dbReferences'
 
 type MapPostDbToClient = (
   postDoc:
-    | firebase.default.firestore.QueryDocumentSnapshot<firebase.default.firestore.DocumentData>
-    | firebase.default.firestore.DocumentSnapshot<firebase.default.firestore.DocumentData>
-    | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>,
+    | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
+    | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
+    | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
+    | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
   createdByUser?: boolean,
-) => Post
+) => PostData
 
-const mapPostDbToClient: MapPostDbToClient = (
-  postDoc,
-  createdByUser = false
-) => {
+const mapPostDocToData: MapPostDbToClient = postDoc => {
   const postData = postDoc.data()
   return {
     body: postData?.body as string,
@@ -21,9 +21,8 @@ const mapPostDbToClient: MapPostDbToClient = (
     parentId: getParentIdFromDbReference(postDoc.ref.path) as string,
     reference: postDoc.ref.path as string,
     updatedAt: (postData?.updatedAt?.toMillis() ?? null) as string,
-    createdByUser,
     postsCount: postData?.postsCount ?? null as number | null,
   }
 }
 
-export default mapPostDbToClient
+export default mapPostDocToData

@@ -11,5 +11,5 @@ interface Input {
 export const createPost = functions.httpsCallable('createPost') as (
   input: Input
 ) => Promise<{
-  data: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+  data: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
 }>

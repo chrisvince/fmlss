@@ -3,7 +3,7 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 
 import constants from '../functions/src/constants'
-import { Post } from '../types'
+import { PostData } from '../types'
 
 const db = firebase.firestore()
 
@@ -12,7 +12,7 @@ const { POSTS_COLLECTION } = constants
 type HandleSnapshot = (snapshow: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => void
 
 const useIsNewPost = (
-  posts?: Post[],
+  posts?: PostData[],
   collectionPath: string = POSTS_COLLECTION,
   { sortDirection }:
     { sortDirection: 'desc' | 'asc' } = { sortDirection: 'desc' }

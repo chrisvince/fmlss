@@ -1,74 +1,101 @@
 import Link from 'next/link'
-import { useState } from 'react'
-import { AuthUser, getFirebaseAdmin, withAuthUserTokenSSR } from 'next-firebase-auth'
+import { useEffect, useState } from 'react'
+import { AuthUser, getFirebaseAdmin, useAuthUser, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
 
 import type { Post } from '../../types'
-import constants from '../../constants'
 import PostReplyForm from '../../components/PostReplyForm'
-import mapPostDbToClient from '../../utils/mapPostDbToClient'
 import useIsNewPost from '../../utils/useIsNewPost'
-
-const {
-  POSTS_COLLECTION,
-  USERS_COLLECTION,
-  AUTHORED_POSTS_COLLECTION,
-  AUTHORED_REPLIES_COLLECTION,
-} = constants
+import getPost from '../../utils/data/post/getPost'
+import getMoreReplies from '../../utils/data/post/getMoreReplies'
+import addNewReply from '../../utils/data/post/addNewReply'
+import { useRouter } from 'next/router'
 
 interface PropTypes {
   post: Post
 }
 
 const PostPage = ({ post: postProp }: PropTypes) => {
+  const router = useRouter()
+  const { id: uid } = useAuthUser()
   const [post, setPost] = useState<Post>(postProp)
-  const [replies, setReplies] = useState<Post[]>(postProp.posts ?? [])
-  const hasReplies = !!replies.length
+  
+  const [repliesCount, setRepliesCount] = useState<number>(
+    post.data?.postsCount ?? 0
+  )
+    
+  const { slug } = router.query as { slug: string }
+  const hasReplies = !!post.replies.length
 
-  const createdAt =
-    post.createdAt &&
-    new Date(post.createdAt).toLocaleString()
+  useEffect(() => {
+    const hydratePost = async () => {
+      const post = await getPost(slug, { uid })
+      setPost(post)
+    }
+    hydratePost()
+  }, [slug, uid])
 
-  const isNewReply = useIsNewPost(post.posts, `${post.reference}/posts`, {
+  const handleLoadMoreClick = async () => {
+    const newPost = await getMoreReplies(post, { uid })
+    setPost(newPost)
+  }
+
+  const handleNewReply = async (docId: string) => {
+    const newPost = await addNewReply(post, docId)
+    setPost(newPost)
+    setRepliesCount(repliesCount + 1)
+  }
+
+  const postData = post.data!
+
+  const replyDocs = post.replies.map(({ data }) => data)
+  const isNewReply = useIsNewPost(replyDocs, `${postData.reference}/posts`, {
     sortDirection: 'asc',
   })
+
+  const createdAt = new Date(postData.createdAt).toLocaleString()
 
   return (
     <div>
       <h1>Post</h1>
-      <div>id: {post.id}</div>
-      <div>body: {post.body}</div>
+      <div>id: {postData.id}</div>
+      <div>body: {postData.body}</div>
       {post.createdByUser && <div>Created by me!</div>}
-      <div>reference: {post.reference}</div>
+      <div>reference: {postData.reference}</div>
+      <div>createdAt: {createdAt}</div>
       <div>
-        <Link href={`/post/${post.id}`}>Link</Link>
+        <Link href={`/post/${postData.id}`}>Link</Link>
       </div>
-      {post.parentId && (
+      {postData.parentId && (
         <div>
-          <Link href={`/post/${post.parentId}`}>
+          <Link href={`/post/${postData.parentId}`}>
             <a>Parent</a>
           </Link>
         </div>
       )}
-      {isNewReply && <div>There is a new reply!</div>}
+      {!post.createdByUser && isNewReply && <div>There is a new reply!</div>}
       {hasReplies && (
         <div>
-          <h2>Replies ({post.postsCount})</h2>
+          <h2>Replies ({repliesCount})</h2>
           <ul>
-            {replies.map(({ id, body, createdByUser }) => (
-              <li key={id}>
-                {createdByUser && <div>Created by me</div>}
+            {post.replies.map(({ data }) => (
+              <li key={data.id}>
+                {data.createdByUser && <div>Created by me</div>}
                 <div></div>
-                <Link href={`/post/${id}`}>
+                <Link href={`/post/${data.id}`}>
                   <a>
-                    {id} / {body}
+                    {data.id} / {data.body}
                   </a>
                 </Link>
               </li>
             ))}
           </ul>
+          <button onClick={handleLoadMoreClick}>Load more</button>
         </div>
       )}
-      <PostReplyForm replyingToReference={post.reference} />
+      <PostReplyForm
+        replyingToReference={postData.reference}
+        onNewReply={handleNewReply}
+      />
     </div>
   )
 }
@@ -82,54 +109,24 @@ const getServerSidePropsFn = async ({
     slug: string
   }
 }) => {
-  const db = getFirebaseAdmin().firestore()
+  const adminDb = getFirebaseAdmin().firestore()
   const uid = AuthUser.id
   const { slug } = params
 
-  const postsRef = await db
-    .collectionGroup(POSTS_COLLECTION)
-    .where('slug', '==', slug)
-    .limit(1)
-    .get()
-
-  if (postsRef.empty) return { notFound: true }
-
-  const postDoc = postsRef.docs[0]
-  const postRef = postDoc.ref
-
-  const authoredPostsRef = await db
-    .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
-    .where('originReference', '==', postRef)
-    .limit(1)
-    .get()
-
-  const postCreatedByUser = !authoredPostsRef.empty
-  const post = mapPostDbToClient(postDoc, postCreatedByUser)
-  
-  const replyDocs = await postRef
-    .collection(POSTS_COLLECTION)
-    .orderBy('createdAt')
-    .get()
-
-  const repliesPromise = replyDocs.docs.map(async replyDoc => {
-    const authoredRepliesRef = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_REPLIES_COLLECTION}`)
-      .where('originReference', '==', replyDoc.ref)
-      .limit(1)
-      .get()
-
-    const replyCreatedByUser = !authoredRepliesRef.empty
-    return mapPostDbToClient(replyDoc, replyCreatedByUser)
+  const post = await getPost(slug, {
+    uid,
+    includeFirebaseDocs: false,
+    db: adminDb,
   })
-  const replies = await Promise.all(repliesPromise)
+
+  if (!post.data) {
+    return { notFound: true }
+  }
 
   return {
     props: {
-      key: postDoc.id,
-      post: {
-        ...post,
-        posts: replies,
-      },
+      key: post.data.id,
+      post,
     },
   }
 }
@@ -137,4 +134,4 @@ const getServerSidePropsFn = async ({
 export const getServerSideProps =
   withAuthUserTokenSSR()(getServerSidePropsFn as any)
 
-export default PostPage
+export default withAuthUser()(PostPage as any)

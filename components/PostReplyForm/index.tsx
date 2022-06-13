@@ -1,15 +1,16 @@
 import { SyntheticEvent, useRef } from 'react'
-import type { Post } from '../../types'
+import type { PostData } from '../../types'
 
 import { createPost } from '../../utils/callableFirebaseFunctions'
 
 const BODY_ID = 'body'
 
 interface PropTypes {
-  replyingToReference: Post['reference']
+  replyingToReference: PostData['reference']
+  onNewReply: (post: any) => void,
 }
 
-const PostReplyForm = ({ replyingToReference }: PropTypes) => {
+const PostReplyForm = ({ replyingToReference, onNewReply }: PropTypes) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
@@ -22,13 +23,14 @@ const PostReplyForm = ({ replyingToReference }: PropTypes) => {
     }
 
     try {
-      await createPost({
+      const response = await createPost({
         replyingToReference,
         body,
       })
       if (textareaRef.current) {
         textareaRef.current.value = ''
       }
+      onNewReply?.(response.data.id)
     } catch (error) {
       console.error(error)
     }

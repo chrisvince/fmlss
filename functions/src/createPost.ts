@@ -13,8 +13,8 @@ const {
 } = constants
 
 interface RequestData {
-  replyingToReference?: string
   body: string
+  replyingToReference?: string
 }
 interface PostPayload {
   body: string
@@ -38,21 +38,18 @@ type UpdateUser = (
 ) => FirebaseFirestore.WriteBatch
 
 const updateUser: UpdateUser = (uid, postPayload, batch, type) => {
-  if (type === 'post') {
-    const userAuthorPostsRef = db
-        .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
-        .doc()
+  const subcollection = {
+    post: AUTHORED_POSTS_COLLECTION,
+    reply: AUTHORED_REPLIES_COLLECTION,
+  }[type]
 
-    batch.set(userAuthorPostsRef, postPayload)
-  }
+  if (!subcollection) return batch
 
-  if (type === 'reply') {
-    const userAuthorPostsRef = db
-        .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_REPLIES_COLLECTION}`)
-        .doc()
+  const userAuthorPostsRef = db
+      .collection(`${USERS_COLLECTION}/${uid}/${subcollection}`)
+      .doc()
 
-    batch.set(userAuthorPostsRef, postPayload)
-  }
+  batch.set(userAuthorPostsRef, postPayload)
 
   return batch
 }
@@ -100,7 +97,6 @@ export const createPost = functions.https.onCall(async (data, context) => {
 
     return {
       id: postRef.id,
-      path: postRef.path,
     }
   }
 
@@ -123,6 +119,5 @@ export const createPost = functions.https.onCall(async (data, context) => {
 
   return {
     id: postRef.id,
-    path: postRef.path,
   }
 })
