@@ -1,6 +1,12 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { AuthUser, getFirebaseAdmin, useAuthUser, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
+import {
+  AuthUser,
+  getFirebaseAdmin,
+  useAuthUser,
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from 'next-firebase-auth'
 
 import type { Post } from '../../types'
 import PostReplyForm from '../../components/PostReplyForm'
