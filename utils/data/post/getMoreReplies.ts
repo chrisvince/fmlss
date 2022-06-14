@@ -25,46 +25,11 @@ const getMoreReplies: GetMoreReplies = async (post, { uid } = {}) => {
     return post
   }
 
-  const lastReply = post.replies[post.replies.length - 1]
+  const lastReply = post?.replies?.[post?.replies?.length - 1]
 
-  if (!lastReply) {
-    const replyDocs = await post.doc.ref
-      .collection(POSTS_COLLECTION)
-      .orderBy('createdAt')
-      .limit(PAGINATION_COUNT)
-      .get()
-
-    const repliesPromise = replyDocs.docs.map(async (replyDoc) => {
-      if (!uid) {
-        return {
-          createdByUser: false,
-          data: mapPostDocToData(replyDoc),
-          doc: replyDoc,
-        }
-      }
-
-      const authoredRepliesRef = await db
-        .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_REPLIES_COLLECTION}`)
-        .where('originReference', '==', replyDoc.ref)
-        .limit(1)
-        .get()
-
-      const createdByUser = !authoredRepliesRef.empty
-      return {
-        createdByUser: createdByUser,
-        data: mapPostDocToData(replyDoc),
-        doc: replyDoc,
-      }
-    })
-    const newReplies = await Promise.all(repliesPromise)
-
-    return {
-      ...post,
-      replies: [
-        ...post.replies,
-        ...newReplies,
-      ]
-    }
+  if (!lastReply || !lastReply.doc) {
+    console.error('Could not get more replies. No last post doc exists.')
+    return post
   }
 
   const replyDocs = await post.doc.ref
@@ -91,7 +56,7 @@ const getMoreReplies: GetMoreReplies = async (post, { uid } = {}) => {
 
     const createdByUser = !authoredRepliesRef.empty
     return {
-      createdByUser: createdByUser,
+      createdByUser,
       data: mapPostDocToData(replyDoc),
       doc: replyDoc,
     }
@@ -101,7 +66,7 @@ const getMoreReplies: GetMoreReplies = async (post, { uid } = {}) => {
   return {
     ...post,
     replies: [
-      ...post.replies,
+      ...(post.replies ? post.replies : []),
       ...newReplies,
     ]
   }

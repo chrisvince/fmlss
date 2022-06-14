@@ -11,7 +11,7 @@ export interface Post {
   createdByUser: boolean
   data: PostData | null
   doc: firebaseDoc | null
-  replies: {
+  replies?: {
     createdByUser: boolean
     data: PostData
     doc: firebaseDoc | null

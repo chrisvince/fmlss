@@ -24,7 +24,7 @@ const PostPage = ({ post: postProp }: PropTypes) => {
   )
     
   const { slug } = router.query as { slug: string }
-  const hasReplies = !!post.replies.length
+  const hasReplies = !!post.replies?.length
 
   useEffect(() => {
     const hydratePost = async () => {
@@ -47,8 +47,7 @@ const PostPage = ({ post: postProp }: PropTypes) => {
 
   const postData = post.data!
 
-  const replyDocs = post.replies.map(({ data }) => data)
-  const isNewReply = useIsNewPost(replyDocs, `${postData.reference}/posts`, {
+  const isNewReply = useIsNewPost(post.replies, `${postData.reference}/posts`, {
     sortDirection: 'asc',
   })
 
@@ -77,7 +76,7 @@ const PostPage = ({ post: postProp }: PropTypes) => {
         <div>
           <h2>Replies ({repliesCount})</h2>
           <ul>
-            {post.replies.map(({ data }) => (
+            {post.replies!.map(({ data }) => (
               <li key={data.id}>
                 {data.createdByUser && <div>Created by me</div>}
                 <div></div>

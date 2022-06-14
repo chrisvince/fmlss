@@ -120,7 +120,7 @@ const getPost: GetPost = async (
 
     const createdByUser = !authoredRepliesRef.empty
     return {
-      createdByUser: createdByUser,
+      createdByUser,
       data: mapPostDocToData(replyDoc),
       doc: includeFirebaseDocs ? replyDoc : null,
     }

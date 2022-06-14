@@ -33,7 +33,10 @@ const addNewReply: AddNewReply = async (post, docId) => {
 
   return {
     ...post,
-    replies: [...post.replies, newReplyPayload],
+    replies: [
+      ...(post.replies ? post.replies : []),
+      newReplyPayload
+    ],
   }
 }
 
