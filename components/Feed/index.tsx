@@ -38,11 +38,12 @@ const Feed = ({ initPosts }: PropTypes) => {
       {isNewPost && <div>Load new posts</div>}
       {isPosts ? (
         <ul>
-          {posts.map((post) => (
-            <li key={post.data!.id}>
-              <Link href={`/post/${post.data!.id}`}>
+          {posts.map(({ createdByUser, data }) => (
+            <li key={data!.id}>
+              <Link href={`/post/${data!.id}`}>
                 <a>
-                  {post.data!.id} / {post.data!.body}
+                  {data!.id} / {data!.body}
+                  {createdByUser && ' / Created by me'}
                 </a>
               </Link>
             </li>

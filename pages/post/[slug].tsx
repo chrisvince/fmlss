@@ -82,13 +82,14 @@ const PostPage = ({ post: postProp }: PropTypes) => {
         <div>
           <h2>Replies ({repliesCount})</h2>
           <ul>
-            {post.replies!.map(({ data }) => (
+            {post.replies!.map(({ createdByUser, data }) => (
               <li key={data.id}>
                 {data.createdByUser && <div>Created by me</div>}
                 <div></div>
                 <Link href={`/post/${data.id}`}>
                   <a>
                     {data.id} / {data.body}
+                    {createdByUser && ' / Created by me'}
                   </a>
                 </Link>
               </li>
