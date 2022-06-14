@@ -42,6 +42,10 @@ const PostPage = ({ post: postProp }: PropTypes) => {
 
   const handleLoadMoreClick = async () => {
     const newPost = await getMoreReplies(post, { uid })
+    if (post.replies?.length === newPost.replies?.length) {
+      console.log('No more posts to load')
+      return
+    }
     setPost(newPost)
   }
 

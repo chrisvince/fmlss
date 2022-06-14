@@ -24,8 +24,12 @@ const Feed = ({ initPosts }: PropTypes) => {
   }, [uid])
 
   const handleLoadMoreClick = async () => {
-    const newPost = await getMorePosts(posts, { uid })
-    setPosts(newPost)
+    const newPosts = await getMorePosts(posts, { uid })
+    if (posts.length === newPosts.length) {
+      console.log('No more posts to load')
+      return
+    }
+    setPosts(newPosts)
   }
 
   const isNewPost = useIsNewPost(posts)
