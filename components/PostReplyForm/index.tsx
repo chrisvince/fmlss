@@ -7,11 +7,12 @@ const BODY_ID = 'body'
 
 interface PropTypes {
   replyingToReference: PostData['reference']
-  onNewReply: (post: any) => void,
+  onNewReply: (post: any) => void | Promise<void>
 }
 
 const PostReplyForm = ({ replyingToReference, onNewReply }: PropTypes) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
@@ -22,16 +23,26 @@ const PostReplyForm = ({ replyingToReference, onNewReply }: PropTypes) => {
       return
     }
 
+    if (textareaRef.current) {
+      textareaRef.current.disabled = true
+    }
+
     try {
       const response = await createPost({
         replyingToReference,
         body,
       })
+
+      await onNewReply?.(response.data.id)
+
       if (textareaRef.current) {
         textareaRef.current.value = ''
+        textareaRef.current.disabled = false
       }
-      onNewReply?.(response.data.id)
     } catch (error) {
+      if (textareaRef.current) {
+        textareaRef.current.disabled = false
+      }
       console.error(error)
     }
   }

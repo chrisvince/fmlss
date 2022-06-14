@@ -19,13 +19,17 @@ const ComposePostForm = () => {
       return
     }
 
+    if (textareaRef.current) {
+      textareaRef.current.disabled = true
+    }
+
     try {
       const response = await createPost({ body })
-      if (textareaRef.current) {
-        textareaRef.current.value = ''
-      }
       router.push(`/post/${response.data.id}`)
     } catch (error) {
+      if (textareaRef.current) {
+        textareaRef.current.disabled = false
+      }
       console.error(error)
     }
   }
