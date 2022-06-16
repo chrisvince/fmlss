@@ -6,11 +6,12 @@ const db = getFirestore()
 
 const {
   AUTHORED_POSTS_COLLECTION,
-  AUTHORED_REPLIES_COLLECTION,
   POSTING_REQUIRES_ACCOUNT,
   POSTS_COLLECTION,
   USERS_COLLECTION,
 } = constants
+
+type PostType = 'post' | 'reply'
 
 interface RequestData {
   body: string
@@ -20,12 +21,14 @@ interface PostPayload {
   body: string
   createdAt: FieldValue
   updatedAt: FieldValue
+  type?: PostType
 }
 
 interface CreatePostPayloadInput {
   slug: string,
   originReference?:
     FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
+  type?: PostType
 }
 
 type CreatePostPayload = (options: CreatePostPayloadInput) => PostPayload
@@ -34,20 +37,24 @@ type UpdateUser = (
   uid: string,
   postPayload: PostPayload,
   batch: FirebaseFirestore.WriteBatch,
-  type: 'post' | 'reply'
 ) => FirebaseFirestore.WriteBatch
 
-const updateUser: UpdateUser = (uid, postPayload, batch, type) => {
-  const subcollection = {
-    post: AUTHORED_POSTS_COLLECTION,
-    reply: AUTHORED_REPLIES_COLLECTION,
-  }[type]
-
-  if (!subcollection) return batch
-
+const updateUser: UpdateUser = (uid, postPayload, batch) => {
   const userAuthorPostsRef = db
-      .collection(`${USERS_COLLECTION}/${uid}/${subcollection}`)
+      .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
       .doc()
+
+  const postTypeCountFieldName = {
+    reply: 'authoredRepliesCount',
+    post: 'authoredPostsCount',
+  }[postPayload.type as PostType]
+
+  const userRef = db.collection(USERS_COLLECTION).doc(uid)
+
+  batch.update(userRef, {
+    postTotalCount: FieldValue.increment(1),
+    [postTypeCountFieldName]: FieldValue.increment(1),
+  })
 
   batch.set(userAuthorPostsRef, postPayload)
 
@@ -69,9 +76,13 @@ export const createPost = functions.https.onCall(async (data, context) => {
   const createPostPayload: CreatePostPayload = ({
     slug,
     originReference,
+    type,
   }) => ({
-    ...(originReference ? { originReference } : {}),
+    ...(
+      originReference ? { originReference, originId: originReference.id } : {}
+    ),
     ...(slug ? { slug } : {}),
+    ...(type ? { type } : {}),
     body,
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),
@@ -82,17 +93,20 @@ export const createPost = functions.https.onCall(async (data, context) => {
     const postRef = db.collection(collectionPath).doc()
 
     if (context.auth) {
-      updateUser(
-          context.auth.uid,
-          createPostPayload({
-            originReference: postRef,
-            slug: postRef.id,
-          }),
-          batch,
-          'reply',
-      )
+      const payload = createPostPayload({
+        originReference: postRef,
+        slug: postRef.id,
+        type: 'reply',
+      })
+      updateUser(context.auth.uid, payload, batch)
     }
     batch.set(postRef, createPostPayload({ slug: postRef.id }))
+
+    const parentDoc = db.doc(replyingToReference)
+    batch.update(parentDoc, {
+      [`${POSTS_COLLECTION}Count`]: FieldValue.increment(1),
+    })
+
     await batch.commit()
 
     return {
@@ -103,15 +117,12 @@ export const createPost = functions.https.onCall(async (data, context) => {
   const postRef = db.collection(POSTS_COLLECTION).doc()
 
   if (context.auth) {
-    updateUser(
-        context.auth.uid,
-        createPostPayload({
-          originReference: postRef,
-          slug: postRef.id,
-        }),
-        batch,
-        'post',
-    )
+    const payload = createPostPayload({
+      originReference: postRef,
+      slug: postRef.id,
+      type: 'post',
+    })
+    updateUser(context.auth.uid, payload, batch)
   }
 
   batch.set(postRef, createPostPayload({ slug: postRef.id }))

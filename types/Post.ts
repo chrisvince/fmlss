@@ -9,11 +9,6 @@ type firebaseDoc =
 
 export interface Post {
   createdByUser: boolean
-  data: PostData | null
+  data: PostData
   doc: firebaseDoc | null
-  replies?: {
-    createdByUser: boolean
-    data: PostData
-    doc: firebaseDoc | null
-  }[]
 }

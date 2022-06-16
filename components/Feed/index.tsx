@@ -1,46 +1,13 @@
-import { useAuthUser } from 'next-firebase-auth'
 import Link from 'next/link'
-import type { Post } from '../../types'
-import useIsNewPost from '../../utils/useIsNewPost'
+import usePostFeed from '../../utils/data/posts/usePostFeed'
 
-import { useEffect, useState } from 'react'
-import getPosts from '../../utils/data/posts/getPosts'
-import getMorePosts from '../../utils/data/posts/getMorePosts'
-
-interface PropTypes {
-  initPosts: Post[]
-}
-
-const Feed = ({ initPosts }: PropTypes) => {
-  const [posts, setPosts] = useState<Post[]>(initPosts)
-  const { id: uid } = useAuthUser()
-
-  useEffect(() => {
-    const hydratePosts = async () => {
-      const posts = await getPosts({ uid })
-      setPosts(posts)
-    }
-    hydratePosts()
-  }, [uid])
-
-  const handleLoadMoreClick = async () => {
-    const newPosts = await getMorePosts(posts, { uid })
-    if (posts.length === newPosts.length) {
-      console.log('No more posts to load')
-      return
-    }
-    setPosts(newPosts)
-  }
-
-  const isNewPost = useIsNewPost(posts)
-
-  const isPosts = !!(posts && posts.length)
+const Feed = () => {
+  const { posts } = usePostFeed()
 
   return (
     <div>
       <h2>Feed</h2>
-      {isNewPost && <div>Load new posts</div>}
-      {isPosts ? (
+      {posts.length ? (
         <ul>
           {posts.map(({ createdByUser, data }) => (
             <li key={data!.id}>
@@ -56,9 +23,9 @@ const Feed = ({ initPosts }: PropTypes) => {
       ) : (
         <p>No posts.</p>
       )}
-      <button onClick={handleLoadMoreClick}>
+      {/* <button onClick={handleLoadMoreClick}>
         Load more
-      </button>
+      </button> */}
     </div>
   )
 }

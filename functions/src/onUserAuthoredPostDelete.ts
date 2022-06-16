@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
-import incrementUserAuthoredPostsCount from
-  './db/incrementUserAuthoredPostsCount'
+import incrementUserPostCounts from
+  './db/incrementUserPostCounts'
 
 import constants from './constants'
 
@@ -11,7 +11,8 @@ const path =
 
 export const onUserAuthoredPostDelete = functions.firestore
     .document(path)
-    .onDelete(async (_, context) => {
+    .onDelete(async (snapshot, context) => {
       const { userId } = context.params
-      await incrementUserAuthoredPostsCount(-1, userId)
+      const { type } = snapshot.data() as { type: 'reply' | 'post' }
+      await incrementUserPostCounts(-1, userId, type)
     })

@@ -1,15 +1,17 @@
 import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
+
 import ComposePostForm from '../../components/ComposePostForm'
 import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
+import Page from '../../components/Page'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 const ComposePost = () => {
   return (
-    <div>
+    <Page pageTitle="Compose">
       <h1>Compose Post</h1>
       <ComposePostForm />
-    </div>
+    </Page>
   )
 }
 

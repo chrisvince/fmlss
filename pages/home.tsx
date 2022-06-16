@@ -4,44 +4,44 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
+import { SWRConfig } from 'swr'
 
-import ComposePostButton from '../components/ComposePostButton'
-import Feed from '../components/Feed'
-import Page from '../components/Page'
+import HomePage from '../components/HomePage'
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../config/withAuthConfig'
 import type { Post } from '../types'
-import getPosts from '../utils/data/posts/getPosts'
+import getPostFeed from '../utils/data/posts/getPostFeed'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 interface PropTypes {
-  posts: Post[]
+  fallback: {
+    [key: string]: Post[]
+  }
 }
 
-const Home = ({ posts }: PropTypes) => {
+const Home = ({ fallback }: PropTypes) => {
   return (
-    <Page pageTitle="Home">
-      <h1>Home</h1>
-      <ComposePostButton />
-      <Feed initPosts={posts} />
-    </Page>
+    <SWRConfig value={{ fallback }}>
+      <HomePage />
+    </SWRConfig>
   )
 }
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   const adminDb = getFirebaseAdmin().firestore()
   const uid = AuthUser.id
-  const posts = await getPosts({
+  const posts = await getPostFeed({
     db: adminDb,
-    includeFirebaseDocs: false,
     uid,
   })
 
   return {
     props: {
-      posts,
+      fallback: {
+        feed: posts,
+      },
     },
   }
 }

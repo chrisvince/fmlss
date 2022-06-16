@@ -1,53 +1,35 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import { get, put } from 'memory-cache'
 
 import constants from '../../../constants'
-import { Post } from '../../../types'
+import { Post, PostData } from '../../../types'
 import mapPostDocToData from '../../mapPostDocToData'
 
 const firebaseDb = firebase.firestore()
 
 const {
   AUTHORED_POSTS_COLLECTION,
-  AUTHORED_REPLIES_COLLECTION,
-  PAGINATION_COUNT,
+  POST_CACHE_TIME,
   POSTS_COLLECTION,
   USERS_COLLECTION,
 } = constants
 
-type firebaseDoc =
-  | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
-  | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
-
 type CheckPostIsCreatedByUser = (
-  postDoc: firebaseDoc,
+  postData: PostData,
   uid: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
   }
 ) => Promise<boolean>
 
-const checkPostIsCreatedByUser: CheckPostIsCreatedByUser = async (
-  postDoc,
-  uid,
-  { db = firebaseDb } = {},
-) => {
-  const authoredPostsRef = await db
-    .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
-    .where('originReference', '==', postDoc.ref)
-    .limit(1)
-    .get()
-
-  return !authoredPostsRef.empty
-}
+const isServer = typeof window === 'undefined'
 
 type GetPost = (
   slug: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-    includeFirebaseDocs?: boolean
     uid?: string | null
-    withReplies?: boolean
   }
 ) => Promise<Post>
 
@@ -55,94 +37,56 @@ const getPost: GetPost = async (
   slug,
   {
     db = firebaseDb,
-    includeFirebaseDocs = true,
     uid,
-    withReplies = true,
   } = {},
 ) => {
-  const postsRef = await db
-    .collectionGroup(POSTS_COLLECTION)
-    .where('slug', '==', slug)
-    .limit(1)
-    .get()
+  let doc:
+    | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
+    | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
+    | null
+  let data: PostData
 
-  if (postsRef.empty) {
-    return {
-      createdByUser: false,
-      data: null,
-      doc: null,
-      replies: [],
-    }
-  }
+  const cachedPostData = get(slug)
 
-  const postDoc = postsRef.docs[0]
-
-  if (!withReplies) {
-    if (!uid) {
-      return {
-        createdByUser: false,
-        data: mapPostDocToData(postDoc),
-        doc: includeFirebaseDocs ? postDoc : null,
-        replies: [],
-      }
-    }
-
-    const createdByUser = await checkPostIsCreatedByUser(postDoc, uid, { db })
-
-    return {
-      createdByUser,
-      data: mapPostDocToData(postDoc),
-      doc: includeFirebaseDocs ? postDoc : null,
-      replies: [],
-    }
-  }
-
-  const replyDocs = await postDoc.ref
-    .collection(POSTS_COLLECTION)
-    .orderBy('createdAt')
-    .limit(PAGINATION_COUNT)
-    .get()
-
-  const repliesPromise = replyDocs.docs.map(async replyDoc => {
-    if (!uid) {
-      return {
-        createdByUser: false,
-        data: mapPostDocToData(replyDoc),
-        doc: includeFirebaseDocs ? replyDoc : null,
-      }
-    }
-
-    const authoredRepliesRef = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_REPLIES_COLLECTION}`)
-      .where('originReference', '==', replyDoc.ref)
+  if (isServer && cachedPostData) {
+    data = cachedPostData
+    doc = null
+  } else {
+    const postsRef = await db
+      .collectionGroup(POSTS_COLLECTION)
+      .where('slug', '==', slug)
       .limit(1)
       .get()
 
-    const createdByUser = !authoredRepliesRef.empty
-    return {
-      createdByUser,
-      data: mapPostDocToData(replyDoc),
-      doc: includeFirebaseDocs ? replyDoc : null,
+    if (postsRef.empty) {
+      throw new Error('Post does not exist')
     }
-  })
-  const replies = await Promise.all(repliesPromise)
+
+    doc = postsRef.docs[0]
+    data = mapPostDocToData(doc)
+    put(slug, data, POST_CACHE_TIME)
+  }
 
   if (!uid) {
     return {
       createdByUser: false,
-      data: mapPostDocToData(postDoc),
-      doc: includeFirebaseDocs ? postDoc : null,
-      replies,
-    } 
+      data: data,
+      doc: !isServer ? doc : null,
+    }
   }
 
-  const createdByUser = await checkPostIsCreatedByUser(postDoc, uid, { db })
+  const authoredPostsRef = await db
+    .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
+    .where('originId', '==', data.id)
+    .limit(1)
+    .get()
+
+  const createdByUser = !authoredPostsRef.empty
 
   return {
     createdByUser,
-    data: mapPostDocToData(postDoc),
-    doc: includeFirebaseDocs ? postDoc : null,
-    replies,
+    data: data,
+    doc: !isServer ? doc : null,
   }
 }
 
