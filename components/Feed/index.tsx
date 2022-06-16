@@ -10,11 +10,13 @@ const Feed = () => {
       {posts.length ? (
         <ul>
           {posts.map(({ createdByUser, data }) => (
-            <li key={data!.id}>
-              <Link href={`/post/${data!.id}`}>
+            <li key={data.id} style={{ padding: '15px 0' }}>
+              <Link href={`/post/${data.id}`}>
                 <a>
-                  {data!.id} / {data!.body}
-                  {createdByUser && ' / Created by me'}
+                  <div style={{ whiteSpace: 'pre-wrap' }}>{data.body}</div>
+                  <div>
+                    {createdByUser && 'Created by me'}
+                  </div>
                 </a>
               </Link>
             </li>

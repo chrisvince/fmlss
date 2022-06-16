@@ -12,9 +12,11 @@ const ReplyItem = ({ reply }: PropTypes) => {
   return (
     <Link href={`/post/${data.id}`}>
       <a>
+        <div style={{ whiteSpace: 'pre-wrap' }}>
+          {data.body}
+        </div>
         <div>
-          {data.id} / {data.body}
-          {createdByUser && ' / Created by me'}
+          {createdByUser && 'Created by me'}
         </div>
       </a>
     </Link>

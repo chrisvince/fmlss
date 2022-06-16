@@ -17,7 +17,9 @@ const PostItem = ({ slug }: PropTypes) => {
     <div>
       <h1>Post</h1>
       <div>id: {data.id}</div>
-      <div>body: {data.body}</div>
+      <div style={{ whiteSpace: 'pre-wrap', padding: '15px 0' }}>
+        {data.body}
+      </div>
       {createdByUser && <div>Created by me!</div>}
       <div>createdAt: {createdAt}</div>
       <div>

@@ -20,7 +20,7 @@ const RepliesList = ({ slug }: PropTypes) => {
       {!!replies?.length ? (
         <ul>
           {replies.map((reply) => (
-            <li key={reply.data!.id}>
+            <li key={reply.data!.id} style={{ padding: '15px 0' }}>
               <ReplyItem reply={reply} />
             </li>
           ))}
