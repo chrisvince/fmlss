@@ -23,7 +23,8 @@ const initAuth = () => {
       credential: {
         projectId: <string>process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
         clientEmail: <string>process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: <string>process.env.FIREBASE_ADMIN_PRIVATE_KEY,
+        privateKey: <string>
+          process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       },
       databaseURL: <string>process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
     },
