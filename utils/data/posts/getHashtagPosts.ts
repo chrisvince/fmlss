@@ -41,7 +41,8 @@ const getHashtagPosts: GetHashtagPosts = async (
     | null
   let postData: PostData[] = []
 
-  const cacheKey = generateCacheKey(hashtag)
+  const lowerCaseHashtag = hashtag.toLowerCase()
+  const cacheKey = generateCacheKey(lowerCaseHashtag)
   const cachedData = get(cacheKey)
 
   if (isServer && cachedData) {
@@ -51,7 +52,7 @@ const getHashtagPosts: GetHashtagPosts = async (
     postDocs = await db
       .collectionGroup(POSTS_COLLECTION)
       .orderBy('createdAt', 'desc')
-      .where('hashtags', 'array-contains', hashtag)
+      .where('hashtags', 'array-contains', lowerCaseHashtag)
       .limit(PAGINATION_COUNT)
       .get()
 
