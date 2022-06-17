@@ -5,6 +5,7 @@ import { get, put } from 'memory-cache'
 import constants from '../../../constants'
 import { Post, PostData } from '../../../types'
 import createPostAuthorCacheKey from '../../caching/createPostAuthorCacheKey'
+import createPostCacheKey from '../../caching/createPostCacheKey'
 import mapPostDocToData from '../../mapPostDocToData'
 
 const firebaseDb = firebase.firestore()
@@ -40,7 +41,8 @@ const getPost: GetPost = async (
     | null
   let data: PostData
 
-  const cachedPostData = get(slug)
+  const postCacheKey = createPostCacheKey(slug)
+  const cachedPostData = get(postCacheKey)
 
   if (isServer && cachedPostData) {
     data = cachedPostData
@@ -58,7 +60,7 @@ const getPost: GetPost = async (
 
     doc = postsRef.docs[0]
     data = mapPostDocToData(doc)
-    put(slug, data, POST_CACHE_TIME)
+    put(postCacheKey, data, POST_CACHE_TIME)
   }
 
   if (!uid) {

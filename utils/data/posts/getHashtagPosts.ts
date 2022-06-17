@@ -5,11 +5,11 @@ import { get, put } from 'memory-cache'
 import constants from '../../../constants'
 import { Post, PostData } from '../../../types'
 import createPostAuthorCacheKey from '../../caching/createPostAuthorCacheKey'
+import createHashtagPostsCacheKey from '../../caching/createHashtagPostsCacheKey'
 import mapPostDocToData from '../../mapPostDocToData'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
-const generateCacheKey = (hashtag: string) => `hashtag/${hashtag}`
 
 const {
   AUTHORED_POSTS_COLLECTION,
@@ -42,8 +42,8 @@ const getHashtagPosts: GetHashtagPosts = async (
   let postData: PostData[] = []
 
   const lowerCaseHashtag = hashtag.toLowerCase()
-  const cacheKey = generateCacheKey(lowerCaseHashtag)
-  const cachedData = get(cacheKey)
+  const hashtagPostsCacheKey = createHashtagPostsCacheKey(lowerCaseHashtag)
+  const cachedData = get(hashtagPostsCacheKey)
 
   if (isServer && cachedData) {
     postData = cachedData as PostData[]
@@ -61,7 +61,7 @@ const getHashtagPosts: GetHashtagPosts = async (
     }
 
     postData = postDocs.docs.map((doc) => mapPostDocToData(doc))
-    put(cacheKey, postData, HASHTAG_LIST_CACHE_TIME)
+    put(hashtagPostsCacheKey, postData, HASHTAG_LIST_CACHE_TIME)
   }
 
   const postsPromise = postData.map(async (postDataItem, index) => {
