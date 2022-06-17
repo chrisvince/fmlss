@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 
-import constants from '../functions/src/constants'
+import constants from '../constants'
 import { Post } from '../types'
 
 const db = firebase.firestore()
