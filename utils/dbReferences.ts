@@ -1,6 +1,6 @@
 import { pipe } from 'ramda'
 
-const removePosts = (str: string) => str.replaceAll('posts/', '')
+const removePosts = (str: string) => str.split('posts/').join('')
 
 const splitBySlash = (str: string) => str.split('/')
 
