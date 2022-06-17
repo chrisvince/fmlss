@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import usePost from '../../utils/data/post/usePost'
+import PostBody from '../PostBody'
 
 type PropTypes = {
   slug: string
@@ -16,10 +17,7 @@ const PostItem = ({ slug }: PropTypes) => {
   return (
     <div>
       <h1>Post</h1>
-      <div>id: {data.id}</div>
-      <div style={{ whiteSpace: 'pre-wrap', padding: '15px 0' }}>
-        {data.body}
-      </div>
+      <PostBody body={data.body} />
       {createdByUser && <div>Created by me!</div>}
       <div>createdAt: {createdAt}</div>
       <div>
