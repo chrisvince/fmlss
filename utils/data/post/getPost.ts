@@ -11,6 +11,7 @@ const firebaseDb = firebase.firestore()
 
 const {
   AUTHORED_POSTS_COLLECTION,
+  POST_AUTHOR_CACHE_TIME,
   POST_CACHE_TIME,
   POSTS_COLLECTION,
   USERS_COLLECTION,
@@ -85,7 +86,7 @@ const getPost: GetPost = async (
       createdByUser = false
     } else {
       createdByUser = true
-      put(postAuthorCacheKey, uid)
+      put(postAuthorCacheKey, uid, POST_AUTHOR_CACHE_TIME)
     }
   }
 

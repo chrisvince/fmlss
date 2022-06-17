@@ -15,6 +15,7 @@ const {
   AUTHORED_POSTS_COLLECTION,
   FEED_CACHE_TIME,
   PAGINATION_COUNT,
+  POST_AUTHOR_CACHE_TIME,
   POSTS_COLLECTION,
   USERS_COLLECTION,
 } = constants
@@ -86,7 +87,7 @@ const getPostFeed: GetPosts = async (
         createdByUser = false
       } else {
         createdByUser = true
-        put(postAuthorCacheKey, uid)
+        put(postAuthorCacheKey, uid, POST_AUTHOR_CACHE_TIME)
       }
     }
 

@@ -15,6 +15,7 @@ const {
   AUTHORED_POSTS_COLLECTION,
   HASHTAG_LIST_CACHE_TIME,
   PAGINATION_COUNT,
+  POST_AUTHOR_CACHE_TIME,
   POSTS_COLLECTION,
   USERS_COLLECTION,
 } = constants
@@ -90,7 +91,7 @@ const getHashtagPosts: GetHashtagPosts = async (
         createdByUser = false
       } else {
         createdByUser = true
-        put(postAuthorCacheKey, uid)
+        put(postAuthorCacheKey, uid, POST_AUTHOR_CACHE_TIME)
       }
     }
 

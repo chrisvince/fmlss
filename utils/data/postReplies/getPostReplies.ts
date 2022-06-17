@@ -11,6 +11,7 @@ const isServer = typeof window === 'undefined'
 const {
   AUTHORED_POSTS_COLLECTION,
   PAGINATION_COUNT,
+  POST_AUTHOR_CACHE_TIME,
   REPLIES_CACHE_TIME,
   USERS_COLLECTION,
 } = constants
@@ -85,7 +86,7 @@ const getPostReplies: GetPostReplies = async (
         createdByUser = false
       } else {
         createdByUser = true
-        put(postAuthorCacheKey, uid)
+        put(postAuthorCacheKey, uid, POST_AUTHOR_CACHE_TIME)
       }
     }
 
