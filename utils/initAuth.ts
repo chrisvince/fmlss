@@ -44,7 +44,7 @@ const initAuth = () => {
       overwrite: true,
       path: '/',
       sameSite: 'strict',
-      secure: IS_PRODUCTION,
+      secure: true,
       signed: true,
     },
     onVerifyTokenError: (err) => {
