@@ -8,10 +8,13 @@ const { HASHTAG_REGEX } = constants
 const PostBody = ({ body }: { body: string }) => {
   return (
     <div>
-      {reactStringReplace(body, HASHTAG_REGEX, (hashtag) => {
+      {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
         const hashtagValue = hashtag.slice(1).toLowerCase()
         return (
-          <Link href={`/hashtag/${hashtagValue}`}>
+          <Link
+            key={hashtagValue + index}
+            href={`/hashtag/${hashtagValue}`}
+          >
             <a>
               {hashtag}
             </a>
