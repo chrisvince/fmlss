@@ -19,8 +19,9 @@ const incrementUserPostCounts = (
       .collection(USERS_COLLECTION)
       .doc(userId)
       .update({
-        postTotalCount: FieldValue.increment(amount),
         [postTypeCountFieldName]: FieldValue.increment(amount),
+        postTotalCount: FieldValue.increment(amount),
+        updatedAt: FieldValue.serverTimestamp(),
       })
 }
 

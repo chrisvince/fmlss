@@ -1,9 +1,10 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
-import constants from '../../config/constants'
+import constants from '../../constants'
 import type { ReactNode } from 'react'
 
-const DEFAULT_DESCRIPTION = `${constants.BRAND_NAME}, the nameless, faceless networking platform.`
+const { BRAND_NAME } = constants
+
+const DEFAULT_DESCRIPTION = `${BRAND_NAME}, the nameless, faceless networking platform.`
 
 interface PropTypes {
   children: ReactNode
@@ -25,8 +26,8 @@ const Page = ({
 }: PropTypes) => {
   const renderTitle = ({ title, pageTitle }: RenderTitle) => {
     if (title) return title
-    if (pageTitle) return `${constants.BRAND_NAME} – ${pageTitle}`
-    return constants.BRAND_NAME
+    if (pageTitle) return `${BRAND_NAME} – ${pageTitle}`
+    return BRAND_NAME
   }
 
   return (

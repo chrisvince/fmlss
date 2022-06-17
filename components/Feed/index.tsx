@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import usePostFeed from '../../utils/data/posts/usePostFeed'
+import { Post } from '../../types'
 
-const Feed = () => {
-  const { posts } = usePostFeed()
-
+type PropTypes = {
+  posts: Post[]
+}
+const Feed = ({ posts }: PropTypes) => {
   return (
     <div>
-      <h2>Feed</h2>
       {posts.length ? (
         <ul>
           {posts.map(({ createdByUser, data }) => (
@@ -14,9 +14,7 @@ const Feed = () => {
               <Link href={`/post/${data.id}`}>
                 <a>
                   <div style={{ whiteSpace: 'pre-wrap' }}>{data.body}</div>
-                  <div>
-                    {createdByUser && 'Created by me'}
-                  </div>
+                  <div>{createdByUser && 'Created by me'}</div>
                 </a>
               </Link>
             </li>

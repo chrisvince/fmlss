@@ -26,7 +26,7 @@ export default async (user: UserRecord | DecodedIdToken) => {
       .doc(emailVerificationId)
 
   await emailVerificationRequestDoc.set({
-    complete: false,
+    fulfilled: false,
     createdAt: FieldValue.serverTimestamp(),
     invalid: false,
     updatedAt: FieldValue.serverTimestamp(),

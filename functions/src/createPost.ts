@@ -52,8 +52,9 @@ const updateUser: UpdateUser = (uid, postPayload, batch) => {
   const userRef = db.collection(USERS_COLLECTION).doc(uid)
 
   batch.update(userRef, {
-    postTotalCount: FieldValue.increment(1),
     [postTypeCountFieldName]: FieldValue.increment(1),
+    postTotalCount: FieldValue.increment(1),
+    updatedAt: FieldValue.serverTimestamp(),
   })
 
   batch.set(userAuthorPostsRef, postPayload)
@@ -105,6 +106,7 @@ export const createPost = functions.https.onCall(async (data, context) => {
     const parentDoc = db.doc(replyingToReference)
     batch.update(parentDoc, {
       [`${POSTS_COLLECTION}Count`]: FieldValue.increment(1),
+      updatedAt: FieldValue.serverTimestamp(),
     })
 
     await batch.commit()

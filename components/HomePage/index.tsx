@@ -1,13 +1,16 @@
 import Page from '../Page'
 import Feed from '../Feed'
-import ComposePostButton from '../ComposePostButton'
+import NewPostButton from '../NewPostButton'
+import usePostFeed from '../../utils/data/posts/usePostFeed'
 
 const HomePage = () => {
+  const { posts } = usePostFeed()
+
   return (
     <Page pageTitle="Home">
       <h1>Home</h1>
-      <ComposePostButton />
-      <Feed />
+      <NewPostButton />
+      <Feed posts={posts} />
     </Page>
   )
 }

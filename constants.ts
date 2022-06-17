@@ -1,6 +1,9 @@
 const constants = {
   AUTHORED_POSTS_COLLECTION: 'authoredPosts',
+  BRAND_NAME: 'Fameless',
   FEED_CACHE_TIME: 30_000,
+  HASHTAG_LIST_CACHE_TIME: 30_000,
+  HASHTAG_REGEX: /\B(#[a-zA-Z0-9_%]{1,})/g,
   PAGINATION_COUNT: 10,
   POST_CACHE_TIME: 10_000,
   POSTS_COLLECTION: 'posts',

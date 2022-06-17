@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions'
-import { getFirestore } from 'firebase-admin/firestore'
+import { FieldValue, getFirestore } from 'firebase-admin/firestore'
 import constants from './constants'
 
 const {
@@ -32,12 +32,18 @@ export const invalidateRequests = functions.pubsub
           .get()
 
       emailVerificationRequestDocs.forEach((doc) => {
-        batch.update(doc.ref, { invalid: true })
+        batch.update(doc.ref, {
+          invalid: true,
+          updatedAt: FieldValue.serverTimestamp(),
+        })
         emailVerificationRequestCount++
       })
 
       passwordResetRequestDocs.forEach((doc) => {
-        batch.update(doc.ref, { invalid: true })
+        batch.update(doc.ref, {
+          invalid: true,
+          updatedAt: FieldValue.serverTimestamp(),
+        })
         passwordResetRequestCount++
       })
 

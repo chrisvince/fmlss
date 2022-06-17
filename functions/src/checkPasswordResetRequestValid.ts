@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import getPasswordResetRequestRef from './db/getPasswordResetRequestRef'
 
 interface PasswordResetRequest {
-  complete: boolean
+  fulfilled: boolean
 }
 
 export const checkPasswordResetRequestValid = functions.https.onCall(
@@ -21,7 +21,7 @@ export const checkPasswordResetRequestValid = functions.https.onCall(
       const passwordResetRequestValidData =
           <PasswordResetRequest>passwordResetRequestValidDoc.data()
 
-      if (passwordResetRequestValidData.complete) {
+      if (passwordResetRequestValidData.fulfilled) {
         throw new functions.https.HttpsError(
             'resource-exhausted',
             'The password reset request has already been used.'

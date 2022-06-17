@@ -31,7 +31,7 @@ const PostPageProvider = ({ fallback }: PropTypes) => {
 
 const getServerSidePropsFn = async ({
   AuthUser,
-  params,
+  params: { slug },
 }: {
   AuthUser: AuthUser
   params: {
@@ -40,7 +40,6 @@ const getServerSidePropsFn = async ({
 }) => {
   const adminDb = getFirebaseAdmin().firestore()
   const uid = AuthUser.id
-  const { slug } = params
 
   const post = await getPost(slug, {
     uid,

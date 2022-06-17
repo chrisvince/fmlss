@@ -18,6 +18,9 @@ const ReplyItem = ({ reply }: PropTypes) => {
         <div>
           {createdByUser && 'Created by me'}
         </div>
+        <div>
+          {data.postsCount && `${data.postsCount} replies`}
+        </div>
       </a>
     </Link>
   )

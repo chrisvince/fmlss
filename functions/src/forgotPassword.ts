@@ -60,7 +60,7 @@ export const forgotPassword = functions
           .doc(passwordResetRequestId)
 
       await passwordResetRequestDoc.set({
-        complete: false,
+        fulfilled: false,
         createdAt: FieldValue.serverTimestamp(),
         invalid: false,
         updatedAt: FieldValue.serverTimestamp(),

@@ -1,20 +1,12 @@
 import { SyntheticEvent, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 
 import { createPost } from '../../utils/callableFirebaseFunctions'
-import usePost from '../../utils/data/post/usePost'
-import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import PostBodyTextArea from '../PostBodyTextArea'
 
-const BODY_ID = 'body'
-
-type PropTypes = {
-  slug: string
-}
-
-const PostReplyForm = ({ slug }: PropTypes) => {
-  const { post, mutate: refreshPost } = usePost(slug)
-  const { mutate: refreshReplies } = usePostReplies(post.data.reference)
-  const postBodyTextAreaRef = useRef<{clear: () => void}>(null)
+const NewPostForm = () => {
+  const router = useRouter()
+  const postBodyTextAreaRef = useRef<{ clear: () => void }>(null)
   const [disableTextarea, setDisableTextarea] = useState<boolean>(false)
   const [textareaValue, setTextareaValue] = useState<string>('')
   const handleTextInput = (text: string) => setTextareaValue(text)
@@ -30,16 +22,8 @@ const PostReplyForm = ({ slug }: PropTypes) => {
     setDisableTextarea(true)
 
     try {
-      await createPost({
-        replyingToReference: post.data.reference,
-        body: textareaValue,
-      })
-
-      const refreshPromises = [refreshPost(), refreshReplies()]
-      await Promise.all(refreshPromises)
-
-      postBodyTextAreaRef.current?.clear()
-      setDisableTextarea(false)
+      const response = await createPost({ body: textareaValue })
+      router.push(`/post/${response.data.id}`)
     } catch (error) {
       setDisableTextarea(false)
       console.error(error)
@@ -59,4 +43,4 @@ const PostReplyForm = ({ slug }: PropTypes) => {
   )
 }
 
-export default PostReplyForm
+export default NewPostForm

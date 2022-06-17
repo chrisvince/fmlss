@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions'
 import getPasswordResetRequestRef from './db/getPasswordResetRequestRef'
 import { getAuth } from 'firebase-admin/auth'
+import { FieldValue } from 'firebase-admin/firestore'
 
 const auth = getAuth()
 
@@ -55,6 +56,9 @@ export const resetPassword = functions.https.onCall(
           { password: newPassword }
       )
 
-      await passwordResetRequestRef.update({ complete: true })
+      await passwordResetRequestRef.update({
+        fulfilled: true,
+        updatedAt: FieldValue.serverTimestamp(),
+      })
     }
 )

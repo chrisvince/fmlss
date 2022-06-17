@@ -45,12 +45,12 @@ export const verifyEmail = functions.https.onCall(async (data) => {
 
   const user = await auth.getUser(emailVerificationRequestData.uid)
   if (user.emailVerified) {
-    if (!emailVerificationRequestData.complete) {
+    if (!emailVerificationRequestData.fulfilled) {
       await db
           .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
           .doc(confirmationCode)
           .update({
-            complete: true,
+            fulfilled: true,
             updatedAt: FieldValue.serverTimestamp(),
           })
     }
@@ -69,7 +69,7 @@ export const verifyEmail = functions.https.onCall(async (data) => {
       .collection(EMAIL_VERIFICATION_REQUESTS_COLLECTION)
       .doc(confirmationCode)
       .update({
-        complete: true,
+        fulfilled: true,
         updatedAt: FieldValue.serverTimestamp(),
       })
 })
