@@ -7,5 +7,6 @@ export interface PostData {
   posts?: PostData[]
   postsCount?: number
   reference: string
+  slug: string
   updatedAt: string
 }

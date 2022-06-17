@@ -4,6 +4,7 @@ import { get, put } from 'memory-cache'
 import { Post, PostData } from '../../../types'
 import constants from '../../../constants'
 import mapPostDocToData from '../../mapPostDocToData'
+import createPostAuthorCacheKey from '../../caching/createPostAuthorCacheKey'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
@@ -67,13 +68,26 @@ const getPostReplies: GetPostReplies = async (
       }
     }
 
-    const authoredPostsRef = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
-      .where('originId', '==', replyDataItem.id)
-      .limit(1)
-      .get()
+    let createdByUser: boolean = false
+    const postAuthorCacheKey = createPostAuthorCacheKey(replyDataItem.slug)
+    const cachedAuthorUid = get(postAuthorCacheKey)
 
-    const createdByUser = !authoredPostsRef.empty
+    if (isServer && cachedAuthorUid) {
+      createdByUser = uid === cachedAuthorUid
+    } else {
+      const authoredPostsRef = await db
+        .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
+        .where('originId', '==', replyDataItem.id)
+        .limit(1)
+        .get()
+
+      if (authoredPostsRef.empty) {
+        createdByUser = false
+      } else {
+        createdByUser = true
+        put(postAuthorCacheKey, uid)
+      }
+    }
 
     return {
       createdByUser,

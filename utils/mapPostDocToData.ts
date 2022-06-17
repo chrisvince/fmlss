@@ -19,9 +19,10 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
     createdAt: (postData?.createdAt?.toMillis() ?? null) as string,
     id: postDoc.id as string,
     parentId: getParentIdFromDbReference(postDoc.ref.path) as string,
-    reference: postDoc.ref.path as string,
-    updatedAt: (postData?.updatedAt?.toMillis() ?? null) as string,
     postsCount: postData?.postsCount ?? null as number | null,
+    reference: postDoc.ref.path as string,
+    slug: postData?.slug as string,
+    updatedAt: (postData?.updatedAt?.toMillis() ?? null) as string,
   }
 }
 
