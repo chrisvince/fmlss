@@ -9,7 +9,7 @@ type PropTypes = {
 
 const RepliesList = ({ slug }: PropTypes) => {
   const { post } = usePost(slug)
-  const { replies } = usePostReplies(post.data.reference)
+  const { replies } = usePostReplies(post.data.slug)
 
   return (
     <div>

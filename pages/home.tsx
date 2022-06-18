@@ -12,9 +12,11 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../config/withAuthConfig'
 import type { Post } from '../types'
+import { createPostFeedCacheKey } from '../utils/createCacheKeys'
 import getPostFeed from '../utils/data/posts/getPostFeed'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
+const postFeedCacheKey = createPostFeedCacheKey()
 interface PropTypes {
   fallback: {
     [key: string]: Post[]
@@ -40,7 +42,7 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   return {
     props: {
       fallback: {
-        feed: posts,
+        [postFeedCacheKey]: posts,
       },
     },
   }

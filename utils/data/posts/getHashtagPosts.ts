@@ -4,8 +4,10 @@ import { get, put } from 'memory-cache'
 
 import constants from '../../../constants'
 import { Post, PostData } from '../../../types'
-import createPostAuthorCacheKey from '../../caching/createPostAuthorCacheKey'
-import createHashtagPostsCacheKey from '../../caching/createHashtagPostsCacheKey'
+import {
+  createHashtagPostsCacheKey,
+  createPostAuthorCacheKey,
+} from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 
 const firebaseDb = firebase.firestore()

@@ -4,7 +4,10 @@ import { get, put } from 'memory-cache'
 import { Post, PostData } from '../../../types'
 import constants from '../../../constants'
 import mapPostDocToData from '../../mapPostDocToData'
-import createPostAuthorCacheKey from '../../caching/createPostAuthorCacheKey'
+import {
+  createPostRepliesCacheKey,
+  createPostAuthorCacheKey,
+} from '../../createCacheKeys'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
@@ -18,6 +21,7 @@ const {
 
 type GetPostReplies = (
   reference: string,
+  slug: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     uid?: string | null
@@ -26,6 +30,7 @@ type GetPostReplies = (
 
 const getPostReplies: GetPostReplies = async (
   reference,
+  slug,
   {
     db = firebaseDb,
     uid,
@@ -37,9 +42,10 @@ const getPostReplies: GetPostReplies = async (
     | null
   let replyData: PostData[] = []
 
-  const cacheKey = `${reference}/posts`
+  
+  const postRepliesCacheKey = createPostRepliesCacheKey(slug)
   const collection = `${reference}/posts`
-  const cachedData = get(cacheKey)
+  const cachedData = get(postRepliesCacheKey)
 
   if (isServer && cachedData) {
     replyData = cachedData
@@ -55,7 +61,7 @@ const getPostReplies: GetPostReplies = async (
     const cacheTime =
       replyData.length < PAGINATION_COUNT ? REPLIES_CACHE_TIME : undefined
 
-    put(cacheKey, replyData, cacheTime)
+    put(postRepliesCacheKey, replyData, cacheTime)
   }
 
   const repliesPromise = replyData.map(async (replyDataItem, index) => {

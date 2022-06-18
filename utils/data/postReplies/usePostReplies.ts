@@ -1,6 +1,8 @@
 import { useAuthUser } from 'next-firebase-auth'
 import useSWR, { KeyedMutator } from 'swr'
 import { Post } from '../../../types'
+import { createPostRepliesCacheKey } from '../../createCacheKeys'
+import usePost from '../post/usePost'
 import getPostReplies from './getPostReplies'
 
 type UsePostReplies = (
@@ -13,13 +15,15 @@ type UsePostReplies = (
   mutate: KeyedMutator<Post[]>
 }
 
-const usePostReplies: UsePostReplies = (reference) => {
+const usePostReplies: UsePostReplies = (slug) => {
   const { id: uid } = useAuthUser()
-  const key = `${reference}/posts`
+  const { post } = usePost(slug)
+  const postRepliesCacheKey = createPostRepliesCacheKey(slug)
+
   const { data, error, isValidating, mutate } = useSWR(
-    key,
-    () => getPostReplies(reference, { uid }),
-    { revalidateOnFocus: false },
+    postRepliesCacheKey,
+    () => getPostReplies(post.data.reference, slug, { uid }),
+    { revalidateOnFocus: false }
   )
 
   return {

@@ -13,7 +13,7 @@ type PropTypes = {
 
 const PostReplyForm = ({ slug }: PropTypes) => {
   const { post, mutate: refreshPost } = usePost(slug)
-  const { mutate: refreshReplies } = usePostReplies(post.data.reference)
+  const { mutate: refreshReplies } = usePostReplies(post.data.slug)
   const postBodyTextAreaRef = useRef<{clear: () => void}>(null)
   const [disableTextarea, setDisableTextarea] = useState<boolean>(false)
   const [textareaValue, setTextareaValue] = useState<string>('')

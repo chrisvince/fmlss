@@ -4,12 +4,15 @@ import { get, put } from 'memory-cache'
 
 import constants from '../../../constants'
 import { Post, PostData } from '../../../types'
-import createPostAuthorCacheKey from '../../caching/createPostAuthorCacheKey'
+import {
+  createPostAuthorCacheKey,
+  createPostFeedCacheKey,
+} from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
-const CACHE_KEY = 'feed'
+const postFeedCacheKey = createPostFeedCacheKey()
 
 const {
   AUTHORED_POSTS_COLLECTION,
@@ -39,7 +42,7 @@ const getPostFeed: GetPosts = async (
     | null
   let postData: PostData[] = []
 
-  const cachedData = get(CACHE_KEY)
+  const cachedData = get(postFeedCacheKey)
 
   if (isServer && cachedData) {
     postData = cachedData as PostData[]
@@ -56,7 +59,7 @@ const getPostFeed: GetPosts = async (
     }
 
     postData = postDocs.docs.map((doc) => mapPostDocToData(doc))
-    put(CACHE_KEY, postData, FEED_CACHE_TIME)
+    put(postFeedCacheKey, postData, FEED_CACHE_TIME)
   }
 
   const postsPromise = postData.map(async (postDataItem, index) => {

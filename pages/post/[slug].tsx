@@ -11,6 +11,10 @@ import type { Post } from '../../types'
 import getPost from '../../utils/data/post/getPost'
 import PostPage from '../../components/PostPage'
 import getPostReplies from '../../utils/data/postReplies/getPostReplies'
+import {
+  createPostRepliesCacheKey,
+  createPostCacheKey,
+} from '../../utils/createCacheKeys'
 
 interface PropTypes {
   fallback: {
@@ -40,6 +44,8 @@ const getServerSidePropsFn = async ({
 }) => {
   const adminDb = getFirebaseAdmin().firestore()
   const uid = AuthUser.id
+  const postCacheKey = createPostCacheKey(slug)
+  const postRepliesCacheKey = createPostRepliesCacheKey(slug)
 
   const post = await getPost(slug, {
     uid,
@@ -50,7 +56,7 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
-  const replies = await getPostReplies(post.data.reference, {
+  const replies = await getPostReplies(post.data.reference, slug, {
     uid,
     db: adminDb,
   })
@@ -59,8 +65,8 @@ const getServerSidePropsFn = async ({
     props: {
       key: post.data.id,
       fallback: {
-        [slug]: post,
-        [`${post.data.reference}/posts`]: replies,
+        [postCacheKey]: post,
+        [postRepliesCacheKey]: replies,
       },
     },
   }
