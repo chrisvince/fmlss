@@ -11,6 +11,7 @@ const PostListItem = ({ post }: PropTypes) => {
   const { push: navigate } = useRouter()
   const handleClick = (event: SyntheticEvent) => {
     if ((event.target as HTMLAnchorElement).tagName === 'A') return
+    if (window.getSelection()?.toString().length) return
     navigate(`/post/${post.data.slug}`)
   }
   return (
