@@ -11,7 +11,12 @@ type PropTypes = {
 const RepliesList = ({ slug }: PropTypes) => {
   const { post, mutate: refreshPost } = usePost(slug)
   const [viewMode, setViewMode] = useState<'start' | 'end'>('start')
-  const { loadMore, moreToLoad, replies, mutate: refreshReplies } = usePostReplies(post.data.slug, { viewMode })
+  const {
+    loadMore,
+    moreToLoad,
+    replies, mutate:
+    refreshReplies
+  } = usePostReplies(post.data.slug, { viewMode })
 
   const handleNewReply = () => {
     setViewMode('end')
