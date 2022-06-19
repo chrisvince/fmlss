@@ -79,7 +79,7 @@ const useHashtagPosts: UsePostFeed = hashtag => {
   }
 
   const posts = data?.flat() ?? []
-  const lastPageLength = data?.at(-1)?.length
+  const lastPageLength = data?.at?.(-1)?.length
   const isLoading = !error && !data
 
   const moreToLoad = !isValidating && (
