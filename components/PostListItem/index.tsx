@@ -18,12 +18,25 @@ const PostListItem = ({ post }: PropTypes) => {
       onClick={handleClick}
       style={{
         cursor: 'pointer',
-        paddingTop: '10px',
-        paddingBottom: '10px',
+        borderTop: '1px solid #eee',
+        padding: '15px 0 30px 0',
+
       }}
     >
       <PostBody body={post.data.body} />
-      <div>{post.createdByUser && 'Created by me'}</div>
+      <div
+        style={{
+          display: 'flex',
+          gap: '20px',
+        }}
+      >
+        {post.createdByUser && (
+          <div>Created by me</div>
+        )}
+        {!!post.data.postsCount && (
+          <div>{post.data.postsCount} replies</div>
+        )}
+      </div>
     </article>
   )
 }

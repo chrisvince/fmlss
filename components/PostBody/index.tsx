@@ -7,18 +7,13 @@ const { HASHTAG_REGEX } = constants
 
 const PostBody = ({ body }: { body: string }) => {
   return (
-    <div
-      style={{
-        border: '1px solid #ccc',
-        padding: '20px',
-      }}
-    >
+    <div style={{ paddingBottom: '30px' }}>
       {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
         const hashtagValue = hashtag.slice(1).toLowerCase()
         return (
           <Link
-            key={hashtagValue + index}
             href={`/hashtag/${hashtagValue}`}
+            key={hashtagValue + index}
             style={{ color: 'dodgerblue' }}
           >
             <a>{hashtag}</a>

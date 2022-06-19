@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import usePost from '../../utils/data/post/usePost'
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
+import PostList from '../PostList'
 import PostListItem from '../PostListItem'
 import PostReplyForm from '../PostReplyForm'
 
@@ -41,13 +42,13 @@ const RepliesList = ({ slug }: PropTypes) => {
           {viewMode === 'end' && moreToLoad && (
             <button onClick={loadMore}>Load more</button>
           )}
-          <ul>
+          <PostList>
             {replies.map((reply) => (
-              <li key={reply.data!.id} style={{ padding: '15px 0' }}>
+              <li key={reply.data!.id}>
                 <PostListItem post={reply} />
               </li>
             ))}
-          </ul>
+          </PostList>
           {viewMode === 'start' && moreToLoad && (
             <button onClick={loadMore}>Load more</button>
           )}

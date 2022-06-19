@@ -1,4 +1,5 @@
 import { Post } from '../../types'
+import PostList from '../PostList'
 import PostListItem from '../PostListItem'
 
 type PropTypes = {
@@ -10,13 +11,13 @@ const Feed = ({ moreToLoad, onLoadMore, posts }: PropTypes) => {
   return (
     <div>
       {posts.length ? (
-        <ul>
+        <PostList>
           {posts.map(post => (
             <li key={post.data.id}>
               <PostListItem post={post} />
             </li>
           ))}
-        </ul>
+        </PostList>
       ) : (
         <p>No posts.</p>
       )}
