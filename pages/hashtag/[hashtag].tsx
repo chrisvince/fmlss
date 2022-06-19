@@ -13,6 +13,7 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import type { Post } from '../../types'
+import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
@@ -44,6 +45,7 @@ const getServerSidePropsFn = async ({
 }) => {
   const adminDb = getFirebaseAdmin().firestore()
   const uid = AuthUser.id
+  const hashtagPostsCacheKey = createHashtagPostsCacheKey(hashtag)
   const posts = await getHashtagPosts(hashtag, {
     db: adminDb,
     uid,
@@ -51,8 +53,9 @@ const getServerSidePropsFn = async ({
 
   return {
     props: {
+      key: hashtagPostsCacheKey,
       fallback: {
-        [`hashtag/${hashtag}`]: posts,
+        [hashtagPostsCacheKey]: posts,
       },
     },
   }

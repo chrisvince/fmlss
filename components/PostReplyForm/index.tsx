@@ -9,11 +9,11 @@ const BODY_ID = 'body'
 
 type PropTypes = {
   slug: string
+  onSuccess?: () => void
 }
 
-const PostReplyForm = ({ slug }: PropTypes) => {
-  const { post, mutate: refreshPost } = usePost(slug)
-  const { mutate: refreshReplies } = usePostReplies(post.data.slug)
+const PostReplyForm = ({ slug, onSuccess }: PropTypes) => {
+  const { post } = usePost(slug)
   const postBodyTextAreaRef = useRef<{clear: () => void}>(null)
   const [disableTextarea, setDisableTextarea] = useState<boolean>(false)
   const [textareaValue, setTextareaValue] = useState<string>('')
@@ -35,8 +35,7 @@ const PostReplyForm = ({ slug }: PropTypes) => {
         body: textareaValue,
       })
 
-      const refreshPromises = [refreshPost(), refreshReplies()]
-      await Promise.all(refreshPromises)
+      onSuccess?.()
 
       postBodyTextAreaRef.current?.clear()
       setDisableTextarea(false)

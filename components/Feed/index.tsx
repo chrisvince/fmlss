@@ -2,9 +2,11 @@ import Link from 'next/link'
 import { Post } from '../../types'
 
 type PropTypes = {
+  moreToLoad?: boolean,
+  onLoadMore?: () => any
   posts: Post[]
 }
-const Feed = ({ posts }: PropTypes) => {
+const Feed = ({ moreToLoad, onLoadMore, posts }: PropTypes) => {
   return (
     <div>
       {posts.length ? (
@@ -23,9 +25,7 @@ const Feed = ({ posts }: PropTypes) => {
       ) : (
         <p>No posts.</p>
       )}
-      {/* <button onClick={handleLoadMoreClick}>
-        Load more
-      </button> */}
+      {moreToLoad && <button onClick={onLoadMore}>Load more</button>}
     </div>
   )
 }

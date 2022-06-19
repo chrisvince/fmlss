@@ -1,7 +1,9 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { get, put } from 'memory-cache'
-import { Post, PostData } from '../../../types'
+import { pipe } from 'ramda'
+
+import { FirebaseDoc, Post, PostData } from '../../../types'
 import constants from '../../../constants'
 import mapPostDocToData from '../../mapPostDocToData'
 import {
@@ -24,7 +26,9 @@ type GetPostReplies = (
   slug: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+    startAfter?: FirebaseDoc
     uid?: string | null
+    viewMode?: 'start' | 'end'
   }
 ) => Promise<Post[]>
 
@@ -33,7 +37,9 @@ const getPostReplies: GetPostReplies = async (
   slug,
   {
     db = firebaseDb,
+    startAfter,
     uid,
+    viewMode = 'start',
   } = {},
 ) => {
   let replyDocs:
@@ -42,7 +48,6 @@ const getPostReplies: GetPostReplies = async (
     | null
   let replyData: PostData[] = []
 
-  
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
   const collection = `${reference}/posts`
   const cachedData = get(postRepliesCacheKey)
@@ -51,11 +56,17 @@ const getPostReplies: GetPostReplies = async (
     replyData = cachedData
     replyDocs = null
   } else {
-    replyDocs = await db
-      .collection(collection)
-      .orderBy('createdAt')
-      .limit(PAGINATION_COUNT)
-      .get()
+    replyDocs = await pipe(
+      () => db.collection(collection).orderBy(
+        'createdAt',
+        viewMode === 'end' ? 'desc' : 'asc',
+      ),
+      query => startAfter ? query.startAfter(startAfter) : query,
+      query => query.limit(PAGINATION_COUNT).get(),
+    )()
+
+    if (replyDocs.empty) return []
+
     replyData = replyDocs.docs.map(doc => mapPostDocToData(doc))
 
     const cacheTime =

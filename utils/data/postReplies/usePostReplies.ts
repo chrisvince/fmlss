@@ -1,37 +1,109 @@
+import { useEffect, useState } from 'react'
 import { useAuthUser } from 'next-firebase-auth'
-import useSWR, { KeyedMutator } from 'swr'
-import { Post } from '../../../types'
-import { createPostRepliesCacheKey } from '../../createCacheKeys'
+import useSWRInfinite from 'swr/infinite'
+import { KeyedMutator, useSWRConfig } from 'swr'
+import { reverse } from 'ramda'
+
+import { FirebaseDoc, Post } from '../../../types'
+import {
+  createPostRepliesCacheKey,
+  getPageIndexFromCacheKey,
+} from '../../createCacheKeys'
 import usePost from '../post/usePost'
 import getPostReplies from './getPostReplies'
+import getLastDocOfLastPage from '../../getLastDocOfLastPage'
+import constants from '../../../constants'
+
+const { PAGINATION_COUNT } = constants
 
 type UsePostReplies = (
-  reference: string,
+  slug: string,
+  options?: {
+    viewMode?: 'start' | 'end'
+  }
 ) => {
-  replies: Post[]
-  isLoading: boolean
   error: any
+  isLoading: boolean
   isValidating: boolean
+  loadMore: () => Promise<Post[]>
+  moreToLoad: boolean
   mutate: KeyedMutator<Post[]>
+  replies: Post[]
 }
 
-const usePostReplies: UsePostReplies = (slug) => {
+const usePostReplies: UsePostReplies = (slug, { viewMode = 'start' } = {}) => {
+  const [pageStartAfterTrace, setPageStartAfterTrace] =
+    useState<{[key: string]: FirebaseDoc}>({})
+
+  const { fallback } = useSWRConfig()
+  const fallbackData = fallback[createPostRepliesCacheKey(slug, 0, viewMode)]
   const { id: uid } = useAuthUser()
   const { post } = usePost(slug)
-  const postRepliesCacheKey = createPostRepliesCacheKey(slug)
 
-  const { data, error, isValidating, mutate } = useSWR(
-    postRepliesCacheKey,
-    () => getPostReplies(post.data.reference, slug, { uid }),
-    { revalidateOnFocus: false }
+  const {
+    data,
+    error,
+    isValidating,
+    mutate: mutateOriginal,
+    size,
+    setSize,
+  } = useSWRInfinite(
+    (index, previousPageData) => {
+      if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+        return null
+      }
+      return createPostRepliesCacheKey(slug, index, viewMode)
+    },
+    key => {
+      const pageIndex = getPageIndexFromCacheKey(key)
+      return getPostReplies(post.data.reference, slug, {
+        uid,
+        startAfter: pageStartAfterTrace[pageIndex],
+        viewMode,
+      })
+    },
+    {
+      fallbackData,
+      revalidateOnMount: true,
+    }
   )
 
+  useEffect(() => {
+    const lastPageLastDoc = getLastDocOfLastPage(data)
+    if (!lastPageLastDoc) return
+    setPageStartAfterTrace(currentState => ({
+      ...currentState,
+      [size]: lastPageLastDoc,
+    }))
+  }, [data, size])
+
+  useEffect(() => {
+    setPageStartAfterTrace({})
+  }, [viewMode])
+
+  const loadMore = async () => {
+    const data = await setSize(size + 1)
+    return data?.flat() ?? []
+  }
+
+  const mutate = async () => {
+    const data = await mutateOriginal()
+    return data?.flat() ?? []
+  }
+
+  const flattenedData = data?.flat() ?? []
+  const replies = viewMode === 'end' ? reverse(flattenedData) : flattenedData
+  const moreToLoad =
+    post.data.postsCount === undefined || replies.length < post.data.postsCount
+
   return {
-    replies: data as Post[],
+    error,
     isLoading: !error && !data,
     isValidating,
-    error,
+    loadMore,
+    moreToLoad,
     mutate,
+    replies,
   }
 }
 

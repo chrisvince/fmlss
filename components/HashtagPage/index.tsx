@@ -8,11 +8,15 @@ type PropTypes = {
 
 const HashtagPage = ({ hashtag }: PropTypes) => {
   const title = `#${hashtag}`
-  const { posts } = useHashtagPosts(hashtag)
+  const { posts, loadMore, moreToLoad } = useHashtagPosts(hashtag)
   return (
     <Page pageTitle={title}>
       <h1>{title}</h1>
-      <Feed posts={posts} />
+      <Feed
+        posts={posts}
+        onLoadMore={loadMore}
+        moreToLoad={moreToLoad}
+      />
     </Page>
   )
 }

@@ -1,9 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { get, put } from 'memory-cache'
+import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { Post, PostData } from '../../../types'
+import { FirebaseDoc, Post, PostData } from '../../../types'
 import {
   createPostAuthorCacheKey,
   createPostFeedCacheKey,
@@ -26,6 +27,7 @@ const {
 type GetPosts = (
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+    startAfter?: FirebaseDoc
     uid?: string | null
   }
 ) => Promise<Post[]>
@@ -33,6 +35,7 @@ type GetPosts = (
 const getPostFeed: GetPosts = async (
   {
     db = firebaseDb,
+    startAfter,
     uid,
   } = {},
 ) => {
@@ -48,15 +51,13 @@ const getPostFeed: GetPosts = async (
     postData = cachedData as PostData[]
     postDocs = null
   } else {
-    postDocs = await db
-      .collection(POSTS_COLLECTION)
-      .orderBy('createdAt', 'desc')
-      .limit(PAGINATION_COUNT)
-      .get()
+    postDocs =  await pipe(
+      () => db.collection(POSTS_COLLECTION).orderBy('createdAt', 'desc'),
+      query => startAfter ? query.startAfter(startAfter) : query,
+      query => query.limit(PAGINATION_COUNT).get(),
+    )()
 
-    if (postDocs.empty) {
-      return []
-    }
+    if (postDocs.empty) return []
 
     postData = postDocs.docs.map((doc) => mapPostDocToData(doc))
     put(postFeedCacheKey, postData, FEED_CACHE_TIME)

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import usePost from '../../utils/data/post/usePost'
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import PostReplyForm from '../PostReplyForm'
@@ -8,8 +9,15 @@ type PropTypes = {
 }
 
 const RepliesList = ({ slug }: PropTypes) => {
-  const { post } = usePost(slug)
-  const { replies } = usePostReplies(post.data.slug)
+  const { post, mutate: refreshPost } = usePost(slug)
+  const [viewMode, setViewMode] = useState<'start' | 'end'>('start')
+  const { loadMore, moreToLoad, replies, mutate: refreshReplies } = usePostReplies(post.data.slug, { viewMode })
+
+  const handleNewReply = () => {
+    setViewMode('end')
+    refreshPost()
+    refreshReplies()
+  }
 
   return (
     <div>
@@ -18,17 +26,25 @@ const RepliesList = ({ slug }: PropTypes) => {
         {!!post.data.postsCount && <> ({post.data.postsCount})</>}
       </h2>
       {!!replies?.length ? (
-        <ul>
-          {replies.map((reply) => (
-            <li key={reply.data!.id} style={{ padding: '15px 0' }}>
-              <ReplyItem reply={reply} />
-            </li>
-          ))}
-        </ul>
+        <>
+          {viewMode === 'end' && moreToLoad && (
+            <button onClick={loadMore}>Load more</button>
+          )}
+          <ul>
+            {replies.map((reply) => (
+              <li key={reply.data!.id} style={{ padding: '15px 0' }}>
+                <ReplyItem reply={reply} />
+              </li>
+            ))}
+          </ul>
+          {viewMode === 'start' && moreToLoad && (
+            <button onClick={loadMore}>Load more</button>
+          )}
+        </>
       ) : (
         <p>No replies</p>
       )}
-      <PostReplyForm slug={slug} />
+      <PostReplyForm slug={slug} onSuccess={handleNewReply} />
     </div>
   )
 }

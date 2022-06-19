@@ -1,12 +1,21 @@
-const createHashtagPostsCacheKey = (hashtag: string) => `hashtag/${hashtag}`
+const createHashtagPostsCacheKey =
+  (hashtag: string, pageIndex: number = 0) => `hashtag/${hashtag}-${pageIndex}`
 
 const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 
 const createPostCacheKey = (slug: string) => `post/${slug}`
 
-const createPostFeedCacheKey = () => `post/feed`
+const createPostFeedCacheKey =
+  (pageIndex: number = 0) => `post/feed-${pageIndex}`
 
-const createPostRepliesCacheKey = (slug: string) => `post/${slug}/replies`
+const getPageIndexFromCacheKey =
+  (cacheKey: string) => cacheKey.split('-').at(-1) as string
+
+const createPostRepliesCacheKey = (
+  slug: string,
+  pageIndex: number = 0,
+  viewMode: 'start' | 'end' = 'start'
+) => `post/${slug}/replies${viewMode === 'end' ? '-reverse' : ''}-${pageIndex}`
 
 export {
   createHashtagPostsCacheKey,
@@ -14,4 +23,5 @@ export {
   createPostCacheKey,
   createPostFeedCacheKey,
   createPostRepliesCacheKey,
+  getPageIndexFromCacheKey,
 }

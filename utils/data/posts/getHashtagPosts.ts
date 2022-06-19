@@ -1,9 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { get, put } from 'memory-cache'
+import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { Post, PostData } from '../../../types'
+import { FirebaseDoc, Post, PostData } from '../../../types'
 import {
   createHashtagPostsCacheKey,
   createPostAuthorCacheKey,
@@ -26,6 +27,7 @@ type GetHashtagPosts = (
   hashtag: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+    startAfter?: FirebaseDoc
     uid?: string | null
   }
 ) => Promise<Post[]>
@@ -34,6 +36,7 @@ const getHashtagPosts: GetHashtagPosts = async (
   hashtag,
   {
     db = firebaseDb,
+    startAfter,
     uid,
   } = {},
 ) => {
@@ -51,18 +54,19 @@ const getHashtagPosts: GetHashtagPosts = async (
     postData = cachedData as PostData[]
     postDocs = null
   } else {
-    postDocs = await db
-      .collectionGroup(POSTS_COLLECTION)
-      .orderBy('createdAt', 'desc')
-      .where('hashtags', 'array-contains', lowerCaseHashtag)
-      .limit(PAGINATION_COUNT)
-      .get()
+    postDocs = await pipe(
+      () =>
+        db
+          .collectionGroup(POSTS_COLLECTION)
+          .orderBy('createdAt', 'desc')
+          .where('hashtags', 'array-contains', lowerCaseHashtag),
+      query => startAfter ? query.startAfter(startAfter) : query,
+      query => query.limit(PAGINATION_COUNT).get()
+    )()
 
-    if (postDocs.empty) {
-      return []
-    }
+    if (postDocs.empty) return []
 
-    postData = postDocs.docs.map((doc) => mapPostDocToData(doc))
+    postData = postDocs.docs.map(doc => mapPostDocToData(doc))
     put(hashtagPostsCacheKey, postData, HASHTAG_LIST_CACHE_TIME)
   }
 

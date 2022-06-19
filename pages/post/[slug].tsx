@@ -63,7 +63,7 @@ const getServerSidePropsFn = async ({
 
   return {
     props: {
-      key: post.data.id,
+      key: postCacheKey,
       fallback: {
         [postCacheKey]: post,
         [postRepliesCacheKey]: replies,
