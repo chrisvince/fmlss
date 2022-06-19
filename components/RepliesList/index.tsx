@@ -18,10 +18,16 @@ const RepliesList = ({ slug }: PropTypes) => {
     refreshReplies
   } = usePostReplies(post.data.slug, { viewMode })
 
-  const handleNewReply = () => {
+  const handleNewReply = async () => {
     setViewMode('end')
-    refreshPost()
-    refreshReplies()
+
+    const refreshPromises = [refreshPost(), refreshReplies()]
+    await Promise.all(refreshPromises)
+
+    window.scrollTo({ behavior:
+      'smooth',
+      top: document.body.scrollHeight
+    })
   }
 
   return (
