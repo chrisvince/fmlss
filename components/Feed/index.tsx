@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { Post } from '../../types'
+import PostListItem from '../PostListItem'
 
 type PropTypes = {
   moreToLoad?: boolean,
@@ -11,14 +11,9 @@ const Feed = ({ moreToLoad, onLoadMore, posts }: PropTypes) => {
     <div>
       {posts.length ? (
         <ul>
-          {posts.map(({ createdByUser, data }) => (
-            <li key={data.id} style={{ padding: '15px 0' }}>
-              <Link href={`/post/${data.id}`}>
-                <a>
-                  <div style={{ whiteSpace: 'pre-wrap' }}>{data.body}</div>
-                  <div>{createdByUser && 'Created by me'}</div>
-                </a>
-              </Link>
+          {posts.map(post => (
+            <li key={post.data.id}>
+              <PostListItem post={post} />
             </li>
           ))}
         </ul>
