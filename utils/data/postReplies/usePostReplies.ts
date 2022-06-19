@@ -38,12 +38,12 @@ const usePostReplies: UsePostReplies = (slug, { viewMode = 'start' } = {}) => {
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createPostRepliesCacheKey(slug, 0, viewMode)]
   const { id: uid } = useAuthUser()
-  const { post } = usePost(slug)
+  const { post, isValidating: postIsValidating } = usePost(slug)
 
   const {
     data,
     error,
-    isValidating,
+    isValidating: repliesAreValidating,
     mutate: mutateOriginal,
     size,
     setSize,
@@ -93,12 +93,16 @@ const usePostReplies: UsePostReplies = (slug, { viewMode = 'start' } = {}) => {
 
   const flattenedData = data?.flat() ?? []
   const replies = viewMode === 'end' ? reverse(flattenedData) : flattenedData
-  const moreToLoad =
+  const isLoading = !error && !data
+  const isValidating = repliesAreValidating || postIsValidating
+
+  const moreToLoad = !isValidating && (
     post.data.postsCount === undefined || replies.length < post.data.postsCount
+  )
 
   return {
     error,
-    isLoading: !error && !data,
+    isLoading,
     isValidating,
     loadMore,
     moreToLoad,

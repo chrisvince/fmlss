@@ -80,12 +80,15 @@ const useHashtagPosts: UsePostFeed = hashtag => {
 
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at(-1)?.length
-  const moreToLoad =
+  const isLoading = !error && !data
+
+  const moreToLoad = !isValidating && (
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
+  )
 
   return {
     error,
-    isLoading: !error && !data,
+    isLoading,
     isValidating,
     loadMore,
     moreToLoad,
