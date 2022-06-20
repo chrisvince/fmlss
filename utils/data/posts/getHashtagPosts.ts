@@ -5,23 +5,18 @@ import { pipe } from 'ramda'
 
 import constants from '../../../constants'
 import { FirebaseDoc, Post, PostData } from '../../../types'
-import {
-  createHashtagPostsCacheKey,
-  createPostAuthorCacheKey,
-} from '../../createCacheKeys'
+import { createHashtagPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
+import checkIsLikedByUser from '../author/checkIsLikedByUser'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
 
 const {
-  AUTHORED_POSTS_COLLECTION,
   HASHTAG_LIST_CACHE_TIME,
   PAGINATION_COUNT,
-  POST_AUTHOR_CACHE_TIME,
   POSTS_COLLECTION,
-  USERS_COLLECTION,
 } = constants
 
 type GetHashtagPosts = (
@@ -79,17 +74,20 @@ const getHashtagPosts: GetHashtagPosts = async (
         createdByUser: false,
         data: postDataItem,
         doc: !isServer ? postDoc : null,
+        likedByUser: false,
       }
     }
 
     const createdByUser = await checkIsCreatedByUser(postDataItem.id, uid, {
       db,
     })
+    const likedByUser = await checkIsLikedByUser(postDataItem.id, uid, { db })
 
     return {
       createdByUser,
       data: postDataItem,
       doc: !isServer ? postDoc : null,
+      likedByUser,
     }
   })
   const posts = await Promise.all(postsPromise)

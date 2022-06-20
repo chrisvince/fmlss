@@ -3,6 +3,7 @@ export interface PostData {
   createdAt: string
   createdByUser?: boolean
   id: string
+  likesCount?: number
   parentId: string
   posts?: PostData[]
   postsCount?: number

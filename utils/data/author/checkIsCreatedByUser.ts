@@ -16,7 +16,7 @@ const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
 
 const checkIsCreatedByUser = async (
-  originId: string,
+  postId: string,
   uid: string,
   {
     db = firebaseDb,
@@ -26,7 +26,7 @@ const checkIsCreatedByUser = async (
 ) => {
   let createdByUser: boolean = false
 
-  const postAuthorCacheKey = createPostAuthorCacheKey(originId)
+  const postAuthorCacheKey = createPostAuthorCacheKey(postId)
   const cachedAuthorUid = get(postAuthorCacheKey)
 
   if (isServer && cachedAuthorUid) {
@@ -34,7 +34,7 @@ const checkIsCreatedByUser = async (
   } else {
     const authoredPostsRef = await db
       .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
-      .where('originId', '==', originId)
+      .where('originId', '==', postId)
       .limit(1)
       .get()
 

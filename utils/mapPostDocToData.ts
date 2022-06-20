@@ -16,13 +16,14 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
   const postData = postDoc.data()
   return {
     body: postData?.body as string,
-    createdAt: (postData?.createdAt?.toMillis() ?? null) as string,
+    createdAt: postData?.createdAt?.toMillis() ?? null as string | null,
     id: postDoc.id as string,
+    likesCount: postData?.likesCount ?? null as number | null,
     parentId: getParentIdFromDbReference(postDoc.ref.path) as string,
     postsCount: postData?.postsCount ?? null as number | null,
     reference: postDoc.ref.path as string,
     slug: postData?.slug as string,
-    updatedAt: (postData?.updatedAt?.toMillis() ?? null) as string,
+    updatedAt: postData?.updatedAt?.toMillis() ?? null as string | null,
   }
 }
 

@@ -4,22 +4,14 @@ import { get, put } from 'memory-cache'
 
 import constants from '../../../constants'
 import { Post, PostData } from '../../../types'
-import {
-  createPostCacheKey,
-  createPostAuthorCacheKey,
-} from '../../createCacheKeys'
+import { createPostCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
+import checkIsLikedByUser from '../author/checkIsLikedByUser'
 
 const firebaseDb = firebase.firestore()
 
-const {
-  AUTHORED_POSTS_COLLECTION,
-  POST_AUTHOR_CACHE_TIME,
-  POST_CACHE_TIME,
-  POSTS_COLLECTION,
-  USERS_COLLECTION,
-} = constants
+const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
 
 const isServer = typeof window === 'undefined'
 
@@ -71,15 +63,18 @@ const getPost: GetPost = async (
       createdByUser: false,
       data: data,
       doc: !isServer ? doc : null,
+      likedByUser: false,
     }
   }
 
   const createdByUser = await checkIsCreatedByUser(data.id, uid, { db })
+  const likedByUser = await checkIsLikedByUser(data.id, uid, { db })
 
   return {
     createdByUser,
     data: data,
     doc: !isServer ? doc : null,
+    likedByUser,
   }
 }
 

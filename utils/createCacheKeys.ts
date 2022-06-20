@@ -17,11 +17,15 @@ const createPostRepliesCacheKey = (
   viewMode: 'start' | 'end' = 'start'
 ) => `post/${slug}/replies${viewMode === 'end' ? '-reverse' : ''}-${pageIndex}`
 
+const createPostLikeCacheKey = (postId: string, uid: string) =>
+  `post/${postId}/like/${uid}`
+
 export {
   createHashtagPostsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,
+  createPostLikeCacheKey,
   createPostRepliesCacheKey,
   getPageIndexFromCacheKey,
 }

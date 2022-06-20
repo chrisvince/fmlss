@@ -6,21 +6,13 @@ import { pipe } from 'ramda'
 import { FirebaseDoc, Post, PostData } from '../../../types'
 import constants from '../../../constants'
 import mapPostDocToData from '../../mapPostDocToData'
-import {
-  createPostRepliesCacheKey,
-  createPostAuthorCacheKey,
-} from '../../createCacheKeys'
+import { createPostRepliesCacheKey } from '../../createCacheKeys'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
+import checkIsLikedByUser from '../author/checkIsLikedByUser'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
-const {
-  AUTHORED_POSTS_COLLECTION,
-  PAGINATION_COUNT,
-  POST_AUTHOR_CACHE_TIME,
-  REPLIES_CACHE_TIME,
-  USERS_COLLECTION,
-} = constants
+const { PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
 type GetPostReplies = (
   reference: string,
@@ -84,17 +76,20 @@ const getPostReplies: GetPostReplies = async (
         createdByUser: false,
         data: replyDataItem,
         doc: !isServer ? replyDoc : null,
+        likedByUser: false,
       }
     }
 
     const createdByUser = await checkIsCreatedByUser(replyDataItem.id, uid, {
       db
     })
+  const likedByUser = await checkIsLikedByUser(replyDataItem.id, uid, { db })
 
     return {
       createdByUser,
       data: replyDataItem,
       doc: !isServer ? replyDoc : null,
+      likedByUser,
     }
   })
   const replies = await Promise.all(repliesPromise)
