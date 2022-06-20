@@ -10,6 +10,7 @@ import {
   createPostRepliesCacheKey,
   createPostAuthorCacheKey,
 } from '../../createCacheKeys'
+import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
@@ -86,26 +87,9 @@ const getPostReplies: GetPostReplies = async (
       }
     }
 
-    let createdByUser: boolean = false
-    const postAuthorCacheKey = createPostAuthorCacheKey(replyDataItem.slug)
-    const cachedAuthorUid = get(postAuthorCacheKey)
-
-    if (isServer && cachedAuthorUid) {
-      createdByUser = uid === cachedAuthorUid
-    } else {
-      const authoredPostsRef = await db
-        .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
-        .where('originId', '==', replyDataItem.id)
-        .limit(1)
-        .get()
-
-      if (authoredPostsRef.empty) {
-        createdByUser = false
-      } else {
-        createdByUser = true
-        put(postAuthorCacheKey, uid, POST_AUTHOR_CACHE_TIME)
-      }
-    }
+    const createdByUser = await checkIsCreatedByUser(replyDataItem.id, uid, {
+      db
+    })
 
     return {
       createdByUser,

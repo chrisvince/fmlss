@@ -9,6 +9,7 @@ import {
   createPostAuthorCacheKey,
 } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
+import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 
 const firebaseDb = firebase.firestore()
 
@@ -73,26 +74,7 @@ const getPost: GetPost = async (
     }
   }
 
-  let createdByUser: boolean = false
-  const postAuthorCacheKey = createPostAuthorCacheKey(slug)
-  const cachedAuthorUid = get(postAuthorCacheKey)
-
-  if (isServer && cachedAuthorUid) {
-    createdByUser = uid === cachedAuthorUid
-  } else {
-    const authoredPostsRef = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
-      .where('originId', '==', data.id)
-      .limit(1)
-      .get()
-
-    if (authoredPostsRef.empty) {
-      createdByUser = false
-    } else {
-      createdByUser = true
-      put(postAuthorCacheKey, uid, POST_AUTHOR_CACHE_TIME)
-    }
-  }
+  const createdByUser = await checkIsCreatedByUser(data.id, uid, { db })
 
   return {
     createdByUser,
