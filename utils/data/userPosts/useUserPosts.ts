@@ -6,6 +6,7 @@ import { KeyedMutator, useSWRConfig } from 'swr'
 import { FirebaseDoc, Post } from '../../../types'
 import {
   createUserPostsCacheKey,
+  createUserRepliesCacheKey,
   getPageIndexFromCacheKey,
 } from '../../createCacheKeys'
 import getUserPosts from './getUserPosts'
@@ -14,7 +15,7 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UseUserPosts = (options?: { type?: 'post' | 'reply' | 'both' }) => {
+type UseUserPosts = (options?: { type?: 'post' | 'reply' }) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -24,13 +25,18 @@ type UseUserPosts = (options?: { type?: 'post' | 'reply' | 'both' }) => {
   posts: Post[]
 }
 
-const useUserPosts: UseUserPosts = ({ type = 'both' } ={}) => {
+const useUserPosts: UseUserPosts = ({ type = 'post' } ={}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] =
     useState<{[key: string]: FirebaseDoc}>({})
 
   const { id: uid } = useAuthUser()
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createUserPostsCacheKey(uid!)]
+
+  const createCacheKey = {
+    post: createUserPostsCacheKey,
+    reply: createUserRepliesCacheKey,
+  }[type]
+  const fallbackData = fallback[createCacheKey(uid!)]
 
   if (!uid) {
     console.error('uid must be set.')
@@ -48,7 +54,7 @@ const useUserPosts: UseUserPosts = ({ type = 'both' } ={}) => {
       if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
         return null
       }
-      return createUserPostsCacheKey(uid!, index)
+      return createCacheKey(uid!, index)
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)

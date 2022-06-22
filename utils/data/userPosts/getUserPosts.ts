@@ -26,13 +26,13 @@ type GetUserPosts = (
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
-    type?: 'post' | 'reply' | 'both'
+    type?: 'post' | 'reply'
   }
 ) => Promise<Post[]>
 
 const getUserPosts: GetUserPosts = async (
   uid,
-  { db = firebaseDb, startAfter, type = 'both' } = {}
+  { db = firebaseDb, startAfter, type = 'post' } = {}
 ) => {
   let postDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
@@ -48,11 +48,11 @@ const getUserPosts: GetUserPosts = async (
     postDocs = null
   } else {
     postDocs = await pipe(
-      () => db.collection(
-        `${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`
-      ),
-      query => type !== 'both' ? query.where('type', '==', type) : query,
-      query => query.orderBy('createdAt', 'desc'),
+      () =>
+        db
+          .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
+          .where('type', '==', type)
+          .orderBy('createdAt', 'desc'),
       query => startAfter ? query.startAfter(startAfter) : query,
       query => query.limit(PAGINATION_COUNT).get()
     )()
