@@ -3,7 +3,7 @@ import Feed from '../Feed'
 import NewPostButton from '../NewPostButton'
 import useUserLikes from '../../utils/data/userLikes/useUserLikes'
 
-const HomePage = () => {
+const UserLikesPage = () => {
   const { moreToLoad, loadMore, posts } = useUserLikes()
 
   return (
@@ -15,4 +15,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default UserLikesPage
