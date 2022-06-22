@@ -1,7 +1,7 @@
 import Page from '../Page'
 import Feed from '../Feed'
 import NewPostButton from '../NewPostButton'
-import useUserLikes from '../../utils/data/likes/useUserLikes'
+import useUserLikes from '../../utils/data/userLikes/useUserLikes'
 
 const HomePage = () => {
   const { moreToLoad, loadMore, posts } = useUserLikes()

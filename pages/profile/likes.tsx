@@ -13,7 +13,7 @@ import {
 } from '../../config/withAuthConfig'
 import { Post } from '../../types'
 import { createUserLikesCacheKey } from '../../utils/createCacheKeys'
-import getUserLikes from '../../utils/data/likes/getUserLikes'
+import getUserLikes from '../../utils/data/userLikes/getUserLikes'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
