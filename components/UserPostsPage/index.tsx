@@ -4,7 +4,7 @@ import NewPostButton from '../NewPostButton'
 import useUserPosts from '../../utils/data/userPosts/useUserPosts'
 
 const UserPostsPage = () => {
-  const { moreToLoad, loadMore, posts } = useUserPosts()
+  const { moreToLoad, loadMore, posts } = useUserPosts({ type: 'post' })
 
   return (
     <Page pageTitle="Posts">

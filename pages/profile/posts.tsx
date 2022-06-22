@@ -42,6 +42,7 @@ const getServerSidePropsFn = async ({
   const userPostsCacheKey = createUserPostsCacheKey(uid)
   const posts = await getUserPosts(uid, {
     db: adminDb,
+    type: 'post',
   })
 
   return {

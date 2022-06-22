@@ -14,7 +14,7 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UseUserPosts = () => {
+type UseUserPosts = (options?: { type?: 'post' | 'reply' | 'both' }) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -24,7 +24,7 @@ type UseUserPosts = () => {
   posts: Post[]
 }
 
-const useUserPosts: UseUserPosts = () => {
+const useUserPosts: UseUserPosts = ({ type = 'both' } ={}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] =
     useState<{[key: string]: FirebaseDoc}>({})
 
@@ -54,6 +54,7 @@ const useUserPosts: UseUserPosts = () => {
       const pageIndex = getPageIndexFromCacheKey(key)
       return getUserPosts(uid!, {
         startAfter: pageStartAfterTrace[pageIndex],
+        type,
       })
     },
     {
