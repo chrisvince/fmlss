@@ -80,10 +80,10 @@ const getPostReplies: GetPostReplies = async (
       }
     }
 
-    const createdByUser = await checkIsCreatedByUser(replyDataItem.id, uid, {
+    const createdByUser = await checkIsCreatedByUser(replyDataItem.slug, uid, {
       db
     })
-  const likedByUser = await checkIsLikedByUser(replyDataItem.id, uid, { db })
+  const likedByUser = await checkIsLikedByUser(replyDataItem.slug, uid, { db })
 
     return {
       createdByUser,

@@ -20,6 +20,9 @@ const createPostRepliesCacheKey = (
 const createPostLikeCacheKey = (postId: string, uid: string) =>
   `post/${postId}/like/${uid}`
 
+const createUserLikesCacheKey = (uid: string, pageIndex: number = 0) =>
+  `post/likes/${uid}-${pageIndex}`
+
 export {
   createHashtagPostsCacheKey,
   createPostAuthorCacheKey,
@@ -27,5 +30,6 @@ export {
   createPostFeedCacheKey,
   createPostLikeCacheKey,
   createPostRepliesCacheKey,
+  createUserLikesCacheKey,
   getPageIndexFromCacheKey,
 }

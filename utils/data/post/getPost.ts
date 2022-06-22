@@ -67,8 +67,8 @@ const getPost: GetPost = async (
     }
   }
 
-  const createdByUser = await checkIsCreatedByUser(data.id, uid, { db })
-  const likedByUser = await checkIsLikedByUser(data.id, uid, { db })
+  const createdByUser = await checkIsCreatedByUser(data.slug, uid, { db })
+  const likedByUser = await checkIsLikedByUser(data.slug, uid, { db })
 
   return {
     createdByUser,

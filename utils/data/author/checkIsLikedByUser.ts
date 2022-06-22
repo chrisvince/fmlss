@@ -14,7 +14,7 @@ const {
 const isServer = typeof window === 'undefined'
 
 const checkIsLikedByUser = async (
-  postId: string,
+  slug: string,
   uid: string,
   {
     db = firebaseDb,
@@ -23,16 +23,15 @@ const checkIsLikedByUser = async (
   } = {}
 ) => {
   let likedByUser: boolean = false
-  const postLikesCacheKey = createPostLikeCacheKey(postId, uid)
+  const postLikesCacheKey = createPostLikeCacheKey(slug, uid)
   const cachedLike = get(postLikesCacheKey) as boolean | null
-  console.log('cachedLike', cachedLike)
 
   if (isServer && cachedLike !== null) {
     likedByUser = cachedLike
   } else {
     const postLikesRef = await db
       .collection(`${USERS_COLLECTION}/${uid}/${POST_LIKES_COLLECTION}`)
-      .where('originId', '==', postId)
+      .where('slug', '==', slug)
       .limit(1)
       .get()
     

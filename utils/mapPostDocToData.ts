@@ -9,7 +9,6 @@ type MapPostDbToClient = (
     | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
     | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
-  createdByUser?: boolean,
 ) => PostData
 
 const mapPostDocToData: MapPostDbToClient = postDoc => {

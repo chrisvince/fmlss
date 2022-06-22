@@ -65,6 +65,7 @@ const usePostReplies: UsePostReplies = (slug, { viewMode = 'start' } = {}) => {
     {
       fallbackData,
       revalidateOnMount: true,
+      revalidateOnFocus: false,
     }
   )
 

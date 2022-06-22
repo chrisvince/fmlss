@@ -5,31 +5,33 @@ import { pipe } from 'ramda'
 
 import constants from '../../../constants'
 import { FirebaseDoc, Post, PostData } from '../../../types'
-import { createPostFeedCacheKey } from '../../createCacheKeys'
+import { createUserLikesCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
-import checkIsLikedByUser from '../author/checkIsLikedByUser'
+import setCacheIsLikedByUser from '../author/setCacheIsLikedByUser'
 
 const firebaseDb = firebase.firestore()
+
+const {
+  PAGINATION_COUNT,
+  POST_LIKES_COLLECTION,
+  USER_LIKES_CACHE_TIME,
+  USERS_COLLECTION,
+} = constants
+
 const isServer = typeof window === 'undefined'
-const postFeedCacheKey = createPostFeedCacheKey()
 
-const { FEED_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } = constants
-
-type GetPosts = (
+type GetUserLikes = (
+  uid: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
-    uid?: string | null
   }
 ) => Promise<Post[]>
 
-const getPostFeed: GetPosts = async (
-  {
-    db = firebaseDb,
-    startAfter,
-    uid,
-  } = {},
+const getUserLikes: GetUserLikes = async (
+  uid,
+  { db = firebaseDb, startAfter } = {}
 ) => {
   let postDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
@@ -37,50 +39,51 @@ const getPostFeed: GetPosts = async (
     | null
   let postData: PostData[] = []
 
-  const cachedData = get(postFeedCacheKey)
+  const userLikesCacheKey = createUserLikesCacheKey(uid)
+  const cachedData = get(userLikesCacheKey)
 
   if (isServer && cachedData) {
     postData = cachedData as PostData[]
     postDocs = null
   } else {
-    postDocs =  await pipe(
-      () => db.collection(POSTS_COLLECTION).orderBy('createdAt', 'desc'),
-      query => startAfter ? query.startAfter(startAfter) : query,
-      query => query.limit(PAGINATION_COUNT).get(),
+    postDocs = await pipe(
+      () =>
+        db
+          .collection(`${USERS_COLLECTION}/${uid}/${POST_LIKES_COLLECTION}`)
+          .orderBy('createdAt', 'desc'),
+      query => (startAfter ? query.startAfter(startAfter) : query),
+      query => query.limit(PAGINATION_COUNT).get()
     )()
 
     if (postDocs.empty) return []
 
-    postData = postDocs.docs.map((doc) => mapPostDocToData(doc))
-    put(postFeedCacheKey, postData, FEED_CACHE_TIME)
+    const originPostDocsPromise = postDocs.docs.map(doc => (
+      doc.data().originReference.get()
+    ))
+    const originPostDocs = await Promise.all(originPostDocsPromise)
+
+    postData = originPostDocs.map(doc => mapPostDocToData(doc))
+    put(userLikesCacheKey, postData, USER_LIKES_CACHE_TIME)
   }
 
   const postsPromise = postData.map(async (postDataItem, index) => {
     const postDoc = postDocs?.docs[index] ?? null
 
-    if (!uid) {
-      return {
-        createdByUser: false,
-        data: postDataItem,
-        doc: !isServer ? postDoc : null,
-        likedByUser: false,
-      }
-    }
-
     const createdByUser = await checkIsCreatedByUser(postDataItem.slug, uid, {
-      db
+      db,
     })
-    const likedByUser = await checkIsLikedByUser(postDataItem.slug, uid, { db })
+
+    setCacheIsLikedByUser(postDataItem.slug, uid)
 
     return {
       createdByUser,
       data: postDataItem,
       doc: !isServer ? postDoc : null,
-      likedByUser,
+      likedByUser: true,
     }
   })
   const posts = await Promise.all(postsPromise)
   return posts
 }
 
-export default getPostFeed
+export default getUserLikes

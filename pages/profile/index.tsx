@@ -2,16 +2,15 @@ import {
   useAuthUser,
   withAuthUser,
   withAuthUserTokenSSR,
-  AuthAction,
 } from 'next-firebase-auth'
-import Page from '../components/Page'
-import EmailVerificationLink from '../components/EmailVerificationLink'
+import Page from '../../components/Page'
+import EmailVerificationLink from '../../components/EmailVerificationLink'
 import Link from 'next/link'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
-const Profile = () => {
+const UserProfile = () => {
   const authUser = useAuthUser()
   const handleSignOutClick = authUser.signOut
 
@@ -34,4 +33,4 @@ const Profile = () => {
 export const getServerSideProps =
   withAuthUserTokenSSR(withAuthUserTokenSSRConfig(ROUTE_MODE))()
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Profile as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(UserProfile as any)

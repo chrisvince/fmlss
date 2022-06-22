@@ -7,11 +7,12 @@ const constants = {
   PAGINATION_COUNT: 10,
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever
   POST_CACHE_TIME: 10_000,
+  POST_LIKES_CACHE_TIME: 10_000,
   POST_LIKES_COLLECTION: 'postLikes',
   POSTS_COLLECTION: 'posts',
   REPLIES_CACHE_TIME: 10_000,
+  USER_LIKES_CACHE_TIME: 10_000,
   USERS_COLLECTION: 'users',
-  POST_LIKES_CACHE_TIME: 10_000,
 }
 
 export default constants

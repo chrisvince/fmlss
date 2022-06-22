@@ -11,7 +11,6 @@ type PropTypes = {
 const IGNORE_NAVIGATE_TAG_NAMES = ['A', 'BUTTON']
 
 const PostListItem = ({ post }: PropTypes) => {
-  console.log('post.likedByUser', post.likedByUser)
   const { push: navigate } = useRouter()
   const [liked, setLiked] = useState<boolean>(post.likedByUser)
   const [likes, setLikes] = useState<number>(post.data.likesCount ?? 0)

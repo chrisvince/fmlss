@@ -5,16 +5,16 @@ import { KeyedMutator, useSWRConfig } from 'swr'
 
 import { FirebaseDoc, Post } from '../../../types'
 import {
-  createHashtagPostsCacheKey,
+  createUserLikesCacheKey,
   getPageIndexFromCacheKey,
 } from '../../createCacheKeys'
-import getHashtagPosts from './getHashtagPosts'
+import getUserLikes from './getUserLikes'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UsePostFeed = (hashtag: string) => {
+type UseUserLikes = () => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -24,13 +24,17 @@ type UsePostFeed = (hashtag: string) => {
   posts: Post[]
 }
 
-const useHashtagPosts: UsePostFeed = hashtag => {
+const useUserLikes: UseUserLikes = () => {
   const [pageStartAfterTrace, setPageStartAfterTrace] =
     useState<{[key: string]: FirebaseDoc}>({})
 
-  const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createHashtagPostsCacheKey(hashtag)]
   const { id: uid } = useAuthUser()
+  const { fallback } = useSWRConfig()
+  const fallbackData = fallback[createUserLikesCacheKey(uid!)]
+
+  if (!uid) {
+    console.error('uid must be set.')
+  }
 
   const {
     data,
@@ -44,12 +48,11 @@ const useHashtagPosts: UsePostFeed = hashtag => {
       if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
         return null
       }
-      return createHashtagPostsCacheKey(hashtag, index)
+      return createUserLikesCacheKey(uid!, index)
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
-      return getHashtagPosts(hashtag, {
-        uid,
+      return getUserLikes(uid!, {
         startAfter: pageStartAfterTrace[pageIndex],
       })
     },
@@ -57,13 +60,14 @@ const useHashtagPosts: UsePostFeed = hashtag => {
       fallbackData,
       revalidateOnMount: true,
       revalidateOnFocus: false,
+      revalidateAll: false
     }
   )
 
   const lastPageLastDoc = getLastDocOfLastPage(data)
   useEffect(() => {
     if (!lastPageLastDoc) return
-    setPageStartAfterTrace((currentState) => ({
+    setPageStartAfterTrace(currentState => ({
       ...currentState,
       [size]: lastPageLastDoc,
     }))
@@ -98,4 +102,4 @@ const useHashtagPosts: UsePostFeed = hashtag => {
   }
 }
 
-export default useHashtagPosts
+export default useUserLikes

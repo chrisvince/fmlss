@@ -53,6 +53,7 @@ const usePostFeed: UsePostFeed = () => {
     {
       fallbackData,
       revalidateOnMount: true,
+      revalidateOnFocus: false,
     }
   )
 

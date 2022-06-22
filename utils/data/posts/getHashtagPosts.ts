@@ -78,10 +78,10 @@ const getHashtagPosts: GetHashtagPosts = async (
       }
     }
 
-    const createdByUser = await checkIsCreatedByUser(postDataItem.id, uid, {
+    const createdByUser = await checkIsCreatedByUser(postDataItem.slug, uid, {
       db,
     })
-    const likedByUser = await checkIsLikedByUser(postDataItem.id, uid, { db })
+    const likedByUser = await checkIsLikedByUser(postDataItem.slug, uid, { db })
 
     return {
       createdByUser,
