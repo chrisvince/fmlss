@@ -78,10 +78,8 @@ const getHashtagPosts: GetHashtagPosts = async (
 
     if (!uid) {
       return {
-        createdByUser: false,
         data: postDataItem,
         doc: !isServer ? postDoc : null,
-        likedByUser: false,
       }
     }
 
@@ -91,10 +89,12 @@ const getHashtagPosts: GetHashtagPosts = async (
     const likedByUser = await checkIsLikedByUser(postDataItem.slug, uid, { db })
 
     return {
-      createdByUser,
       data: postDataItem,
       doc: !isServer ? postDoc : null,
-      likedByUser,
+      user: {
+        created: createdByUser,
+        like: likedByUser,
+      }
     }
   })
   const posts = await Promise.all(postsPromise)

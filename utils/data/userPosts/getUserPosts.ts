@@ -78,10 +78,12 @@ const getUserPosts: GetUserPosts = async (
     })
 
     return {
-      createdByUser: true,
       data: postDataItem,
       doc: !isServer ? postDoc : null,
-      likedByUser,
+      user: {
+        created: true,
+        like: likedByUser,
+      }
     }
   })
   const posts = await Promise.all(postsPromise)

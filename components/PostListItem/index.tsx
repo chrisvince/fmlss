@@ -12,7 +12,7 @@ const IGNORE_NAVIGATE_TAG_NAMES = ['A', 'BUTTON']
 
 const PostListItem = ({ post }: PropTypes) => {
   const { push: navigate } = useRouter()
-  const [liked, setLiked] = useState<boolean>(post.likedByUser)
+  const [liked, setLiked] = useState<boolean>(!!post.user?.like)
   const [likes, setLikes] = useState<number>(post.data.likesCount ?? 0)
 
   const handleClick = (event: SyntheticEvent) => {
@@ -52,8 +52,8 @@ const PostListItem = ({ post }: PropTypes) => {
   }, [post.data.likesCount])
 
   useEffect(() => {
-    setLiked(post.likedByUser)
-  }, [post.likedByUser])
+    setLiked(!!post.user?.like)
+  }, [post.user?.like])
 
   return (
     <article
@@ -71,7 +71,7 @@ const PostListItem = ({ post }: PropTypes) => {
           gap: '20px',
         }}
       >
-        {post.createdByUser && (
+        {post.user?.created && (
           <div>Created by me</div>
         )}
         {!!post.data.postsCount && (

@@ -73,10 +73,8 @@ const getPostReplies: GetPostReplies = async (
 
     if (!uid) {
       return {
-        createdByUser: false,
         data: replyDataItem,
         doc: !isServer ? replyDoc : null,
-        likedByUser: false,
       }
     }
 
@@ -86,10 +84,12 @@ const getPostReplies: GetPostReplies = async (
   const likedByUser = await checkIsLikedByUser(replyDataItem.slug, uid, { db })
 
     return {
-      createdByUser,
       data: replyDataItem,
       doc: !isServer ? replyDoc : null,
-      likedByUser,
+      user: {
+        created: createdByUser,
+        like: likedByUser,
+      }
     }
   })
   const replies = await Promise.all(repliesPromise)

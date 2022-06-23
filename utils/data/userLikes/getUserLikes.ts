@@ -76,10 +76,12 @@ const getUserLikes: GetUserLikes = async (
     setCacheIsLikedByUser(postDataItem.slug, uid)
 
     return {
-      createdByUser,
       data: postDataItem,
       doc: !isServer ? postDoc : null,
-      likedByUser: true,
+      user: {
+        created: createdByUser,
+        like: true,
+      }
     }
   })
   const posts = await Promise.all(postsPromise)

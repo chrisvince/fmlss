@@ -10,7 +10,7 @@ type PropTypes = {
 const PostItem = ({ slug }: PropTypes) => {
   const { post } = usePost(slug)
 
-  const { createdByUser, data } = post
+  const { user, data } = post!
 
   const createdAt = new Date(data.createdAt).toLocaleString()
 
@@ -18,7 +18,7 @@ const PostItem = ({ slug }: PropTypes) => {
     <div>
       <h1>Post</h1>
       <PostBody body={data.body} />
-      {createdByUser && <div>Created by me!</div>}
+      {user?.created && <div>Created by me!</div>}
       <div>createdAt: {createdAt}</div>
       <div>
         <Link href={`/post/${data.id}`}>Link</Link>

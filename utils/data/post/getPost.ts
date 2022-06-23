@@ -60,10 +60,8 @@ const getPost: GetPost = async (
 
   if (!uid) {
     return {
-      createdByUser: false,
       data: data,
       doc: !isServer ? doc : null,
-      likedByUser: false,
     }
   }
 
@@ -71,10 +69,12 @@ const getPost: GetPost = async (
   const likedByUser = await checkIsLikedByUser(data.slug, uid, { db })
 
   return {
-    createdByUser,
     data: data,
     doc: !isServer ? doc : null,
-    likedByUser,
+    user: {
+      created: createdByUser,
+      like: likedByUser,
+    }
   }
 }
 
