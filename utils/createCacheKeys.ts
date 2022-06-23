@@ -1,5 +1,6 @@
 const createHashtagPostsCacheKey =
-  (hashtag: string, pageIndex: number = 0) => `hashtag/${hashtag}-${pageIndex}`
+  (hashtag: string, type: 'post' | 'reply' | 'both', pageIndex: number = 0) =>
+    `hashtag/${type !== 'both' ? `${type}/` : ''}${hashtag}-${pageIndex}`
 
 const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 

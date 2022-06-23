@@ -25,6 +25,7 @@ type GetHashtagPosts = (
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
     uid?: string | null
+    type?: 'post' | 'reply' | 'both'
   }
 ) => Promise<Post[]>
 
@@ -34,6 +35,7 @@ const getHashtagPosts: GetHashtagPosts = async (
     db = firebaseDb,
     startAfter,
     uid,
+    type = 'both',
   } = {},
 ) => {
   let postDocs:
@@ -43,7 +45,10 @@ const getHashtagPosts: GetHashtagPosts = async (
   let postData: PostData[] = []
 
   const lowerCaseHashtag = hashtag.toLowerCase()
-  const hashtagPostsCacheKey = createHashtagPostsCacheKey(lowerCaseHashtag)
+  const hashtagPostsCacheKey = createHashtagPostsCacheKey(
+    lowerCaseHashtag,
+    type,
+  )
   const cachedData = get(hashtagPostsCacheKey)
 
   if (isServer && cachedData) {
@@ -56,6 +61,8 @@ const getHashtagPosts: GetHashtagPosts = async (
           .collectionGroup(POSTS_COLLECTION)
           .orderBy('createdAt', 'desc')
           .where('hashtags', 'array-contains', lowerCaseHashtag),
+      query =>
+        type !== 'both' ? query.where('type', '==', type) : query,
       query => startAfter ? query.startAfter(startAfter) : query,
       query => query.limit(PAGINATION_COUNT).get()
     )()

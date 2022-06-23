@@ -14,7 +14,12 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UsePostFeed = (hashtag: string) => {
+type UsePostFeed = (
+  hashtag: string,
+  options?: {
+    type?: 'post' | 'reply' | 'both'
+  }
+) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -24,12 +29,12 @@ type UsePostFeed = (hashtag: string) => {
   posts: Post[]
 }
 
-const useHashtagPosts: UsePostFeed = hashtag => {
+const useHashtagPosts: UsePostFeed = (hashtag, { type = 'post' } = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] =
     useState<{[key: string]: FirebaseDoc}>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createHashtagPostsCacheKey(hashtag)]
+  const fallbackData = fallback[createHashtagPostsCacheKey(hashtag, type)]
   const { id: uid } = useAuthUser()
 
   const {
@@ -44,13 +49,14 @@ const useHashtagPosts: UsePostFeed = hashtag => {
       if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
         return null
       }
-      return createHashtagPostsCacheKey(hashtag, index)
+      return createHashtagPostsCacheKey(hashtag, type, index)
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
       return getHashtagPosts(hashtag, {
-        uid,
         startAfter: pageStartAfterTrace[pageIndex],
+        type,
+        uid,
       })
     },
     {

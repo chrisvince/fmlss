@@ -17,6 +17,8 @@ import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
+const DEFAULT_POST_TYPE = 'post'
+
 interface PropTypes {
   fallback: {
     [key: string]: Post[]
@@ -45,10 +47,14 @@ const getServerSidePropsFn = async ({
 }) => {
   const adminDb = getFirebaseAdmin().firestore()
   const uid = AuthUser.id
-  const hashtagPostsCacheKey = createHashtagPostsCacheKey(hashtag)
+  const hashtagPostsCacheKey = createHashtagPostsCacheKey(
+    hashtag,
+    DEFAULT_POST_TYPE,
+  )
   const posts = await getHashtagPosts(hashtag, {
     db: adminDb,
     uid,
+    type: DEFAULT_POST_TYPE,
   })
 
   return {
