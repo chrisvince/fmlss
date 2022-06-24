@@ -1,6 +1,11 @@
 import Link from 'next/link'
 
+import {
+  createPostLike,
+  removePostLike,
+} from '../../utils/callableFirebaseFunctions'
 import usePost from '../../utils/data/post/usePost'
+import LikeButton from '../LikeButton'
 import PostBody from '../PostBody'
 
 type PropTypes = {
@@ -13,6 +18,9 @@ const PostItem = ({ slug }: PropTypes) => {
   const { user, data } = post!
 
   const createdAt = new Date(data.createdAt).toLocaleString()
+
+  const handleLike = () => createPostLike({ slug: post.data.slug })
+  const handleUnlike = () => removePostLike({ slug: post.data.slug })
 
   return (
     <div>
@@ -34,6 +42,12 @@ const PostItem = ({ slug }: PropTypes) => {
           </Link>
         )}
       </div>
+      <LikeButton
+        like={!!post.user?.like}
+        likesCount={post.data.likesCount}
+        onLike={handleLike}
+        onUnlike={handleUnlike}
+      />
     </div>
   )
 }
