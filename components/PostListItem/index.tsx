@@ -1,7 +1,12 @@
 import { useRouter } from 'next/router'
-import { SyntheticEvent, useEffect, useState } from 'react'
+import { SyntheticEvent } from 'react'
+
 import { Post } from '../../types'
-import { createPostLike, removePostLike } from '../../utils/callableFirebaseFunctions'
+import {
+  createPostLike,
+  removePostLike,
+} from '../../utils/callableFirebaseFunctions'
+import LikeButton from '../LikeButton'
 import PostBody from '../PostBody'
 
 type PropTypes = {
@@ -12,8 +17,6 @@ const IGNORE_NAVIGATE_TAG_NAMES = ['A', 'BUTTON']
 
 const PostListItem = ({ post }: PropTypes) => {
   const { push: navigate } = useRouter()
-  const [liked, setLiked] = useState<boolean>(!!post.user?.like)
-  const [likes, setLikes] = useState<number>(post.data.likesCount ?? 0)
 
   const handleClick = (event: SyntheticEvent) => {
     const { tagName } = event.target as HTMLAnchorElement
@@ -22,38 +25,8 @@ const PostListItem = ({ post }: PropTypes) => {
     navigate(`/post/${post.data.slug}`)
   }
 
-  const handleLikeButtonClick = async () => {
-    if (liked) {
-      setLikes(likes - 1)
-      setLiked(false)
-      try {
-        await removePostLike({ slug: post.data.slug })
-      } catch (error) {
-        console.error(error)
-        setLikes(likes + 1)
-        setLiked(true)
-      }
-      return
-    }
-
-    setLikes(likes + 1)
-    setLiked(true)
-    try {
-      await createPostLike({ slug: post.data.slug })
-    } catch (error) {
-      console.error(error)
-      setLikes(likes - 1)
-      setLiked(false)
-    }
-  }
-
-  useEffect(() => {
-    setLikes(post.data.likesCount ?? 0)
-  }, [post.data.likesCount])
-
-  useEffect(() => {
-    setLiked(!!post.user?.like)
-  }, [post.user?.like])
+  const handleLike = () => createPostLike({ slug: post.data.slug })
+  const handleUnlike = () => removePostLike({ slug: post.data.slug })
 
   return (
     <article
@@ -77,12 +50,12 @@ const PostListItem = ({ post }: PropTypes) => {
         {!!post.data.postsCount && (
           <div>{post.data.postsCount} replies</div>
         )}
-        <div>
-          <button onClick={handleLikeButtonClick}>
-            Like ({likes})
-          </button>
-          {liked && <span>Liked by me</span>}
-        </div>
+        <LikeButton
+          like={!!post.user?.like}
+          likesCount={post.data.likesCount}
+          onLike={handleLike}
+          onUnlike={handleUnlike}
+        />
       </div>
     </article>
   )
