@@ -14,7 +14,9 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UsePostFeed = () => {
+type UsePostFeed = (options?: {
+  sortMode?: 'latest' | 'popular' | 'mostLiked'
+}) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -24,12 +26,13 @@ type UsePostFeed = () => {
   moreToLoad: boolean
 }
 
-const usePostFeed: UsePostFeed = () => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] =
-    useState<{[key: string]: FirebaseDoc}>({})
+const usePostFeed: UsePostFeed = ({ sortMode = 'latest' } = {}) => {
+  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
+    [key: string]: FirebaseDoc
+  }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPostFeedCacheKey()]
+  const fallbackData = fallback[createPostFeedCacheKey(sortMode)]
   const { id: uid } = useAuthUser()
 
   const {
@@ -44,11 +47,15 @@ const usePostFeed: UsePostFeed = () => {
       if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
         return null
       }
-      return createPostFeedCacheKey(index)
+      return createPostFeedCacheKey(sortMode, index)
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
-      return getPostFeed({ uid, startAfter: pageStartAfterTrace[pageIndex] })
+      return getPostFeed({
+        sortMode,
+        startAfter: pageStartAfterTrace[pageIndex],
+        uid,
+      })
     },
     {
       fallbackData,
@@ -70,12 +77,12 @@ const usePostFeed: UsePostFeed = () => {
     const data = await setSize(size + 1)
     return data?.flat() ?? []
   }
-  
+
   const mutate = async () => {
     const data = await mutateOriginal()
     return data?.flat() ?? []
   }
-  
+
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length
   const isLoading = !error && !data

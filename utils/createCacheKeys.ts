@@ -6,8 +6,10 @@ const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 
 const createPostCacheKey = (slug: string) => `post/${slug}`
 
-const createPostFeedCacheKey =
-  (pageIndex: number = 0) => `post/feed-${pageIndex}`
+const createPostFeedCacheKey = (
+  sortMode: 'latest' | 'popular' | 'mostLiked',
+  pageIndex: number = 0
+) => `post/feed/${sortMode}-${pageIndex}`
 
 const getPageIndexFromCacheKey =
   (cacheKey: string) => cacheKey.split('-').at(-1) as string

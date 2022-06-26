@@ -12,7 +12,6 @@ import checkIsLikedByUser from '../author/checkIsLikedByUser'
 
 const firebaseDb = firebase.firestore()
 const isServer = typeof window === 'undefined'
-const postFeedCacheKey = createPostFeedCacheKey()
 
 const { FEED_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } = constants
 
@@ -21,6 +20,7 @@ type GetPosts = (
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
     uid?: string | null
+    sortMode?: 'latest' | 'popular' | 'mostLiked'
   }
 ) => Promise<Post[]>
 
@@ -29,6 +29,7 @@ const getPostFeed: GetPosts = async (
     db = firebaseDb,
     startAfter,
     uid,
+    sortMode = 'latest'
   } = {},
 ) => {
   let postDocs:
@@ -37,14 +38,20 @@ const getPostFeed: GetPosts = async (
     | null
   let postData: PostData[] = []
 
+  const postFeedCacheKey = createPostFeedCacheKey(sortMode)
   const cachedData = get(postFeedCacheKey)
 
   if (isServer && cachedData) {
     postData = cachedData as PostData[]
     postDocs = null
   } else {
-    postDocs =  await pipe(
-      () => db.collection(POSTS_COLLECTION).orderBy('createdAt', 'desc'),
+    postDocs = await pipe(
+      () => db.collection(POSTS_COLLECTION),
+      query =>
+        sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
+      query =>
+        sortMode === 'mostLiked' ? query.orderBy('likesCount', 'desc') : query,
+      query => query.orderBy('createdAt', 'desc'),
       query => startAfter ? query.startAfter(startAfter) : query,
       query => query.limit(PAGINATION_COUNT).get(),
     )()

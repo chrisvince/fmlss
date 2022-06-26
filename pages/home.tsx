@@ -16,7 +16,7 @@ import { createPostFeedCacheKey } from '../utils/createCacheKeys'
 import getPostFeed from '../utils/data/posts/getPostFeed'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
-const postFeedCacheKey = createPostFeedCacheKey()
+const postFeedCacheKey = createPostFeedCacheKey('latest')
 interface PropTypes {
   fallback: {
     [key: string]: Post[]
