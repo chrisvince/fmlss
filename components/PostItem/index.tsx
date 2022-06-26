@@ -15,12 +15,11 @@ type PropTypes = {
 const PostItem = ({ slug }: PropTypes) => {
   const { post } = usePost(slug)
 
-  const { user, data } = post!
-
+  const { user, data } = post
   const createdAt = new Date(data.createdAt).toLocaleString()
 
-  const handleLike = () => createPostLike({ slug: post.data.slug })
-  const handleUnlike = () => removePostLike({ slug: post.data.slug })
+  const handleLike = () => createPostLike({ slug: data.slug })
+  const handleUnlike = () => removePostLike({ slug: data.slug })
 
   return (
     <div>
@@ -43,8 +42,8 @@ const PostItem = ({ slug }: PropTypes) => {
         )}
       </div>
       <LikeButton
-        like={!!post.user?.like}
-        likesCount={post.data.likesCount}
+        like={!!user?.like}
+        likesCount={data.likesCount}
         onLike={handleLike}
         onUnlike={handleUnlike}
       />
