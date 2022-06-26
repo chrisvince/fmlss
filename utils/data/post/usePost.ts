@@ -14,7 +14,7 @@ type UsePost = (
   mutate: KeyedMutator<Post>
 }
 
-const usePost: UsePost = (slug) => {
+const usePost: UsePost = slug => {
   const { id: uid } = useAuthUser()
   const postCacheKey = createPostCacheKey(slug)
 
@@ -29,7 +29,7 @@ const usePost: UsePost = (slug) => {
     isLoading: !error && !data,
     isValidating,
     error,
-    mutate,
+    mutate: mutate as KeyedMutator<Post>,
   }
 }
 

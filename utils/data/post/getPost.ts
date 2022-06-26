@@ -21,7 +21,7 @@ type GetPost = (
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     uid?: string | null
   }
-) => Promise<Post>
+) => Promise<Post | null>
 
 const getPost: GetPost = async (
   slug,
@@ -50,7 +50,7 @@ const getPost: GetPost = async (
       .get()
 
     if (postsRef.empty) {
-      throw new Error('Post does not exist')
+      return null
     }
 
     doc = postsRef.docs[0]

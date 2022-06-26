@@ -52,7 +52,7 @@ const getServerSidePropsFn = async ({
     db: adminDb,
   })
 
-  if (!post?.data) {
+  if (!post) {
     return { notFound: true }
   }
 
