@@ -30,7 +30,6 @@ const HomePage = () => {
   return (
     <Page pageTitle="Home">
       <h1>Home</h1>
-      <NewPostButton />
       <SortSelector
         options={SORT_OPTIONS}
         onOptionClick={handleSortSelection}

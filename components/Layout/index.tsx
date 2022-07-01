@@ -1,17 +1,41 @@
+import { Container, Box } from '@mui/system'
+
+import LeftNavigationDesktop from '../LeftNavigationDesktop'
+import LeftNavigationMobile from '../LeftNavigationMobile'
+
 interface PropTypes {
   children: React.ReactNode
 }
 
 const Layout = ({ children }: PropTypes) => {
   return (
-    <div
-      style={{
-        margin: '0 auto',
-        maxWidth: 767,
-      }}
-    >
-      {children}
-    </div>
+    <Container>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            sm: '160px 1fr',
+            md: '280px 1fr',
+          },
+          columnGap: {
+            sm: 3,
+            md: 4,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: {
+              xs: 'none',
+              sm: 'block',
+            },
+          }}
+        >
+          <LeftNavigationDesktop />
+        </Box>
+        <Box>{children}</Box>
+      </Box>
+    </Container>
   )
 }
 

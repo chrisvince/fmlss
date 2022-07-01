@@ -1,3 +1,5 @@
+import ButtonGroup from '@mui/material/ButtonGroup'
+import Button from '@mui/material/Button'
 
 interface PropTypes {
   options: {
@@ -17,26 +19,24 @@ const SortSelector = ({
   const isSelected = (value: string) => value === currentSelection
 
   return (
-    <ul
-      style={{
-        listStyle: 'none',
-        padding: 0,
-        margin: 0,
-      }}
+    <ButtonGroup
+      aria-label="small button group"
+      fullWidth
+      size="small"
     >
       {options.map(({ label, value }) => (
-        <li key={value}>
-          <button
-            onClick={handleOptionClick(value)}
-            style={{
-              backgroundColor: isSelected(value) ? 'pink' : undefined,
-            }}
-          >
-            {label}
-          </button>
-        </li>
+        <Button
+          key={value}
+          onClick={handleOptionClick(value)}
+          variant={isSelected(value) ? 'contained' : undefined}
+          disableElevation
+          disableFocusRipple
+          disableRipple
+        >
+          {label}
+        </Button>
       ))}
-    </ul>
+    </ButtonGroup>
   )
 }
 
