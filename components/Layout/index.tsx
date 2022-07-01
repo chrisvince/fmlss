@@ -1,7 +1,6 @@
 import { Container, Box } from '@mui/system'
 
 import LeftNavigationDesktop from '../LeftNavigationDesktop'
-import LeftNavigationMobile from '../LeftNavigationMobile'
 
 interface PropTypes {
   children: React.ReactNode
