@@ -28,11 +28,11 @@ const PostItem = ({ slug }: PropTypes) => {
       {user?.created && <div>Created by me!</div>}
       <div>createdAt: {createdAt}</div>
       <div>
-        <Link href={`/post/${data.id}`}>Link</Link>
+        <Link href={`/post/${encodeURIComponent(data.id)}`}>Link</Link>
       </div>
       <div>
         {data.parentId ? (
-          <Link href={`/post/${data.parentId}`}>
+          <Link href={`/post/${encodeURIComponent(data.parentId)}`}>
             <a>Parent</a>
           </Link>
         ) : (

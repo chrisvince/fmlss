@@ -35,7 +35,7 @@ const PostPageProvider = ({ fallback }: PropTypes) => {
 
 const getServerSidePropsFn = async ({
   AuthUser,
-  params: { slug },
+  params: { slug: encodedSlug },
 }: {
   AuthUser: AuthUser
   params: {
@@ -43,6 +43,7 @@ const getServerSidePropsFn = async ({
   }
 }) => {
   const adminDb = getFirebaseAdmin().firestore()
+  const slug = decodeURIComponent(encodedSlug)
   const uid = AuthUser.id
   const postCacheKey = createPostCacheKey(slug)
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)

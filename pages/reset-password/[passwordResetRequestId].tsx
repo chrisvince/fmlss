@@ -149,17 +149,18 @@ const ResetPassword = ({
   }
 }
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-)(async (context: GetServerSidePropsContext) => {
-  const { passwordResetRequestId }: { passwordResetRequestId?: string } =
-    context.params ?? {}
-
-  if (!passwordResetRequestId) {
+const getServerSidePropsFn = async ({
+  params: { passwordResetRequestId: encodedPasswordResetRequestId } = {},
+}: GetServerSidePropsContext<{ passwordResetRequestId?: string }>) => {
+  if (!encodedPasswordResetRequestId) {
     return createGetServerSidePropsPayload({
       passwordResetRequestValidationStatus: UI_STATES.ERROR,
     })
   }
+
+  const passwordResetRequestId = decodeURIComponent(
+    encodedPasswordResetRequestId
+  )
 
   try {
     await checkPasswordResetRequestValid({ passwordResetRequestId })
@@ -186,7 +187,11 @@ export const getServerSideProps = withAuthUserTokenSSR(
     passwordResetRequestId,
     passwordResetRequestValidationStatus: UI_STATES.NOT_CHANGED,
   })
-})
+}
+
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)(getServerSidePropsFn)
 
 export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
   ResetPassword as any

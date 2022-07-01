@@ -22,7 +22,7 @@ const PostListItem = ({ post }: PropTypes) => {
     const { tagName } = event.target as HTMLAnchorElement
     if (IGNORE_NAVIGATE_TAG_NAMES.includes(tagName)) return
     if (window.getSelection()?.toString().length) return
-    navigate(`/post/${post.data.slug}`)
+    navigate(`/post/${encodeURIComponent(post.data.slug)}`)
   }
 
   const handleLike = () => createPostLike({ slug: post.data.slug })

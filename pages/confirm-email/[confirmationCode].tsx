@@ -38,13 +38,19 @@ const EmailConfirmation = ({
   }
 }
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { confirmationCode } = context.params ?? {}
-  if (!confirmationCode) {
+export const getServerSideProps = async ({
+  params: { confirmationCode: encodedConfirmationCode },
+}: {
+  params: {
+    confirmationCode: string
+  }
+}) => {
+  if (!encodedConfirmationCode) {
     return createGetServerSidePropsPayload(UI_STATES.ERROR)
   }
 
   try {
+    const confirmationCode = decodeURIComponent(encodedConfirmationCode)
     await verifyEmail({ confirmationCode })
     return createGetServerSidePropsPayload(UI_STATES.VERIFIED)
   } catch (error: any) {

@@ -23,7 +23,7 @@ const NewPostForm = () => {
 
     try {
       const response = await createPost({ body: textareaValue })
-      router.push(`/post/${response.data.id}`)
+      router.push(`/post/${encodeURIComponent(response.data.id)}`)
     } catch (error) {
       setDisableTextarea(false)
       console.error(error)
