@@ -11,12 +11,11 @@ import {
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import getPostFeed from './getPostFeed'
 import constants from '../../../constants'
+import type { FeedSortMode } from '../../../types/FeedSortMode'
 
 const { PAGINATION_COUNT } = constants
 
-type UsePostFeed = (options?: {
-  sortMode?: 'latest' | 'popular' | 'mostLiked'
-}) => {
+type UsePostFeed = (options?: { sortMode?: FeedSortMode }) => {
   error: any
   isLoading: boolean
   isValidating: boolean

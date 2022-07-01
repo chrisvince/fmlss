@@ -1,3 +1,5 @@
+import type { FeedSortMode } from '../types/FeedSortMode'
+
 const createHashtagPostsCacheKey =
   (hashtag: string, type: 'post' | 'reply' | 'both', pageIndex: number = 0) =>
     `hashtag/${type !== 'both' ? `${type}/` : ''}${hashtag}-${pageIndex}`
@@ -7,7 +9,7 @@ const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 const createPostCacheKey = (slug: string) => `post/${slug}`
 
 const createPostFeedCacheKey = (
-  sortMode: 'latest' | 'popular' | 'mostLiked',
+  sortMode: FeedSortMode,
   pageIndex: number = 0
 ) => `post/feed/${sortMode}-${pageIndex}`
 

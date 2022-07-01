@@ -1,9 +1,9 @@
 import Page from '../Page'
 import Feed from '../Feed'
-import NewPostButton from '../NewPostButton'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
 import { useState } from 'react'
 import SortSelector from '../SortSelector'
+import type { FeedSortMode } from '../../types/FeedSortMode'
 
 const SORT_OPTIONS = [
   {
@@ -16,16 +16,15 @@ const SORT_OPTIONS = [
   },
   {
     label: 'Most Liked',
-    value: 'mostLiked',
+    value: 'mostLikes',
   },
 ]
 
-type SortMode = 'latest' | 'popular' | 'mostLiked'
-
 const HomePage = () => {
-  const [sortMode, setSortMode] = useState<SortMode>('latest')
+  const [sortMode, setSortMode] = useState<FeedSortMode>('latest')
   const { moreToLoad, loadMore, posts } = usePostFeed({ sortMode })
-  const handleSortSelection = (value: string) => setSortMode(value as SortMode)
+  const handleSortSelection = (value: string) =>
+    setSortMode(value as FeedSortMode)
 
   return (
     <Page pageTitle="Home">

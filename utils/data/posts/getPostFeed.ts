@@ -5,6 +5,7 @@ import { pipe } from 'ramda'
 
 import constants from '../../../constants'
 import { FirebaseDoc, Post, PostData } from '../../../types'
+import type { FeedSortMode } from '../../../types/FeedSortMode'
 import { createPostFeedCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
@@ -20,7 +21,7 @@ type GetPosts = (
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
     uid?: string | null
-    sortMode?: 'latest' | 'popular' | 'mostLiked'
+    sortMode?: FeedSortMode
   }
 ) => Promise<Post[]>
 
@@ -50,7 +51,7 @@ const getPostFeed: GetPosts = async (
       query =>
         sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
       query =>
-        sortMode === 'mostLiked' ? query.orderBy('likesCount', 'desc') : query,
+        sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
       query => startAfter ? query.startAfter(startAfter) : query,
       query => query.limit(PAGINATION_COUNT).get(),
