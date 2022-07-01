@@ -4,9 +4,10 @@ import useHashtagPosts from '../../utils/data/posts/useHashtagPosts'
 import { SyntheticEvent, useState } from 'react'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import Link from 'next/link'
-import { Button } from '@mui/material'
+import { Button, FormControlLabel, Switch } from '@mui/material'
 import { useRouter } from 'next/router'
 import { FeedSortMode } from '../../types/FeedSortMode'
+import { Box } from '@mui/system'
 
 type PropTypes = {
   hashtag: string
@@ -42,19 +43,19 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
   const { query: { sort } } = useRouter()
   const sortMode = (SORT_MODE_MAP[sort as string] ?? 'latest') as FeedSortMode
   const [showType, setShowType] = useState<'post' | 'both'>('post')
+
   const { posts, loadMore, moreToLoad } = useHashtagPosts(hashtag, {
     showType: showType,
     sortMode,
   })
 
-  const title = `#${hashtag}`
-
-  const handleShowRepliesChange = (event: SyntheticEvent) => {
+  const handleIncludeRepliesChange = (event: SyntheticEvent) => {
     const { checked } = event.target as HTMLInputElement
     setShowType(checked ? 'both' : 'post')
   }
 
   const sortOptions = generateSortOptions(hashtag)
+  const title = `#${hashtag}`
 
   return (
     <Page pageTitle={title}>
@@ -70,14 +71,19 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
           </Link>
         ))}
       </ViewSelectorButtonGroup>
-      <div>
-        <input
-          type="checkbox"
-          onChange={handleShowRepliesChange}
-          id="show-replies-checkbox"
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          paddingY: 2
+        }}
+      >
+        <FormControlLabel
+          control={<Switch onChange={handleIncludeRepliesChange} />}
+          label="Include replies"
+          labelPlacement="start"
         />
-        <label htmlFor="show-replies-checkbox">Show replies</label>
-      </div>
+      </Box>
       <Feed posts={posts} onLoadMore={loadMore} moreToLoad={moreToLoad} />
     </Page>
   )
