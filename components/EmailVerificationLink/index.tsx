@@ -1,3 +1,4 @@
+import { Button } from '@mui/material'
 import { useState } from 'react'
 
 import { sendEmailVerificationEmail } from '../../utils/callableFirebaseFunctions'
@@ -36,13 +37,9 @@ const EmailVerificationLink = () => {
   }
 
   return (
-    <a
-      // eslint-disable-next-line jsx-a11y/aria-props
-      aria-role="button"
-      onClick={handleVerifyEmailClick}
-    >
+    <Button onClick={handleVerifyEmailClick}>
       Verify email
-    </a>
+    </Button>
   )
 }
 
