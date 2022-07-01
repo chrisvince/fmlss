@@ -51,6 +51,7 @@ const theme = createTheme({
     },
     MuiButtonGroup: {
       defaultProps: {
+        disableFocusRipple: true,
         disableElevation: true,
         size: 'small',
       },
