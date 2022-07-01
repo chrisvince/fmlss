@@ -4,7 +4,6 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
-import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
 
 import HashtagPage from '../../components/HashtagPage'
@@ -23,18 +22,14 @@ interface PropTypes {
   fallback: {
     [key: string]: Post[]
   }
+  hashtag: string
 }
 
-const Home = ({ fallback }: PropTypes) => {
-  const router = useRouter()
-  const { hashtag } = router.query as { hashtag: string }
-
-  return (
-    <SWRConfig value={{ fallback }}>
-      <HashtagPage hashtag={hashtag} />
-    </SWRConfig>
-  )
-}
+const Home = ({ fallback, hashtag }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <HashtagPage hashtag={hashtag} />
+  </SWRConfig>
+)
 
 const getServerSidePropsFn = async ({
   AuthUser,
@@ -59,10 +54,11 @@ const getServerSidePropsFn = async ({
 
   return {
     props: {
-      key: hashtagPostsCacheKey,
       fallback: {
         [hashtagPostsCacheKey]: posts,
       },
+      hashtag,
+      key: hashtagPostsCacheKey,
     },
   }
 }
