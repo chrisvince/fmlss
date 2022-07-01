@@ -11,13 +11,15 @@ import {
 import getHashtagPosts from './getHashtagPosts'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
+import { FeedSortMode } from '../../../types/FeedSortMode'
 
 const { PAGINATION_COUNT } = constants
 
 type UsePostFeed = (
   hashtag: string,
   options?: {
-    type?: 'post' | 'reply' | 'both'
+    showType?: 'post' | 'reply' | 'both'
+    sortMode?: FeedSortMode
   }
 ) => {
   error: any
@@ -29,12 +31,19 @@ type UsePostFeed = (
   posts: Post[]
 }
 
-const useHashtagPosts: UsePostFeed = (hashtag, { type = 'post' } = {}) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] =
-    useState<{[key: string]: FirebaseDoc}>({})
+const useHashtagPosts: UsePostFeed = (
+  hashtag,
+  { showType = 'post', sortMode = 'latest' } = {}
+) => {
+  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
+    [key: string]: FirebaseDoc
+  }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createHashtagPostsCacheKey(hashtag, type)]
+
+  const fallbackData =
+    fallback[createHashtagPostsCacheKey(hashtag, showType, sortMode)]
+
   const { id: uid } = useAuthUser()
 
   const {
@@ -49,13 +58,14 @@ const useHashtagPosts: UsePostFeed = (hashtag, { type = 'post' } = {}) => {
       if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
         return null
       }
-      return createHashtagPostsCacheKey(hashtag, type, index)
+      return createHashtagPostsCacheKey(hashtag, showType, sortMode, index)
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
       return getHashtagPosts(hashtag, {
+        sortMode,
         startAfter: pageStartAfterTrace[pageIndex],
-        type,
+        showType,
         uid,
       })
     },

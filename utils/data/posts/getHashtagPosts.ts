@@ -5,6 +5,7 @@ import { pipe } from 'ramda'
 
 import constants from '../../../constants'
 import { FirebaseDoc, Post, PostData } from '../../../types'
+import { FeedSortMode } from '../../../types/FeedSortMode'
 import { createHashtagPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
@@ -25,7 +26,8 @@ type GetHashtagPosts = (
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
     uid?: string | null
-    type?: 'post' | 'reply' | 'both'
+    showType?: 'post' | 'reply' | 'both'
+    sortMode?: FeedSortMode
   }
 ) => Promise<Post[]>
 
@@ -35,7 +37,8 @@ const getHashtagPosts: GetHashtagPosts = async (
     db = firebaseDb,
     startAfter,
     uid,
-    type = 'both',
+    showType = 'post',
+    sortMode = 'latest',
   } = {},
 ) => {
   let postDocs:
@@ -47,7 +50,8 @@ const getHashtagPosts: GetHashtagPosts = async (
   const lowerCaseHashtag = hashtag.toLowerCase()
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
     lowerCaseHashtag,
-    type,
+    showType,
+    sortMode
   )
   const cachedData = get(hashtagPostsCacheKey)
 
@@ -59,10 +63,14 @@ const getHashtagPosts: GetHashtagPosts = async (
       () =>
         db
           .collectionGroup(POSTS_COLLECTION)
-          .orderBy('createdAt', 'desc')
           .where('hashtags', 'array-contains', lowerCaseHashtag),
       query =>
-        type !== 'both' ? query.where('type', '==', type) : query,
+        showType !== 'both' ? query.where('type', '==', showType) : query,
+      query =>
+        sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
+      query =>
+        sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
+      query => query.orderBy('createdAt', 'desc'),
       query => startAfter ? query.startAfter(startAfter) : query,
       query => query.limit(PAGINATION_COUNT).get()
     )()

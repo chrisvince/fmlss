@@ -12,6 +12,7 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import type { Post } from '../../types'
+import { FeedSortMode } from '../../types/FeedSortMode'
 import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 
@@ -31,25 +32,37 @@ const Home = ({ fallback, hashtag }: PropTypes) => (
   </SWRConfig>
 )
 
+const SORT_MODE_MAP: {
+  [key: string]: string
+} = {
+  latest: 'latest',
+  popular: 'popular',
+  'most-likes': 'mostLikes',
+}
+
 const getServerSidePropsFn = async ({
   AuthUser,
   params: { hashtag },
+  query: { sort = 'latest' },
 }: {
   AuthUser: AuthUser
-  params: {
-    hashtag: string
-  }
+  params: { hashtag: string }
+  query: { sort: string }
 }) => {
   const adminDb = getFirebaseAdmin().firestore()
   const uid = AuthUser.id
+  const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as FeedSortMode
+
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
     hashtag,
     DEFAULT_POST_TYPE,
+    sortMode,
   )
   const posts = await getHashtagPosts(hashtag, {
     db: adminDb,
     uid,
-    type: DEFAULT_POST_TYPE,
+    showType: DEFAULT_POST_TYPE,
+    sortMode,
   })
 
   return {
