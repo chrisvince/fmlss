@@ -51,6 +51,7 @@ const theme = createTheme({
     },
     MuiButtonGroup: {
       defaultProps: {
+        disableElevation: true,
         size: 'small',
       },
     },
