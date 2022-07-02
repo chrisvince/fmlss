@@ -44,7 +44,7 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
   const sortMode = (SORT_MODE_MAP[sort as string] ?? 'latest') as FeedSortMode
   const [showType, setShowType] = useState<'post' | 'both'>('post')
 
-  const { posts, loadMore, moreToLoad } = useHashtagPosts(hashtag, {
+  const { isLoading, loadMore, moreToLoad, posts } = useHashtagPosts(hashtag, {
     showType: showType,
     sortMode,
   })
@@ -84,7 +84,12 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
           labelPlacement="start"
         />
       </Box>
-      <Feed posts={posts} onLoadMore={loadMore} moreToLoad={moreToLoad} />
+      <Feed
+        isLoading={isLoading}
+        moreToLoad={moreToLoad}
+        onLoadMore={loadMore}
+        posts={posts}
+      />
     </Page>
   )
 }

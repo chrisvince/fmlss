@@ -42,7 +42,7 @@ const HomePage = () => {
     SORT_MODE_MAP[path?.split?.('/')?.[2] ?? 'latest'] as FeedSortMode
 
   const [sortMode, setSortMode] = useState<FeedSortMode>(pathSortMode)
-  const { moreToLoad, loadMore, posts } = usePostFeed({ sortMode })
+  const { isLoading, loadMore, moreToLoad, posts } = usePostFeed({ sortMode })
 
   useEffect(() => {
     setSortMode(pathSortMode)
@@ -62,7 +62,12 @@ const HomePage = () => {
           </Link>
         ))}
       </ViewSelectorButtonGroup>
-      <Feed moreToLoad={moreToLoad} onLoadMore={loadMore} posts={posts} />
+      <Feed
+        isLoading={isLoading}
+        moreToLoad={moreToLoad}
+        onLoadMore={loadMore}
+        posts={posts}
+      />
     </Page>
   )
 }

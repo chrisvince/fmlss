@@ -1,13 +1,28 @@
+import { Box, CircularProgress } from '@mui/material'
 import { Post } from '../../types'
 import PostList from '../PostList'
 import PostListItem from '../PostListItem'
 
 type PropTypes = {
-  moreToLoad?: boolean,
+  isLoading?: boolean
+  moreToLoad?: boolean
   onLoadMore?: () => any
   posts: Post[]
 }
-const Feed = ({ moreToLoad, onLoadMore, posts }: PropTypes) => {
+const Feed = ({ isLoading, moreToLoad, onLoadMore, posts }: PropTypes) => {
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          paddingY: 36
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
   return (
     <div>
       {posts.length ? (
