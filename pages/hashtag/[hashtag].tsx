@@ -26,7 +26,7 @@ interface PropTypes {
   hashtag: string
 }
 
-const Home = ({ fallback, hashtag }: PropTypes) => (
+const Hashtag = ({ fallback, hashtag }: PropTypes) => (
   <SWRConfig value={{ fallback }}>
     <HashtagPage hashtag={hashtag} />
   </SWRConfig>
@@ -80,4 +80,4 @@ export const getServerSideProps = withAuthUserTokenSSR(
   withAuthUserTokenSSRConfig(ROUTE_MODE)
 )(getServerSidePropsFn as any)
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Home as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Hashtag as any)

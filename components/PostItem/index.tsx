@@ -36,8 +36,8 @@ const PostItem = ({ slug }: PropTypes) => {
             <a>Parent</a>
           </Link>
         ) : (
-          <Link href="/home">
-            <a>Home</a>
+          <Link href="/feed">
+            <a>Feed</a>
           </Link>
         )}
       </div>

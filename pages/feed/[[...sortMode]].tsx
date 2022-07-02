@@ -6,7 +6,7 @@ import {
 } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
-import HomePage from '../../components/HomePage'
+import FeedPage from '../../components/FeedPage'
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
@@ -24,10 +24,10 @@ interface PropTypes {
   }
 }
 
-const Home = ({ fallback }: PropTypes) => {
+const Feed = ({ fallback }: PropTypes) => {
   return (
     <SWRConfig value={{ fallback }}>
-      <HomePage />
+      <FeedPage />
     </SWRConfig>
   )
 }
@@ -80,4 +80,4 @@ export const getServerSideProps = withAuthUserTokenSSR(
   withAuthUserTokenSSRConfig(ROUTE_MODE)
 )(getServerSidePropsFn as any)
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Home as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Feed as any)

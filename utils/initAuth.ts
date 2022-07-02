@@ -6,7 +6,7 @@ const daysToMilliseconds = (days: number) => days * 60 * 60 * 24 * 1000
 const initAuth = () => {
   init({
     authPageURL: '/',
-    appPageURL: '/home',
+    appPageURL: '/feed',
     loginAPIEndpoint: '/api/auth/signIn',
     logoutAPIEndpoint: '/api/auth/signOut',
     onLoginRequestError: (err) => {

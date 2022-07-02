@@ -11,17 +11,17 @@ import type { FeedSortMode } from '../../types/FeedSortMode'
 
 const SORT_MODE_OPTIONS = [
   {
-    href: '/home',
+    href: '/feed',
     label: 'Latest',
     sortMode: 'latest',
   },
   {
-    href: '/home/popular',
+    href: '/feed/popular',
     label: 'Popular',
     sortMode: 'popular',
   },
   {
-    href: '/home/most-likes',
+    href: '/feed/most-likes',
     label: 'Most Likes',
     sortMode: 'mostLikes',
   }
@@ -35,7 +35,7 @@ const SORT_MODE_MAP: {
   'most-likes': 'mostLikes',
 }
 
-const HomePage = () => {
+const FeedPage = () => {
   const { asPath: path } = useRouter()
 
   const pathSortMode =
@@ -49,8 +49,8 @@ const HomePage = () => {
   }, [pathSortMode])
 
   return (
-    <Page pageTitle="Home">
-      <h1>Home</h1>
+    <Page pageTitle="Feed">
+      <h1>Feed</h1>
       <ViewSelectorButtonGroup>
         {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
           <Link href={href} key={href} passHref shallow>
@@ -72,4 +72,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default FeedPage

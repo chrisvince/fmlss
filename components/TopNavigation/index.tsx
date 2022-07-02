@@ -1,9 +1,7 @@
-import { Container, Box } from '@mui/system'
+import { Box } from '@mui/material'
+import { Container } from '@mui/system'
 
-import TopNavigation from '../TopNavigation'
-import LeftNavigationDesktop from '../LeftNavigationDesktop'
 import constants from '../../constants'
-import RightSideBar from '../RightSideBar'
 import CenterSectionContainer from '../CenterSectionContainer'
 
 const {
@@ -12,20 +10,33 @@ const {
   SIDEBAR_WIDTH_LG,
   SIDEBAR_WIDTH_MD,
   SIDEBAR_WIDTH_SM,
+  TOP_NAVIGATION_HEIGHT,
+  TOP_NAVIGATION_MARGIN_BOTTOM_SM,
+  TOP_NAVIGATION_MARGIN_BOTTOM_XS,
 } = constants
 
-interface PropTypes {
-  children: React.ReactNode
-}
-
-const Layout = ({ children }: PropTypes) => {
+const TopNavigation = () => {
   return (
-    <>
-      <TopNavigation />
-      <Container>
+    <Box
+      component="header"
+      sx={{
+        position: 'sticky',
+        top: 0,
+        height: TOP_NAVIGATION_HEIGHT,
+        marginBottom: {
+          xs: TOP_NAVIGATION_MARGIN_BOTTOM_XS,
+          sm: TOP_NAVIGATION_MARGIN_BOTTOM_SM,
+        },
+        backgroundColor: 'lightgray',
+        zIndex: 8500,
+      }}
+    >
+      <Container sx={{ height: '100%' }}>
         <Box
           sx={{
             display: 'grid',
+            height: '100%',
+            alignItems: 'center',
             gridTemplateColumns: {
               sm: `${SIDEBAR_WIDTH_SM} 1fr`,
               md: `${SIDEBAR_WIDTH_MD} 1fr ${SIDEBAR_WIDTH_MD}`,
@@ -39,34 +50,29 @@ const Layout = ({ children }: PropTypes) => {
         >
           <Box
             sx={{
-              display: {
-                position: 'relative',
-                xs: 'none',
-                sm: 'block',
-              },
+              position: 'sticky',
+              top: 0,
             }}
           >
-            <LeftNavigationDesktop />
+            <b>FAMELESS</b>
           </Box>
           <Box>
             <CenterSectionContainer>
-              {children}
+              middle
             </CenterSectionContainer>
           </Box>
           <Box
             sx={{
-              display: {
-                xs: 'none',
-                md: 'block',
-              },
+              position: 'sticky',
+              top: 0,
             }}
           >
-            <RightSideBar />
+            3
           </Box>
         </Box>
       </Container>
-    </>
+    </Box>
   )
 }
 
-export default Layout
+export default TopNavigation
