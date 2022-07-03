@@ -1,12 +1,28 @@
-import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import { useAuthUser } from 'next-firebase-auth'
+import {
+  Box,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 import { Container } from '@mui/system'
-import MenuIcon from '@mui/icons-material/Menu'
+import {
+  AccountCircleRounded,
+  LogoutRounded,
+  Menu as MenuIcon,
+  PersonRounded,
+} from '@mui/icons-material'
 
 import constants from '../../constants'
 import CenterSectionContainer from '../CenterSectionContainer'
 import LeftNavigationMobile from '../LeftNavigationMobile'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 
 const {
   SIDEBAR_GAP_LG,
@@ -21,16 +37,24 @@ const {
 } = constants
 
 const TopNavigation = () => {
+  const { email, signOut } = useAuthUser()
   const router = useRouter()
+  const profileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const theme = useTheme()
   const isAboveSm = useMediaQuery(theme.breakpoints.up('sm'))
 
-  const handleMobileMenuButtonClick = () =>
-    setMobileNavigationOpen(current => !current)
-
   const handleMobileMenuOpen = () => setMobileNavigationOpen(true)
   const handleMobileMenuClose = () => setMobileNavigationOpen(false)
+  const handleProfileMenuClose = () => setProfileMenuOpen(false)
+  const handleSignOutClick = signOut
+
+  const handleProfileMenuButtonClick = () =>
+    setProfileMenuOpen((current) => !current)
+
+  const handleMobileMenuButtonClick = () =>
+    setMobileNavigationOpen((current) => !current)
 
   useEffect(() => {
     if (!isAboveSm) return
@@ -38,7 +62,10 @@ const TopNavigation = () => {
   }, [isAboveSm])
 
   useEffect(() => {
-    const handleRouteChange = () => setMobileNavigationOpen(false)
+    const handleRouteChange = () => {
+      setMobileNavigationOpen(false)
+      setProfileMenuOpen(false)
+    }
     router.events.on('routeChangeComplete', handleRouteChange)
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
@@ -58,7 +85,7 @@ const TopNavigation = () => {
             sm: TOP_NAVIGATION_MARGIN_BOTTOM_SM,
           },
           backgroundColor: 'lightgray',
-          zIndex: 8500,
+          zIndex: 1210,
         }}
       >
         <Container sx={{ height: '100%' }}>
@@ -102,7 +129,11 @@ const TopNavigation = () => {
                 </IconButton>
               </Box>
               <Box>
-                <b>FAMELESS</b>
+                <Link href="/">
+                  <a>
+                    <b>FAMELESS</b>
+                  </a>
+                </Link>
               </Box>
             </Box>
             <Box
@@ -122,7 +153,46 @@ const TopNavigation = () => {
                 justifySelf: 'end',
               }}
             >
-              3
+              <Box
+                sx={{
+                  display: {
+                    marginRight: theme.spacing(-1),
+                  },
+                }}
+              >
+                <IconButton
+                  id="profile-menu-button"
+                  aria-label="Profile menu"
+                  ref={profileMenuButtonRef}
+                  onClick={handleProfileMenuButtonClick}
+                >
+                  <AccountCircleRounded />
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={profileMenuButtonRef.current}
+                  open={profileMenuOpen}
+                  onClose={handleProfileMenuClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'profile-menu-button',
+                  }}
+                >
+                  <Link href="/profile" passHref>
+                    <MenuItem>
+                      <ListItemIcon>
+                        <PersonRounded />
+                      </ListItemIcon>
+                      <ListItemText primary="Profile" secondary={email} />
+                    </MenuItem>
+                  </Link>
+                  <MenuItem onClick={handleSignOutClick}>
+                    <ListItemIcon>
+                      <LogoutRounded />
+                    </ListItemIcon>
+                    <ListItemText>Sign out</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </Box>
             </Box>
           </Box>
         </Container>
