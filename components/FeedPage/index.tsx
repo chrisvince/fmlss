@@ -50,7 +50,6 @@ const FeedPage = () => {
 
   return (
     <Page pageTitle="Feed">
-      <h1>Feed</h1>
       <ViewSelectorButtonGroup>
         {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
           <Link href={href} key={href} passHref shallow>
