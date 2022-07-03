@@ -43,8 +43,8 @@ const theme = createTheme({
       styleOverrides: {
         body: {
           minWidth: '320px',
-        }
-      }
+        },
+      },
     },
     MuiAppBar: {
       defaultProps: {
@@ -96,6 +96,7 @@ const theme = createTheme({
     MuiIconButton: {
       defaultProps: {
         size: 'small',
+        color: 'primary',
       },
     },
     MuiInputBase: {
