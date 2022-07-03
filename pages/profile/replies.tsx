@@ -38,7 +38,8 @@ const getServerSidePropsFn = async ({
     hashtag: string
   }
 }) => {
-  const adminDb = getFirebaseAdmin().firestore()
+  const admin = getFirebaseAdmin()
+  const adminDb = admin.firestore()
   const uid = AuthUser.id
 
   if (!uid) {
@@ -49,6 +50,9 @@ const getServerSidePropsFn = async ({
     db: adminDb,
     type: 'reply',
   })
+
+  // @ts-expect-error
+  await admin.app().delete()
 
   return {
     props: {

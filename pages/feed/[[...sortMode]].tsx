@@ -59,13 +59,17 @@ const getServerSidePropsFn = async ({
   }
 
   const postFeedCacheKey = createPostFeedCacheKey(sortMode)
-  const adminDb = getFirebaseAdmin().firestore()
+  const admin = getFirebaseAdmin()
+  const adminDb = admin.firestore()
   const uid = AuthUser.id
   const posts = await getPostFeed({
     db: adminDb,
     sortMode,
     uid,
   })
+
+  // @ts-expect-error
+  await admin.app().delete()
 
   return {
     props: {

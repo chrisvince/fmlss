@@ -49,7 +49,8 @@ const getServerSidePropsFn = async ({
   params: { hashtag: string }
   query: { sort: string }
 }) => {
-  const adminDb = getFirebaseAdmin().firestore()
+  const admin = getFirebaseAdmin()
+  const adminDb = admin.firestore()
   const uid = AuthUser.id
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as FeedSortMode
 
@@ -64,6 +65,9 @@ const getServerSidePropsFn = async ({
     showType: DEFAULT_POST_TYPE,
     sortMode,
   })
+
+  // @ts-expect-error
+  await admin.app().delete()
 
   return {
     props: {

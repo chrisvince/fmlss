@@ -42,7 +42,8 @@ const getServerSidePropsFn = async ({
     slug: string
   }
 }) => {
-  const adminDb = getFirebaseAdmin().firestore()
+  const admin = getFirebaseAdmin()
+  const adminDb = admin.firestore()
   const slug = decodeURIComponent(encodedSlug)
   const uid = AuthUser.id
   const postCacheKey = createPostCacheKey(slug)
@@ -61,6 +62,9 @@ const getServerSidePropsFn = async ({
     uid,
     db: adminDb,
   })
+
+  // @ts-expect-error
+  await admin.app().delete()
 
   return {
     props: {
