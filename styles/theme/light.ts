@@ -39,6 +39,13 @@ const theme = createTheme({
     htmlFontSize: 14,
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          minWidth: '320px',
+        }
+      }
+    },
     MuiAppBar: {
       defaultProps: {
         color: 'transparent',
