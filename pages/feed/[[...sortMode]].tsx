@@ -75,6 +75,7 @@ const getServerSidePropsFn = async ({
       fallback: {
         [postFeedCacheKey]: posts,
       },
+      key: postFeedCacheKey,
     },
   }
 }
