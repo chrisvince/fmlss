@@ -55,7 +55,7 @@ const getHashtagPosts: GetHashtagPosts = async (
   const cachedData = get(hashtagPostsCacheKey)
 
   if (isServer && cachedData) {
-    postData = cachedData as PostData[]
+    postData = cachedData
     postDocs = null
   } else {
     postDocs = await pipe(

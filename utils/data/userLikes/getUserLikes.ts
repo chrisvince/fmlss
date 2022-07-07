@@ -42,7 +42,7 @@ const getUserLikes: GetUserLikes = async (
   const cachedData = get(userLikesCacheKey)
 
   if (isServer && cachedData) {
-    postData = cachedData as PostData[]
+    postData = cachedData
     postDocs = null
   } else {
     postDocs = await pipe(

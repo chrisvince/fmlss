@@ -43,7 +43,7 @@ const getUserPosts: GetUserPosts = async (
   const cachedData = get(userPostsCacheKey)
 
   if (isServer && cachedData) {
-    postData = cachedData as PostData[]
+    postData = cachedData
     postDocs = null
   } else {
     postDocs = await pipe(

@@ -42,7 +42,7 @@ const getPostFeed: GetPosts = async (
   const cachedData = get(postFeedCacheKey)
 
   if (isServer && cachedData) {
-    postData = cachedData as PostData[]
+    postData = cachedData
     postDocs = null
   } else {
     postDocs = await pipe(
@@ -58,7 +58,7 @@ const getPostFeed: GetPosts = async (
 
     if (postDocs.empty) return []
 
-    postData = postDocs.docs.map((doc) => mapPostDocToData(doc))
+    postData = postDocs.docs.map(doc => mapPostDocToData(doc))
     put(postFeedCacheKey, postData, FEED_CACHE_TIME)
   }
 
