@@ -1,4 +1,4 @@
-import type { FeedSortMode } from '../types/FeedSortMode'
+import type { FeedSortMode } from '../types'
 
 const createHashtagPostsCacheKey = (
   hashtag: string,

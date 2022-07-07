@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import useSWRInfinite from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 
-import { FirebaseDoc, Post } from '../../../types'
+import { FeedSortMode, FirebaseDoc, Post } from '../../../types'
 import {
   createHashtagPostsCacheKey,
   getPageIndexFromCacheKey,
@@ -11,7 +11,6 @@ import {
 import getHashtagPosts from './getHashtagPosts'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
-import { FeedSortMode } from '../../../types/FeedSortMode'
 
 const { PAGINATION_COUNT } = constants
 

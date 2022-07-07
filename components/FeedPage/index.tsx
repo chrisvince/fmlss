@@ -7,7 +7,7 @@ import Page from '../Page'
 import Feed from '../Feed'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
-import type { FeedSortMode } from '../../types/FeedSortMode'
+import type { FeedSortMode } from '../../types'
 
 const SORT_MODE_OPTIONS = [
   {

@@ -11,8 +11,7 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import type { Post } from '../../types'
-import { FeedSortMode } from '../../types/FeedSortMode'
+import type { FeedSortMode, Post } from '../../types'
 import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 

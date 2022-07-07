@@ -6,7 +6,7 @@ import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import Link from 'next/link'
 import { Button, FormControlLabel, Switch } from '@mui/material'
 import { useRouter } from 'next/router'
-import { FeedSortMode } from '../../types/FeedSortMode'
+import { FeedSortMode } from '../../types'
 import { Box } from '@mui/system'
 
 type PropTypes = {
