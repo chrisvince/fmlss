@@ -5,6 +5,8 @@ const constants = {
   FEED_CACHE_TIME: 30_000,
   HASHTAG_LIST_CACHE_TIME: 30_000,
   HASHTAG_REGEX: /\B(#[a-zA-Z0-9_%]{1,})/g,
+  HASHTAGS_CACHE_TIME: 60_000,
+  HASHTAGS_COLLECTION: 'hashtags',
   PAGINATION_COUNT: 10,
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever
   POST_CACHE_TIME: 10_000,

@@ -37,8 +37,12 @@ const createUserPostsCacheKey = (uid: string, pageIndex: number = 0) =>
 const createUserRepliesCacheKey = (uid: string, pageIndex: number = 0) =>
   `post/authored/reply/${uid}-${pageIndex}`
 
+const createHashtagsCacheKey = (sortMode: string, pageIndex: number = 0) =>
+  `hashtags/${sortMode}-${pageIndex}`
+
 export {
   createHashtagPostsCacheKey,
+  createHashtagsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,
