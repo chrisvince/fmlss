@@ -1,15 +1,7 @@
-import firebase from 'firebase/app'
-
-import type { PostData } from '../types'
+import type { FirebaseDoc, PostData } from '../types'
 import { getParentIdFromDbReference } from './dbReferences'
 
-type MapPostDbToClient = (
-  postDoc:
-    | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
-    | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
-    | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
-) => PostData
+type MapPostDbToClient = (postDoc: FirebaseDoc) => PostData
 
 const mapPostDocToData: MapPostDbToClient = postDoc => {
   const postData = postDoc.data()
