@@ -9,6 +9,7 @@ import { createUserPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import setCacheIsCreatedByUser from '../author/setCacheIsCreatedByUser'
+import isServer from '../../isServer'
 
 const firebaseDb = firebase.firestore()
 
@@ -18,8 +19,6 @@ const {
   USER_POSTS_CACHE_TIME,
   USERS_COLLECTION,
 } = constants
-
-const isServer = typeof window === 'undefined'
 
 type GetUserPosts = (
   uid: string,

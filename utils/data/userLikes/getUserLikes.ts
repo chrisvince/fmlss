@@ -9,6 +9,7 @@ import { createUserLikesCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import setCacheIsLikedByUser from '../author/setCacheIsLikedByUser'
+import isServer from '../../isServer'
 
 const firebaseDb = firebase.firestore()
 
@@ -18,8 +19,6 @@ const {
   USER_LIKES_CACHE_TIME,
   USERS_COLLECTION,
 } = constants
-
-const isServer = typeof window === 'undefined'
 
 type GetUserLikes = (
   uid: string,

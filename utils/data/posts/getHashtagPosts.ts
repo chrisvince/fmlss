@@ -9,9 +9,9 @@ import { createHashtagPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
+import isServer from '../../isServer'
 
 const firebaseDb = firebase.firestore()
-const isServer = typeof window === 'undefined'
 
 const {
   HASHTAG_LIST_CACHE_TIME,

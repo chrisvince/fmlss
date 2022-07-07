@@ -8,12 +8,11 @@ import { createPostCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
+import isServer from '../../isServer'
 
 const firebaseDb = firebase.firestore()
 
 const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
-
-const isServer = typeof window === 'undefined'
 
 type GetPost = (
   slug: string,
