@@ -3,4 +3,5 @@ export interface HashtagData {
   hashtag: string
   id: string
   updatedAt: string
+  usageCount: number
 }

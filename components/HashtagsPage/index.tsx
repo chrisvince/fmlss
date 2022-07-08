@@ -7,6 +7,7 @@ import Page from '../Page'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { HashtagsSortMode } from '../../types'
 import useHashtags from '../../utils/data/hashtags/useHashtags'
+import HashtagsList from '../HashtagsList'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -57,13 +58,12 @@ const HashtagsPage = () => {
           </Link>
         ))}
       </ViewSelectorButtonGroup>
-      {hashtags.map(hashtag => (
-        <div key={hashtag.data.id}>
-          <Link href={`/hashtag/${hashtag.data.hashtag}`}>
-            <a>{hashtag.data.hashtag}</a>
-          </Link>
-        </div>
-      ))}
+      <HashtagsList
+        hashtags={hashtags}
+        isLoading={isLoading}
+        moreToLoad={moreToLoad}
+        onLoadMore={loadMore}
+      />
     </Page>
   )
 }
