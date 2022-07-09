@@ -133,7 +133,15 @@ const TopNavigation = () => {
               </Box>
               <Box>
                 <Link href="/">
-                  <Box component="a" sx={{ display: 'flex' }}>
+                  <Box
+                    component="a"
+                    sx={{
+                      display: 'flex',
+                      cursor: 'pointer',
+                      padding: 1,
+                      margin: -1,
+                    }}
+                  >
                     <Image
                       alt="FAMELESS"
                       src="/fameless.svg"
@@ -152,7 +160,9 @@ const TopNavigation = () => {
                 },
               }}
             >
-              <CenterSectionContainer>middle</CenterSectionContainer>
+              <CenterSectionContainer>
+                {/* middle section */}
+              </CenterSectionContainer>
             </Box>
             <Box
               sx={{
