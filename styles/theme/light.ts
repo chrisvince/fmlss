@@ -139,6 +139,11 @@ const theme = createTheme({
         maxWidth: 'xl',
       },
     },
+    MuiSvgIcon: {
+      defaultProps: {
+        color: 'primary',
+      },
+    }
   },
   spacing: 8,
 })
