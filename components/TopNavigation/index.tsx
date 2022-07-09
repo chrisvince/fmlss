@@ -19,6 +19,7 @@ import {
   Menu as MenuIcon,
   PersonRounded,
 } from '@mui/icons-material'
+import Image from 'next/image'
 
 import constants from '../../constants'
 import CenterSectionContainer from '../CenterSectionContainer'
@@ -79,12 +80,14 @@ const TopNavigation = () => {
         sx={{
           position: 'sticky',
           top: 0,
+          borderBottom: '1px solid',
+          borderBottomColor: 'divider',
           height: TOP_NAVIGATION_HEIGHT,
           marginBottom: {
             xs: TOP_NAVIGATION_MARGIN_BOTTOM_XS,
             sm: TOP_NAVIGATION_MARGIN_BOTTOM_SM,
           },
-          backgroundColor: 'lightgray',
+          backgroundColor: 'background.paper',
           zIndex: 1210,
         }}
       >
@@ -111,7 +114,7 @@ const TopNavigation = () => {
                 display: 'grid',
                 alignItems: 'center',
                 gridAutoFlow: 'column',
-                gridTemplateColumns: 'min-content 1fr',
+                gridTemplateColumns: 'auto 1fr',
                 columnGap: 2,
               }}
             >
@@ -130,9 +133,14 @@ const TopNavigation = () => {
               </Box>
               <Box>
                 <Link href="/">
-                  <a>
-                    <b>FAMELESS</b>
-                  </a>
+                  <Box component="a" sx={{ display: 'flex' }}>
+                    <Image
+                      alt="FAMELESS"
+                      src="/fameless.svg"
+                      height={19}
+                      width={116}
+                    />
+                  </Box>
                 </Link>
               </Box>
             </Box>
@@ -166,7 +174,13 @@ const TopNavigation = () => {
                   ref={profileMenuButtonRef}
                   onClick={handleProfileMenuButtonClick}
                 >
-                  <AccountCircleRounded />
+                  <AccountCircleRounded
+                    sx={{
+                      height: '32px',
+                      width: '32px',
+                      color: 'grey.400',
+                    }}
+                  />
                 </IconButton>
                 <Menu
                   id="basic-menu"
