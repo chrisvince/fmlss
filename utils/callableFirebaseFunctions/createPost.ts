@@ -5,6 +5,7 @@ const functions = firebase.functions()
 
 interface Input {
   body: string
+  category?: string | null
   replyingToReference?: string
 }
 
