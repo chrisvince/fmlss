@@ -21,8 +21,8 @@ import { useAuthUser } from 'next-firebase-auth'
 import LeftNavigationListItem from '../LeftNavigaionListItem'
 
 const {
+  LEFT_NAVIGATION_PADDING_BOTTOM,
   TOP_NAVIGATION_HEIGHT,
-  TOP_NAVIGATION_MARGIN_BOTTOM_XS,
   TOP_NAVIGATION_MARGIN_BOTTOM_SM,
 } = constants
 
@@ -67,12 +67,16 @@ const LeftNavigationDesktop = () => {
   const { email } = useAuthUser()
   const theme = useTheme()
   const navMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
+  const marginBottom = theme.spacing(LEFT_NAVIGATION_PADDING_BOTTOM)
 
   return (
     <Box
       sx={{
         position: 'sticky',
         top: `calc(${TOP_NAVIGATION_HEIGHT} + ${navMarginBottomSm})`,
+        height: `calc(100vh - ${
+          TOP_NAVIGATION_HEIGHT
+        } - ${navMarginBottomSm} - ${marginBottom})`,
       }}
     >
       <Box
