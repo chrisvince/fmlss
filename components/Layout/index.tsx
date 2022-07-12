@@ -40,7 +40,6 @@ const Layout = ({ children }: PropTypes) => {
           <Box
             sx={{
               display: {
-                position: 'relative',
                 xs: 'none',
                 sm: 'block',
               },
