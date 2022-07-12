@@ -46,15 +46,15 @@ const NAVIGATION_ITEMS = [
     label: 'Feed',
   },
   {
-    href: '/hashtags',
-    icon: TagRounded,
-    label: 'Hashtags',
-  },
-  {
     href: '/categories',
     icon: WorkspacesOutlined,
     iconCurrent: WorkspacesRounded,
     label: 'Categories',
+  },
+  {
+    href: '/hashtags',
+    icon: TagRounded,
+    label: 'Hashtags',
   },
   {
     href: '/profile/likes',
