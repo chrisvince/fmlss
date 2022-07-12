@@ -20,11 +20,11 @@ const SORT_MODE_OPTIONS = [
     label: 'Popular',
     sortMode: 'popular',
   },
-  {
-    href: '/feed/most-likes',
-    label: 'Most Likes',
-    sortMode: 'mostLikes',
-  }
+  // {
+  //   href: '/feed/most-likes',
+  //   label: 'Most Likes',
+  //   sortMode: 'mostLikes',
+  // }
 ]
 
 const SORT_MODE_MAP: {
