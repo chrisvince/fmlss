@@ -11,6 +11,9 @@ const ViewSelectorButtonGroup = ({ children }: PropTypes) => {
       aria-label="Sort Selection"
       fullWidth
       size="small"
+      sx={{
+        marginBottom: 4,
+      }}
     >
       {children}
     </ButtonGroup>

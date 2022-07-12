@@ -12,17 +12,25 @@ import {
   SwipeableDrawerProps,
 } from '@mui/material'
 import {
+  ChatOutlined,
   ChatRounded,
+  FavoriteBorderOutlined,
   FavoriteRounded,
   PersonRounded,
   ReplyAllRounded,
   TagRounded,
+  ViewStreamOutlined,
   ViewStreamRounded,
+  WorkspacesOutlined,
+  WorkspacesRounded,
 } from '@mui/icons-material'
 
 import constants from '../../constants'
+import LeftNavigationListItem from '../LeftNavigaionListItem'
+import NewPostButton from '../NewPostButton'
+import { useTheme } from '@mui/system'
 
-const { TOP_NAVIGATION_HEIGHT } = constants
+const { TOP_NAVIGATION_HEIGHT, TOP_NAVIGATION_MARGIN_BOTTOM_XS } = constants
 
 interface PropTypes {
   open: boolean
@@ -30,16 +38,65 @@ interface PropTypes {
   onClose: SwipeableDrawerProps['onClose']
 }
 
+const NAVIGATION_ITEMS = [
+  {
+    href: '/feed',
+    icon: ViewStreamOutlined,
+    iconCurrent: ViewStreamRounded,
+    label: 'Feed',
+  },
+  {
+    href: '/hashtags',
+    icon: TagRounded,
+    label: 'Hashtags',
+  },
+  {
+    href: '/categories',
+    icon: WorkspacesOutlined,
+    iconCurrent: WorkspacesRounded,
+    label: 'Categories',
+  },
+  {
+    href: '/profile/likes',
+    icon: FavoriteBorderOutlined,
+    iconCurrent: FavoriteRounded,
+    label: 'Likes',
+  },
+  {
+    href: '/profile/posts',
+    icon: ChatOutlined,
+    iconCurrent: ChatRounded,
+    label: 'Posts',
+  },
+  {
+    href: '/profile/replies',
+    icon: ReplyAllRounded,
+    label: 'Replies',
+  },
+]
+
 const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
   const { email } = useAuthUser()
+  const theme = useTheme()
+
+
+  const navMarginBottomXs = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)
+
 
   return (
-    <SwipeableDrawer anchor="left" open={open} onClose={onClose} onOpen={onOpen}>
+    <SwipeableDrawer
+      anchor="left"
+      open={open}
+      onClose={onClose}
+      onOpen={onOpen}
+    >
       <Box
         role="presentation"
         sx={{
-          paddingTop: TOP_NAVIGATION_HEIGHT,
-          width: '250px',
+          paddingTop: `calc(${TOP_NAVIGATION_HEIGHT} + ${navMarginBottomXs})`,
+          paddingLeft: 2,
+          paddingRight: 2,
+          width: '280px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -47,63 +104,20 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
         }}
       >
         <Box>
+          <NewPostButton />
           <nav>
             <List>
-              <ListItem disablePadding>
-                <Link href="/feed" passHref>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <ViewStreamRounded />
-                    </ListItemIcon>
-                    <ListItemText>Feed</ListItemText>
-                  </ListItemButton>
-                </Link>
-              </ListItem>
-              <ListItem disablePadding>
-                <Link href="/hashtags" passHref>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <TagRounded />
-                    </ListItemIcon>
-                    <ListItemText>Hashtags</ListItemText>
-                  </ListItemButton>
-                </Link>
-              </ListItem>
-            </List>
-          </nav>
-          <Divider />
-          <nav>
-            <List>
-              <ListItem disablePadding>
-                <Link href="/profile/likes" passHref>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <FavoriteRounded />
-                    </ListItemIcon>
-                    <ListItemText>Likes</ListItemText>
-                  </ListItemButton>
-                </Link>
-              </ListItem>
-              <ListItem disablePadding>
-                <Link href="/profile/posts" passHref>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <ChatRounded />
-                    </ListItemIcon>
-                    <ListItemText>Posts</ListItemText>
-                  </ListItemButton>
-                </Link>
-              </ListItem>
-              <ListItem disablePadding>
-                <Link href="/profile/replies" passHref>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <ReplyAllRounded />
-                    </ListItemIcon>
-                    <ListItemText>Replies</ListItemText>
-                  </ListItemButton>
-                </Link>
-              </ListItem>
+              {NAVIGATION_ITEMS.map(
+                ({ href, icon: Icon, label, iconCurrent }) => (
+                  <LeftNavigationListItem
+                    href={href}
+                    icon={Icon}
+                    iconCurrent={iconCurrent}
+                    key={href}
+                    primary={label}
+                  />
+                )
+              )}
             </List>
           </nav>
         </Box>
@@ -116,10 +130,7 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
                     <ListItemIcon>
                       <PersonRounded />
                     </ListItemIcon>
-                    <ListItemText
-                      primary="Profile"
-                      secondary={email}
-                    />
+                    <ListItemText primary="Profile" secondary={email} />
                   </ListItemButton>
                 </Link>
               </ListItem>

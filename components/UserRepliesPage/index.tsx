@@ -7,7 +7,6 @@ const UserRepliesPage = () => {
 
   return (
     <Page pageTitle="Replies">
-      <h1>Replies</h1>
       <Feed moreToLoad={moreToLoad} onLoadMore={loadMore} posts={posts} />
     </Page>
   )

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import constants from '../../constants'
 import type { ReactNode } from 'react'
+import PageTitle from '../PageTitle'
 
 const { BRAND_NAME } = constants
 
@@ -9,8 +10,9 @@ const DEFAULT_DESCRIPTION = `${BRAND_NAME}, the nameless, faceless networking pl
 interface PropTypes {
   children: ReactNode
   description?: string
-  title?: string
+  noPageTitle?: boolean
   pageTitle?: string
+  title?: string
 }
 
 interface RenderTitle {
@@ -21,8 +23,9 @@ interface RenderTitle {
 const Page = ({
   children,
   description = DEFAULT_DESCRIPTION,
-  title,
+  noPageTitle = false,
   pageTitle,
+  title,
 }: PropTypes) => {
   const renderTitle = ({ title, pageTitle }: RenderTitle) => {
     if (title) return title
@@ -37,7 +40,12 @@ const Page = ({
         <meta name="description" content={description} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>{children}</main>
+      <main>
+        {(!noPageTitle || !pageTitle) && (
+          <PageTitle>{pageTitle!}</PageTitle>
+        )}
+        {children}
+      </main>
     </>
   )
 }

@@ -23,7 +23,6 @@ const PostItem = ({ slug }: PropTypes) => {
 
   return (
     <div>
-      <h1>Post</h1>
       <PostBody body={data.body} />
       {user?.created && <div>Created by me!</div>}
       <div>createdAt: {createdAt}</div>

@@ -18,7 +18,7 @@ const theme = createTheme({
     success: {
       main: '#4caf50',
     },
-    divider: 'rgba(0,0,0,0.14)',
+    divider: '#eeeeee',
   },
   breakpoints: {
     values: {
@@ -63,6 +63,11 @@ const theme = createTheme({
         disableRipple: true,
         disableTouchRipple: true,
         size: 'small',
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 100,
+        }
       },
     },
     MuiButtonGroup: {
@@ -143,7 +148,14 @@ const theme = createTheme({
       defaultProps: {
         color: 'primary',
       },
-    }
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 100,
+        },
+      },
+    },
   },
   spacing: 8,
 })
