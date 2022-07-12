@@ -5,14 +5,14 @@ import {
 } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
-import HashtagsPage from '../../components/HashtagsPage'
+import CategoriesPage from '../../components/CategoriesPage'
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import type { HashtagsSortMode, Post } from '../../types'
-import { createHashtagsCacheKey } from '../../utils/createCacheKeys'
-import getHashtags from '../../utils/data/hashtags/getHashtags'
+import type { CategoriesSortMode, Post } from '../../types'
+import { createCategoriesCacheKey } from '../../utils/createCacheKeys'
+import getCategories from '../../utils/data/categories/getCategories'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -25,7 +25,7 @@ interface PropTypes {
 const Feed = ({ fallback }: PropTypes) => {
   return (
     <SWRConfig value={{ fallback }}>
-      <HashtagsPage />
+      <CategoriesPage />
     </SWRConfig>
   )
 }
@@ -47,16 +47,16 @@ const getServerSidePropsFn = async ({
   }
 
   const sortModeParam = sortModeArray?.[0] ?? 'popular'
-  const sortMode = SORT_MODE_MAP[sortModeParam] as HashtagsSortMode
+  const sortMode = SORT_MODE_MAP[sortModeParam] as CategoriesSortMode
 
   if (!sortMode) {
     return { notFound: true }
   }
 
-  const hashtagsCacheKey = createHashtagsCacheKey(sortMode)
+  const categoriesCacheKey = createCategoriesCacheKey(sortMode)
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const hashtags = await getHashtags({
+  const categories = await getCategories({
     db: adminDb,
     sortMode,
   })
@@ -67,9 +67,9 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [hashtagsCacheKey]: hashtags,
+        [categoriesCacheKey]: categories,
       },
-      key: hashtagsCacheKey,
+      key: categoriesCacheKey,
     },
   }
 }

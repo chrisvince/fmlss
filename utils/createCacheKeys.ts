@@ -40,7 +40,11 @@ const createUserRepliesCacheKey = (uid: string, pageIndex: number = 0) =>
 const createHashtagsCacheKey = (sortMode: string, pageIndex: number = 0) =>
   `hashtags/${sortMode}-${pageIndex}`
 
+const createCategoriesCacheKey = (sortMode: string, pageIndex: number = 0) =>
+  `categories/${sortMode}-${pageIndex}`
+
 export {
+  createCategoriesCacheKey,
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
   createPostAuthorCacheKey,

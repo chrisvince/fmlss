@@ -4,7 +4,12 @@ import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { FeedSortMode, FirebaseDoc, Hashtag, HashtagData } from '../../../types'
+import {
+  FirebaseDoc,
+  Hashtag,
+  HashtagData,
+  HashtagsSortMode,
+} from '../../../types'
 import { createHashtagsCacheKey } from '../../createCacheKeys'
 import mapHashtagDocToData from '../../mapHashtagDocToData'
 import isServer from '../../isServer'
@@ -17,7 +22,7 @@ type GetHashtags = (
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
-    sortMode?: FeedSortMode
+    sortMode?: HashtagsSortMode
   }
 ) => Promise<Hashtag[]>
 
