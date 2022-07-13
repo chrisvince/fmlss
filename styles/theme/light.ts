@@ -101,7 +101,6 @@ const theme = createTheme({
     MuiIconButton: {
       defaultProps: {
         size: 'small',
-        color: 'primary',
       },
     },
     MuiInputBase: {
@@ -142,11 +141,6 @@ const theme = createTheme({
     MuiContainer: {
       defaultProps: {
         maxWidth: 'xl',
-      },
-    },
-    MuiSvgIcon: {
-      defaultProps: {
-        color: 'primary',
       },
     },
     MuiListItemButton: {
