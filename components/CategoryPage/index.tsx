@@ -25,11 +25,11 @@ const generateSortOptions = (slug: string) => [
     label: 'Popular',
     sortMode: 'popular',
   },
-  {
-    href: `/category/${slug}?sort=most-likes`,
-    label: 'Most Likes',
-    sortMode: 'mostLikes',
-  },
+  // {
+  //   href: `/category/${slug}?sort=most-likes`,
+  //   label: 'Most Likes',
+  //   sortMode: 'mostLikes',
+  // },
 ]
 
 const SORT_MODE_MAP: {
