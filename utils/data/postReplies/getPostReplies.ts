@@ -78,10 +78,14 @@ const getPostReplies: GetPostReplies = async (
       }
     }
 
-    const createdByUser = await checkIsCreatedByUser(replyDataItem.slug, uid, {
-      db
-    })
-  const likedByUser = await checkIsLikedByUser(replyDataItem.slug, uid, { db })
+    const supportingDataPromises = [
+      checkIsCreatedByUser(replyDataItem.slug, uid, { db }),
+      checkIsLikedByUser(replyDataItem.slug, uid, { db }),
+    ]
+
+    const [createdByUser, likedByUser] = await Promise.all(
+      supportingDataPromises
+    )
 
     return {
       data: replyDataItem,

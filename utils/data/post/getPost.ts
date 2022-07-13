@@ -64,8 +64,12 @@ const getPost: GetPost = async (
     }
   }
 
-  const createdByUser = await checkIsCreatedByUser(data.slug, uid, { db })
-  const likedByUser = await checkIsLikedByUser(data.slug, uid, { db })
+  const supportingDataPromises = [
+    checkIsCreatedByUser(data.slug, uid, { db }),
+    checkIsLikedByUser(data.slug, uid, { db }),
+  ]
+
+  const [createdByUser, likedByUser] = await Promise.all(supportingDataPromises)
 
   return {
     data: data,
