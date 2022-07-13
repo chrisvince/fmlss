@@ -5,7 +5,7 @@ const createHashtagPostsCacheKey = (
   showType: 'post' | 'reply' | 'both',
   sortMode: FeedSortMode = 'latest',
   pageIndex: number = 0
-) => `hashtag/${hashtag}/${showType}/${sortMode}-${pageIndex}`
+) => `hashtag/${hashtag}/posts/${showType}/${sortMode}-${pageIndex}`
 
 const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 

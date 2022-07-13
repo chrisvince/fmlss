@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import useSWRInfinite from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 
-import { FeedSortMode, FirebaseDoc, Post } from '../../../types'
+import { HashtagSortMode, FirebaseDoc, Post } from '../../../types'
 import {
   createHashtagPostsCacheKey,
   getPageIndexFromCacheKey,
@@ -18,7 +18,7 @@ type UsePostFeed = (
   hashtag: string,
   options?: {
     showType?: 'post' | 'reply' | 'both'
-    sortMode?: FeedSortMode
+    sortMode?: HashtagSortMode
   }
 ) => {
   error: any

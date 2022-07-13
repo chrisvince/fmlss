@@ -1,13 +1,14 @@
-import Page from '../Page'
-import Feed from '../Feed'
-import useHashtagPosts from '../../utils/data/posts/useHashtagPosts'
 import { SyntheticEvent, useState } from 'react'
-import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import Link from 'next/link'
 import { Button, FormControlLabel, Switch } from '@mui/material'
 import { useRouter } from 'next/router'
-import { FeedSortMode } from '../../types'
 import { Box } from '@mui/system'
+
+import Page from '../Page'
+import Feed from '../Feed'
+import useHashtagPosts from '../../utils/data/posts/useHashtagPosts'
+import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
+import { HashtagSortMode } from '../../types'
 
 type PropTypes = {
   hashtag: string
@@ -41,8 +42,10 @@ const SORT_MODE_MAP: {
 
 const HashtagPage = ({ hashtag }: PropTypes) => {
   const { query: { sort } } = useRouter()
-  const sortMode = (SORT_MODE_MAP[sort as string] ?? 'latest') as FeedSortMode
   const [showType, setShowType] = useState<'post' | 'both'>('post')
+
+  const sortMode =
+    (SORT_MODE_MAP[sort as string] ?? 'latest') as HashtagSortMode
 
   const { isLoading, loadMore, moreToLoad, posts } = useHashtagPosts(hashtag, {
     showType: showType,

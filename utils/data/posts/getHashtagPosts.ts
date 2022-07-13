@@ -4,7 +4,7 @@ import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { FeedSortMode, FirebaseDoc, Post, PostData } from '../../../types'
+import { HashtagSortMode, FirebaseDoc, Post, PostData } from '../../../types'
 import { createHashtagPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
@@ -26,7 +26,7 @@ type GetHashtagPosts = (
     startAfter?: FirebaseDoc
     uid?: string | null
     showType?: 'post' | 'reply' | 'both'
-    sortMode?: FeedSortMode
+    sortMode?: HashtagSortMode
   }
 ) => Promise<Post[]>
 

@@ -11,7 +11,7 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import type { FeedSortMode, Post } from '../../types'
+import type { HashtagSortMode, Post } from '../../types'
 import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 
@@ -51,7 +51,7 @@ const getServerSidePropsFn = async ({
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as FeedSortMode
+  const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as HashtagSortMode
 
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
     hashtag,
