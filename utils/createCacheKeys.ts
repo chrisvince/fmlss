@@ -43,8 +43,18 @@ const createHashtagsCacheKey = (sortMode: string, pageIndex: number = 0) =>
 const createCategoriesCacheKey = (sortMode: string, pageIndex: number = 0) =>
   `categories/${sortMode}-${pageIndex}`
 
+const createCategoryPostsCacheKey = (
+  slug: string,
+  sortMode: FeedSortMode = 'latest',
+  pageIndex: number = 0
+) => `category/${slug}/posts/${sortMode}-${pageIndex}`
+
+const createCategoryCacheKey = (slug: string) => `category/${slug}`
+
 export {
   createCategoriesCacheKey,
+  createCategoryCacheKey,
+  createCategoryPostsCacheKey,
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
   createPostAuthorCacheKey,

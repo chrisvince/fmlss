@@ -1,6 +1,7 @@
 export * from './CategoriesSortMode'
 export * from './Category'
 export * from './CategoryData'
+export * from './CategorySortMode'
 export * from './FeedSortMode'
 export * from './FirebaseDoc'
 export * from './Hashtag'
