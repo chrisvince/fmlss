@@ -29,7 +29,7 @@ const HashtagsList = ({
     )
   }
   return (
-    <div>
+    <Box>
       {hashtags.length ? (
         <PostList>
           {hashtags.map((hashtag) => (
@@ -42,7 +42,7 @@ const HashtagsList = ({
         <p>No hashtags.</p>
       )}
       {moreToLoad && <button onClick={onLoadMore}>Load more</button>}
-    </div>
+    </Box>
   )
 }
 
