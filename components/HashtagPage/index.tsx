@@ -62,7 +62,6 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
 
   return (
     <Page pageTitle={title}>
-      <h1>{title}</h1>
       <ViewSelectorButtonGroup>
         {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
           <Link href={href} key={href} passHref shallow>
