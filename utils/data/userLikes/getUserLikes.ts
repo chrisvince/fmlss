@@ -11,8 +11,6 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import setCacheIsLikedByUser from '../author/setCacheIsLikedByUser'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const {
   PAGINATION_COUNT,
   POST_LIKES_COLLECTION,
@@ -30,8 +28,10 @@ type GetUserLikes = (
 
 const getUserLikes: GetUserLikes = async (
   uid,
-  { db = firebaseDb, startAfter } = {}
+  { db: dbProp, startAfter } = {}
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let postDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>

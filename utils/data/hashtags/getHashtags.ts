@@ -14,8 +14,6 @@ import { createHashtagsCacheKey } from '../../createCacheKeys'
 import mapHashtagDocToData from '../../mapHashtagDocToData'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const { HASHTAGS_CACHE_TIME, PAGINATION_COUNT, HASHTAGS_COLLECTION } = constants
 
 type GetHashtags = (
@@ -28,11 +26,13 @@ type GetHashtags = (
 
 const getHashtags: GetHashtags = async (
   {
-    db = firebaseDb,
+    db: dbProp,
     startAfter,
     sortMode = 'popular'
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let hashtagDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>

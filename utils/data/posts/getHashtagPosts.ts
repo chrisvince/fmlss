@@ -11,8 +11,6 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const {
   HASHTAG_LIST_CACHE_TIME,
   PAGINATION_COUNT,
@@ -33,13 +31,15 @@ type GetHashtagPosts = (
 const getHashtagPosts: GetHashtagPosts = async (
   hashtag,
   {
-    db = firebaseDb,
+    db: dbProp,
     startAfter,
     uid,
     showType = 'post',
     sortMode = 'latest',
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let postDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>

@@ -14,8 +14,6 @@ import { createCategoriesCacheKey } from '../../createCacheKeys'
 import mapCategoryDocToData from '../../mapCategoryDocToData'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const {
   CATEGORIES_CACHE_TIME,
   CATEGORIES_COLLECTION,
@@ -32,11 +30,13 @@ type GetCategories = (
 
 const getCategories: GetCategories = async (
   {
-    db = firebaseDb,
+    db: dbProp,
     startAfter,
     sortMode = 'popular'
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let categoryDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>

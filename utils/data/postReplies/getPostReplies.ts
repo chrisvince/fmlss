@@ -11,7 +11,6 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
 const { PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
 type GetPostReplies = (
@@ -29,12 +28,14 @@ const getPostReplies: GetPostReplies = async (
   reference,
   slug,
   {
-    db = firebaseDb,
+    db: dbProp,
     startAfter,
     uid,
     viewMode = 'start',
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let replyDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>

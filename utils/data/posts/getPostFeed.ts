@@ -11,8 +11,6 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const { FEED_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } = constants
 
 type GetPosts = (
@@ -26,12 +24,14 @@ type GetPosts = (
 
 const getPostFeed: GetPosts = async (
   {
-    db = firebaseDb,
+    db: dbProp,
     startAfter,
     uid,
     sortMode = 'latest'
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let postDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>

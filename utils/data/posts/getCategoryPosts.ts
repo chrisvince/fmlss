@@ -11,8 +11,6 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const {
   CATEGORY_LIST_CACHE_TIME,
   PAGINATION_COUNT,
@@ -32,12 +30,14 @@ type GetCategoryPosts = (
 const getCategoryPosts: GetCategoryPosts = async (
   slug,
   {
-    db = firebaseDb,
+    db: dbProp,
     startAfter,
     uid,
     sortMode = 'latest',
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let postDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>

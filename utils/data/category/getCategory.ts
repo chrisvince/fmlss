@@ -8,8 +8,6 @@ import { createCategoryCacheKey } from '../../createCacheKeys'
 import mapCategoryDocToData from '../../mapCategoryDocToData'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const { CATEGORIES_COLLECTION, CATEGORY_CACHE_TIME } = constants
 
 type GetCategory = (
@@ -23,9 +21,11 @@ type GetCategory = (
 const getCategory: GetCategory = async (
   slug,
   {
-    db = firebaseDb,
+    db: dbProp,
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let doc:
     | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>

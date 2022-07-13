@@ -10,8 +10,6 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
 
 type GetPost = (
@@ -25,10 +23,12 @@ type GetPost = (
 const getPost: GetPost = async (
   slug,
   {
-    db = firebaseDb,
+    db: dbProp,
     uid,
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let doc:
     | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>

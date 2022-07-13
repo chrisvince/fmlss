@@ -11,8 +11,6 @@ import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import setCacheIsCreatedByUser from '../author/setCacheIsCreatedByUser'
 import isServer from '../../isServer'
 
-const firebaseDb = firebase.firestore()
-
 const {
   AUTHORED_POSTS_COLLECTION,
   PAGINATION_COUNT,
@@ -31,8 +29,10 @@ type GetUserPosts = (
 
 const getUserPosts: GetUserPosts = async (
   uid,
-  { db = firebaseDb, startAfter, type = 'post' } = {}
+  { db: dbProp, startAfter, type = 'post' } = {}
 ) => {
+  const db = dbProp || firebase.firestore()
+
   let postDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
