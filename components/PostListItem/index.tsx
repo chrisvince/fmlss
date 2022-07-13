@@ -1,41 +1,34 @@
 import { useRouter } from 'next/router'
-import { SyntheticEvent } from 'react'
 
 import { Post } from '../../types'
 import {
   createPostLike,
   removePostLike,
 } from '../../utils/callableFirebaseFunctions'
+import truncateString from '../../utils/truncateString'
 import LikeButton from '../LikeButton'
+import ListItemFrame from '../ListItemFrame'
 import PostBody from '../PostBody'
 
 type PropTypes = {
   post: Post
 }
 
-const IGNORE_NAVIGATE_TAG_NAMES = ['A', 'BUTTON']
-
 const PostListItem = ({ post }: PropTypes) => {
   const { push: navigate } = useRouter()
 
-  const handleClick = (event: SyntheticEvent) => {
-    const { tagName } = event.target as HTMLAnchorElement
-    if (IGNORE_NAVIGATE_TAG_NAMES.includes(tagName)) return
-    if (window.getSelection()?.toString().length) return
+  const handleOpen = () =>
     navigate(`/post/${encodeURIComponent(post.data.slug)}`)
-  }
 
   const handleLike = () => createPostLike({ slug: post.data.slug })
   const handleUnlike = () => removePostLike({ slug: post.data.slug })
+  const title = truncateString(post.data.body)
 
   return (
-    <article
-      onClick={handleClick}
-      style={{
-        cursor: 'pointer',
-        borderTop: '1px solid #eee',
-        padding: '15px 0 30px 0',
-      }}
+    <ListItemFrame
+      component="article"
+      onOpen={handleOpen}
+      aria-label={title}
     >
       <PostBody body={post.data.body} />
       <div
@@ -57,7 +50,7 @@ const PostListItem = ({ post }: PropTypes) => {
           onUnlike={handleUnlike}
         />
       </div>
-    </article>
+    </ListItemFrame>
   )
 }
 

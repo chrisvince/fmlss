@@ -1,9 +1,9 @@
 type TruncateString = (
   str: string,
-  maxLength: number,
+  maxLength?: number,
 ) => string
 
-const truncateString: TruncateString = (str, maxLength) => {
+const truncateString: TruncateString = (str, maxLength = 30) => {
   if (str.length <= maxLength) {
     return str
   }

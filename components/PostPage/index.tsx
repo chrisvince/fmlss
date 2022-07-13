@@ -10,7 +10,7 @@ type PropTypes = {
 
 const PostPage = ({ slug }: PropTypes) => {
   const { post } = usePost(slug)
-  const pageTitle = truncateString(post.data.body, 30)
+  const pageTitle = truncateString(post.data.body)
 
   return (
     <Page pageTitle={pageTitle} uiPageTitle="Post">
