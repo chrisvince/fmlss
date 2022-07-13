@@ -13,7 +13,7 @@ const PostPage = ({ slug }: PropTypes) => {
   const pageTitle = truncateString(post.data.body, 30)
 
   return (
-    <Page pageTitle={pageTitle}>
+    <Page pageTitle={pageTitle} uiPageTitle="Post">
       <PostItem slug={slug} />
       <RepliesList slug={slug} />
     </Page>

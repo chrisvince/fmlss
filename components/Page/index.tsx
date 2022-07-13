@@ -13,6 +13,7 @@ interface PropTypes {
   noPageTitle?: boolean
   pageTitle?: string
   title?: string
+  uiPageTitle?: string
 }
 
 interface RenderTitle {
@@ -26,12 +27,15 @@ const Page = ({
   noPageTitle = false,
   pageTitle,
   title,
+  uiPageTitle,
 }: PropTypes) => {
   const renderTitle = ({ title, pageTitle }: RenderTitle) => {
     if (title) return title
     if (pageTitle) return `${BRAND_NAME} – ${pageTitle}`
     return BRAND_NAME
   }
+  const uiTitle = uiPageTitle ?? pageTitle
+  const renderUiTitle = !noPageTitle && uiTitle
 
   return (
     <>
@@ -41,8 +45,8 @@ const Page = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {(!noPageTitle || !pageTitle) && (
-          <PageTitle>{pageTitle!}</PageTitle>
+        {renderUiTitle && (
+          <PageTitle>{uiTitle}</PageTitle>
         )}
         {children}
       </main>
