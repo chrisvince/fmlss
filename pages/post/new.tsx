@@ -8,7 +8,7 @@ const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 const NewPost = () => {
   return (
-    <Page pageTitle="New Post">
+    <Page pageTitle="Create a New Post" uiPageTitle="Post">
       <NewPostForm />
     </Page>
   )
