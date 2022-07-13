@@ -46,12 +46,14 @@ const NAVIGATION_ITEMS = [
     label: 'Feed',
   },
   {
+    currentPaths: ['/categories', '/category'],
     href: '/categories',
     icon: WorkspacesOutlined,
     iconCurrent: WorkspacesRounded,
     label: 'Categories',
   },
   {
+    currentPaths: ['/hashtags', '/hashtag'],
     href: '/hashtags',
     icon: TagRounded,
     label: 'Hashtags',
@@ -108,8 +110,9 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
           <nav>
             <List>
               {NAVIGATION_ITEMS.map(
-                ({ href, icon: Icon, label, iconCurrent }) => (
+                ({ currentPaths, href, icon: Icon, label, iconCurrent }) => (
                   <LeftNavigationListItem
+                    currentPaths={currentPaths}
                     href={href}
                     icon={Icon}
                     iconCurrent={iconCurrent}

@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 interface LeftNavigationListItemPropTypes {
+  currentPaths?: string[]
   exact?: boolean
   href: string
   icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
@@ -22,7 +23,17 @@ interface LeftNavigationListItemPropTypes {
   secondary?: string | null
 }
 
+const includesAny = (
+  href: string,
+  currentPaths: string[],
+  exact: boolean
+) =>
+  currentPaths.some(currentPath =>
+    exact ? href === currentPath : href.startsWith(currentPath)
+  )
+
 const LeftNavigationListItem = ({
+  currentPaths,
   exact,
   href,
   icon: Icon,
@@ -30,10 +41,14 @@ const LeftNavigationListItem = ({
   primary,
   secondary,
 }: LeftNavigationListItemPropTypes) => {
-  const { asPath: currentPath } = useRouter()
-  const isCurrentLink = exact
-    ? currentPath === href
-    : currentPath.includes(href)
+  const { asPath: actualPath } = useRouter()
+
+  const isCurrentLink = includesAny(
+    actualPath,
+    currentPaths ?? [href],
+    !!exact
+  )
+
   const textColor = isCurrentLink ? 'primary.main' : undefined
   const iconColor = isCurrentLink ? 'primary' : undefined
 

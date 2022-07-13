@@ -34,12 +34,14 @@ const NAVIGATION_ITEMS = [
     label: 'Feed',
   },
   {
+    currentPaths: ['/categories', '/category'],
     href: '/categories',
     icon: WorkspacesOutlined,
     iconCurrent: WorkspacesRounded,
     label: 'Categories',
   },
   {
+    currentPaths: ['/hashtags', '/hashtag'],
     href: '/hashtags',
     icon: TagRounded,
     label: 'Hashtags',
@@ -93,8 +95,9 @@ const LeftNavigationDesktop = () => {
           <nav>
             <List>
               {NAVIGATION_ITEMS.map(
-                ({ href, icon: Icon, label, iconCurrent }) => (
+                ({ currentPaths, href, icon:Icon, iconCurrent, label }) => (
                   <LeftNavigationListItem
+                    currentPaths={currentPaths}
                     href={href}
                     icon={Icon}
                     iconCurrent={iconCurrent}
