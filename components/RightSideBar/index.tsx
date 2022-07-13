@@ -1,6 +1,8 @@
 import { Box, useTheme } from '@mui/system'
 
 import constants from '../../constants'
+import MiniCategoriesSection from '../MiniCategoriesSection'
+import MiniHashtagsSection from '../MiniHashtagsSection'
 
 const {
   TOP_NAVIGATION_HEIGHT,
@@ -15,16 +17,20 @@ const RightSideBar = () => {
 
   return (
     <Box
-      component="nav"
+      component="aside"
       sx={{
         position: 'sticky',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
         top: {
           xs: `calc(${TOP_NAVIGATION_HEIGHT} + ${naviMarginBottomXs})`,
           sm: `calc(${TOP_NAVIGATION_HEIGHT} + ${naviMarginBottomSm})`,
         },
       }}
     >
-      Sidebar
+      <MiniHashtagsSection />
+      <MiniCategoriesSection />
     </Box>
   )
 }
