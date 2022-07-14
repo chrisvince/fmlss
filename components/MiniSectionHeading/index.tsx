@@ -7,8 +7,12 @@ interface PropTypes {
 
 const MiniSectionHeading = ({ children }: PropTypes) => {
   return (
-    <Box>
-      <Typography variant="h6" mb={1}>
+    <Box
+      sx={{
+        paddingBottom: 1,
+      }}
+    >
+      <Typography variant="h6">
         {children}
       </Typography>
     </Box>
