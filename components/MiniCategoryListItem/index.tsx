@@ -1,9 +1,9 @@
-import { Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import { Category } from '../../types'
-import formatCount from '../../utils/formatCount'
+import formatPostCount from '../../utils/formatting/formatPostCount'
 import ListItemFrame from '../ListItemFrame'
+import MiniListItem from '../MiniListItem'
 
 type PropTypes = {
   category: Category
@@ -14,13 +14,11 @@ const MiniCategoryListItem = ({ category }: PropTypes) => {
   const handleOpen = () => navigate(`/category/${category.data.slug}`)
 
   return (
-    <ListItemFrame onOpen={handleOpen}>
-      <Typography variant="body1" component="div">
-        {category.data.name}
-      </Typography>
-      <Typography variant="caption">
-        {formatCount(category.data.postCount)} posts
-      </Typography>
+    <ListItemFrame onOpen={handleOpen} mini>
+      <MiniListItem
+        leftText={category.data.name}
+        rightText={formatPostCount(category.data.postCount)}
+      />
     </ListItemFrame>
   )
 }

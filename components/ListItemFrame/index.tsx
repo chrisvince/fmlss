@@ -5,6 +5,7 @@ interface PropTypes {
   'aria-label'?: string
   children: React.ReactNode
   component?: React.ElementType
+  mini?: boolean
   onOpen?: () => void
 }
 
@@ -14,6 +15,7 @@ const ListItemFrame = ({
   'aria-label': ariaLabel,
   children,
   component,
+  mini = false,
   onOpen,
 }: PropTypes) => {
   const handleClick = (event: SyntheticEvent) => {
@@ -32,7 +34,8 @@ const ListItemFrame = ({
         cursor: 'pointer',
         borderBottom: '1px solid',
         borderColor: 'divider',
-        padding: 2,
+        paddingX: mini ? 1 : 2,
+        paddingY: mini ? 1 : 4,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
         '&:hover': {

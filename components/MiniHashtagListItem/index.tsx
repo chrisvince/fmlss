@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { Hashtag } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
 import ListItemFrame from '../ListItemFrame'
+import MiniListItem from '../MiniListItem'
 
 type PropTypes = {
   hashtag: Hashtag
@@ -14,13 +15,11 @@ const MiniHashtagListItem = ({ hashtag }: PropTypes) => {
   const handleOpen = () => navigate(`/hashtag/${hashtag.data.hashtag}`)
 
   return (
-    <ListItemFrame onOpen={handleOpen}>
-      <Typography variant="body1" component="div">
-        #{hashtag.data.hashtag}
-      </Typography>
-      <Typography variant="caption">
-        {formatPostCount(hashtag.data.usageCount)}
-      </Typography>
+    <ListItemFrame onOpen={handleOpen} mini>
+      <MiniListItem
+        leftText={`#${hashtag.data.hashtag}`}
+        rightText={formatPostCount(hashtag.data.usageCount)}
+      />
     </ListItemFrame>
   )
 }
