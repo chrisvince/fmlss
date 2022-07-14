@@ -3,7 +3,7 @@ import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
 
 import { Hashtag } from '../../types'
-import formatCount from '../../utils/formatCount'
+import formatPostCount from '../../utils/formatting/formatPostCount'
 import ListItemFrame from '../ListItemFrame'
 
 type PropTypes = {
@@ -20,7 +20,7 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
         #{hashtag.data.hashtag}
       </Typography>
       <Box>
-        {formatCount(hashtag.data.usageCount)} posts
+        {formatPostCount(hashtag.data.usageCount)}
       </Box>
     </ListItemFrame>
   )

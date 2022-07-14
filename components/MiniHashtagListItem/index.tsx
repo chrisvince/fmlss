@@ -2,7 +2,7 @@ import { Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import { Hashtag } from '../../types'
-import formatCount from '../../utils/formatCount'
+import formatPostCount from '../../utils/formatting/formatPostCount'
 import ListItemFrame from '../ListItemFrame'
 
 type PropTypes = {
@@ -19,7 +19,7 @@ const MiniHashtagListItem = ({ hashtag }: PropTypes) => {
         #{hashtag.data.hashtag}
       </Typography>
       <Typography variant="caption">
-        {formatCount(hashtag.data.usageCount)} posts
+        {formatPostCount(hashtag.data.usageCount)}
       </Typography>
     </ListItemFrame>
   )

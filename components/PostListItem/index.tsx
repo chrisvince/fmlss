@@ -5,6 +5,7 @@ import {
   createPostLike,
   removePostLike,
 } from '../../utils/callableFirebaseFunctions'
+import formatReplyCount from '../../utils/formatting/formatReplyCount'
 import truncateString from '../../utils/truncateString'
 import LikeButton from '../LikeButton'
 import ListItemFrame from '../ListItemFrame'
@@ -41,7 +42,7 @@ const PostListItem = ({ post }: PropTypes) => {
           <div>Created by me</div>
         )}
         {!!post.data.postsCount && (
-          <div>{post.data.postsCount} replies</div>
+          <div>{formatReplyCount(post.data.postsCount)}</div>
         )}
         <LikeButton
           like={!!post.user?.like}

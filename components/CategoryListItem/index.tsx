@@ -3,7 +3,7 @@ import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
 
 import { Category } from '../../types'
-import formatCount from '../../utils/formatCount'
+import formatPostCount from '../../utils/formatting/formatPostCount'
 import ListItemFrame from '../ListItemFrame'
 
 type PropTypes = {
@@ -20,7 +20,7 @@ const CategoryListItem = ({ category }: PropTypes) => {
         {category.data.name}
       </Typography>
       <Box>
-        {formatCount(category.data.postCount)} posts
+        {formatPostCount(category.data.postCount)}
       </Box>
     </ListItemFrame>
   )
