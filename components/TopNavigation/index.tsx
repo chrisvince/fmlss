@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   useMediaQuery,
+  useScrollTrigger,
   useTheme,
 } from '@mui/material'
 import { Container } from '@mui/system'
@@ -72,6 +73,10 @@ const TopNavigation = () => {
     }
   }, [router.events])
 
+  const showMobileNav = !useScrollTrigger({
+    threshold: parseInt(TOP_NAVIGATION_HEIGHT),
+  })
+
   return (
     <>
       <Box
@@ -80,6 +85,14 @@ const TopNavigation = () => {
           top: 0,
           backgroundColor: 'background.paper',
           zIndex: 1210,
+          transform: {
+            xs: showMobileNav ? 'translateY(0)' : 'translateY(-100%)',
+            sm: 'unset',
+          },
+          transition: {
+            xs: 'transform 0.4s ease',
+            sm: 'unset',
+          },
         }}
       >
         <Box
