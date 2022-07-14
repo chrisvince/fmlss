@@ -12,7 +12,7 @@ const ViewSelectorButtonGroup = ({ children }: PropTypes) => {
       fullWidth
       size="small"
       sx={{
-        marginBottom: 4,
+        marginBottom: 2,
       }}
     >
       {children}

@@ -83,7 +83,7 @@ const LeftNavigationDesktop = () => {
     >
       <Box
         sx={{
-          width: '250px',
+          maxWidth: '250px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',

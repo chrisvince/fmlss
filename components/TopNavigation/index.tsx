@@ -26,7 +26,7 @@ import CenterSectionContainer from '../CenterSectionContainer'
 import LeftNavigationMobile from '../LeftNavigationMobile'
 
 const {
-  SIDEBAR_GAP_LG,
+  SIDEBAR_GAP_MD,
   SIDEBAR_GAP_SM,
   SIDEBAR_WIDTH_LG,
   SIDEBAR_WIDTH_MD,
@@ -34,7 +34,6 @@ const {
   SIDEBAR_WIDTH_XS,
   TOP_NAVIGATION_HEIGHT,
   TOP_NAVIGATION_MARGIN_BOTTOM_SM,
-  TOP_NAVIGATION_MARGIN_BOTTOM_XS,
 } = constants
 
 const TopNavigation = () => {
@@ -76,150 +75,158 @@ const TopNavigation = () => {
   return (
     <>
       <Box
-        component="header"
         sx={{
           position: 'sticky',
           top: 0,
-          borderBottom: '1px solid',
-          borderBottomColor: 'divider',
-          height: TOP_NAVIGATION_HEIGHT,
-          marginBottom: {
-            xs: TOP_NAVIGATION_MARGIN_BOTTOM_XS,
-            sm: TOP_NAVIGATION_MARGIN_BOTTOM_SM,
-          },
           backgroundColor: 'background.paper',
           zIndex: 1210,
         }}
       >
-        <Container sx={{ height: '100%' }}>
-          <Box
-            sx={{
-              display: 'grid',
-              height: '100%',
-              alignItems: 'center',
-              gridTemplateColumns: {
-                xs: `${SIDEBAR_WIDTH_XS} 1fr`,
-                sm: `${SIDEBAR_WIDTH_SM} 1fr min-content`,
-                md: `${SIDEBAR_WIDTH_MD} 1fr ${SIDEBAR_WIDTH_MD}`,
-                lg: `${SIDEBAR_WIDTH_LG} 1fr ${SIDEBAR_WIDTH_LG}`,
-              },
-              columnGap: {
-                xs: SIDEBAR_GAP_SM,
-                md: SIDEBAR_GAP_LG,
-              },
-            }}
-          >
+        <Box
+          component="header"
+          sx={{
+            borderBottom: '1px solid',
+            borderBottomColor: 'divider',
+            height: TOP_NAVIGATION_HEIGHT,
+          }}
+        >
+          <Container sx={{ height: '100%' }}>
             <Box
               sx={{
                 display: 'grid',
+                height: '100%',
                 alignItems: 'center',
-                gridAutoFlow: 'column',
-                gridTemplateColumns: 'auto 1fr',
-                columnGap: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  display: {
-                    xs: 'block',
-                    sm: 'none',
-                    marginLeft: theme.spacing(-1),
-                  },
-                }}
-              >
-                <IconButton onClick={handleMobileMenuButtonClick}>
-                  <MenuIcon />
-                </IconButton>
-              </Box>
-              <Box>
-                <Link href="/">
-                  <Box
-                    component="a"
-                    sx={{
-                      display: 'flex',
-                      cursor: 'pointer',
-                      padding: 1,
-                      margin: -1,
-                    }}
-                  >
-                    <Image
-                      alt="FAMELESS"
-                      src="/fameless.svg"
-                      height={19}
-                      width={116}
-                    />
-                  </Box>
-                </Link>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: {
-                  xs: 'none',
-                  sm: 'block',
+                gridTemplateColumns: {
+                  xs: `${SIDEBAR_WIDTH_XS} 1fr`,
+                  sm: `${SIDEBAR_WIDTH_SM} 1fr min-content`,
+                  md: `${SIDEBAR_WIDTH_MD} 1fr ${SIDEBAR_WIDTH_MD}`,
+                  lg: `${SIDEBAR_WIDTH_LG} 1fr ${SIDEBAR_WIDTH_LG}`,
+                },
+                columnGap: {
+                  xs: SIDEBAR_GAP_SM,
+                  md: SIDEBAR_GAP_MD,
                 },
               }}
             >
-              <CenterSectionContainer>
-                {/* middle section */}
-              </CenterSectionContainer>
-            </Box>
-            <Box
-              sx={{
-                position: 'sticky',
-                top: 0,
-                justifySelf: 'end',
-              }}
-            >
+              <Box
+                sx={{
+                  display: 'grid',
+                  alignItems: 'center',
+                  gridAutoFlow: 'column',
+                  gridTemplateColumns: 'auto 1fr',
+                  columnGap: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: {
+                      xs: 'block',
+                      sm: 'none',
+                      marginLeft: theme.spacing(-1),
+                    },
+                  }}
+                >
+                  <IconButton onClick={handleMobileMenuButtonClick}>
+                    <MenuIcon />
+                  </IconButton>
+                </Box>
+                <Box>
+                  <Link href="/">
+                    <Box
+                      component="a"
+                      sx={{
+                        display: 'flex',
+                        cursor: 'pointer',
+                        padding: 1,
+                        margin: -1,
+                      }}
+                    >
+                      <Image
+                        alt="FAMELESS"
+                        src="/fameless.svg"
+                        height={19}
+                        width={116}
+                      />
+                    </Box>
+                  </Link>
+                </Box>
+              </Box>
               <Box
                 sx={{
                   display: {
-                    marginRight: theme.spacing(-1),
+                    xs: 'none',
+                    sm: 'block',
                   },
                 }}
               >
-                <IconButton
-                  id="profile-menu-button"
-                  aria-label="Profile menu"
-                  ref={profileMenuButtonRef}
-                  onClick={handleProfileMenuButtonClick}
-                >
-                  <AccountCircleRounded
-                    sx={{
-                      height: '32px',
-                      width: '32px',
-                      color: 'grey.400',
-                    }}
-                  />
-                </IconButton>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={profileMenuButtonRef.current}
-                  open={profileMenuOpen}
-                  onClose={handleProfileMenuClose}
-                  MenuListProps={{
-                    'aria-labelledby': 'profile-menu-button',
+                <CenterSectionContainer>
+                  {/* middle section */}
+                </CenterSectionContainer>
+              </Box>
+              <Box
+                sx={{
+                  position: 'sticky',
+                  top: 0,
+                  justifySelf: 'end',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: {
+                      marginRight: theme.spacing(-1),
+                    },
                   }}
                 >
-                  <Link href="/profile" passHref>
-                    <MenuItem>
+                  <IconButton
+                    id="profile-menu-button"
+                    aria-label="Profile menu"
+                    ref={profileMenuButtonRef}
+                    onClick={handleProfileMenuButtonClick}
+                  >
+                    <AccountCircleRounded
+                      sx={{
+                        height: '32px',
+                        width: '32px',
+                        color: 'grey.400',
+                      }}
+                    />
+                  </IconButton>
+                  <Menu
+                    id="basic-menu"
+                    anchorEl={profileMenuButtonRef.current}
+                    open={profileMenuOpen}
+                    onClose={handleProfileMenuClose}
+                    MenuListProps={{
+                      'aria-labelledby': 'profile-menu-button',
+                    }}
+                  >
+                    <Link href="/profile" passHref>
+                      <MenuItem>
+                        <ListItemIcon>
+                          <PersonRounded />
+                        </ListItemIcon>
+                        <ListItemText primary="Profile" secondary={email} />
+                      </MenuItem>
+                    </Link>
+                    <MenuItem onClick={handleSignOutClick}>
                       <ListItemIcon>
-                        <PersonRounded />
+                        <LogoutRounded />
                       </ListItemIcon>
-                      <ListItemText primary="Profile" secondary={email} />
+                      <ListItemText>Sign out</ListItemText>
                     </MenuItem>
-                  </Link>
-                  <MenuItem onClick={handleSignOutClick}>
-                    <ListItemIcon>
-                      <LogoutRounded />
-                    </ListItemIcon>
-                    <ListItemText>Sign out</ListItemText>
-                  </MenuItem>
-                </Menu>
+                  </Menu>
+                </Box>
               </Box>
             </Box>
-          </Box>
-        </Container>
+          </Container>
+        </Box>
+        <Box
+          sx={{
+            height: {
+              sm: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM),
+            },
+          }}
+        />
       </Box>
       <LeftNavigationMobile
         open={mobileNavigationOpen}

@@ -7,7 +7,7 @@ import RightSideBar from '../RightSideBar'
 import CenterSectionContainer from '../CenterSectionContainer'
 
 const {
-  SIDEBAR_GAP_LG,
+  SIDEBAR_GAP_MD,
   SIDEBAR_GAP_SM,
   SIDEBAR_WIDTH_LG,
   SIDEBAR_WIDTH_MD,
@@ -33,7 +33,7 @@ const Layout = ({ children }: PropTypes) => {
             },
             columnGap: {
               sm: SIDEBAR_GAP_SM,
-              md: SIDEBAR_GAP_LG,
+              md: SIDEBAR_GAP_MD,
             },
           }}
         >
