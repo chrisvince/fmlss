@@ -16,11 +16,22 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
 
   return (
     <ListItemFrame onOpen={handleOpen}>
-      <Typography variant="h4">
-        #{hashtag.data.hashtag}
-      </Typography>
-      <Box>
-        {formatPostCount(hashtag.data.usageCount)}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="div"
+        >
+          #{hashtag.data.hashtag}
+        </Typography>
+        <Typography variant="body2">
+          {formatPostCount(hashtag.data.usageCount)}
+        </Typography>
       </Box>
     </ListItemFrame>
   )

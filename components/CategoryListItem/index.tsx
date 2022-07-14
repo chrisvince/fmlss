@@ -16,11 +16,22 @@ const CategoryListItem = ({ category }: PropTypes) => {
 
   return (
     <ListItemFrame onOpen={handleOpen}>
-      <Typography variant="h4">
-        {category.data.name}
-      </Typography>
-      <Box>
-        {formatPostCount(category.data.postCount)}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="div"
+        >
+          {category.data.name}
+        </Typography>
+        <Typography variant="body2">
+          {formatPostCount(category.data.postCount)}
+        </Typography>
       </Box>
     </ListItemFrame>
   )
