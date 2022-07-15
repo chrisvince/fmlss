@@ -1,6 +1,6 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useEffect, useState } from 'react'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 
 import { HashtagSortMode, FirebaseDoc, Post } from '../../../types'
@@ -14,11 +14,17 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+}
+
 type UsePostFeed = (
   hashtag: string,
   options?: {
     showType?: 'post' | 'reply' | 'both'
     sortMode?: HashtagSortMode
+    swrConfig?: SWRInfiniteConfiguration
   }
 ) => {
   error: any
@@ -32,7 +38,11 @@ type UsePostFeed = (
 
 const useHashtagPosts: UsePostFeed = (
   hashtag,
-  { showType = 'post', sortMode = 'latest' } = {}
+  {
+    showType = 'post',
+    sortMode = 'latest',
+    swrConfig = {},
+  } = {},
 ) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
@@ -70,8 +80,8 @@ const useHashtagPosts: UsePostFeed = (
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 

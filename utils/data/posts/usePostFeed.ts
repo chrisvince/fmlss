@@ -1,7 +1,7 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useEffect, useState } from 'react'
 import { KeyedMutator, useSWRConfig } from 'swr'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { FeedSortMode, FirebaseDoc, Post } from '../../../types'
 import {
@@ -14,7 +14,15 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UsePostFeed = (options?: { sortMode?: FeedSortMode }) => {
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+}
+
+type UsePostFeed = (options?: {
+  sortMode?: FeedSortMode
+  swrConfig?: SWRInfiniteConfiguration
+}) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -24,7 +32,10 @@ type UsePostFeed = (options?: { sortMode?: FeedSortMode }) => {
   moreToLoad: boolean
 }
 
-const usePostFeed: UsePostFeed = ({ sortMode = 'latest' } = {}) => {
+const usePostFeed: UsePostFeed = ({
+  sortMode = 'latest',
+  swrConfig = {},
+} = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
   }>({})
@@ -57,8 +68,8 @@ const usePostFeed: UsePostFeed = ({ sortMode = 'latest' } = {}) => {
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 

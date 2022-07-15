@@ -1,6 +1,6 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useEffect, useState } from 'react'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 
 import { FirebaseDoc, Post } from '../../../types'
@@ -15,7 +15,16 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UseUserPosts = (options?: { type?: 'post' | 'reply' }) => {
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+  revalidateAll: false,
+}
+
+type UseUserPosts = (options?: {
+  type?: 'post' | 'reply'
+  swrConfig?: SWRInfiniteConfiguration
+}) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -25,7 +34,7 @@ type UseUserPosts = (options?: { type?: 'post' | 'reply' }) => {
   posts: Post[]
 }
 
-const useUserPosts: UseUserPosts = ({ type = 'post' } ={}) => {
+const useUserPosts: UseUserPosts = ({ type = 'post', swrConfig = {} } ={}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] =
     useState<{[key: string]: FirebaseDoc}>({})
 
@@ -65,9 +74,8 @@ const useUserPosts: UseUserPosts = ({ type = 'post' } ={}) => {
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
-      revalidateAll: false
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 

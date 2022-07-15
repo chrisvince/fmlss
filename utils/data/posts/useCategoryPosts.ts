@@ -1,6 +1,6 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useEffect, useState } from 'react'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 
 import { CategorySortMode, FirebaseDoc, Post } from '../../../types'
@@ -14,11 +14,17 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+}
+
 type UseCategoryPosts = (
   slug: string,
   options?: {
     sortMode?: CategorySortMode
-  }
+    swrConfig?: SWRInfiniteConfiguration
+  },
 ) => {
   error: any
   isLoading: boolean
@@ -31,7 +37,10 @@ type UseCategoryPosts = (
 
 const useCategoryPosts: UseCategoryPosts = (
   slug,
-  { sortMode = 'latest' } = {}
+  {
+    sortMode = 'latest',
+    swrConfig = {},
+  } = {},
 ) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
@@ -65,8 +74,8 @@ const useCategoryPosts: UseCategoryPosts = (
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 

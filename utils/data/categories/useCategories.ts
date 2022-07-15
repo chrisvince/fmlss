@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { KeyedMutator, useSWRConfig } from 'swr'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { CategoriesSortMode, Category, FirebaseDoc } from '../../../types'
 import {
@@ -13,7 +13,15 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UseCategories = (options?: { sortMode?: CategoriesSortMode }) => {
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+}
+
+type UseCategories = (options?: {
+  sortMode?: CategoriesSortMode
+  swrConfig?: SWRInfiniteConfiguration
+}) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -23,7 +31,10 @@ type UseCategories = (options?: { sortMode?: CategoriesSortMode }) => {
   moreToLoad: boolean
 }
 
-const useCategories: UseCategories = ({ sortMode = 'latest' } = {}) => {
+const useCategories: UseCategories = ({
+  sortMode = 'latest',
+  swrConfig = {},
+} = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
   }>({})
@@ -54,8 +65,8 @@ const useCategories: UseCategories = ({ sortMode = 'latest' } = {}) => {
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 

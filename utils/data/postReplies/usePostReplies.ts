@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuthUser } from 'next-firebase-auth'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 import { reverse } from 'ramda'
 
@@ -16,11 +16,17 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+}
+
 type UsePostReplies = (
   slug: string,
   options?: {
     viewMode?: 'start' | 'end'
-  }
+    swrConfig?: SWRInfiniteConfiguration
+  },
 ) => {
   error: any
   isLoading: boolean
@@ -31,9 +37,16 @@ type UsePostReplies = (
   replies: Post[]
 }
 
-const usePostReplies: UsePostReplies = (slug, { viewMode = 'start' } = {}) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] =
-    useState<{[key: string]: FirebaseDoc}>({})
+const usePostReplies: UsePostReplies = (
+  slug,
+  {
+    viewMode = 'start',
+    swrConfig = {},
+  } = {},
+) => {
+  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
+    [key: string]: FirebaseDoc
+  }>({})
 
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createPostRepliesCacheKey(slug, 0, viewMode)]
@@ -64,8 +77,8 @@ const usePostReplies: UsePostReplies = (slug, { viewMode = 'start' } = {}) => {
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 

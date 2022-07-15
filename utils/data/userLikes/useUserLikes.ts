@@ -1,6 +1,6 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useEffect, useState } from 'react'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 
 import { FirebaseDoc, Post } from '../../../types'
@@ -14,7 +14,13 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UseUserLikes = () => {
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+  revalidateAll: false,
+}
+
+type UseUserLikes = (options?: { swrConfig?: SWRInfiniteConfiguration }) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -24,7 +30,7 @@ type UseUserLikes = () => {
   posts: Post[]
 }
 
-const useUserLikes: UseUserLikes = () => {
+const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] =
     useState<{[key: string]: FirebaseDoc}>({})
 
@@ -58,9 +64,8 @@ const useUserLikes: UseUserLikes = () => {
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
-      revalidateAll: false
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 

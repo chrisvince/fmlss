@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { KeyedMutator, useSWRConfig } from 'swr'
-import useSWRInfinite from 'swr/infinite'
+import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { FirebaseDoc, Hashtag, HashtagsSortMode } from '../../../types'
 import {
@@ -13,7 +13,15 @@ import constants from '../../../constants'
 
 const { PAGINATION_COUNT } = constants
 
-type UseHashtags = (options?: { sortMode?: HashtagsSortMode }) => {
+const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
+  revalidateOnMount: true,
+  revalidateOnFocus: false,
+}
+
+type UseHashtags = (options?: {
+  sortMode?: HashtagsSortMode
+  swrConfig?: SWRInfiniteConfiguration
+}) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -23,7 +31,10 @@ type UseHashtags = (options?: { sortMode?: HashtagsSortMode }) => {
   moreToLoad: boolean
 }
 
-const useHashtags: UseHashtags = ({ sortMode = 'latest' } = {}) => {
+const useHashtags: UseHashtags = ({
+  sortMode = 'latest',
+  swrConfig = {},
+} = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
   }>({})
@@ -54,8 +65,8 @@ const useHashtags: UseHashtags = ({ sortMode = 'latest' } = {}) => {
     },
     {
       fallbackData,
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
     }
   )
 
