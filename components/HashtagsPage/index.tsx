@@ -8,6 +8,7 @@ import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { HashtagsSortMode } from '../../types'
 import useHashtags from '../../utils/data/hashtags/useHashtags'
 import HashtagsList from '../HashtagsList'
+import MiniCategoriesSection from '../MiniCategoriesSection'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -46,7 +47,10 @@ const HashtagsPage = () => {
   }, [pathSortMode])
 
   return (
-    <Page pageTitle="Hashtags">
+    <Page
+      pageTitle="Hashtags"
+      rightPanelChildren={<MiniCategoriesSection />}
+    >
       <ViewSelectorButtonGroup>
         {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
           <Link href={href} key={href} passHref shallow>

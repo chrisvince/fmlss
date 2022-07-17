@@ -8,6 +8,8 @@ import Feed from '../Feed'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { FeedSortMode } from '../../types'
+import MiniHashtagsSection from '../MiniHashtagsSection'
+import MiniCategoriesSection from '../MiniCategoriesSection'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -49,7 +51,15 @@ const FeedPage = () => {
   }, [pathSortMode])
 
   return (
-    <Page pageTitle="Feed">
+    <Page
+      pageTitle="Feed"
+      rightPanelChildren={
+        <>
+          <MiniHashtagsSection />
+          <MiniCategoriesSection />
+        </>
+      }
+    >
       <ViewSelectorButtonGroup>
         {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
           <Link href={href} key={href} passHref shallow>

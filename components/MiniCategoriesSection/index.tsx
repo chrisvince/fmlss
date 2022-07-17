@@ -1,11 +1,18 @@
 import { Box } from '@mui/system'
 
-import useCategories from '../../utils/data/categories/useCategories'
+import usePopularCategories from '../../utils/data/categories/usePopularCategories'
 import MiniCategoriesList from '../MiniCategoriesList'
 import MiniSectionHeading from '../MiniSectionHeading'
 
 const MiniCategoriesSection = () => {
-  const { isLoading, categories } = useCategories({ sortMode: 'popular' })
+  const { isLoading, categories } = usePopularCategories({
+    swrConfig: {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: false,
+    },
+  })
 
   return (
     <Box>

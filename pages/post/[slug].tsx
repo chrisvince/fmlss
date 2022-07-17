@@ -14,7 +14,14 @@ import getPostReplies from '../../utils/data/postReplies/getPostReplies'
 import {
   createPostRepliesCacheKey,
   createPostCacheKey,
+  createMiniHashtagsCacheKey,
+  createMiniCategoriesCacheKey,
 } from '../../utils/createCacheKeys'
+import getHashtags from '../../utils/data/hashtags/getHashtags'
+import getCategories from '../../utils/data/categories/getCategories'
+import constants from '../../constants'
+
+const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface PropTypes {
   fallback: {
@@ -63,16 +70,34 @@ const getServerSidePropsFn = async ({
     db: adminDb,
   })
 
+  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniHashtags = await getHashtags({
+    cacheKey: miniHashtagsCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+  const miniCategories = await getCategories({
+    cacheKey: miniCategoriesCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
   // @ts-expect-error
   await admin.app().delete()
 
   return {
     props: {
-      key: postCacheKey,
       fallback: {
+        [miniCategoriesCacheKey]: miniCategories,
+        [miniHashtagsCacheKey]: miniHashtags,
         [postCacheKey]: post,
         [postRepliesCacheKey]: replies,
       },
+      key: postCacheKey,
     },
   }
 }

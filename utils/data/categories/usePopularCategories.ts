@@ -1,0 +1,61 @@
+import useSWR, { KeyedMutator } from 'swr'
+import { SWRInfiniteConfiguration } from 'swr/infinite'
+
+import { Category } from '../../../types'
+import { createMiniCategoriesCacheKey } from '../../createCacheKeys'
+import constants from '../../../constants'
+import { FetcherResponse, PublicConfiguration } from 'swr/dist/types'
+import getCategories from './getCategories'
+
+const { MINI_LIST_COUNT } = constants
+
+type SWRConfig = Partial<
+  PublicConfiguration<
+    Category | null,
+    any,
+    (args_0: string) => FetcherResponse<Category | null>
+  >
+>
+
+const DEFAULT_SWR_CONFIG: SWRConfig = {
+  revalidateOnFocus: false,
+}
+
+type UsePopularCategories = (options?: {
+  swrConfig?: SWRInfiniteConfiguration
+}) => {
+  error: any
+  isLoading: boolean
+  isValidating: boolean
+  mutate: KeyedMutator<Category[]>
+  categories: Category[]
+}
+
+const usePopularCategories: UsePopularCategories = ({
+  swrConfig = {},
+} = {}) => {
+  const cacheKey = createMiniCategoriesCacheKey()
+
+  const { data, error, isValidating, mutate } = useSWR(
+    cacheKey,
+    () =>
+      getCategories({
+        sortMode: 'popular',
+        limit: MINI_LIST_COUNT,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
+
+  return {
+    categories: data as Category[],
+    isLoading: !error && !data,
+    isValidating,
+    error,
+    mutate: mutate as KeyedMutator<Category[]>,
+  }
+}
+
+export default usePopularCategories

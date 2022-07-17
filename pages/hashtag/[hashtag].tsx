@@ -12,8 +12,13 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import type { HashtagSortMode, Post } from '../../types'
-import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
+import { createHashtagPostsCacheKey, createMiniCategoriesCacheKey, createMiniHashtagsCacheKey } from '../../utils/createCacheKeys'
+import getCategories from '../../utils/data/categories/getCategories'
+import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
+import constants from '../../constants'
+
+const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 const DEFAULT_POST_TYPE = 'post'
@@ -65,12 +70,30 @@ const getServerSidePropsFn = async ({
     sortMode,
   })
 
+  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniHashtags = await getHashtags({
+    cacheKey: miniHashtagsCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+  const miniCategories = await getCategories({
+    cacheKey: miniCategoriesCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
   // @ts-expect-error
   await admin.app().delete()
 
   return {
     props: {
       fallback: {
+        [miniCategoriesCacheKey]: miniCategories,
+        [miniHashtagsCacheKey]: miniHashtags,
         [hashtagPostsCacheKey]: posts,
       },
       hashtag,

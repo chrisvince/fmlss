@@ -10,7 +10,11 @@ const {
   TOP_NAVIGATION_MARGIN_BOTTOM_SM,
 } = constants
 
-const RightSideBar = () => {
+interface PropTypes {
+  children: React.ReactNode
+}
+
+const RightSideBar = ({ children }: PropTypes) => {
   const theme = useTheme()
   const naviMarginBottomXs = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)
   const naviMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
@@ -29,8 +33,7 @@ const RightSideBar = () => {
         },
       }}
     >
-      <MiniHashtagsSection />
-      <MiniCategoriesSection />
+      {children}
     </Box>
   )
 }

@@ -28,8 +28,8 @@ const Layout = ({ children }: PropTypes) => {
             display: 'grid',
             gridTemplateColumns: {
               sm: `${SIDEBAR_WIDTH_SM} 1fr`,
-              md: `${SIDEBAR_WIDTH_MD} 1fr ${SIDEBAR_WIDTH_MD}`,
-              lg: `${SIDEBAR_WIDTH_LG} 1fr ${SIDEBAR_WIDTH_LG}`,
+              md: `${SIDEBAR_WIDTH_MD} 1fr`,
+              lg: `${SIDEBAR_WIDTH_LG} 1fr`,
             },
             columnGap: {
               sm: SIDEBAR_GAP_SM,
@@ -48,19 +48,7 @@ const Layout = ({ children }: PropTypes) => {
             <LeftNavigationDesktop />
           </Box>
           <Box>
-            <CenterSectionContainer>
-              {children}
-            </CenterSectionContainer>
-          </Box>
-          <Box
-            sx={{
-              display: {
-                xs: 'none',
-                md: 'block',
-              },
-            }}
-          >
-            <RightSideBar />
+            {children}
           </Box>
         </Box>
       </Container>

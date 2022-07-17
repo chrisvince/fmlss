@@ -22,17 +22,23 @@ const {
 
 type GetCategories = (
   options?: {
+    cacheKey?: string
+    cacheTime?: number
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-    startAfter?: FirebaseDoc
+    limit?: number
     sortMode?: CategoriesSortMode
+    startAfter?: FirebaseDoc
   }
 ) => Promise<Category[]>
 
 const getCategories: GetCategories = async (
   {
+    sortMode = 'popular',
+    cacheKey = createCategoriesCacheKey(sortMode),
+    cacheTime = CATEGORIES_CACHE_TIME,
     db: dbProp,
+    limit = PAGINATION_COUNT,
     startAfter,
-    sortMode = 'popular'
   } = {},
 ) => {
   const db = dbProp || firebase.firestore()
@@ -43,8 +49,7 @@ const getCategories: GetCategories = async (
     | null
   let categoryData: CategoryData[] = []
 
-  const categoriesCacheKey = createCategoriesCacheKey(sortMode)
-  const cachedData = get(categoriesCacheKey)
+  const cachedData = get(cacheKey)
   
   if (isServer && cachedData) {
     categoryData = cachedData
@@ -56,13 +61,13 @@ const getCategories: GetCategories = async (
         sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
       query => startAfter ? query.startAfter(startAfter) : query,
-      query => query.limit(PAGINATION_COUNT).get(),
+      query => query.limit(limit).get(),
     )()
 
     if (categoryDocs.empty) return []
 
     categoryData = categoryDocs.docs.map(doc => mapCategoryDocToData(doc))
-    put(categoriesCacheKey, categoryData, CATEGORIES_CACHE_TIME)
+    put(cacheKey, categoryData, cacheTime)
   }
 
   const categories = categoryData.map((data, index) => ({

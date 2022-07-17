@@ -12,8 +12,13 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import type { FeedSortMode, Post } from '../../types'
-import { createPostFeedCacheKey } from '../../utils/createCacheKeys'
+import { createMiniCategoriesCacheKey, createMiniHashtagsCacheKey, createPostFeedCacheKey } from '../../utils/createCacheKeys'
+import getCategories from '../../utils/data/categories/getCategories'
+import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getPostFeed from '../../utils/data/posts/getPostFeed'
+import constants from '../../constants'
+
+const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -67,12 +72,30 @@ const getServerSidePropsFn = async ({
     uid,
   })
 
+  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniHashtags = await getHashtags({
+    cacheKey: miniHashtagsCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+  const miniCategories = await getCategories({
+    cacheKey: miniCategoriesCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
   // @ts-expect-error
   await admin.app().delete()
 
   return {
     props: {
       fallback: {
+        [miniCategoriesCacheKey]: miniCategories,
+        [miniHashtagsCacheKey]: miniHashtags,
         [postFeedCacheKey]: posts,
       },
       key: postFeedCacheKey,

@@ -2,6 +2,8 @@ import Head from 'next/head'
 import constants from '../../constants'
 import type { ReactNode } from 'react'
 import PageTitle from '../PageTitle'
+import NestedLayout from '../NestedLayout'
+import RightSideBar from '../RightSideBar'
 
 const { BRAND_NAME } = constants
 
@@ -12,6 +14,7 @@ interface PropTypes {
   description?: string
   noPageTitle?: boolean
   pageTitle?: string
+  rightPanelChildren?: ReactNode
   title?: string
   uiPageTitle?: string
 }
@@ -26,6 +29,7 @@ const Page = ({
   description = DEFAULT_DESCRIPTION,
   noPageTitle = false,
   pageTitle,
+  rightPanelChildren,
   title,
   uiPageTitle,
 }: PropTypes) => {
@@ -44,12 +48,20 @@ const Page = ({
         <meta name="description" content={description} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        {renderUiTitle && (
-          <PageTitle>{uiTitle}</PageTitle>
-        )}
-        {children}
-      </main>
+      <NestedLayout
+        main={
+          <>
+            {renderUiTitle && <PageTitle>{uiTitle}</PageTitle>}
+            {children}
+          </>
+        }
+        rightPanelChildren={
+          <RightSideBar>
+            {rightPanelChildren}
+          </RightSideBar>
+        }
+      />
+      <main></main>
     </>
   )
 }

@@ -9,6 +9,8 @@ import Feed from '../Feed'
 import useHashtagPosts from '../../utils/data/posts/useHashtagPosts'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { HashtagSortMode } from '../../types'
+import MiniCategoriesSection from '../MiniCategoriesSection'
+import MiniHashtagsSection from '../MiniHashtagsSection'
 
 type PropTypes = {
   hashtag: string
@@ -61,7 +63,15 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
   const title = `#${hashtag}`
 
   return (
-    <Page pageTitle={title}>
+    <Page
+      pageTitle={title}
+      rightPanelChildren={
+        <>
+          <MiniHashtagsSection />
+          <MiniCategoriesSection />
+        </>
+      }
+    >
       <ViewSelectorButtonGroup>
         {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
           <Link href={href} key={href} passHref shallow>
@@ -77,7 +87,7 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
         sx={{
           display: 'flex',
           justifyContent: 'flex-end',
-          paddingY: 2
+          paddingY: 2,
         }}
       >
         <FormControlLabel

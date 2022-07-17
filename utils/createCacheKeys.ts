@@ -51,12 +51,17 @@ const createCategoryPostsCacheKey = (
 
 const createCategoryCacheKey = (slug: string) => `category/${slug}`
 
+const createMiniHashtagsCacheKey = () => 'hashtags/mini'
+const createMiniCategoriesCacheKey = () => 'categories/mini'
+
 export {
   createCategoriesCacheKey,
   createCategoryCacheKey,
   createCategoryPostsCacheKey,
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
+  createMiniCategoriesCacheKey,
+  createMiniHashtagsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,
