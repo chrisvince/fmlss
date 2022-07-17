@@ -7,10 +7,6 @@ import {
 import { SWRConfig } from 'swr'
 
 import FeedPage from '../../components/FeedPage'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
 import type { FeedSortMode, Post } from '../../types'
 import { createMiniCategoriesCacheKey, createMiniHashtagsCacheKey, createPostFeedCacheKey } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
@@ -19,8 +15,6 @@ import getPostFeed from '../../utils/data/posts/getPostFeed'
 import constants from '../../constants'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
-
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface PropTypes {
   fallback: {
@@ -103,8 +97,8 @@ const getServerSidePropsFn = async ({
   }
 }
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-)(getServerSidePropsFn as any)
+export const getServerSideProps = withAuthUserTokenSSR()(
+  getServerSidePropsFn as any
+)
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Feed as any)
+export default withAuthUser()(Feed as any)

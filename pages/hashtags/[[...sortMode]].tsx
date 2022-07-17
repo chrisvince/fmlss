@@ -6,10 +6,6 @@ import {
 import { SWRConfig } from 'swr'
 
 import HashtagsPage from '../../components/HashtagsPage'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
 import type { HashtagsSortMode, Post } from '../../types'
 import { createHashtagsCacheKey, createMiniCategoriesCacheKey } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
@@ -17,8 +13,6 @@ import getHashtags from '../../utils/data/hashtags/getHashtags'
 import constants from '../../constants'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
-
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface PropTypes {
   fallback: {
@@ -87,8 +81,8 @@ const getServerSidePropsFn = async ({
   }
 }
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-)(getServerSidePropsFn as any)
+export const getServerSideProps = withAuthUserTokenSSR()(
+  getServerSidePropsFn as any
+)
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Feed as any)
+export default withAuthUser()(Feed as any)

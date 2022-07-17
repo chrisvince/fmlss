@@ -7,10 +7,6 @@ import {
 import { SWRConfig } from 'swr'
 
 import CategoryPage from '../../components/CategoryPage'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
 import type { CategorySortMode, Post } from '../../types'
 import {
   createCategoryCacheKey,
@@ -18,8 +14,6 @@ import {
 } from '../../utils/createCacheKeys'
 import getCategory from '../../utils/data/category/getCategory'
 import getCategoryPosts from '../../utils/data/posts/getCategoryPosts'
-
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface PropTypes {
   fallback: {
@@ -85,8 +79,8 @@ const getServerSidePropsFn = async ({
   }
 }
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-)(getServerSidePropsFn as any)
+export const getServerSideProps = withAuthUserTokenSSR()(
+  getServerSidePropsFn as any
+)
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Hashtag as any)
+export default withAuthUser()(Hashtag as any)
