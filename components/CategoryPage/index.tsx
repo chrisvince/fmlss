@@ -48,9 +48,10 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   const { category } = useCategory(slug)
 
-  const { isLoading, loadMore, moreToLoad, posts } = useCategoryPosts(slug, {
-    sortMode,
-  })
+  const { cacheKey, isLoading, loadMore, moreToLoad, posts } = useCategoryPosts(
+    slug,
+    { sortMode }
+  )
 
   const sortOptions = generateSortOptions(slug)
 
@@ -68,6 +69,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
         ))}
       </ViewSelectorButtonGroup>
       <Feed
+        cacheKey={cacheKey}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLoadMore={loadMore}

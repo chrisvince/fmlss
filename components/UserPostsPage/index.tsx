@@ -5,7 +5,9 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 
 const UserPostsPage = () => {
-  const { moreToLoad, loadMore, posts } = useUserPosts({ type: 'post' })
+  const { cacheKey, isLoading, loadMore, moreToLoad, posts } = useUserPosts({
+    type: 'post',
+  })
 
   return (
     <Page
@@ -17,7 +19,13 @@ const UserPostsPage = () => {
         </>
       }
     >
-      <Feed moreToLoad={moreToLoad} onLoadMore={loadMore} posts={posts} />
+      <Feed
+        cacheKey={cacheKey}
+        isLoading={isLoading}
+        moreToLoad={moreToLoad}
+        onLoadMore={loadMore}
+        posts={posts}
+      />
     </Page>
   )
 }

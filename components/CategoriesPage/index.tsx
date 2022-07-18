@@ -38,9 +38,12 @@ const CategoriesPage = () => {
   ] as CategoriesSortMode
 
   const [sortMode, setSortMode] = useState<CategoriesSortMode>(pathSortMode)
-  const { isLoading, loadMore, moreToLoad, categories } = useCategories({
-    sortMode,
-  })
+  const { cacheKey, categories, isLoading, loadMore, moreToLoad } =
+    useCategories({
+      sortMode,
+    })
+  console.log('categories', categories)
+  
 
   useEffect(() => {
     setSortMode(pathSortMode)
@@ -63,6 +66,7 @@ const CategoriesPage = () => {
         ))}
       </ViewSelectorButtonGroup>
       <CategoriesList
+        cacheKey={cacheKey}
         categories={categories}
         isLoading={isLoading}
         moreToLoad={moreToLoad}

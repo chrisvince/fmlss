@@ -25,6 +25,7 @@ type UseUserPosts = (options?: {
   type?: 'post' | 'reply'
   swrConfig?: SWRInfiniteConfiguration
 }) => {
+  cacheKey: string
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -102,11 +103,13 @@ const useUserPosts: UseUserPosts = ({ type = 'post', swrConfig = {} } ={}) => {
   const lastPageLength = data?.at?.(-1)?.length
   const isLoading = !error && !data
 
-  const moreToLoad = !isValidating && (
+  const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
-  )
+  
+  const cacheKey = createCacheKey(uid!, null)
 
   return {
+    cacheKey,
     error,
     isLoading,
     isValidating,

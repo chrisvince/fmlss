@@ -27,6 +27,7 @@ type UsePostFeed = (
     swrConfig?: SWRInfiniteConfiguration
   }
 ) => {
+  cacheKey: string
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -107,10 +108,12 @@ const useHashtagPosts: UsePostFeed = (
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length ?? 0
   const isLoading = !error && !data
-
-  const moreToLoad = !isValidating && lastPageLength >= PAGINATION_COUNT
+  const moreToLoad =
+    lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
+  const cacheKey = createHashtagPostsCacheKey(hashtag, showType, sortMode, null)
 
   return {
+    cacheKey,
     error,
     isLoading,
     isValidating,

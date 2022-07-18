@@ -22,6 +22,7 @@ type UseHashtags = (options?: {
   sortMode?: HashtagsSortMode
   swrConfig?: SWRInfiniteConfiguration
 }) => {
+  cacheKey: string
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -92,11 +93,14 @@ const useHashtags: UseHashtags = ({
   const hashtags = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length
   const isLoading = !error && !data
-  const moreToLoad = !isValidating && (
+
+  const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
-  )
+
+  const cacheKey = createHashtagsCacheKey(sortMode, null)
 
   return {
+    cacheKey,
     error,
     isLoading,
     isValidating,

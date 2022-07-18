@@ -49,10 +49,13 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
   const sortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as HashtagSortMode
 
-  const { isLoading, loadMore, moreToLoad, posts } = useHashtagPosts(hashtag, {
-    showType: showType,
-    sortMode,
-  })
+  const { cacheKey, isLoading, loadMore, moreToLoad, posts } = useHashtagPosts(
+    hashtag,
+    {
+      showType: showType,
+      sortMode,
+    }
+  )
 
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
     const { checked } = event.target as HTMLInputElement
@@ -97,6 +100,7 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
         />
       </Box>
       <Feed
+        cacheKey={cacheKey}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLoadMore={loadMore}

@@ -28,6 +28,7 @@ type UsePostReplies = (
     swrConfig?: SWRInfiniteConfiguration
   },
 ) => {
+  cacheKey: string
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -110,11 +111,13 @@ const usePostReplies: UsePostReplies = (
   const isLoading = !error && !data
   const isValidating = repliesAreValidating || postIsValidating
 
-  const moreToLoad = !isValidating && (
+  const moreToLoad =
     post.data.postsCount === undefined || replies.length < post.data.postsCount
-  )
+  
+  const cacheKey = createPostRepliesCacheKey(slug, null, viewMode)
 
   return {
+    cacheKey,
     error,
     isLoading,
     isValidating,

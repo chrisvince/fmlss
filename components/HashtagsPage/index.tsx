@@ -38,7 +38,7 @@ const HashtagsPage = () => {
   ] as HashtagsSortMode
 
   const [sortMode, setSortMode] = useState<HashtagsSortMode>(pathSortMode)
-  const { isLoading, loadMore, moreToLoad, hashtags } = useHashtags({
+  const { cacheKey, isLoading, loadMore, moreToLoad, hashtags } = useHashtags({
     sortMode,
   })
 
@@ -63,6 +63,7 @@ const HashtagsPage = () => {
         ))}
       </ViewSelectorButtonGroup>
       <HashtagsList
+        cacheKey={cacheKey}
         hashtags={hashtags}
         isLoading={isLoading}
         moreToLoad={moreToLoad}

@@ -1,49 +1,31 @@
-import { Box, CircularProgress } from '@mui/material'
 import { Hashtag } from '../../types'
+import ContentList from '../ContentList'
 import HashtagListItem from '../HashtagListItem'
-import PostList from '../PostList'
 
 type PropTypes = {
-  isLoading?: boolean
-  moreToLoad?: boolean
-  onLoadMore?: () => any
+  cacheKey: string
+  isLoading: boolean
+  moreToLoad: boolean
+  onLoadMore: () => any
   hashtags: Hashtag[]
 }
+
 const HashtagsList = ({
+  cacheKey,
   isLoading,
   moreToLoad,
   onLoadMore,
   hashtags,
-}: PropTypes) => {
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          paddingY: 36,
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    )
-  }
-  return (
-    <Box>
-      {hashtags.length ? (
-        <PostList>
-          {hashtags.map((hashtag) => (
-            <li key={hashtag.data.id}>
-              <HashtagListItem hashtag={hashtag} />
-            </li>
-          ))}
-        </PostList>
-      ) : (
-        <p>No hashtags.</p>
-      )}
-      {moreToLoad && <button onClick={onLoadMore}>Load more</button>}
-    </Box>
-  )
-}
+}: PropTypes) => (
+  <ContentList
+    cacheKey={cacheKey}
+    isLoading={isLoading}
+    items={hashtags}
+    moreToLoad={moreToLoad}
+    onLoadMore={onLoadMore}
+  >
+    {hashtag => <HashtagListItem hashtag={hashtag} />}
+  </ContentList>
+)
 
 export default HashtagsList

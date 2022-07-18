@@ -5,7 +5,7 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 
 const UserLikesPage = () => {
-  const { moreToLoad, loadMore, posts } = useUserLikes()
+  const { cacheKey, isLoading, loadMore, moreToLoad, posts } = useUserLikes()
 
   return (
     <Page
@@ -17,7 +17,13 @@ const UserLikesPage = () => {
         </>
       }
     >
-      <Feed moreToLoad={moreToLoad} onLoadMore={loadMore} posts={posts} />
+      <Feed
+        cacheKey={cacheKey}
+        isLoading={isLoading}
+        moreToLoad={moreToLoad}
+        onLoadMore={loadMore}
+        posts={posts}
+      />
     </Page>
   )
 }
