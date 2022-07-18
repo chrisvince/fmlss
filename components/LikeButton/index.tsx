@@ -18,7 +18,7 @@ const LikeButton = ({
 
   const handleLikeButtonClick = async () => {
     if (like) {
-      setLikesCount(likesCount - 1)
+      setLikesCount(likesCount <= 0 ? 0 : likesCount - 1)
       setLike(false)
       try {
         await onUnlike?.()
@@ -36,7 +36,7 @@ const LikeButton = ({
       await onLike?.()
     } catch (error) {
       console.error(error)
-      setLikesCount(likesCount - 1)
+      setLikesCount(likesCount <= 0 ? 0 : likesCount - 1)
       setLike(false)
     }
   }
