@@ -13,7 +13,7 @@ const PostBody = ({ body }: { body: string }) => {
         paddingBottom: 4,
         whiteSpace: 'pre-wrap',
       }}
-      variant="bodyLarge"
+      variant="body1"
       component="p"
     >
       {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
