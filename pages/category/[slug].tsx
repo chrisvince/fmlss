@@ -64,9 +64,6 @@ const getServerSidePropsFn = async ({
     sortMode,
   })
 
-  // @ts-expect-error
-  await admin.app().delete()
-
   return {
     props: {
       fallback: {

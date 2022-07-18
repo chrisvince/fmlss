@@ -86,9 +86,6 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  // @ts-expect-error
-  await admin.app().delete()
-
   return {
     props: {
       fallback: {
