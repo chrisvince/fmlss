@@ -8,7 +8,14 @@ const { HASHTAG_REGEX } = constants
 
 const PostBody = ({ body }: { body: string }) => {
   return (
-    <Typography sx={{ paddingBottom: 4 }} variant="bodyLarge">
+    <Typography
+      sx={{
+        paddingBottom: 4,
+        whiteSpace: 'pre-wrap',
+      }}
+      variant="bodyLarge"
+      component="p"
+    >
       {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
         const hashtagValue = hashtag.slice(1).toLowerCase()
         return (
