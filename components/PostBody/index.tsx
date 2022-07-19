@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import { Typography, Link as MuiLink } from '@mui/material'
 import Link from 'next/link'
 import reactStringReplace from 'react-string-replace'
 import constants from '../../constants'
@@ -13,7 +13,7 @@ const PostBody = ({ body }: { body: string }) => {
         paddingBottom: 4,
         whiteSpace: 'pre-wrap',
       }}
-      variant="body1"
+      variant="bodyLarge"
       component="p"
     >
       {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
@@ -24,7 +24,17 @@ const PostBody = ({ body }: { body: string }) => {
             key={hashtagValue + index}
             style={{ color: 'dodgerblue' }}
           >
-            <a>{hashtag}</a>
+            <MuiLink
+              sx={{
+                textDecoration: 'none',
+                fontWeight: 'medium',
+                '&:hover': {
+                  textDecoration: 'underline',
+                }
+              }}
+            >
+              {hashtag}
+            </MuiLink>
           </Link>
         )
       })}

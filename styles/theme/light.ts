@@ -1,5 +1,19 @@
 import { createTheme } from '@mui/material/styles'
 
+declare module '@mui/material/styles' {
+  interface TypographyVariants {
+    bodyLarge: React.CSSProperties
+  }
+  interface TypographyVariantsOptions {
+    bodyLarge?: React.CSSProperties
+  }
+}
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    bodyLarge: true
+  }
+}
+
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -31,12 +45,20 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Assistant',
-    fontSize: 13,
+    fontSize: 14,
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
     fontWeightBold: 700,
     htmlFontSize: 14,
+    bodyLarge: {
+      fontSize: '1.25rem',
+    },
+    h6: {
+      fontSize: '1.1428571428571428rem',
+      textTransform: 'uppercase',
+      fontWeight: 600,
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -67,7 +89,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 100,
-        }
+        },
       },
     },
     MuiButtonGroup: {
@@ -75,6 +97,11 @@ const theme = createTheme({
         disableFocusRipple: true,
         disableElevation: true,
         size: 'small',
+      },
+      styleOverrides: {
+        grouped: {
+          fontSize: '0.8571428571428571rem',
+        },
       },
     },
     MuiCheckbox: {
