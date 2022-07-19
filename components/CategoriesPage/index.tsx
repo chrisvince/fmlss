@@ -42,8 +42,6 @@ const CategoriesPage = () => {
     useCategories({
       sortMode,
     })
-  console.log('categories', categories)
-  
 
   useEffect(() => {
     setSortMode(pathSortMode)
