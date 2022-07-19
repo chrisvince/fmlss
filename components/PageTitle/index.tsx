@@ -20,7 +20,10 @@ const PageHeading = ({ children }: { children: string }) => {
         backgroundColor: {
           sm: 'background.paper',
         },
-        marginBottom: 2,
+        marginBottom: {
+          xs: 1,
+          sm: 2,
+        },
         position: {
           sm: 'sticky',
         },
@@ -30,8 +33,12 @@ const PageHeading = ({ children }: { children: string }) => {
         zIndex: {
           sm: 1209,
         },
-        borderBottom: '1px solid',
-        borderColor: 'divider',
+        borderBottom: {
+          sm: '1px solid',
+        },
+        borderColor: {
+          sm: 'divider',
+        },
         paddingBottom: 1,
         paddingTop: {
           xs: 1,

@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import PageTitle from '../PageTitle'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
+import MobileContainer from '../MobileContainer'
 
 const { BRAND_NAME } = constants
 
@@ -51,7 +52,11 @@ const Page = ({
       <NestedLayout
         main={
           <>
-            {renderUiTitle && <PageTitle>{uiTitle}</PageTitle>}
+            {renderUiTitle && (
+              <MobileContainer>
+                <PageTitle>{uiTitle}</PageTitle>
+              </MobileContainer>
+            )}
             {children}
           </>
         }

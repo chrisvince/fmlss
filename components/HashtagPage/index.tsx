@@ -11,6 +11,7 @@ import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { HashtagSortMode } from '../../types'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
+import MobileContainer from '../MobileContainer'
 
 type PropTypes = {
   hashtag: string
@@ -75,17 +76,19 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
         </>
       }
     >
-      <ViewSelectorButtonGroup>
-        {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
-          <Link href={href} key={href} passHref shallow>
-            <Button
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
-            >
-              {label}
-            </Button>
-          </Link>
-        ))}
-      </ViewSelectorButtonGroup>
+      <MobileContainer>
+        <ViewSelectorButtonGroup>
+          {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
+            <Link href={href} key={href} passHref shallow>
+              <Button
+                variant={sortModeOption === sortMode ? 'contained' : undefined}
+              >
+                {label}
+              </Button>
+            </Link>
+          ))}
+        </ViewSelectorButtonGroup>
+      </MobileContainer>
       <Box
         sx={{
           display: 'flex',

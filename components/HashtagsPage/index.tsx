@@ -9,6 +9,7 @@ import type { HashtagsSortMode } from '../../types'
 import useHashtags from '../../utils/data/hashtags/useHashtags'
 import HashtagsList from '../HashtagsList'
 import MiniCategoriesSection from '../MiniCategoriesSection'
+import MobileContainer from '../MobileContainer'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -51,17 +52,19 @@ const HashtagsPage = () => {
       pageTitle="Hashtags"
       rightPanelChildren={<MiniCategoriesSection />}
     >
-      <ViewSelectorButtonGroup>
-        {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
-          <Link href={href} key={href} passHref shallow>
-            <Button
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
-            >
-              {label}
-            </Button>
-          </Link>
-        ))}
-      </ViewSelectorButtonGroup>
+      <MobileContainer>
+        <ViewSelectorButtonGroup>
+          {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
+            <Link href={href} key={href} passHref shallow>
+              <Button
+                variant={sortModeOption === sortMode ? 'contained' : undefined}
+              >
+                {label}
+              </Button>
+            </Link>
+          ))}
+        </ViewSelectorButtonGroup>
+      </MobileContainer>
       <HashtagsList
         cacheKey={cacheKey}
         hashtags={hashtags}

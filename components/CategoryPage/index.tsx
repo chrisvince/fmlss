@@ -9,6 +9,7 @@ import useCategoryPosts from '../../utils/data/posts/useCategoryPosts'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { CategorySortMode } from '../../types'
 import useCategory from '../../utils/data/category/useCategory'
+import MobileContainer from '../MobileContainer'
 
 type PropTypes = {
   slug: string
@@ -57,17 +58,19 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   return (
     <Page pageTitle={category.data.name}>
-      <ViewSelectorButtonGroup>
-        {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
-          <Link href={href} key={href} passHref shallow>
-            <Button
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
-            >
-              {label}
-            </Button>
-          </Link>
-        ))}
-      </ViewSelectorButtonGroup>
+      <MobileContainer>
+        <ViewSelectorButtonGroup>
+          {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
+            <Link href={href} key={href} passHref shallow>
+              <Button
+                variant={sortModeOption === sortMode ? 'contained' : undefined}
+              >
+                {label}
+              </Button>
+            </Link>
+          ))}
+        </ViewSelectorButtonGroup>
+      </MobileContainer>
       <Feed
         cacheKey={cacheKey}
         isLoading={isLoading}

@@ -35,6 +35,7 @@ const {
   SIDEBAR_WIDTH_XS,
   TOP_NAVIGATION_HEIGHT,
   TOP_NAVIGATION_MARGIN_BOTTOM_SM,
+  TOP_NAVIGATION_MARGIN_BOTTOM_XS,
 } = constants
 
 const TopNavigation = () => {
@@ -236,6 +237,7 @@ const TopNavigation = () => {
         <Box
           sx={{
             height: {
+              xs: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS),
               sm: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM),
             },
           }}

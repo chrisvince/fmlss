@@ -10,6 +10,7 @@ import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { FeedSortMode } from '../../types'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
+import MobileContainer from '../MobileContainer'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -62,17 +63,23 @@ const FeedPage = () => {
         </>
       }
     >
-      <ViewSelectorButtonGroup>
-        {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
-          <Link href={href} key={href} passHref shallow>
-            <Button
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
-            >
-              {label}
-            </Button>
-          </Link>
-        ))}
-      </ViewSelectorButtonGroup>
+      <MobileContainer>
+        <ViewSelectorButtonGroup>
+          {SORT_MODE_OPTIONS.map(
+            ({ href, sortMode: sortModeOption, label }) => (
+              <Link href={href} key={href} passHref shallow>
+                <Button
+                  variant={
+                    sortModeOption === sortMode ? 'contained' : undefined
+                  }
+                >
+                  {label}
+                </Button>
+              </Link>
+            )
+          )}
+        </ViewSelectorButtonGroup>
+      </MobileContainer>
       <Feed
         cacheKey={cacheKey}
         isLoading={isLoading}

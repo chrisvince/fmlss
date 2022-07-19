@@ -1,10 +1,9 @@
-import { Container, Box } from '@mui/system'
+import { Container, Box, useTheme } from '@mui/system'
+import { useMediaQuery } from '@mui/material'
 
 import TopNavigation from '../TopNavigation'
 import LeftNavigationDesktop from '../LeftNavigationDesktop'
 import constants from '../../constants'
-import RightSideBar from '../RightSideBar'
-import CenterSectionContainer from '../CenterSectionContainer'
 
 const {
   SIDEBAR_GAP_MD,
@@ -19,10 +18,13 @@ interface PropTypes {
 }
 
 const Layout = ({ children }: PropTypes) => {
+  const theme = useTheme()
+  const disableGutters = useMediaQuery(theme.breakpoints.down('sm'))
+
   return (
     <>
       <TopNavigation />
-      <Container>
+      <Container disableGutters={disableGutters}>
         <Box
           sx={{
             display: 'grid',
@@ -47,9 +49,7 @@ const Layout = ({ children }: PropTypes) => {
           >
             <LeftNavigationDesktop />
           </Box>
-          <Box>
-            {children}
-          </Box>
+          <Box>{children}</Box>
         </Box>
       </Container>
     </>

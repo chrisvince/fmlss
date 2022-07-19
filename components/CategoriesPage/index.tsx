@@ -9,6 +9,7 @@ import type { CategoriesSortMode } from '../../types'
 import CategoriesList from '../CategoriesList'
 import useCategories from '../../utils/data/categories/useCategories'
 import MiniHashtagsSection from '../MiniHashtagsSection'
+import MobileContainer from '../MobileContainer'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -52,17 +53,19 @@ const CategoriesPage = () => {
       pageTitle="Categories"
       rightPanelChildren={<MiniHashtagsSection />}
     >
-      <ViewSelectorButtonGroup>
-        {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
-          <Link href={href} key={href} passHref shallow>
-            <Button
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
-            >
-              {label}
-            </Button>
-          </Link>
-        ))}
-      </ViewSelectorButtonGroup>
+      <MobileContainer>
+        <ViewSelectorButtonGroup>
+          {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
+            <Link href={href} key={href} passHref shallow>
+              <Button
+                variant={sortModeOption === sortMode ? 'contained' : undefined}
+              >
+                {label}
+              </Button>
+            </Link>
+          ))}
+        </ViewSelectorButtonGroup>
+      </MobileContainer>
       <CategoriesList
         cacheKey={cacheKey}
         categories={categories}
