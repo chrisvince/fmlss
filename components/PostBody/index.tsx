@@ -13,7 +13,7 @@ const PostBody = ({ body }: { body: string }) => {
         paddingBottom: 4,
         whiteSpace: 'pre-wrap',
       }}
-      variant="bodyLarge"
+      variant="body1"
       component="p"
     >
       {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
@@ -21,8 +21,8 @@ const PostBody = ({ body }: { body: string }) => {
         return (
           <Link
             href={`/hashtag/${hashtagValue}`}
-            key={hashtagValue + index}
-            style={{ color: 'dodgerblue' }}
+            key={`${hashtagValue}-${index}`}
+            passHref
           >
             <MuiLink
               sx={{
@@ -30,7 +30,7 @@ const PostBody = ({ body }: { body: string }) => {
                 fontWeight: 'medium',
                 '&:hover': {
                   textDecoration: 'underline',
-                }
+                },
               }}
             >
               {hashtag}

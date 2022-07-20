@@ -1,19 +1,5 @@
 import { createTheme } from '@mui/material/styles'
 
-declare module '@mui/material/styles' {
-  interface TypographyVariants {
-    bodyLarge: React.CSSProperties
-  }
-  interface TypographyVariantsOptions {
-    bodyLarge?: React.CSSProperties
-  }
-}
-declare module '@mui/material/Typography' {
-  interface TypographyPropsVariantOverrides {
-    bodyLarge: true
-  }
-}
-
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -51,9 +37,6 @@ const theme = createTheme({
     fontWeightMedium: 500,
     fontWeightBold: 700,
     htmlFontSize: 14,
-    bodyLarge: {
-      fontSize: '1.25rem',
-    },
     h6: {
       fontSize: '1.1428571428571428rem',
       textTransform: 'uppercase',
