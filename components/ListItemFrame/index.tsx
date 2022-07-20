@@ -1,5 +1,5 @@
 import { Box } from '@mui/system'
-import { SyntheticEvent } from 'react'
+import { SyntheticEvent, useState } from 'react'
 
 interface PropTypes {
   'aria-label'?: string
@@ -18,10 +18,13 @@ const ListItemFrame = ({
   mini = false,
   onOpen,
 }: PropTypes) => {
+  const [highlight, setHighlight] = useState(false)
+
   const handleClick = (event: SyntheticEvent) => {
     const { tagName } = event.target as HTMLAnchorElement
     if (IGNORE_NAVIGATE_TAG_NAMES.includes(tagName)) return
     if (window.getSelection()?.toString().length) return
+    setHighlight(true)
     onOpen?.()
   }
 
@@ -38,8 +41,11 @@ const ListItemFrame = ({
         paddingY: mini ? 1 : 4,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
-        '&:hover': {
-          backgroundColor: 'action.hover',
+        backgroundColor: highlight ? 'action.hover' : undefined,
+        '@media (hover: hover)': {
+          '&:hover': {
+            backgroundColor: 'action.hover',
+          },
         },
       }}
     >
