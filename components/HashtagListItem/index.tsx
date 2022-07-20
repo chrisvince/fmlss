@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { Hashtag } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
+import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
 
 type PropTypes = {
@@ -24,14 +25,19 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
         }}
       >
         <Typography
-          variant="h5"
           component="div"
+          variant="h5"
         >
           #{hashtag.data.hashtag}
         </Typography>
-        <Typography variant="body2">
-          {formatPostCount(hashtag.data.usageCount)}
-        </Typography>
+        <div>
+          <Typography variant="body2" component="div" align="right">
+            {formatPostCount(hashtag.data.usageCount)}
+          </Typography>
+          <Typography variant="body2" component="div" align="right">
+            {formatViewCount(hashtag.data.viewCount)}
+          </Typography>
+        </div>
       </Box>
     </ListItemFrame>
   )

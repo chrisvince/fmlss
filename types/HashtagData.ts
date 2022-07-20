@@ -4,4 +4,5 @@ export interface HashtagData {
   id: string
   updatedAt: string
   usageCount: number
+  viewCount: number
 }

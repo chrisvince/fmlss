@@ -5,4 +5,5 @@ export interface CategoryData {
   postCount: number
   slug: string
   updatedAt: string
+  viewCount: number
 }

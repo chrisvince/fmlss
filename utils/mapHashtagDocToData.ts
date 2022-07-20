@@ -10,6 +10,7 @@ const mapHashtagDocToData: MapHashtagDocToData = doc => {
     id: doc.id as string,
     updatedAt: data.updatedAt.toMillis() as string,
     usageCount: data.usageCount as number,
+    viewCount: data.viewCount as number,
   }
 }
 

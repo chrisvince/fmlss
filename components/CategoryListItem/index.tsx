@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { Category } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
+import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
 
 type PropTypes = {
@@ -24,14 +25,19 @@ const CategoryListItem = ({ category }: PropTypes) => {
         }}
       >
         <Typography
-          variant="h5"
           component="div"
+          variant="h5"
         >
           {category.data.name}
         </Typography>
-        <Typography variant="body2">
-          {formatPostCount(category.data.postCount)}
-        </Typography>
+        <div>
+          <Typography variant="body2" component="div" align="right">
+            {formatPostCount(category.data.postCount)}
+          </Typography>
+          <Typography variant="body2" component="div" align="right">
+            {formatViewCount(category.data.viewCount)}
+          </Typography>
+        </div>
       </Box>
     </ListItemFrame>
   )
