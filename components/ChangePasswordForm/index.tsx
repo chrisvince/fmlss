@@ -68,7 +68,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
     } catch (error: any) {
       if (
         error.code === 'invalid-argument' &&
-        error.message === 'Current password is incorrect.'
+        error.message === '`currentPassword` is incorrect.'
       ) {
         setUiState(UI_STATES.WRONG_CURRENT_PASSWORD_ERROR)
         return
