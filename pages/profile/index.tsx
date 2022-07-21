@@ -24,6 +24,11 @@ const UserProfile = () => {
         </Link>
       </div>
       <div>
+        <Link href="/profile/change-email">
+          <a>Change email</a>
+        </Link>
+      </div>
+      <div>
         <button onClick={handleSignOutClick}>Sign out</button>
       </div>
     </Page>
