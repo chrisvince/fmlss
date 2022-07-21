@@ -19,7 +19,7 @@ const UserProfile = () => {
       <p>Your email is {authUser.email}.</p>
       <div>{!authUser.emailVerified && <EmailVerificationLink />}</div>
       <div>
-        <Link href="/change-password">
+        <Link href="/profile/change-password">
           <a>Change password</a>
         </Link>
       </div>

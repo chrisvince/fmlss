@@ -4,9 +4,9 @@ import {
   AuthUser,
 } from 'next-firebase-auth'
 
-import ChangePasswordForm from '../components/ChangePasswordForm'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
-import { checkUserHasPassword } from '../utils/callableFirebaseFunctions'
+import ChangePasswordForm from '../../components/ChangePasswordForm'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
+import { checkUserHasPassword } from '../../utils/callableFirebaseFunctions'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
