@@ -9,8 +9,6 @@ interface PropTypes {
   onOpen?: () => void
 }
 
-const IGNORE_NAVIGATE_TAG_NAMES = ['A', 'BUTTON']
-
 const ListItemFrame = ({
   'aria-label': ariaLabel,
   children,
@@ -21,8 +19,10 @@ const ListItemFrame = ({
   const [highlight, setHighlight] = useState(false)
 
   const handleClick = (event: SyntheticEvent) => {
-    const { tagName } = event.target as HTMLAnchorElement
-    if (IGNORE_NAVIGATE_TAG_NAMES.includes(tagName)) return
+    const isClickableElement = (event.target as HTMLAnchorElement).closest(
+      'a, button'
+    )
+    if (isClickableElement) return
     if (window.getSelection()?.toString().length) return
     setHighlight(true)
     onOpen?.()
@@ -38,7 +38,7 @@ const ListItemFrame = ({
         borderBottom: '1px solid',
         borderColor: 'divider',
         paddingX: mini ? 1 : 2,
-        paddingY: mini ? 1 : 4,
+        paddingY: mini ? 1 : 2,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
         backgroundColor: highlight ? 'action.hover' : undefined,
