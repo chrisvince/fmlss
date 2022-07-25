@@ -18,6 +18,7 @@ type SWRConfig = Partial<
 >
 
 const DEFAULT_SWR_CONFIG: SWRConfig = {
+  revalidateOnMount: true,
   revalidateOnFocus: false,
 }
 

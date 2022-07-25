@@ -1,56 +1,112 @@
+import { PersonRounded } from '@mui/icons-material'
+import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
+import { useId } from 'react'
 
 import { Post } from '../../types'
-import {
-  createPostLike,
-  removePostLike,
-} from '../../utils/callableFirebaseFunctions'
+import formatLikesCount from '../../utils/formatting/formatLikesCount'
 import formatReplyCount from '../../utils/formatting/formatReplyCount'
-import truncateString from '../../utils/truncateString'
+import useLikeState from '../../utils/useLikeState'
+import CaptionLink from '../CaptionLink'
+import HighlightButton from '../HighlightButton'
 import LikeButton from '../LikeButton'
 import ListItemFrame from '../ListItemFrame'
 import PostBody from '../PostBody'
+import PostCaption from '../PostCaption'
+import ReplyButton from '../ReplyButton'
+import ShareButton from '../ShareButton'
 
 type PropTypes = {
   post: Post
+  onLikePost: (slug: string) => Promise<void>
 }
 
-const PostListItem = ({ post }: PropTypes) => {
+const PostListItem = ({ post, onLikePost }: PropTypes) => {
   const { push: navigate } = useRouter()
 
   const handleOpen = () =>
     navigate(`/post/${encodeURIComponent(post.data.slug)}`)
 
-  const handleLike = () => createPostLike({ slug: post.data.slug })
-  const handleUnlike = () => removePostLike({ slug: post.data.slug })
-  const title = truncateString(post.data.body)
+  const { toggleLike, likesCount, like } = useLikeState({ post })
+
+  const handleLikeButtonClick = () => {
+    toggleLike()
+    onLikePost(post.data.slug)
+  }
+
+  const byUser = !!post.user?.created
+  const showPostCatption = !!byUser
+  const postCaptionText = byUser ? 'Posted by me' : undefined
+  const postCaptionHref = byUser ? '/profile/posts' : undefined
+  const postCaptionIcon = byUser ? PersonRounded : undefined
+  const ariaLabelledById = useId()
 
   return (
     <ListItemFrame
       component="article"
       onOpen={handleOpen}
-      aria-label={title}
+      aria-labelledby={ariaLabelledById}
     >
-      <PostBody body={post.data.body} />
-      <div
-        style={{
+      <Box
+        sx={{
           display: 'flex',
-          gap: '20px',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          justifyContent: 'flex-start',
+          gap: 2,
         }}
       >
-        {post.user?.created && (
-          <div>Created by me</div>
+        {showPostCatption && (
+          <PostCaption href={postCaptionHref} icon={postCaptionIcon}>
+            {postCaptionText}
+          </PostCaption>
         )}
-        {!!post.data.postsCount && (
-          <div>{formatReplyCount(post.data.postsCount)}</div>
-        )}
-        <LikeButton
-          like={!!post.user?.like}
-          likesCount={post.data.likesCount}
-          onLike={handleLike}
-          onUnlike={handleUnlike}
-        />
-      </div>
+        <PostBody body={post.data.body} id={ariaLabelledById} />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            justifyContent: 'flex-start',
+            gap: 1,
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 2,
+            }}
+          >
+            <CaptionLink href={`/post/${encodeURIComponent(post.data.slug)}`}>
+              {formatLikesCount(likesCount)}
+            </CaptionLink>
+            <CaptionLink
+              href={`/post/${encodeURIComponent(post.data.slug)}#replies`}
+            >
+              {formatReplyCount(post.data.postsCount)}
+            </CaptionLink>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 1,
+              mx: -1,
+              mb: -1,
+            }}
+          >
+            <LikeButton
+              like={like}
+              onClick={handleLikeButtonClick}
+            />
+            <ReplyButton slug={post.data.slug} />
+            <HighlightButton />
+            <ShareButton />
+          </Box>
+        </Box>
+      </Box>
     </ListItemFrame>
   )
 }

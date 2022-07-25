@@ -3,6 +3,7 @@ import { SyntheticEvent, useState } from 'react'
 
 interface PropTypes {
   'aria-label'?: string
+  'aria-labelledby'?: string
   children: React.ReactNode
   component?: React.ElementType
   mini?: boolean
@@ -11,6 +12,7 @@ interface PropTypes {
 
 const ListItemFrame = ({
   'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
   children,
   component,
   mini = false,
@@ -30,6 +32,7 @@ const ListItemFrame = ({
 
   return (
     <Box
+      aria-labelledby={ariaLabelledBy}
       aria-label={ariaLabel}
       component={component}
       onClick={handleClick}

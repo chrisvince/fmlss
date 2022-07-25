@@ -1,9 +1,9 @@
 import formatCount from './formatCount'
 
-const formatPostCount = (number: number) => {
+const formatLikesCount = (number: number) => {
   const s = number === 1 ? '' : 's'
   const formattedCount = formatCount(number)
-  return `${formattedCount} post${s}`
+  return `${formattedCount} like${s}`
 }
 
-export default formatPostCount
+export default formatLikesCount

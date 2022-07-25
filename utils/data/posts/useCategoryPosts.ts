@@ -1,5 +1,5 @@
 import { useAuthUser } from 'next-firebase-auth'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { KeyedMutator, useSWRConfig } from 'swr'
 
@@ -11,12 +11,18 @@ import {
 import getCategoryPosts from './getCategoryPosts'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
+import checkUserLikesPost from '../utils/data-infinite-loading/checkUserLikesPost'
+import updatePostLikeInServer from '../utils/data-infinite-loading/updatePostLikeInServer'
+import mutatePostLikeInData from '../utils/data-infinite-loading/mutatePostLikeInData'
+import { InfiniteData } from '../types'
 
 const { PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
+  revalidateFirstPage: false,
+  revalidateAll: true,
 }
 
 type UseCategoryPosts = (
@@ -30,9 +36,9 @@ type UseCategoryPosts = (
   error: any
   isLoading: boolean
   isValidating: boolean
+  likePost: (slug: string) => Promise<void>
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
-  mutate: KeyedMutator<Post[]>
   posts: Post[]
 }
 
@@ -55,7 +61,7 @@ const useCategoryPosts: UseCategoryPosts = (
     data,
     error,
     isValidating,
-    mutate: mutateOriginal,
+    mutate,
     size,
     setSize,
   } = useSWRInfinite(
@@ -94,10 +100,23 @@ const useCategoryPosts: UseCategoryPosts = (
     return data?.flat() ?? []
   }
 
-  const mutate = async () => {
-    const data = await mutateOriginal()
-    return data?.flat() ?? []
-  }
+  const likePost = useCallback(async (slug: string) => {
+    const handleMutation = async (currentData: any) => {
+      const userLikesPost = checkUserLikesPost(slug, currentData)
+
+      await updatePostLikeInServer(userLikesPost, slug)
+
+      const mutatedData = mutatePostLikeInData(
+        userLikesPost,
+        slug,
+        currentData as InfiniteData
+      )
+
+      return mutatedData
+    }
+
+    await mutate(handleMutation, false)
+  }, [mutate])
 
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length ?? 0
@@ -113,9 +132,9 @@ const useCategoryPosts: UseCategoryPosts = (
     error,
     isLoading,
     isValidating,
+    likePost,
     loadMore,
     moreToLoad,
-    mutate,
     posts,
   }
 }

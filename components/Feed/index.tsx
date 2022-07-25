@@ -6,6 +6,7 @@ type PropTypes = {
   cacheKey: string
   isLoading: boolean
   moreToLoad: boolean
+  onLikePost: (slug: string) => Promise<void>
   onLoadMore: () => Promise<any>
   posts: Post[]
 }
@@ -16,6 +17,7 @@ const Feed = ({
   moreToLoad,
   onLoadMore,
   posts,
+  onLikePost,
 }: PropTypes) => (
   <ContentList
     cacheKey={cacheKey}
@@ -24,7 +26,12 @@ const Feed = ({
     onLoadMore={onLoadMore}
     items={posts}
   >
-    {post => <PostListItem post={post} />}
+    {post => (
+      <PostListItem
+        post={post}
+        onLikePost={onLikePost}
+      />
+    )}
   </ContentList>
 )
 

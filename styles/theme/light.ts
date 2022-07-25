@@ -31,12 +31,12 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Assistant',
-    fontSize: 14,
+    fontSize: 15,
     fontWeightLight: 300,
     fontWeightRegular: 400,
     fontWeightMedium: 500,
     fontWeightBold: 700,
-    htmlFontSize: 14,
+    htmlFontSize: 15,
     h6: {
       fontSize: '1.1428571428571428rem',
       textTransform: 'uppercase',
@@ -46,6 +46,9 @@ const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        html: {
+          fontSize: '15px',
+        },
         body: {
           minWidth: '320px',
         },

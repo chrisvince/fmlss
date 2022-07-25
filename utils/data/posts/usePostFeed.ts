@@ -1,6 +1,6 @@
 import { useAuthUser } from 'next-firebase-auth'
-import { useEffect, useState } from 'react'
-import { KeyedMutator, useSWRConfig } from 'swr'
+import { useCallback, useEffect, useState } from 'react'
+import { useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { FeedSortMode, FirebaseDoc, Post } from '../../../types'
@@ -11,12 +11,18 @@ import {
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import getPostFeed from './getPostFeed'
 import constants from '../../../constants'
+import mutatePostLikeInData from '../utils/data-infinite-loading/mutatePostLikeInData'
+import type { InfiniteData } from '../types'
+import checkUserLikesPost from '../utils/data-infinite-loading/checkUserLikesPost'
+import updatePostLikeInServer from '../utils/data-infinite-loading/updatePostLikeInServer'
 
 const { PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
+  revalidateFirstPage: false,
+  revalidateAll: true,
 }
 
 type UsePostFeed = (options?: {
@@ -27,10 +33,10 @@ type UsePostFeed = (options?: {
   error: any
   isLoading: boolean
   isValidating: boolean
+  likePost: (slug: string) => Promise<void>
   loadMore: () => Promise<Post[]>
-  mutate: KeyedMutator<Post[]>
-  posts: Post[]
   moreToLoad: boolean
+  posts: Post[]
 }
 
 const usePostFeed: UsePostFeed = ({
@@ -49,7 +55,7 @@ const usePostFeed: UsePostFeed = ({
     data,
     error,
     isValidating,
-    mutate: mutateOriginal,
+    mutate,
     size,
     setSize,
   } = useSWRInfinite(
@@ -88,11 +94,6 @@ const usePostFeed: UsePostFeed = ({
     return data?.flat() ?? []
   }
 
-  const mutate = async () => {
-    const data = await mutateOriginal()
-    return data?.flat() ?? []
-  }
-
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length
   const isLoading = !error && !data
@@ -102,14 +103,32 @@ const usePostFeed: UsePostFeed = ({
 
   const cacheKey = createPostFeedCacheKey(sortMode, null)
 
+  const likePost = useCallback(async (slug: string) => {
+    const handleMutation = async (currentData: any) => {
+      const userLikesPost = checkUserLikesPost(slug, currentData)
+
+      await updatePostLikeInServer(userLikesPost, slug)
+
+      const mutatedData = mutatePostLikeInData(
+        userLikesPost,
+        slug,
+        currentData as InfiniteData
+      )
+
+      return mutatedData
+    }
+
+    await mutate(handleMutation, false)
+  }, [mutate])
+
   return {
     cacheKey,
     error,
     isLoading,
     isValidating,
+    likePost,
     loadMore,
     moreToLoad,
-    mutate,
     posts,
   }
 }

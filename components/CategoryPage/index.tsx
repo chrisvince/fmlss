@@ -49,10 +49,8 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   const { category } = useCategory(slug)
 
-  const { cacheKey, isLoading, loadMore, moreToLoad, posts } = useCategoryPosts(
-    slug,
-    { sortMode }
-  )
+  const { cacheKey, isLoading, loadMore, moreToLoad, posts, likePost } =
+    useCategoryPosts(slug, { sortMode })
 
   const sortOptions = generateSortOptions(slug)
 
@@ -75,6 +73,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
         cacheKey={cacheKey}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
+        onLikePost={likePost}
         onLoadMore={loadMore}
         posts={posts}
       />

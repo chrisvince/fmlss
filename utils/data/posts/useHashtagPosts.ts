@@ -1,7 +1,7 @@
 import { useAuthUser } from 'next-firebase-auth'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { KeyedMutator, useSWRConfig } from 'swr'
+import { useSWRConfig } from 'swr'
 
 import { HashtagSortMode, FirebaseDoc, Post } from '../../../types'
 import {
@@ -11,12 +11,18 @@ import {
 import getHashtagPosts from './getHashtagPosts'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
+import { InfiniteData } from '../types'
+import updatePostLikeInServer from '../utils/data-infinite-loading/updatePostLikeInServer'
+import checkUserLikesPost from '../utils/data-infinite-loading/checkUserLikesPost'
+import mutatePostLikeInData from '../utils/data-infinite-loading/mutatePostLikeInData'
 
 const { PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
+  revalidateFirstPage: false,
+  revalidateAll: true,
 }
 
 type UsePostFeed = (
@@ -31,9 +37,9 @@ type UsePostFeed = (
   error: any
   isLoading: boolean
   isValidating: boolean
+  likePost: (slug: string) => Promise<void>
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
-  mutate: KeyedMutator<Post[]>
   posts: Post[]
 }
 
@@ -60,7 +66,7 @@ const useHashtagPosts: UsePostFeed = (
     data,
     error,
     isValidating,
-    mutate: mutateOriginal,
+    mutate,
     size,
     setSize,
   } = useSWRInfinite(
@@ -100,10 +106,23 @@ const useHashtagPosts: UsePostFeed = (
     return data?.flat() ?? []
   }
 
-  const mutate = async () => {
-    const data = await mutateOriginal()
-    return data?.flat() ?? []
-  }
+  const likePost = useCallback(async (slug: string) => {
+    const handleMutation = async (currentData: any) => {
+      const userLikesPost = checkUserLikesPost(slug, currentData)
+
+      await updatePostLikeInServer(userLikesPost, slug)
+
+      const mutatedData = mutatePostLikeInData(
+        userLikesPost,
+        slug,
+        currentData as InfiniteData
+      )
+
+      return mutatedData
+    }
+
+    await mutate(handleMutation, false)
+  }, [mutate])
 
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length ?? 0
@@ -117,9 +136,9 @@ const useHashtagPosts: UsePostFeed = (
     error,
     isLoading,
     isValidating,
+    likePost,
     loadMore,
     moreToLoad,
-    mutate,
     posts,
   }
 }

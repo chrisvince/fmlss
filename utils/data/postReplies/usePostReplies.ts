@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAuthUser } from 'next-firebase-auth'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { KeyedMutator, useSWRConfig } from 'swr'
+import { useSWRConfig } from 'swr'
 import { reverse } from 'ramda'
 
 import { FirebaseDoc, Post } from '../../../types'
@@ -13,12 +13,18 @@ import usePost from '../post/usePost'
 import getPostReplies from './getPostReplies'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
+import checkUserLikesPost from '../utils/data-infinite-loading/checkUserLikesPost'
+import updatePostLikeInServer from '../utils/data-infinite-loading/updatePostLikeInServer'
+import mutatePostLikeInData from '../utils/data-infinite-loading/mutatePostLikeInData'
+import { InfiniteData } from '../types'
 
 const { PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
+  revalidateFirstPage: false,
+  revalidateAll: true,
 }
 
 type UsePostReplies = (
@@ -32,9 +38,9 @@ type UsePostReplies = (
   error: any
   isLoading: boolean
   isValidating: boolean
+  likePost: (slug: string) => Promise<void>
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
-  mutate: KeyedMutator<Post[]>
   replies: Post[]
 }
 
@@ -58,7 +64,7 @@ const usePostReplies: UsePostReplies = (
     data,
     error,
     isValidating: repliesAreValidating,
-    mutate: mutateOriginal,
+    mutate,
     size,
     setSize,
   } = useSWRInfinite(
@@ -101,10 +107,23 @@ const usePostReplies: UsePostReplies = (
     return data?.flat() ?? []
   }
 
-  const mutate = async () => {
-    const data = await mutateOriginal()
-    return data?.flat() ?? []
-  }
+  const likePost = useCallback(async (slug: string) => {
+    const handleMutation = async (currentData: any) => {
+      const userLikesPost = checkUserLikesPost(slug, currentData)
+
+      await updatePostLikeInServer(userLikesPost, slug)
+
+      const mutatedData = mutatePostLikeInData(
+        userLikesPost,
+        slug,
+        currentData as InfiniteData
+      )
+
+      return mutatedData
+    }
+
+    await mutate(handleMutation, false)
+  }, [mutate])
 
   const flattenedData = data?.flat() ?? []
   const replies = viewMode === 'end' ? reverse(flattenedData) : flattenedData
@@ -121,9 +140,9 @@ const usePostReplies: UsePostReplies = (
     error,
     isLoading,
     isValidating,
+    likePost,
     loadMore,
     moreToLoad,
-    mutate,
     replies,
   }
 }

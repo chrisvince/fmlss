@@ -45,9 +45,10 @@ const FeedPage = () => {
     SORT_MODE_MAP[path?.split?.('/')?.[2] ?? 'latest'] as FeedSortMode
 
   const [sortMode, setSortMode] = useState<FeedSortMode>(pathSortMode)
-  const { cacheKey, isLoading, loadMore, moreToLoad, posts } = usePostFeed({
-    sortMode,
-  })
+  const { cacheKey, isLoading, loadMore, moreToLoad, posts, likePost } =
+    usePostFeed({
+      sortMode,
+    })
 
   useEffect(() => {
     setSortMode(pathSortMode)
@@ -84,6 +85,7 @@ const FeedPage = () => {
         cacheKey={cacheKey}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
+        onLikePost={likePost}
         onLoadMore={loadMore}
         posts={posts}
       />

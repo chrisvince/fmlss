@@ -5,7 +5,8 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 
 const UserLikesPage = () => {
-  const { cacheKey, isLoading, loadMore, moreToLoad, posts } = useUserLikes()
+  const { cacheKey, isLoading, likePost, loadMore, moreToLoad, posts } =
+    useUserLikes()
 
   return (
     <Page
@@ -21,6 +22,7 @@ const UserLikesPage = () => {
         cacheKey={cacheKey}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
+        onLikePost={likePost}
         onLoadMore={loadMore}
         posts={posts}
       />

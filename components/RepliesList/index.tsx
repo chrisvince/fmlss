@@ -10,20 +10,18 @@ type PropTypes = {
 }
 
 const RepliesList = ({ slug }: PropTypes) => {
-  const { post, mutate: refreshPost } = usePost(slug)
+  const { post } = usePost(slug)
   const [viewMode, setViewMode] = useState<'start' | 'end'>('start')
-  const {
-    loadMore,
-    moreToLoad,
-    replies, mutate:
-    refreshReplies
-  } = usePostReplies(post.data.slug, { viewMode })
+
+  const { likePost, loadMore, moreToLoad, replies } = usePostReplies(
+    post.data.slug,
+    { viewMode }
+  )
 
   const handleNewReply = async () => {
     setViewMode('end')
 
-    const refreshPromises = [refreshPost(), refreshReplies()]
-    await Promise.all(refreshPromises)
+    // TODO: Create mutation for this!
 
     window.scrollTo({ behavior:
       'smooth',
@@ -33,7 +31,7 @@ const RepliesList = ({ slug }: PropTypes) => {
 
   return (
     <div>
-      <h2>
+      <h2 id="replies">
         Replies
         {!!post.data.postsCount && <> ({post.data.postsCount})</>}
       </h2>
@@ -45,7 +43,10 @@ const RepliesList = ({ slug }: PropTypes) => {
           <PostList>
             {replies.map((reply) => (
               <li key={reply.data!.id}>
-                <PostListItem post={reply} />
+                <PostListItem
+                  onLikePost={likePost}
+                  post={reply}
+                />
               </li>
             ))}
           </PostList>

@@ -6,15 +6,13 @@ import constants from '../../constants'
 const { HASHTAG_REGEX } = constants
 
 
-const PostBody = ({ body }: { body: string }) => {
+const PostBody = ({ body, id }: { body: string, id?: string }) => {
   return (
     <Typography
-      sx={{
-        paddingBottom: 4,
-        whiteSpace: 'pre-wrap',
-      }}
-      variant="body1"
+      sx={{ whiteSpace: 'pre-wrap' }}
+      variant="body2"
       component="p"
+      id={id}
     >
       {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
         const hashtagValue = hashtag.slice(1).toLowerCase()

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { KeyedMutator, useSWRConfig } from 'swr'
+import { useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { FirebaseDoc, Hashtag, HashtagsSortMode } from '../../../types'
@@ -16,6 +16,8 @@ const { PAGINATION_COUNT } = constants
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
+  revalidateFirstPage: false,
+  revalidateAll: true,
 }
 
 type UseHashtags = (options?: {
@@ -27,7 +29,6 @@ type UseHashtags = (options?: {
   isLoading: boolean
   isValidating: boolean
   loadMore: () => Promise<Hashtag[]>
-  mutate: KeyedMutator<Hashtag[]>
   hashtags: Hashtag[]
   moreToLoad: boolean
 }
@@ -47,7 +48,6 @@ const useHashtags: UseHashtags = ({
     data,
     error,
     isValidating,
-    mutate: mutateOriginal,
     size,
     setSize,
   } = useSWRInfinite(
@@ -85,11 +85,6 @@ const useHashtags: UseHashtags = ({
     return data?.flat() ?? []
   }
 
-  const mutate = async () => {
-    const data = await mutateOriginal()
-    return data?.flat() ?? []
-  }
-
   const hashtags = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length
   const isLoading = !error && !data
@@ -106,7 +101,6 @@ const useHashtags: UseHashtags = ({
     isValidating,
     loadMore,
     moreToLoad,
-    mutate,
     hashtags,
   }
 }

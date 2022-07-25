@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { KeyedMutator, useSWRConfig } from 'swr'
+import { useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { CategoriesSortMode, Category, FirebaseDoc } from '../../../types'
@@ -16,6 +16,8 @@ const { PAGINATION_COUNT } = constants
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
+  revalidateFirstPage: false,
+  revalidateAll: true,
 }
 
 type UseCategories = (options?: {
@@ -23,12 +25,11 @@ type UseCategories = (options?: {
   swrConfig?: SWRInfiniteConfiguration
 }) => {
   cacheKey: string
+  categories: Category[]
   error: any
   isLoading: boolean
   isValidating: boolean
   loadMore: () => Promise<Category[]>
-  mutate: KeyedMutator<Category[]>
-  categories: Category[]
   moreToLoad: boolean
 }
 
@@ -47,7 +48,6 @@ const useCategories: UseCategories = ({
     data,
     error,
     isValidating,
-    mutate: mutateOriginal,
     size,
     setSize,
   } = useSWRInfinite(
@@ -85,11 +85,6 @@ const useCategories: UseCategories = ({
     return data?.flat() ?? []
   }
 
-  const mutate = async () => {
-    const data = await mutateOriginal()
-    return data?.flat() ?? []
-  }
-
   const categories = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length
   const isLoading = !error && !data
@@ -107,7 +102,6 @@ const useCategories: UseCategories = ({
     isValidating,
     loadMore,
     moreToLoad,
-    mutate,
   }
 }
 

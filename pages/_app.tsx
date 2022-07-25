@@ -2,7 +2,6 @@ import type { AppProps } from 'next/app'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { withAuthUser } from 'next-firebase-auth'
 
-import '../styles/global.css'
 import initAuth from '../utils/initAuth'
 import initFirebase from '../utils/initFirebase'
 import Layout from '../components/Layout'
