@@ -14,6 +14,8 @@ import {
 import getCategories from '../../utils/data/categories/getCategories'
 import constants from '../../constants'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
+import { NextApiRequest } from 'next'
+import isInternalRequest from '../../utils/isInternalRequest'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
@@ -23,13 +25,11 @@ interface PropTypes {
   }
 }
 
-const Feed = ({ fallback }: PropTypes) => {
-  return (
-    <SWRConfig value={{ fallback }}>
-      <CategoriesPage />
-    </SWRConfig>
-  )
-}
+const Categories = ({ fallback }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <CategoriesPage />
+  </SWRConfig>
+)
 
 const SORT_MODE_MAP: {
   [key: string]: string
@@ -40,8 +40,10 @@ const SORT_MODE_MAP: {
 
 const getServerSidePropsFn = async ({
   params: { sortMode: sortModeArray },
+  req,
 }: {
   params: { sortMode: string }
+  req: NextApiRequest,
 }) => {
   if (sortModeArray?.length > 1) {
     return { notFound: true }
@@ -55,19 +57,33 @@ const getServerSidePropsFn = async ({
   }
 
   const categoriesCacheKey = createCategoriesCacheKey(sortMode)
+  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const categories = await getCategories({
-    db: adminDb,
-    sortMode,
-  })
 
-  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniHashtags = await getHashtags({
     cacheKey: miniHashtagsCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
+  })
+
+  if (isInternalRequest(req)) {
+    return {
+      props: {
+        fallback: {
+          [miniHashtagsCacheKey]: miniHashtags,
+          [categoriesCacheKey]: null,
+        },
+        key: categoriesCacheKey,
+      },
+    }
+  }
+
+  const categories = await getCategories({
+    db: adminDb,
+    sortMode,
   })
 
   return {
@@ -85,4 +101,4 @@ export const getServerSideProps = withAuthUserTokenSSR()(
   getServerSidePropsFn as any
 )
 
-export default withAuthUser()(Feed as any)
+export default withAuthUser()(Categories as any)

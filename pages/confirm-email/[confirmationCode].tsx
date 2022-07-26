@@ -1,6 +1,5 @@
 import firebase from 'firebase/app'
 import 'firebase/functions'
-import { GetServerSidePropsContext } from 'next'
 
 const verifyEmail = firebase.functions().httpsCallable('verifyEmail')
 

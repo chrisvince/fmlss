@@ -41,7 +41,7 @@ const SectionHeading = ({ children, sticky = true }: PropTypes) => {
         },
         ...stickyStyles,
         zIndex: {
-          sm: 1209,
+          sm: 1208,
         },
         borderBottom: {
           sm: '1px solid',

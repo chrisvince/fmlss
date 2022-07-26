@@ -5,6 +5,7 @@ import {
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
+import { NextApiRequest } from 'next'
 
 import FeedPage from '../../components/FeedPage'
 import type { FeedSortMode, Post } from '../../types'
@@ -13,6 +14,7 @@ import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getPostFeed from '../../utils/data/posts/getPostFeed'
 import constants from '../../constants'
+import isInternalRequest from '../../utils/isInternalRequest'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
@@ -22,13 +24,11 @@ interface PropTypes {
   }
 }
 
-const Feed = ({ fallback }: PropTypes) => {
-  return (
-    <SWRConfig value={{ fallback }}>
-      <FeedPage />
-    </SWRConfig>
-  )
-}
+const Feed = ({ fallback }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <FeedPage />
+  </SWRConfig>
+)
 
 const SORT_MODE_MAP: {
   [key: string]: string
@@ -41,9 +41,11 @@ const SORT_MODE_MAP: {
 const getServerSidePropsFn = async ({
   AuthUser,
   params: { sortMode: sortModeArray },
+  req,
 }: {
-  AuthUser: AuthUser,
+  AuthUser: AuthUser
   params: { sortMode: string }
+  req: NextApiRequest
 }) => {
   if (sortModeArray?.length > 1) {
     return { notFound: true }
@@ -57,16 +59,13 @@ const getServerSidePropsFn = async ({
   }
 
   const postFeedCacheKey = createPostFeedCacheKey(sortMode)
+  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const posts = await getPostFeed({
-    db: adminDb,
-    sortMode,
-    uid,
-  })
 
-  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniHashtags = await getHashtags({
     cacheKey: miniHashtagsCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
@@ -74,12 +73,30 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
   const miniCategories = await getCategories({
     cacheKey: miniCategoriesCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
+  })
+
+  if (isInternalRequest(req)) {
+    return {
+      props: {
+        fallback: {
+          [miniCategoriesCacheKey]: miniCategories,
+          [miniHashtagsCacheKey]: miniHashtags,
+          [postFeedCacheKey]: null,
+        },
+        key: postFeedCacheKey,
+      },
+    }
+  }
+
+  const posts = await getPostFeed({
+    db: adminDb,
+    sortMode,
+    uid,
   })
 
   return {

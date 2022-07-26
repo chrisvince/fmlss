@@ -45,6 +45,7 @@ const Layout = ({ children }: PropTypes) => {
                 xs: 'none',
                 sm: 'block',
               },
+              zIndex: 1209,
             }}
           >
             <LeftNavigationDesktop />

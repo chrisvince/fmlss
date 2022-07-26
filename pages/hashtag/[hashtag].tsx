@@ -13,6 +13,8 @@ import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 import constants from '../../constants'
+import isInternalRequest from '../../utils/isInternalRequest'
+import { NextApiRequest } from 'next'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
@@ -43,10 +45,12 @@ const getServerSidePropsFn = async ({
   AuthUser,
   params: { hashtag },
   query: { sort = 'latest' },
+  req,
 }: {
   AuthUser: AuthUser
   params: { hashtag: string }
   query: { sort: string }
+  req: NextApiRequest
 }) => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
@@ -58,14 +62,9 @@ const getServerSidePropsFn = async ({
     DEFAULT_POST_TYPE,
     sortMode,
   )
-  const posts = await getHashtagPosts(hashtag, {
-    db: adminDb,
-    uid,
-    showType: DEFAULT_POST_TYPE,
-    sortMode,
-  })
-
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+
   const miniHashtags = await getHashtags({
     cacheKey: miniHashtagsCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
@@ -73,12 +72,32 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
   const miniCategories = await getCategories({
     cacheKey: miniCategoriesCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
+  })
+
+  if (isInternalRequest(req)) {
+    return {
+      props: {
+        fallback: {
+          [miniCategoriesCacheKey]: miniCategories,
+          [miniHashtagsCacheKey]: miniHashtags,
+          [hashtagPostsCacheKey]: null,
+        },
+        hashtag,
+        key: hashtagPostsCacheKey,
+      },
+    }
+  }
+
+  const posts = await getHashtagPosts(hashtag, {
+    db: adminDb,
+    uid,
+    showType: DEFAULT_POST_TYPE,
+    sortMode,
   })
 
   return {

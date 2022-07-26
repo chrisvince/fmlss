@@ -11,6 +11,8 @@ import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getUserPosts from '../../utils/data/userPosts/getUserPosts'
 import constants from '../../constants'
+import isInternalRequest from '../../utils/isInternalRequest'
+import { NextApiRequest } from 'next'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
@@ -22,21 +24,18 @@ interface PropTypes {
   }
 }
 
-const UserPosts = ({ fallback }: PropTypes) => {
-  return (
-    <SWRConfig value={{ fallback }}>
-      <UserPostsPage />
-    </SWRConfig>
-  )
-}
+const UserPosts = ({ fallback }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <UserPostsPage />
+  </SWRConfig>
+)
 
 const getServerSidePropsFn = async ({
   AuthUser,
+  req,
 }: {
   AuthUser: AuthUser
-  params: {
-    hashtag: string
-  }
+  req: NextApiRequest,
 }) => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
@@ -46,12 +45,9 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
   const userPostsCacheKey = createUserPostsCacheKey(uid)
-  const posts = await getUserPosts(uid, {
-    db: adminDb,
-    type: 'post',
-  })
-
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+
   const miniHashtags = await getHashtags({
     cacheKey: miniHashtagsCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
@@ -59,12 +55,29 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
   const miniCategories = await getCategories({
     cacheKey: miniCategoriesCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
+  })
+
+  if (isInternalRequest(req)) {
+    return {
+      props: {
+        fallback: {
+          [miniCategoriesCacheKey]: miniCategories,
+          [miniHashtagsCacheKey]: miniHashtags,
+          [userPostsCacheKey]: null,
+        },
+        key: userPostsCacheKey,
+      },
+    }
+  }
+
+  const posts = await getUserPosts(uid, {
+    db: adminDb,
+    type: 'post',
   })
 
   return {

@@ -7,13 +7,19 @@ import truncateString from '../../utils/truncateString'
 import usePost from '../../utils/data/post/usePost'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
+import PageSpinner from '../PageSpinner'
 
 type PropTypes = {
   slug: string
 }
 
 const PostPage = ({ slug }: PropTypes) => {
-  const { post } = usePost(slug)
+  const { post, isLoading } = usePost(slug)
+
+  if (isLoading) {
+    return <PageSpinner />
+  }
+
   const pageTitle = truncateString(post.data.body)
 
   return (

@@ -96,7 +96,7 @@ const ContentList = ({
   }
 
   if (isLoading) {
-    return <PageSpinner elements={['pageTitle', 'sortSelector']} />
+    return <PageSpinner />
   }
 
   return (

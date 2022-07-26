@@ -17,6 +17,8 @@ import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getUserLikes from '../../utils/data/userLikes/getUserLikes'
 import constants from '../../constants'
+import isInternalRequest from '../../utils/isInternalRequest'
+import { NextApiRequest } from 'next'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
@@ -28,21 +30,18 @@ interface PropTypes {
   }
 }
 
-const UserLikes = ({ fallback }: PropTypes) => {
-  return (
-    <SWRConfig value={{ fallback }}>
-      <UserLikesPage />
-    </SWRConfig>
-  )
-}
+const UserLikes = ({ fallback }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <UserLikesPage />
+  </SWRConfig>
+)
 
 const getServerSidePropsFn = async ({
   AuthUser,
+  req,
 }: {
   AuthUser: AuthUser
-  params: {
-    hashtag: string
-  }
+  req: NextApiRequest,
 }) => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
@@ -51,12 +50,11 @@ const getServerSidePropsFn = async ({
   if (!uid) {
     return { notFound: true }
   }
-  const userLikesCacheKey = createUserLikesCacheKey(uid)
-  const posts = await getUserLikes(uid, {
-    db: adminDb,
-  })
 
+  const userLikesCacheKey = createUserLikesCacheKey(uid)
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+
   const miniHashtags = await getHashtags({
     cacheKey: miniHashtagsCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
@@ -64,12 +62,28 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
   const miniCategories = await getCategories({
     cacheKey: miniCategoriesCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
+  })
+
+  if (isInternalRequest(req)) {
+    return {
+      props: {
+        key: userLikesCacheKey,
+        fallback: {
+          [miniCategoriesCacheKey]: miniCategories,
+          [miniHashtagsCacheKey]: miniHashtags,
+          [userLikesCacheKey]: null,
+        },
+      },
+    }
+  }
+
+  const posts = await getUserLikes(uid, {
+    db: adminDb,
   })
 
   return {

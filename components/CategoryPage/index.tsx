@@ -1,4 +1,3 @@
-import { SyntheticEvent } from 'react'
 import Link from 'next/link'
 import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
@@ -8,8 +7,9 @@ import Feed from '../Feed'
 import useCategoryPosts from '../../utils/data/posts/useCategoryPosts'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { CategorySortMode } from '../../types'
-import useCategory from '../../utils/data/category/useCategory'
 import MobileContainer from '../MobileContainer'
+import MiniHashtagsSection from '../MiniHashtagsSection'
+import unslugify from '../../utils/unslugify'
 
 type PropTypes = {
   slug: string
@@ -47,15 +47,17 @@ const CategoryPage = ({ slug }: PropTypes) => {
   const sortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as CategorySortMode
 
-  const { category } = useCategory(slug)
-
   const { cacheKey, isLoading, loadMore, moreToLoad, posts, likePost } =
     useCategoryPosts(slug, { sortMode })
 
+  const categoryName = unslugify(slug)
   const sortOptions = generateSortOptions(slug)
 
   return (
-    <Page pageTitle={category.data.name}>
+    <Page
+      pageTitle={categoryName}
+      rightPanelChildren={<MiniHashtagsSection />}
+    >
       <MobileContainer>
         <ViewSelectorButtonGroup>
           {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (

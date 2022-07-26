@@ -11,6 +11,8 @@ import { createHashtagsCacheKey, createMiniCategoriesCacheKey } from '../../util
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import constants from '../../constants'
+import { NextApiRequest } from 'next'
+import isInternalRequest from '../../utils/isInternalRequest'
 
 const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
@@ -20,13 +22,11 @@ interface PropTypes {
   }
 }
 
-const Feed = ({ fallback }: PropTypes) => {
-  return (
-    <SWRConfig value={{ fallback }}>
-      <HashtagsPage />
-    </SWRConfig>
-  )
-}
+const Hashtags = ({ fallback }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <HashtagsPage />
+  </SWRConfig>
+)
 
 const SORT_MODE_MAP: {
   [key: string]: string
@@ -37,8 +37,10 @@ const SORT_MODE_MAP: {
 
 const getServerSidePropsFn = async ({
   params: { sortMode: sortModeArray },
+  req,
 }: {
   params: { sortMode: string }
+  req: NextApiRequest
 }) => {
   if (sortModeArray?.length > 1) {
     return { notFound: true }
@@ -52,19 +54,33 @@ const getServerSidePropsFn = async ({
   }
 
   const hashtagsCacheKey = createHashtagsCacheKey(sortMode)
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const hashtags = await getHashtags({
-    db: adminDb,
-    sortMode,
-  })
 
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
   const miniCategories = await getCategories({
     cacheKey: miniCategoriesCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
+  })
+
+  if (isInternalRequest(req)) {
+    return {
+      props: {
+        fallback: {
+          [miniCategoriesCacheKey]: miniCategories,
+          [hashtagsCacheKey]: null,
+        },
+        key: hashtagsCacheKey,
+      },
+    }
+  }
+
+  const hashtags = await getHashtags({
+    db: adminDb,
+    sortMode,
   })
 
   return {
@@ -82,4 +98,4 @@ export const getServerSideProps = withAuthUserTokenSSR()(
   getServerSidePropsFn as any
 )
 
-export default withAuthUser()(Feed as any)
+export default withAuthUser()(Hashtags as any)
