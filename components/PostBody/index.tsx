@@ -25,7 +25,7 @@ const PostBody = ({ body, id }: { body: string, id?: string }) => {
             <MuiLink
               sx={{
                 textDecoration: 'none',
-                fontWeight: 'medium',
+                color: 'secondary.main',
                 '&:hover': {
                   textDecoration: 'underline',
                 },

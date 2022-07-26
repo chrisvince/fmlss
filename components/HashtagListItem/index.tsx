@@ -15,6 +15,9 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
   const { push: navigate } = useRouter()
   const handleOpen = () => navigate(`/hashtag/${hashtag.data.hashtag}`)
 
+  const postCount = formatPostCount(hashtag.data.usageCount)
+  const viewCount = formatViewCount(hashtag.data.viewCount)
+
   return (
     <ListItemFrame onOpen={handleOpen}>
       <Box
@@ -30,14 +33,33 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
         >
           #{hashtag.data.hashtag}
         </Typography>
-        <div>
-          <Typography variant="body2" component="div" align="right">
-            {formatPostCount(hashtag.data.usageCount)}
-          </Typography>
-          <Typography variant="body2" component="div" align="right">
-            {formatViewCount(hashtag.data.viewCount)}
-          </Typography>
-        </div>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: 2,
+          }}
+        >
+          {postCount && (
+            <Typography
+              variant="caption"
+              component="div"
+              align="right"
+            >
+              {postCount}
+            </Typography>
+          )}
+          {viewCount && (
+            <Typography
+              variant="caption"
+              component="div"
+              align="right"
+            >
+              {viewCount}
+            </Typography>
+          )}
+        </Box>
       </Box>
     </ListItemFrame>
   )

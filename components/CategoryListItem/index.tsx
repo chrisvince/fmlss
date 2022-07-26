@@ -15,6 +15,9 @@ const CategoryListItem = ({ category }: PropTypes) => {
   const { push: navigate } = useRouter()
   const handleOpen = () => navigate(`/category/${category.data.slug}`)
 
+  const postCount = formatPostCount(category.data.postCount)
+  const viewCount = formatViewCount(category.data.viewCount)
+
   return (
     <ListItemFrame onOpen={handleOpen}>
       <Box
@@ -24,20 +27,36 @@ const CategoryListItem = ({ category }: PropTypes) => {
           justifyContent: 'space-between',
         }}
       >
-        <Typography
-          component="div"
-          variant="h5"
-        >
+        <Typography component="div" variant="h5">
           {category.data.name}
         </Typography>
-        <div>
-          <Typography variant="body2" component="div" align="right">
-            {formatPostCount(category.data.postCount)}
-          </Typography>
-          <Typography variant="body2" component="div" align="right">
-            {formatViewCount(category.data.viewCount)}
-          </Typography>
-        </div>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: 2,
+          }}
+        >
+          {postCount && (
+            <Typography
+              variant="caption"
+              component="div"
+              align="right"
+            >
+              {postCount}
+            </Typography>
+          )}
+          {viewCount && (
+            <Typography
+              variant="caption"
+              component="div"
+              align="right"
+            >
+              {viewCount}
+            </Typography>
+          )}
+        </Box>
       </Box>
     </ListItemFrame>
   )

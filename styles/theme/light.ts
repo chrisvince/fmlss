@@ -43,6 +43,9 @@ const theme = createTheme({
     fontWeightMedium: 500,
     fontWeightBold: 700,
     htmlFontSize: 15,
+    h5: {
+      fontSize: FONT_SIZE.LARGE,
+    },
     h6: {
       fontSize: FONT_SIZE.BASE,
       textTransform: 'uppercase',
@@ -50,9 +53,14 @@ const theme = createTheme({
     },
     caption: {
       fontSize: FONT_SIZE.SMALL,
+      fontWeight: '300',
     },
     body1: {
       fontSize: FONT_SIZE.LARGE,
+      fontWeight: '500',
+    },
+    body2: {
+      fontWeight: '500',
     },
   },
   components: {
@@ -172,6 +180,13 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 100,
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        secondary: {
+          fontSize: FONT_SIZE.SMALL,
         },
       },
     },
