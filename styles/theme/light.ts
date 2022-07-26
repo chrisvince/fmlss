@@ -1,5 +1,11 @@
 import { createTheme } from '@mui/material/styles'
 
+const FONT_SIZE = {
+  SMALL: '0.86667rem',
+  BASE: '1rem',
+  LARGE: '1.13333rem',
+}
+
 const theme = createTheme({
   palette: {
     mode: 'light',
@@ -38,9 +44,15 @@ const theme = createTheme({
     fontWeightBold: 700,
     htmlFontSize: 15,
     h6: {
-      fontSize: '1.1428571428571428rem',
+      fontSize: FONT_SIZE.BASE,
       textTransform: 'uppercase',
       fontWeight: 600,
+    },
+    caption: {
+      fontSize: FONT_SIZE.SMALL,
+    },
+    body1: {
+      fontSize: FONT_SIZE.LARGE,
     },
   },
   components: {
@@ -86,7 +98,7 @@ const theme = createTheme({
       },
       styleOverrides: {
         grouped: {
-          fontSize: '0.8571428571428571rem',
+          fontSize: FONT_SIZE.SMALL,
         },
       },
     },

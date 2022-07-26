@@ -1,9 +1,13 @@
+import { Typography } from '@mui/material'
 import { useState } from 'react'
+
 import usePost from '../../utils/data/post/usePost'
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
+import SectionHeading from '../SectionHeading'
 import PostList from '../PostList'
 import PostListItem from '../PostListItem'
 import PostReplyForm from '../PostReplyForm'
+import ScrollLink from '../ScrollLink'
 
 type PropTypes = {
   slug: string
@@ -31,10 +35,10 @@ const RepliesList = ({ slug }: PropTypes) => {
 
   return (
     <div>
-      <h2 id="replies">
-        Replies
-        {!!post.data.postsCount && <> ({post.data.postsCount})</>}
-      </h2>
+      <ScrollLink id="replies" />
+      <SectionHeading sticky={false}>
+        Replies {!!post.data.postsCount && <> ({post.data.postsCount})</>}
+      </SectionHeading>
       {!!replies?.length ? (
         <>
           {viewMode === 'end' && moreToLoad && (

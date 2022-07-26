@@ -4,17 +4,11 @@ import { useRouter } from 'next/router'
 import { useId } from 'react'
 
 import { Post } from '../../types'
-import formatLikesCount from '../../utils/formatting/formatLikesCount'
-import formatReplyCount from '../../utils/formatting/formatReplyCount'
 import useLikeState from '../../utils/useLikeState'
-import CaptionLink from '../CaptionLink'
-import HighlightButton from '../HighlightButton'
-import LikeButton from '../LikeButton'
 import ListItemFrame from '../ListItemFrame'
+import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
 import PostCaption from '../PostCaption'
-import ReplyButton from '../ReplyButton'
-import ShareButton from '../ShareButton'
 
 type PropTypes = {
   post: Post
@@ -62,50 +56,14 @@ const PostListItem = ({ post, onLikePost }: PropTypes) => {
           </PostCaption>
         )}
         <PostBody body={post.data.body} id={ariaLabelledById} />
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            justifyContent: 'flex-start',
-            gap: 1,
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: 2,
-            }}
-          >
-            <CaptionLink href={`/post/${encodeURIComponent(post.data.slug)}`}>
-              {formatLikesCount(likesCount)}
-            </CaptionLink>
-            <CaptionLink
-              href={`/post/${encodeURIComponent(post.data.slug)}#replies`}
-            >
-              {formatReplyCount(post.data.postsCount)}
-            </CaptionLink>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 1,
-              mx: -1,
-              mb: -1,
-            }}
-          >
-            <LikeButton
-              like={like}
-              onClick={handleLikeButtonClick}
-            />
-            <ReplyButton slug={post.data.slug} />
-            <HighlightButton />
-            <ShareButton />
-          </Box>
-        </Box>
+        <PostActionBar
+          createdAt={post.data.createdAt}
+          like={like}
+          likesCount={likesCount}
+          onLike={handleLikeButtonClick}
+          postsCount={post.data.postsCount}
+          slug={post.data.slug}
+        />
       </Box>
     </ListItemFrame>
   )

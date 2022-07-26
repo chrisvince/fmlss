@@ -3,16 +3,31 @@ import Box from '@mui/material/Box'
 import { useTheme } from '@mui/system'
 
 import constants from '../../constants'
+import MobileContainer from '../MobileContainer'
 
 const {
   TOP_NAVIGATION_HEIGHT,
   TOP_NAVIGATION_MARGIN_BOTTOM_SM,
 } = constants
 
-const PageHeading = ({ children }: { children: string }) => {
+interface PropTypes {
+  children: string | React.ReactNode
+  sticky?: boolean
+}
+
+const SectionHeading = ({ children, sticky = true }: PropTypes) => {
   const theme = useTheme()
   const navMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
   if (!children) return null
+
+  const stickyStyles = sticky ? {
+    position: {
+      sm: 'sticky',
+    },
+    top: {
+      sm: `calc(${TOP_NAVIGATION_HEIGHT} + ${navMarginBottomSm})`,
+    },
+  } : {}
 
   return (
     <Box
@@ -24,12 +39,7 @@ const PageHeading = ({ children }: { children: string }) => {
           xs: 1,
           sm: 2,
         },
-        position: {
-          sm: 'sticky',
-        },
-        top: {
-          sm: `calc(${TOP_NAVIGATION_HEIGHT} + ${navMarginBottomSm})`,
-        },
+        ...stickyStyles,
         zIndex: {
           sm: 1209,
         },
@@ -39,21 +49,23 @@ const PageHeading = ({ children }: { children: string }) => {
         borderColor: {
           sm: 'divider',
         },
-        paddingBottom: 1,
+        paddingBottom: 0.5,
         paddingTop: {
           xs: 1,
           sm: 0,
         },
       }}
     >
-      <Typography
-        component="h1"
-        variant="h6"
-      >
-        {children}
-      </Typography>
+      <MobileContainer>
+        <Typography
+          component="h1"
+          variant="h6"
+        >
+          {children}
+        </Typography>
+      </MobileContainer>
     </Box>
   )
 }
 
-export default PageHeading
+export default SectionHeading

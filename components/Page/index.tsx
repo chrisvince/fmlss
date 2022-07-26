@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import constants from '../../constants'
 import type { ReactNode } from 'react'
-import PageTitle from '../PageTitle'
+import PageTitle from '../SectionHeading'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import MobileContainer from '../MobileContainer'
@@ -53,9 +53,7 @@ const Page = ({
         main={
           <>
             {renderUiTitle && (
-              <MobileContainer>
-                <PageTitle>{uiTitle}</PageTitle>
-              </MobileContainer>
+              <PageTitle>{uiTitle}</PageTitle>
             )}
             {children}
           </>
@@ -66,7 +64,6 @@ const Page = ({
           </RightSideBar>
         }
       />
-      <main></main>
     </>
   )
 }

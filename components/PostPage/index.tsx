@@ -1,3 +1,5 @@
+import { Box } from '@mui/system'
+
 import PostItem from '../PostItem'
 import RepliesList from '../RepliesList'
 import Page from '../Page'
@@ -25,8 +27,18 @@ const PostPage = ({ slug }: PropTypes) => {
         </>
       }
     >
-      <PostItem slug={slug} />
-      <RepliesList slug={slug} />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          justifyContent: 'flex-start',
+          gap: 10,
+        }}
+      >
+        <PostItem slug={slug} />
+        <RepliesList slug={slug} />
+      </Box>
     </Page>
   )
 }
