@@ -102,6 +102,10 @@ const TopNavigation = () => {
             borderBottom: '1px solid',
             borderBottomColor: 'divider',
             height: TOP_NAVIGATION_HEIGHT,
+            marginBottom: {
+              xs: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS),
+              sm: 'unset',
+            }
           }}
         >
           <Container sx={{ height: '100%' }}>
@@ -236,8 +240,11 @@ const TopNavigation = () => {
         </Box>
         <Box
           sx={{
+            display: {
+              xs: 'none',
+              sm: 'block',
+            },
             height: {
-              xs: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS),
               sm: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM),
             },
           }}

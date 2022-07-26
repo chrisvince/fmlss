@@ -30,7 +30,7 @@ import LeftNavigationListItem from '../LeftNavigaionListItem'
 import NewPostButton from '../NewPostButton'
 import { useTheme } from '@mui/system'
 
-const { TOP_NAVIGATION_HEIGHT, TOP_NAVIGATION_MARGIN_BOTTOM_XS } = constants
+const { TOP_NAVIGATION_HEIGHT } = constants
 
 interface PropTypes {
   open: boolean
@@ -81,9 +81,7 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
   const { email } = useAuthUser()
   const theme = useTheme()
 
-
-  const navMarginBottomXs = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)
-
+  const navMarginBottomXs = theme.spacing(4)
 
   return (
     <SwipeableDrawer
