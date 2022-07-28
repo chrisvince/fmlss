@@ -1,17 +1,26 @@
-import { Typography, SvgIconTypeMap } from '@mui/material'
-import { OverridableComponent } from '@mui/material/OverridableComponent'
+import { PersonRounded } from '@mui/icons-material'
+import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import CaptionLink from '../CaptionLink'
 
 interface PropTypes {
-  children: React.ReactNode
-  href?: string
-  icon?: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
-    muiName: string
-  }
+  type: 'byUser' | null
 }
 
-const PostCaption = ({ children, href, icon: Icon }: PropTypes) => {
+const PostCaption = ({ type }: PropTypes) => {
+  if (!type) return null
+
+  const Icon = {
+    byUser: PersonRounded,
+  }[type]
+
+  const text = {
+    byUser: 'Posted by me',
+  }[type]
+
+  const href = {
+    byUser: '/profile/posts',
+  }[type]
 
   if (href) {
     return (
@@ -29,9 +38,14 @@ const PostCaption = ({ children, href, icon: Icon }: PropTypes) => {
             }}
           >
             {Icon && (
-              <Icon sx={{ fontSize: '1em', marginRight: 0.5 }} />
+              <Icon
+                sx={{
+                  fontSize: '1em',
+                  marginRight: 0.8,
+                }}
+              />
             )}
-            {children}
+            {text}
           </Box>
         </CaptionLink>
       </Box>
@@ -43,7 +57,7 @@ const PostCaption = ({ children, href, icon: Icon }: PropTypes) => {
       variant="caption"
       component="div"
     >
-      {children}
+      {text}
     </Typography>
   )
 }

@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
+
 import formatDate from '../../utils/formatting/formatDate'
 import formatLikesCount from '../../utils/formatting/formatLikesCount'
 import formatReplyCount from '../../utils/formatting/formatReplyCount'

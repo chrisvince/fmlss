@@ -1,4 +1,3 @@
-import { PersonRounded } from '@mui/icons-material'
 import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
 import { useId } from 'react'
@@ -29,10 +28,7 @@ const PostListItem = ({ post, onLikePost }: PropTypes) => {
   }
 
   const byUser = !!post.user?.created
-  const showPostCatption = !!byUser
-  const postCaptionText = byUser ? 'Posted by me' : undefined
-  const postCaptionHref = byUser ? '/profile/posts' : undefined
-  const postCaptionIcon = byUser ? PersonRounded : undefined
+  const postCaptionType = byUser ? 'byUser' : null
   const ariaLabelledById = useId()
 
   return (
@@ -50,11 +46,7 @@ const PostListItem = ({ post, onLikePost }: PropTypes) => {
           gap: 2,
         }}
       >
-        {showPostCatption && (
-          <PostCaption href={postCaptionHref} icon={postCaptionIcon}>
-            {postCaptionText}
-          </PostCaption>
-        )}
+        <PostCaption type={postCaptionType} />
         <PostBody body={post.data.body} id={ariaLabelledById} />
         <PostActionBar
           createdAt={post.data.createdAt}

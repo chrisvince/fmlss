@@ -22,7 +22,7 @@ const ListItemFrame = ({
 
   const handleClick = (event: SyntheticEvent) => {
     const isClickableElement = (event.target as HTMLAnchorElement).closest(
-      'a, button'
+      'a, button, [role="presentation"]',
     )
     if (isClickableElement) return
     if (window.getSelection()?.toString().length) return
