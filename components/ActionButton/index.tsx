@@ -1,7 +1,7 @@
 import { Button, SvgIconTypeMap, Typography } from '@mui/material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 import Link from 'next/link'
-import { useId } from 'react'
+import { ForwardedRef, forwardRef, useId } from 'react'
 
 type Icon = OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
   muiName: string
@@ -37,11 +37,12 @@ const ActionButton = ({
   onClick,
   text,
   rotateIcon,
-}: PropTypes) => {
+}: PropTypes, ref: ForwardedRef<HTMLButtonElement>) => {
   const labelledById = useId()
 
   const button = (
     <Button
+      ref={ref}
       aria-labelledby={labelledById}
       size="small"
       onClick={onClick}
@@ -88,4 +89,4 @@ const ActionButton = ({
   return button
 }
 
-export default ActionButton
+export default forwardRef(ActionButton)

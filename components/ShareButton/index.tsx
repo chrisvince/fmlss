@@ -1,12 +1,93 @@
-import { LogoutRounded } from '@mui/icons-material'
+import { LinkRounded, LogoutRounded } from '@mui/icons-material'
+import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import ActionButton from '../ActionButton'
 
-const ShareButton = () => (
-  <ActionButton
-    text="Share"
-    icon={LogoutRounded}
-    rotateIcon={270}
-  />
-)
+interface Props {
+  slug: string
+}
+
+const ShareButton = ({ slug }: Props) => {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [showCopiedText, setShowCopiedText] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const url = `https://${process.env.NEXT_PUBLIC_DOMAIN}/post/${slug}`
+
+  const handleClick = () => setMenuOpen((current) => !current)
+  const handleMenuClose = () => setMenuOpen(false)
+
+  const handleCopyUrlButton = () => {
+    navigator.clipboard.writeText(url)
+    
+    setShowCopiedText(true)
+  }
+
+  useEffect(() => {
+    if (!showCopiedText) return
+    const closeMenuTimeout = setTimeout(() => {
+      setMenuOpen(false)
+    }, 3000)
+
+    const resetTextTimeout = setTimeout(() => {
+      setShowCopiedText(false)
+    }, 3200)
+
+    return () => {
+      setShowCopiedText(false)
+      setMenuOpen(false)
+      clearTimeout(closeMenuTimeout)
+      clearTimeout(resetTextTimeout)
+    }
+  }, [showCopiedText])
+
+  const handleShareClick = async () => {
+    try {
+      await navigator.share({
+        title: 'Fameless - Post',
+        text: 'Check out this post on Fameless!',
+        url,
+      })
+    } catch (error) {
+      console.error('Error sharing', error)
+    }
+  }
+
+  return (
+    <>
+      <ActionButton
+        text="Share"
+        icon={LogoutRounded}
+        rotateIcon={270}
+        onClick={handleClick}
+        ref={buttonRef}
+      />
+      <Menu
+        anchorEl={buttonRef.current}
+        open={menuOpen}
+        onClose={handleMenuClose}
+        MenuListProps={{
+          'aria-labelledby': 'profile-menu-button',
+          dense: true,
+        }}
+      >
+        <MenuItem onClick={handleCopyUrlButton}>
+          <ListItemIcon>
+            <LinkRounded />
+          </ListItemIcon>
+          <ListItemText primary={showCopiedText ? 'Copied!' : 'Copy URL'} />
+        </MenuItem>
+        {!!navigator.share && (
+          <MenuItem onClick={handleShareClick}>
+            <ListItemIcon>
+              <LogoutRounded sx={{ transform: 'rotate(270deg)' }} />
+            </ListItemIcon>
+            <ListItemText>Share...</ListItemText>
+          </MenuItem>
+        )}
+      </Menu>
+    </>
+  )
+}
 
 export default ShareButton

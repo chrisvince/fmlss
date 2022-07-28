@@ -210,7 +210,6 @@ const TopNavigation = () => {
                     />
                   </IconButton>
                   <Menu
-                    id="basic-menu"
                     anchorEl={profileMenuButtonRef.current}
                     open={profileMenuOpen}
                     onClose={handleProfileMenuClose}

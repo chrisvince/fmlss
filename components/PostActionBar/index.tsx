@@ -90,7 +90,7 @@ const PostActionBar = ({
         <LikeButton like={like} onClick={onLike} />
         <ReplyButton slug={slug} />
         <HighlightButton />
-        <ShareButton />
+        <ShareButton slug={slug} />
       </Box>
     </Box>
   )
