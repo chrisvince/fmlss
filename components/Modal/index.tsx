@@ -34,43 +34,41 @@ const Modal = ({
   const fullScreen = useMediaQuery(breakpoints.down('sm'))
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      fullScreen={fullScreen}
-    >
-      {isLoading ? (
-        <ModalSpinner />
-      ) : (
-        <>
-          <DialogTitle
-            component="div"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingRight: {
-                xs: `calc(${spacing(2)} - 5px)`,
-                sm: `calc(${spacing(3)} - 7px)`,
-              },
-              paddingTop: {
-                xs: `calc(${spacing(2)} - 5px)`,
-                sm: `calc(${spacing(3)} - 7px)`,
-              },
-            }}
-          >
-            <Typography variant="h6" component="h2">
-              {title}
-            </Typography>
-            <IconButton aria-label="Close" onClick={onClose}>
-              <Close />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>{children}</DialogContent>
-          <DialogActions>{actions}</DialogActions>
-        </>
-      )}
+    <Dialog open={open} onClose={onClose} fullWidth fullScreen={fullScreen}>
+      <DialogTitle
+        component="div"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingRight: {
+            xs: `calc(${spacing(2)} - 5px)`,
+            sm: `calc(${spacing(3)} - 7px)`,
+          },
+          paddingTop: {
+            xs: `calc(${spacing(2)} - 5px)`,
+            sm: `calc(${spacing(3)} - 7px)`,
+          },
+        }}
+      >
+        <Typography variant="h6" component="h2">
+          {title}
+        </Typography>
+        <IconButton aria-label="Close" onClick={onClose}>
+          <Close />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        {isLoading ? <ModalSpinner /> : children}
+      </DialogContent>
+      <DialogActions
+        sx={{
+          visibility: isLoading ? 'hidden' : 'visible',
+          userSelect: isLoading ? 'none' : 'auto',
+        }}
+      >
+        {actions}
+      </DialogActions>
     </Dialog>
   )
 }

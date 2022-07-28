@@ -4,7 +4,10 @@ import { Box } from '@mui/system'
 const ModalSpinner = () => (
   <Box
     sx={{
-      height: '40vh',
+      height: {
+        xs: '100%',
+        sm: '30vh',
+      },
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
