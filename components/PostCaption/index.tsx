@@ -15,7 +15,7 @@ const PostCaption = ({ type }: PropTypes) => {
   }[type]
 
   const text = {
-    byUser: 'Posted by me',
+    byUser: 'Posted by you',
   }[type]
 
   const href = {
