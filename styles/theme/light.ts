@@ -72,6 +72,9 @@ const theme = createTheme({
         body: {
           minWidth: '320px',
         },
+        '.ReactVirtualized__List': {
+          outline: 'none',
+        }
       },
     },
     MuiAppBar: {
