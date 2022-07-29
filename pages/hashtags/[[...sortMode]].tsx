@@ -6,7 +6,7 @@ import {
 import { SWRConfig } from 'swr'
 
 import HashtagsPage from '../../components/HashtagsPage'
-import type { HashtagsSortMode, Post } from '../../types'
+import type { HashtagsSortMode } from '../../types'
 import { createHashtagsCacheKey, createMiniCategoriesCacheKey } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
@@ -18,7 +18,7 @@ const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface PropTypes {
   fallback: {
-    [key: string]: Post[]
+    [key: string]: any
   }
 }
 

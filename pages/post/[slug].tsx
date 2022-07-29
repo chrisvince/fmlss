@@ -7,7 +7,6 @@ import {
 import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
 
-import type { Post } from '../../types'
 import getPost from '../../utils/data/post/getPost'
 import PostPage from '../../components/PostPage'
 import getPostReplies from '../../utils/data/postReplies/getPostReplies'
@@ -29,7 +28,7 @@ const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface PropTypes {
   fallback: {
-    [key: string]: Post | Post[],
+    [key: string]: any
   }
 }
 

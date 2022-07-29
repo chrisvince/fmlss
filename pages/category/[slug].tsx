@@ -7,7 +7,7 @@ import {
 import { SWRConfig } from 'swr'
 
 import CategoryPage from '../../components/CategoryPage'
-import type { CategorySortMode, Post } from '../../types'
+import type { CategorySortMode } from '../../types'
 import {
   createCategoryPostsCacheKey,
   createMiniHashtagsCacheKey,
@@ -24,7 +24,7 @@ const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface PropTypes {
   fallback: {
-    [key: string]: Post[]
+    [key: string]: any
   }
   slug: string
 }

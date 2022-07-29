@@ -6,7 +6,7 @@ import {
 import { SWRConfig } from 'swr'
 
 import CategoriesPage from '../../components/CategoriesPage'
-import type { CategoriesSortMode, Post } from '../../types'
+import type { CategoriesSortMode } from '../../types'
 import {
   createCategoriesCacheKey,
   createMiniHashtagsCacheKey,
@@ -21,7 +21,7 @@ const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface PropTypes {
   fallback: {
-    [key: string]: Post[]
+    [key: string]: any
   }
 }
 

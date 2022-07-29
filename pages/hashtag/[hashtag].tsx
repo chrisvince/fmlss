@@ -7,7 +7,7 @@ import {
 import { SWRConfig } from 'swr'
 
 import HashtagPage from '../../components/HashtagPage'
-import type { HashtagSortMode, Post } from '../../types'
+import type { HashtagSortMode } from '../../types'
 import { createHashtagPostsCacheKey, createMiniCategoriesCacheKey, createMiniHashtagsCacheKey } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
@@ -22,7 +22,7 @@ const DEFAULT_POST_TYPE = 'post'
 
 interface PropTypes {
   fallback: {
-    [key: string]: Post[]
+    [key: string]: any
   }
   hashtag: string
 }

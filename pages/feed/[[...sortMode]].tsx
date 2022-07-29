@@ -8,7 +8,7 @@ import { SWRConfig } from 'swr'
 import { NextApiRequest } from 'next'
 
 import FeedPage from '../../components/FeedPage'
-import type { FeedSortMode, Post } from '../../types'
+import type { FeedSortMode } from '../../types'
 import { createMiniCategoriesCacheKey, createMiniHashtagsCacheKey, createPostFeedCacheKey } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
@@ -20,7 +20,7 @@ const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface PropTypes {
   fallback: {
-    [key: string]: Post[]
+    [key: string]: any
   }
 }
 
