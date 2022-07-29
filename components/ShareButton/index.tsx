@@ -19,13 +19,24 @@ const ShareButton = ({ slug }: Props) => {
 
   const handleCopyUrlButton = () => {
     navigator.clipboard.writeText(url)
-    
     setShowCopiedText(true)
   }
 
   useEffect(() => {
+    if (!menuOpen) {
+      const resetTextTimeout = setTimeout(() => {
+        setShowCopiedText(false)
+      }, 200)
+
+      return () => {
+        clearTimeout(resetTextTimeout)
+      }
+    }
+
     if (!showCopiedText) return
+
     const closeMenuTimeout = setTimeout(() => {
+      if (menuOpen) return
       setMenuOpen(false)
     }, 3000)
 
@@ -34,23 +45,20 @@ const ShareButton = ({ slug }: Props) => {
     }, 3200)
 
     return () => {
-      setShowCopiedText(false)
-      setMenuOpen(false)
       clearTimeout(closeMenuTimeout)
       clearTimeout(resetTextTimeout)
     }
-  }, [showCopiedText])
+  }, [menuOpen, showCopiedText])
 
   const handleShareClick = async () => {
+    setMenuOpen(false)
     try {
       await navigator.share({
         title: 'Fameless - Post',
         text: 'Check out this post on Fameless!',
         url,
       })
-    } catch (error) {
-      console.error('Error sharing', error)
-    }
+    } catch (error) {}
   }
 
   return (
