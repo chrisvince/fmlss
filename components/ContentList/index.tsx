@@ -1,4 +1,4 @@
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, useMediaQuery } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
 import { useEffect } from 'react'
 import {
@@ -39,6 +39,7 @@ const ContentList = ({
 }: PropTypes) => {
   const theme = useTheme()
   const rowCount = items.length + 1
+  const clearCellCacheOnResize = useMediaQuery('(max-width: 1300px)')
 
   const isRowLoaded = ({ index }: { index: number }) =>
     !moreToLoad || index < items.length
@@ -54,6 +55,21 @@ const ContentList = ({
   useEffect(() => {
     cellMeasurerCache.clearAll()
   }, [cacheKey])
+
+  useEffect(() => {
+    if (!clearCellCacheOnResize) return
+
+    const handleWindowResize = () => {
+      cellMeasurerCache.clearAll()
+      console.log('run')
+    }
+
+    addEventListener('resize', handleWindowResize)
+
+    return () => {
+      removeEventListener('resize', handleWindowResize)
+    }
+  }, [clearCellCacheOnResize])
 
   const rowRenderer: ListRowRenderer = ({ index, key, style, parent }) => {
     const renderLoader = (moreToLoad: boolean) => (
