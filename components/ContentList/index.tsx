@@ -45,11 +45,8 @@ const ContentList = ({
     !moreToLoad || index < items.length
 
   const handleLoadMoreRows = async () => {
-    const itemsLength = items.length
     await onLoadMore()
-
-    // clears height cache of spinner cell
-    cellMeasurerCache.clear(itemsLength, 0)
+    cellMeasurerCache.clearAll()
   }
 
   useEffect(() => {
