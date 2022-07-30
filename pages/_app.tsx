@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { useEffect } from 'react'
 import type { AppProps } from 'next/app'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { withAuthUser } from 'next-firebase-auth'
@@ -24,6 +25,13 @@ const App = ({
   pageProps,
   emotionCache = clientSideEmotionCache,
 }: Props) => {
+  useEffect(() => {
+    const jssStyles = document.querySelector('#jss-server-side')
+    if (jssStyles) {
+      jssStyles?.parentElement?.removeChild(jssStyles)
+    }
+  }, [])
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
