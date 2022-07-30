@@ -1,23 +1,41 @@
+import Head from 'next/head'
 import type { AppProps } from 'next/app'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { withAuthUser } from 'next-firebase-auth'
+import { CacheProvider, EmotionCache } from '@emotion/react'
 
 import initAuth from '../utils/initAuth'
 import initFirebase from '../utils/initFirebase'
 import Layout from '../components/Layout'
 import { light } from '../styles/theme'
+import createEmotionCache from '../utils/createEmotionServer'
 
 initFirebase()
 initAuth()
 
-const App = ({ Component, pageProps }: AppProps) => {
+const clientSideEmotionCache = createEmotionCache()
+
+interface Props extends AppProps {
+  emotionCache?: EmotionCache
+}
+
+const App = ({
+  Component,
+  pageProps,
+  emotionCache = clientSideEmotionCache,
+}: Props) => {
   return (
-    <ThemeProvider theme={light}>
-      <CssBaseline />
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </ThemeProvider>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={light}>
+        <CssBaseline />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ThemeProvider>
+    </CacheProvider>
   )
 }
 
