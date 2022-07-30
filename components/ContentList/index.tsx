@@ -1,6 +1,6 @@
 import { CircularProgress, useMediaQuery } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { useEffect } from 'react'
+import { LegacyRef, Ref, useCallback, useEffect } from 'react'
 import {
   AutoSizer,
   CellMeasurer,
@@ -10,8 +10,11 @@ import {
   ListRowRenderer,
   WindowScroller,
 } from 'react-virtualized'
+import { mergeRefs } from 'react-merge-refs'
+
 import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
+import useOnWindowResize from '../../utils/useOnWindowResize'
 
 const { INFINITY_LOADING_THRESHOLD, VIRTUALIZED_OVERSCAN_ROW_COUNT } = constants
 
@@ -39,10 +42,12 @@ const ContentList = ({
 }: PropTypes) => {
   const theme = useTheme()
   const rowCount = items.length + 1
-  const clearCellCacheOnResize = useMediaQuery('(max-width: 1300px)')
+  const disableClearCellCacheOnResize = useMediaQuery('(min-width: 1300px)')
 
-  const isRowLoaded = ({ index }: { index: number }) =>
-    !moreToLoad || index < items.length
+  const isRowLoaded = useCallback(
+    ({ index }: { index: number }) => !moreToLoad || index < items.length,
+    [items.length, moreToLoad]
+  ) 
 
   const handleLoadMoreRows = async () => {
     await onLoadMore()
@@ -53,60 +58,49 @@ const ContentList = ({
     cellMeasurerCache.clearAll()
   }, [cacheKey])
 
-  useEffect(() => {
-    if (!clearCellCacheOnResize) return
+  useOnWindowResize(
+    () => cellMeasurerCache.clearAll(),
+    { disable: disableClearCellCacheOnResize }
+  )
 
-    const handleWindowResize = () => {
-      cellMeasurerCache.clearAll()
-      console.log('run')
-    }
+  const rowRenderer: ListRowRenderer = useCallback(
+    ({ index, key, style, parent }) => {
+      const renderLoader = (moreToLoad: boolean) => (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: moreToLoad ? '60px' : theme.spacing(4),
+          }}
+        >
+          {moreToLoad && <CircularProgress size={22} />}
+        </Box>
+      )
 
-    addEventListener('resize', handleWindowResize)
-
-    return () => {
-      removeEventListener('resize', handleWindowResize)
-    }
-  }, [clearCellCacheOnResize])
-
-  const rowRenderer: ListRowRenderer = ({ index, key, style, parent }) => {
-    const renderLoader = (moreToLoad: boolean) => (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: moreToLoad ? '60px' : theme.spacing(4),
-        }}
-      >
-        {moreToLoad && <CircularProgress size={22} />}
-      </Box>
-    )
-
-    return (
-      // @ts-ignore
-      <CellMeasurer
-        cache={cellMeasurerCache}
-        columnIndex={0}
-        key={key}
-        parent={parent}
-        rowIndex={index}
-      >
-        {({ measure, registerChild }) => (
-          <div
-            // @ts-ignore
-            ref={registerChild}
-            style={style}
-          >
-            <div onLoad={measure}>
-              {isRowLoaded({ index }) && items[index]
-                ? render(items[index])
-                : renderLoader(moreToLoad)}
+      return (
+        // @ts-ignore
+        <CellMeasurer
+          cache={cellMeasurerCache}
+          columnIndex={0}
+          key={key}
+          parent={parent}
+          rowIndex={index}
+        >
+          {({ measure, registerChild }) => (
+            <div ref={registerChild as LegacyRef<HTMLDivElement>} style={style}>
+              <div onLoad={measure}>
+                {isRowLoaded({ index }) && items[index]
+                  ? render(items[index])
+                  : renderLoader(moreToLoad)}
+              </div>
             </div>
-          </div>
-        )}
-      </CellMeasurer>
-    )
-  }
+          )}
+        </CellMeasurer>
+      )
+    },
+    [isRowLoaded, items, moreToLoad, render, theme]
+  )
 
   if (isLoading) {
     return <PageSpinner />
@@ -120,27 +114,33 @@ const ContentList = ({
       rowCount={rowCount}
       threshold={INFINITY_LOADING_THRESHOLD}
     >
-      {({ onRowsRendered, registerChild }) => (
+      {({ onRowsRendered, registerChild: infiniteLoaderRef = () => {} }) => (
         // @ts-ignore
         <WindowScroller>
-          {({ height, scrollTop }) => (
+          {({
+            height,
+            scrollTop,
+            registerChild: windowScrollerRef = () => {},
+          }) => (
             // @ts-ignore
             <AutoSizer disableHeight>
               {({ width }) => (
-                // @ts-ignore
-                <List
-                  autoHeight
-                  deferredMeasurementCache={cellMeasurerCache}
-                  height={height}
-                  onRowsRendered={onRowsRendered}
-                  overscanRowCount={VIRTUALIZED_OVERSCAN_ROW_COUNT}
-                  ref={registerChild}
-                  rowCount={rowCount}
-                  rowHeight={cellMeasurerCache.rowHeight}
-                  rowRenderer={rowRenderer}
-                  scrollTop={scrollTop}
-                  width={width}
-                />
+                <div ref={windowScrollerRef as LegacyRef<HTMLDivElement>}>
+                  {/* @ts-ignore */}
+                  <List
+                    autoHeight
+                    deferredMeasurementCache={cellMeasurerCache}
+                    height={height}
+                    onRowsRendered={onRowsRendered}
+                    overscanRowCount={VIRTUALIZED_OVERSCAN_ROW_COUNT}
+                    ref={infiniteLoaderRef}
+                    rowCount={rowCount}
+                    rowHeight={cellMeasurerCache.rowHeight}
+                    rowRenderer={rowRenderer}
+                    scrollTop={scrollTop}
+                    width={width}
+                  />
+                </div>
               )}
             </AutoSizer>
           )}
