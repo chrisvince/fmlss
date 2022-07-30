@@ -48,5 +48,8 @@
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.3",
     "typescript": "4.7.4"
+  },
+  "resolutions": {
+    "react-transition-group": "4.4.2"
   }
 }
