@@ -10,7 +10,6 @@ import {
   ListRowRenderer,
   WindowScroller,
 } from 'react-virtualized'
-import { mergeRefs } from 'react-merge-refs'
 
 import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
