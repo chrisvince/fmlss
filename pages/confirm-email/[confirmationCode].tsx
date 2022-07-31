@@ -1,6 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/functions'
 
+import constants from '../../constants'
+
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
+
 const verifyEmail = firebase.functions().httpsCallable('verifyEmail')
 
 const UI_STATES = {
@@ -44,18 +48,23 @@ export const getServerSideProps = async ({
     confirmationCode: string
   }
 }) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   if (!encodedConfirmationCode) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return createGetServerSidePropsPayload(UI_STATES.ERROR)
   }
 
   try {
     const confirmationCode = decodeURIComponent(encodedConfirmationCode)
     await verifyEmail({ confirmationCode })
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return createGetServerSidePropsPayload(UI_STATES.VERIFIED)
   } catch (error: any) {
     if (error.code === 'already-exists') {
+      console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
       return createGetServerSidePropsPayload(UI_STATES.ALREADY_VERIFIED)
     }
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return createGetServerSidePropsPayload(UI_STATES.ERROR)
   }
 }

@@ -1,7 +1,6 @@
 import {
   withAuthUser,
   withAuthUserTokenSSR,
-  AuthAction,
 } from 'next-firebase-auth'
 import Page from '../components/Page'
 

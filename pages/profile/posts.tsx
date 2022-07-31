@@ -13,7 +13,11 @@ import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
 
-const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+const {
+  GET_SERVER_SIDE_PROPS_TIME_LABEL,
+  MINI_LIST_CACHE_TIME,
+  MINI_LIST_COUNT,
+} = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -36,11 +40,13 @@ const getServerSidePropsFn = async ({
   AuthUser: AuthUser
   req: NextApiRequest,
 }) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
 
   if (!uid) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return { notFound: true }
   }
   const userPostsCacheKey = createUserPostsCacheKey(uid)
@@ -62,6 +68,7 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       props: {
         fallback: {
@@ -79,6 +86,7 @@ const getServerSidePropsFn = async ({
     type: 'post',
   })
 
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {

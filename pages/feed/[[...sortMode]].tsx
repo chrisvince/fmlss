@@ -9,14 +9,22 @@ import { NextApiRequest } from 'next'
 
 import FeedPage from '../../components/FeedPage'
 import type { FeedSortMode } from '../../types'
-import { createMiniCategoriesCacheKey, createMiniHashtagsCacheKey, createPostFeedCacheKey } from '../../utils/createCacheKeys'
+import {
+  createMiniCategoriesCacheKey,
+  createMiniHashtagsCacheKey,
+  createPostFeedCacheKey,
+} from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getPostFeed from '../../utils/data/posts/getPostFeed'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 
-const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+const {
+  GET_SERVER_SIDE_PROPS_TIME_LABEL,
+  MINI_LIST_CACHE_TIME,
+  MINI_LIST_COUNT,
+} = constants
 
 interface PropTypes {
   fallback: {
@@ -47,6 +55,7 @@ const getServerSidePropsFn = async ({
   params: { sortMode: string }
   req: NextApiRequest
 }) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   if (sortModeArray?.length > 1) {
     return { notFound: true }
   }
@@ -81,6 +90,7 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       props: {
         fallback: {
@@ -99,6 +109,7 @@ const getServerSidePropsFn = async ({
     uid,
   })
 
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {

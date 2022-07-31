@@ -24,7 +24,11 @@ import { NextApiRequest } from 'next'
 import usePost from '../../utils/data/post/usePost'
 import Error from 'next/error'
 
-const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+const {
+  GET_SERVER_SIDE_PROPS_TIME_LABEL,
+  MINI_LIST_CACHE_TIME,
+  MINI_LIST_COUNT,
+} = constants
 
 interface PropTypes {
   fallback: {
@@ -59,6 +63,7 @@ const getServerSidePropsFn = async ({
   }
   req: NextApiRequest,
 }) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const slug = decodeURIComponent(encodedSlug)
@@ -84,6 +89,7 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       props: {
         fallback: {
@@ -103,6 +109,7 @@ const getServerSidePropsFn = async ({
   })
 
   if (!post) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return { notFound: true }
   }
 
@@ -111,6 +118,7 @@ const getServerSidePropsFn = async ({
     db: adminDb,
   })
 
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {

@@ -8,6 +8,9 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
+import constants from '../../constants'
+
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const resetPassword = firebase.functions().httpsCallable('resetPassword')
 const checkPasswordResetRequestValid = firebase
@@ -152,7 +155,10 @@ const ResetPassword = ({
 const getServerSidePropsFn = async ({
   params: { passwordResetRequestId: encodedPasswordResetRequestId } = {},
 }: GetServerSidePropsContext<{ passwordResetRequestId?: string }>) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
   if (!encodedPasswordResetRequestId) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return createGetServerSidePropsPayload({
       passwordResetRequestValidationStatus: UI_STATES.ERROR,
     })
@@ -166,23 +172,27 @@ const getServerSidePropsFn = async ({
     await checkPasswordResetRequestValid({ passwordResetRequestId })
   } catch (error: any) {
     if (error.code === 'not-found') {
+      console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
       return createGetServerSidePropsPayload({
         passwordResetRequestId,
         passwordResetRequestValidationStatus: UI_STATES.INVALID_CODE,
       })
     }
     if (error.code === 'resource-exhausted') {
+      console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
       return createGetServerSidePropsPayload({
         passwordResetRequestId,
         passwordResetRequestValidationStatus:
           UI_STATES.PASSWORD_RESET_REQUEST_USED,
       })
     }
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return createGetServerSidePropsPayload({
       passwordResetRequestId,
       passwordResetRequestValidationStatus: UI_STATES.ERROR,
     })
   }
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return createGetServerSidePropsPayload({
     passwordResetRequestId,
     passwordResetRequestValidationStatus: UI_STATES.NOT_CHANGED,

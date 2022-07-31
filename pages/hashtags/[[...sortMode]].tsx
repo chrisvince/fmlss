@@ -14,7 +14,11 @@ import constants from '../../constants'
 import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
 
-const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+const {
+  GET_SERVER_SIDE_PROPS_TIME_LABEL,
+  MINI_LIST_CACHE_TIME,
+  MINI_LIST_COUNT,
+} = constants
 
 interface PropTypes {
   fallback: {
@@ -42,6 +46,7 @@ const getServerSidePropsFn = async ({
   params: { sortMode: string }
   req: NextApiRequest
 }) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   if (sortModeArray?.length > 1) {
     return { notFound: true }
   }
@@ -67,6 +72,7 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       props: {
         fallback: {
@@ -83,6 +89,7 @@ const getServerSidePropsFn = async ({
     sortMode,
   })
 
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {

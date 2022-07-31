@@ -6,7 +6,10 @@ import {
 import Page from '../../components/Page'
 import EmailVerificationLink from '../../components/EmailVerificationLink'
 import Link from 'next/link'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 

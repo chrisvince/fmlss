@@ -16,7 +16,11 @@ import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
 
-const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+const {
+  GET_SERVER_SIDE_PROPS_TIME_LABEL,
+  MINI_LIST_CACHE_TIME,
+  MINI_LIST_COUNT,
+} = constants
 
 const DEFAULT_POST_TYPE = 'post'
 
@@ -52,6 +56,7 @@ const getServerSidePropsFn = async ({
   query: { sort: string }
   req: NextApiRequest
 }) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
@@ -80,6 +85,7 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       props: {
         fallback: {
@@ -100,6 +106,7 @@ const getServerSidePropsFn = async ({
     sortMode,
   })
 
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {
