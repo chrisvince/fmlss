@@ -24,9 +24,9 @@ type UseCategory = (
   slug: string,
   options?: {
     swrConfig?: SWRConfig
-  },
+  }
 ) => {
-  category: Category
+  category: Category | null | undefined
   isLoading: boolean
   error: any
   isValidating: boolean
@@ -46,7 +46,7 @@ const useCategory: UseCategory = (slug, { swrConfig = {} } = {}) => {
   )
 
   return {
-    category: data as Category,
+    category: data,
     isLoading: !error && !data,
     isValidating,
     error,

@@ -51,7 +51,7 @@ const usePopularHashtags: UsePopularHashtags = ({
   )
 
   return {
-    hashtags: data as Hashtag[],
+    hashtags: data,
     isLoading: !error && !data,
     isValidating,
     error,

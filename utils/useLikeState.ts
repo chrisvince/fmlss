@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 import { Post } from '../types'
 
 interface PropTypes {
-  post: Post
+  post: Post | null | undefined
 }
 
 const useLikeState = ({
   post,
 }: PropTypes) => {
-  const [like, setLike] = useState<boolean>(!!post.user?.like)
-  const [likesCount, setLikesCount] = useState<number>(post.data.likesCount)
+  const [like, setLike] = useState<boolean>(!!post?.user?.like)
+  const [likesCount, setLikesCount] = useState<number>(post?.data.likesCount ?? 0)
 
   const toggleLike = useCallback(async () => {
     if (like) {
@@ -23,12 +23,12 @@ const useLikeState = ({
   }, [like, likesCount])
 
   useEffect(() => {
-    setLikesCount(post.data.likesCount ?? 0)
-  }, [post.data.likesCount])
+    setLikesCount(post?.data.likesCount ?? 0)
+  }, [post?.data.likesCount])
 
   useEffect(() => {
-    setLike(!!post.user?.like)
-  }, [post.user?.like])
+    setLike(!!post?.user?.like)
+  }, [post?.user?.like])
 
   return {
     toggleLike,

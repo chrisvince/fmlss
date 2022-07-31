@@ -22,6 +22,11 @@ const PostReplyForm = ({ slug, onSuccess }: PropTypes) => {
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
 
+    if (!post?.data.reference) {
+      console.error('No post reference passed')
+      return
+    }
+
     if (!textareaValue) {
       console.error('Must have a body')
       return

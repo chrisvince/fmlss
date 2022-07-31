@@ -69,14 +69,17 @@ const usePostReplies: UsePostReplies = (
     setSize,
   } = useSWRInfinite(
     (index, previousPageData) => {
-      if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+      if (
+        (previousPageData && previousPageData.length < PAGINATION_COUNT) ||
+        !post
+      ) {
         return null
       }
       return createPostRepliesCacheKey(slug, index, viewMode)
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
-      return getPostReplies(post.data.reference, slug, {
+      return getPostReplies(post!.data.reference, slug, {
         uid,
         startAfter: pageStartAfterTrace[pageIndex],
         viewMode,
@@ -131,7 +134,7 @@ const usePostReplies: UsePostReplies = (
   const isValidating = repliesAreValidating || postIsValidating
 
   const moreToLoad =
-    post.data.postsCount === undefined || replies.length < post.data.postsCount
+    post?.data.postsCount === undefined || replies.length < post.data.postsCount
   
   const cacheKey = createPostRepliesCacheKey(slug, null, viewMode)
 

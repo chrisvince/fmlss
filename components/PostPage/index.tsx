@@ -20,7 +20,7 @@ const PostPage = ({ slug }: PropTypes) => {
     return <PageSpinner />
   }
 
-  const pageTitle = truncateString(post.data.body)
+  const pageTitle = truncateString(post!.data.body)
 
   return (
     <Page

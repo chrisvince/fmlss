@@ -23,7 +23,7 @@ type UsePost = (
     swrConfig?: SWRConfig,
   },
 ) => {
-  post: Post
+  post: Post | null | undefined
   isLoading: boolean
   error: any
   isValidating: boolean
@@ -44,7 +44,7 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
   )
 
   return {
-    post: data as Post,
+    post: data,
     isLoading: !error && !data,
     isValidating,
     error,

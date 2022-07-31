@@ -51,7 +51,7 @@ const usePopularCategories: UsePopularCategories = ({
   )
 
   return {
-    categories: data as Category[],
+    categories: data,
     isLoading: !error && !data,
     isValidating,
     error,

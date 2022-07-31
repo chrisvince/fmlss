@@ -17,10 +17,9 @@ const RepliesList = ({ slug }: PropTypes) => {
   const { post } = usePost(slug)
   const [viewMode, setViewMode] = useState<'start' | 'end'>('start')
 
-  const { likePost, loadMore, moreToLoad, replies } = usePostReplies(
-    post.data.slug,
-    { viewMode }
-  )
+  const { likePost, loadMore, moreToLoad, replies } = usePostReplies(slug, {
+    viewMode,
+  })
 
   const handleNewReply = async () => {
     setViewMode('end')
@@ -37,7 +36,7 @@ const RepliesList = ({ slug }: PropTypes) => {
     <div>
       <ScrollLink id="replies" />
       <SectionHeading sticky={false}>
-        Replies {!!post.data.postsCount && <> ({post.data.postsCount})</>}
+        Replies {!!post?.data.postsCount && <> ({post.data.postsCount})</>}
       </SectionHeading>
       {!!replies?.length ? (
         <>
