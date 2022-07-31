@@ -29,7 +29,6 @@ type UsePostFeed = (options?: {
   sortMode?: FeedSortMode
   swrConfig?: SWRInfiniteConfiguration
 }) => {
-  cacheKey: string
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -101,8 +100,6 @@ const usePostFeed: UsePostFeed = ({
   const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
 
-  const cacheKey = createPostFeedCacheKey(sortMode, null)
-
   const likePost = useCallback(async (slug: string) => {
     const handleMutation = async (currentData: any) => {
       const userLikesPost = checkUserLikesPost(slug, currentData)
@@ -122,7 +119,6 @@ const usePostFeed: UsePostFeed = ({
   }, [mutate])
 
   return {
-    cacheKey,
     error,
     isLoading,
     isValidating,

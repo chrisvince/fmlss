@@ -16,14 +16,8 @@ import constants from '../../constants'
 import useOnWindowResize from '../../utils/useOnWindowResize'
 
 const { INFINITY_LOADING_THRESHOLD, VIRTUALIZED_OVERSCAN_ROW_COUNT } = constants
-
-const cellMeasurerCache = new CellMeasurerCache({
-  fixedWidth: true,
-  defaultHeight: 146.2,
-})
-
 interface PropTypes {
-  cacheKey: string
+  cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   items: any[]
   moreToLoad: boolean
@@ -32,7 +26,7 @@ interface PropTypes {
 }
 
 const ContentList = ({
-  cacheKey,
+  cellMeasurerCache,
   isLoading,
   items,
   moreToLoad,
@@ -46,21 +40,16 @@ const ContentList = ({
   const isRowLoaded = useCallback(
     ({ index }: { index: number }) => !moreToLoad || index < items.length,
     [items.length, moreToLoad]
-  ) 
+  )
 
   const handleLoadMoreRows = async () => {
     await onLoadMore()
     cellMeasurerCache.clearAll()
   }
 
-  useEffect(() => {
-    cellMeasurerCache.clearAll()
-  }, [cacheKey])
-
-  useOnWindowResize(
-    () => cellMeasurerCache.clearAll(),
-    { disable: disableClearCellCacheOnResize }
-  )
+  useOnWindowResize(() => cellMeasurerCache.clearAll(), {
+    disable: disableClearCellCacheOnResize,
+  })
 
   const rowRenderer: ListRowRenderer = useCallback(
     ({ index, key, style, parent }) => {
@@ -98,7 +87,7 @@ const ContentList = ({
         </CellMeasurer>
       )
     },
-    [isRowLoaded, items, moreToLoad, render, theme]
+    [cellMeasurerCache, isRowLoaded, items, moreToLoad, render, theme]
   )
 
   if (isLoading) {

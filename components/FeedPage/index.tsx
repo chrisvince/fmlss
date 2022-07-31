@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Button } from '@mui/material'
+import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import Feed from '../Feed'
@@ -38,6 +39,10 @@ const SORT_MODE_MAP: {
   'most-likes': 'mostLikes',
 }
 
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+})
+
 const FeedPage = () => {
   const { asPath: path } = useRouter()
 
@@ -45,9 +50,12 @@ const FeedPage = () => {
     SORT_MODE_MAP[path?.split?.('/')?.[2] ?? 'latest'] as FeedSortMode
 
   const [sortMode, setSortMode] = useState<FeedSortMode>(pathSortMode)
-  const { cacheKey, isLoading, loadMore, moreToLoad, posts, likePost } =
+  const { isLoading, loadMore, moreToLoad, posts, likePost } =
     usePostFeed({
       sortMode,
+      swrConfig: {
+        onSuccess: () => cellMeasurerCache.clearAll(),
+      }
     })
 
   useEffect(() => {
@@ -82,7 +90,7 @@ const FeedPage = () => {
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <Feed
-        cacheKey={cacheKey}
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}

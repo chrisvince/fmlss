@@ -1,12 +1,22 @@
+import { CellMeasurerCache } from 'react-virtualized'
+
 import Page from '../Page'
 import Feed from '../Feed'
 import useUserLikes from '../../utils/data/userLikes/useUserLikes'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+})
+
 const UserLikesPage = () => {
-  const { cacheKey, isLoading, likePost, loadMore, moreToLoad, posts } =
-    useUserLikes()
+  const { isLoading, likePost, loadMore, moreToLoad, posts } =
+    useUserLikes({
+      swrConfig: {
+        onSuccess: () => cellMeasurerCache.clearAll(),
+      },
+    })
 
   return (
     <Page
@@ -19,7 +29,7 @@ const UserLikesPage = () => {
       }
     >
       <Feed
-        cacheKey={cacheKey}
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}

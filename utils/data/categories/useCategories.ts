@@ -24,7 +24,6 @@ type UseCategories = (options?: {
   sortMode?: CategoriesSortMode
   swrConfig?: SWRInfiniteConfiguration
 }) => {
-  cacheKey: string
   categories: Category[]
   error: any
   isLoading: boolean
@@ -92,10 +91,7 @@ const useCategories: UseCategories = ({
   const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
 
-  const cacheKey = createCategoriesCacheKey(sortMode, null)
-
   return {
-    cacheKey,
     categories,
     error,
     isLoading,

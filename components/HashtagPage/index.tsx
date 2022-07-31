@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button, FormControlLabel, Switch } from '@mui/material'
 import { useRouter } from 'next/router'
 import { Box } from '@mui/system'
+import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import Feed from '../Feed'
@@ -43,6 +44,10 @@ const SORT_MODE_MAP: {
   'most-likes': 'mostLikes',
 }
 
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+})
+
 const HashtagPage = ({ hashtag }: PropTypes) => {
   const { query: { sort } } = useRouter()
   const [showType, setShowType] = useState<'post' | 'both'>('post')
@@ -50,10 +55,13 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
   const sortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as HashtagSortMode
 
-  const { cacheKey, isLoading, likePost, loadMore, moreToLoad, posts } =
+  const { isLoading, likePost, loadMore, moreToLoad, posts } =
     useHashtagPosts(hashtag, {
       showType: showType,
       sortMode,
+      swrConfig: {
+        onSuccess: () => cellMeasurerCache.clearAll(),
+      },
     })
 
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
@@ -101,7 +109,7 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
         />
       </Box>
       <Feed
-        cacheKey={cacheKey}
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}

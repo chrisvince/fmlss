@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Button } from '@mui/material'
+import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
@@ -31,6 +32,10 @@ const SORT_MODE_MAP: {
   popular: 'popular',
 }
 
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+})
+
 const CategoriesPage = () => {
   const { asPath: path } = useRouter()
 
@@ -39,9 +44,12 @@ const CategoriesPage = () => {
   ] as CategoriesSortMode
 
   const [sortMode, setSortMode] = useState<CategoriesSortMode>(pathSortMode)
-  const { cacheKey, categories, isLoading, loadMore, moreToLoad } =
+  const { categories, isLoading, loadMore, moreToLoad } =
     useCategories({
       sortMode,
+      swrConfig: {
+        onSuccess: () => cellMeasurerCache.clearAll(),
+      },
     })
 
   useEffect(() => {
@@ -67,7 +75,7 @@ const CategoriesPage = () => {
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <CategoriesList
-        cacheKey={cacheKey}
+        cellMeasurerCache={cellMeasurerCache}
         categories={categories}
         isLoading={isLoading}
         moreToLoad={moreToLoad}

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
+import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import Feed from '../Feed'
@@ -41,14 +42,23 @@ const SORT_MODE_MAP: {
   'most-likes': 'mostLikes',
 }
 
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+})
+
 const CategoryPage = ({ slug }: PropTypes) => {
   const { query: { sort } } = useRouter()
 
   const sortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as CategorySortMode
 
-  const { cacheKey, isLoading, loadMore, moreToLoad, posts, likePost } =
-    useCategoryPosts(slug, { sortMode })
+  const { isLoading, loadMore, moreToLoad, posts, likePost } =
+    useCategoryPosts(slug, {
+      sortMode,
+      swrConfig: {
+        onSuccess: () => cellMeasurerCache.clearAll()
+      },
+    })
 
   const categoryName = unslugify(slug)
   const sortOptions = generateSortOptions(slug)
@@ -72,7 +82,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <Feed
-        cacheKey={cacheKey}
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}

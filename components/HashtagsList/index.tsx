@@ -1,9 +1,11 @@
+import { CellMeasurerCache } from 'react-virtualized'
+
 import { Hashtag } from '../../types'
 import ContentList from '../ContentList'
 import HashtagListItem from '../HashtagListItem'
 
-type PropTypes = {
-  cacheKey: string
+type Props = {
+  cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   moreToLoad: boolean
   onLoadMore: () => any
@@ -11,14 +13,14 @@ type PropTypes = {
 }
 
 const HashtagsList = ({
-  cacheKey,
+  cellMeasurerCache,
   isLoading,
   moreToLoad,
   onLoadMore,
   hashtags,
-}: PropTypes) => (
+}: Props) => (
   <ContentList
-    cacheKey={cacheKey}
+    cellMeasurerCache={cellMeasurerCache}
     isLoading={isLoading}
     items={hashtags}
     moreToLoad={moreToLoad}

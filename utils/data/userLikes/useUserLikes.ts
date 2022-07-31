@@ -26,7 +26,6 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 }
 
 type UseUserLikes = (options?: { swrConfig?: SWRInfiniteConfiguration }) => {
-  cacheKey: string
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -102,10 +101,7 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
   const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
 
-  const cacheKey = createUserLikesCacheKey(uid!, null)
-
   return {
-    cacheKey,
     error,
     isLoading,
     isValidating,

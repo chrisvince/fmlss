@@ -1,9 +1,11 @@
+import { CellMeasurerCache } from 'react-virtualized'
+
 import { Category } from '../../types'
 import CategoryListItem from '../CategoryListItem'
 import ContentList from '../ContentList'
 
 type PropTypes = {
-  cacheKey: string
+  cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   moreToLoad: boolean
   onLoadMore: () => any
@@ -11,14 +13,14 @@ type PropTypes = {
 }
 
 const CategoriesList = ({
-  cacheKey,
+  cellMeasurerCache,
   isLoading,
   moreToLoad,
   onLoadMore,
   categories,
 }: PropTypes) => (
   <ContentList
-    cacheKey={cacheKey}
+    cellMeasurerCache={cellMeasurerCache}
     isLoading={isLoading}
     moreToLoad={moreToLoad}
     onLoadMore={onLoadMore}

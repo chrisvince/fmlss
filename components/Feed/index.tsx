@@ -1,9 +1,11 @@
+import { CellMeasurerCache } from 'react-virtualized'
+
 import { Post } from '../../types'
 import PostListItem from '../PostListItem'
 import ContentList from '../ContentList'
 
 type PropTypes = {
-  cacheKey: string
+  cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   moreToLoad: boolean
   onLikePost: (slug: string) => Promise<void>
@@ -12,7 +14,7 @@ type PropTypes = {
 }
 
 const Feed = ({
-  cacheKey,
+  cellMeasurerCache,
   isLoading,
   moreToLoad,
   onLoadMore,
@@ -20,7 +22,7 @@ const Feed = ({
   onLikePost,
 }: PropTypes) => (
   <ContentList
-    cacheKey={cacheKey}
+    cellMeasurerCache={cellMeasurerCache}
     isLoading={isLoading}
     moreToLoad={moreToLoad}
     onLoadMore={onLoadMore}

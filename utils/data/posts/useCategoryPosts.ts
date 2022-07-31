@@ -32,7 +32,6 @@ type UseCategoryPosts = (
     swrConfig?: SWRInfiniteConfiguration
   },
 ) => {
-  cacheKey: string
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -125,10 +124,7 @@ const useCategoryPosts: UseCategoryPosts = (
   const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
 
-  const cacheKey = createCategoryPostsCacheKey(slug, sortMode, null)
-
   return {
-    cacheKey,
     error,
     isLoading,
     isValidating,
