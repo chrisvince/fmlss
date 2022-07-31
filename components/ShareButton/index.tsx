@@ -36,7 +36,6 @@ const ShareButton = ({ slug }: Props) => {
     if (!showCopiedText) return
 
     const closeMenuTimeout = setTimeout(() => {
-      if (menuOpen) return
       setMenuOpen(false)
     }, 3000)
 
@@ -53,7 +52,7 @@ const ShareButton = ({ slug }: Props) => {
   const handleShareClick = async () => {
     setMenuOpen(false)
     try {
-      await navigator.share({
+      await global.navigator.share({
         title: 'Fameless - Post',
         text: 'Check out this post on Fameless!',
         url,
