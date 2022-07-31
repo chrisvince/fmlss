@@ -1,5 +1,8 @@
-import { Typography } from '@mui/material'
-import { Box } from '@mui/system'
+import { Typography, useMediaQuery } from '@mui/material'
+import { Box, useTheme } from '@mui/system'
+import { useAuthUser } from 'next-firebase-auth'
+import dynamic from 'next/dynamic'
+import { useState } from 'react'
 
 import formatDate from '../../utils/formatting/formatDate'
 import formatLikesCount from '../../utils/formatting/formatLikesCount'
@@ -9,6 +12,9 @@ import HighlightButton from '../HighlightButton'
 import LikeButton from '../LikeButton'
 import ReplyButton from '../ReplyButton'
 import ShareButton from '../ShareButton'
+
+const ReplyModal = dynamic(() => import('../ReplyModal'), { ssr: false })
+const LoginModal = dynamic(() => import('../LoginModal'), { ssr: false })
 
 interface PropTypes {
   createdAt: string
@@ -27,72 +33,130 @@ const PostActionBar = ({
   postsCount,
   slug,
 }: PropTypes) => {
+  const user = useAuthUser()
+  const isLoggedIn = !!user.id
   const formattedCreatedAt = formatDate(createdAt)
   const isoCreatedAt = new Date(createdAt).toISOString()
+  const { breakpoints } = useTheme()
+  const isMobileDevice = useMediaQuery(breakpoints.down('sm'))
+
+  const [renderLoginModal, setRenderLoginModal] = useState(false)
+  const [renderReplyModal, setRenderReplyModal] = useState(false)
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
+  const [replyModalOpen, setReplyModalOpen] = useState(false)
+
+  const handleLoginModalClose = () => setLoginModalOpen(false)
+  const handleReplyModalClose = () => setReplyModalOpen(false)
+
+  const handleLikeButtonClick = () => {
+    if (!isLoggedIn) {
+      setRenderLoginModal(true)
+      setLoginModalOpen(true)
+      return
+    }
+    onLike()
+  }
+
+  const handleReplyButtonClick = () => {
+    if (!isLoggedIn) {
+      setRenderLoginModal(true)
+      setLoginModalOpen(true)
+      return
+    }
+    setRenderReplyModal(true)
+    setReplyModalOpen(true)
+  }
+
+  const handleHighlightButtonClick = () => {
+    if (!isLoggedIn) {
+      setRenderLoginModal(true)
+      setLoginModalOpen(true)
+      return
+    }
+    console.log('highlight post')
+  }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        justifyContent: 'flex-start',
-        gap: 1,
-      }}
-    >
+    <>
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 2,
-          }}
-        >
-          <Typography variant="caption">
-            <time dateTime={isoCreatedAt}>
-              {formattedCreatedAt}
-            </time>
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 2,
-          }}
-        >
-          <CaptionLink href={`/post/${encodeURIComponent(slug)}`}>
-            {formatLikesCount(likesCount)}
-          </CaptionLink>
-          <CaptionLink href={`/post/${encodeURIComponent(slug)}#replies`}>
-            {formatReplyCount(postsCount)}
-          </CaptionLink>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          justifyContent: 'flex-start',
           gap: 1,
-          mx: -1,
-          mb: -1,
         }}
       >
-        <LikeButton like={like} onClick={onLike} />
-        <ReplyButton slug={slug} />
-        <HighlightButton />
-        <ShareButton slug={slug} />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 4,
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 2,
+            }}
+          >
+            <Typography variant="caption">
+              <time dateTime={isoCreatedAt}>
+                {formattedCreatedAt}
+              </time>
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 2,
+            }}
+          >
+            <CaptionLink href={`/post/${encodeURIComponent(slug)}`}>
+              {formatLikesCount(likesCount)}
+            </CaptionLink>
+            <CaptionLink href={`/post/${encodeURIComponent(slug)}#replies`}>
+              {formatReplyCount(postsCount)}
+            </CaptionLink>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 1,
+            mx: -1,
+            mb: -1,
+          }}
+        >
+          <LikeButton like={like} onClick={handleLikeButtonClick} />
+          <ReplyButton
+            onClick={!isMobileDevice ? handleReplyButtonClick : undefined}
+            href={isMobileDevice ? `/post/${slug}/reply` : undefined}
+          />
+          <HighlightButton onClick={handleHighlightButtonClick} />
+          <ShareButton slug={slug} />
+        </Box>
       </Box>
-    </Box>
+      {renderLoginModal && (
+        <LoginModal
+          open={loginModalOpen}
+          onClose={handleLoginModalClose}
+        />
+      )}
+      {renderReplyModal && (
+        <ReplyModal
+          open={replyModalOpen}
+          onClose={handleReplyModalClose}
+          slug={slug}
+        />
+      )}
+    </>
   )
 }
 
