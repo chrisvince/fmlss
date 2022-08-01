@@ -8,14 +8,12 @@ import NextDocument, {
 import React from 'react'
 import { ServerStyleSheets as JSSServerStyleSheets } from '@mui/styles'
 import createEmotionServer from '@emotion/server/create-instance'
-import { light } from '../styles/theme'
 import createEmotionCache from '../utils/createEmotionCache'
 
 const Document = () => {
   return (
     <Html lang="en">
       <Head>
-        <meta name="theme-color" content={light.palette.primary.main} />
         <link rel="shortcut icon" href="/static/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
