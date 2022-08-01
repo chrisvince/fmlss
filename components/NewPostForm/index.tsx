@@ -2,12 +2,11 @@ import { SyntheticEvent, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { createPost } from '../../utils/callableFirebaseFunctions'
-import PostBodyTextArea from '../PostBodyTextArea'
-import { TextField } from '@mui/material'
+import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
 
 const NewPostForm = () => {
   const router = useRouter()
-  const postBodyTextAreaRef = useRef<{ clear: () => void }>(null)
+  const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
   const [disableTextarea, setDisableTextarea] = useState<boolean>(false)
   const [textareaValue, setTextareaValue] = useState<string>('')
   const handleTextInput = (text: string) => setTextareaValue(text)
@@ -27,22 +26,23 @@ const NewPostForm = () => {
     try {
       const response = await createPost({ body: textareaValue, category })
       router.push(`/post/${encodeURIComponent(response.data.id)}`)
+      postBodyTextAreaRef.current?.clear?.()
     } catch (error) {
       setDisableTextarea(false)
       console.error(error)
     }
   }
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
         <PostBodyTextArea
-          ref={postBodyTextAreaRef}
           disabled={disableTextarea}
           onChange={handleTextInput}
+          ref={postBodyTextAreaRef}
+          username="chrisvince"
+          placeholder="What's on your mind?"
         />
-      </div>
-      <div>
-        <TextField id="category" name="category" label="Category" />
       </div>
       <button type="submit">Submit</button>
     </form>

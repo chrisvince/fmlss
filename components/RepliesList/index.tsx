@@ -26,8 +26,8 @@ const RepliesList = ({ slug }: PropTypes) => {
 
     // TODO: Create mutation for this!
 
-    window.scrollTo({ behavior:
-      'smooth',
+    window.scrollTo({
+      behavior: 'smooth',
       top: document.body.scrollHeight
     })
   }

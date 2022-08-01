@@ -5,12 +5,22 @@ import constants from '../../constants'
 
 const { HASHTAG_REGEX } = constants
 
+interface Props {
+  body: string
+  id?: string
+  size?: 'small' | 'large'
+}
 
-const PostBody = ({ body, id }: { body: string, id?: string }) => {
+const PostBody = ({ body, id, size = 'small' }: Props) => {
+  const typographyVariant = ({
+    large: 'body1',
+    small: 'body2',
+  }[size] ?? 'body2') as 'body1' | 'body2'
+
   return (
     <Typography
       sx={{ whiteSpace: 'pre-wrap' }}
-      variant="body2"
+      variant={typographyVariant}
       component="p"
       id={id}
     >

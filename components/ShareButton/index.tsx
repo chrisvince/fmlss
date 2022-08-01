@@ -84,7 +84,7 @@ const ShareButton = ({ slug }: Props) => {
           </ListItemIcon>
           <ListItemText primary={showCopiedText ? 'Copied!' : 'Copy URL'} />
         </MenuItem>
-        {!!global.navigator.share && (
+        {!!global.navigator?.share && (
           <MenuItem onClick={handleShareClick}>
             <ListItemIcon>
               <LogoutRounded sx={{ transform: 'rotate(270deg)' }} />

@@ -135,6 +135,10 @@ const usePostReplies: UsePostReplies = (
   const moreToLoad =
     post?.data.postsCount === undefined || replies.length < post.data.postsCount
 
+  const refresh = async () => {
+    await mutate()
+  }
+
   return {
     error,
     isLoading,
@@ -142,6 +146,7 @@ const usePostReplies: UsePostReplies = (
     likePost,
     loadMore,
     moreToLoad,
+    refresh,
     replies,
   }
 }

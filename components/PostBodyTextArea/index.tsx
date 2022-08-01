@@ -1,5 +1,7 @@
 import {
   forwardRef,
+  KeyboardEvent,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -8,34 +10,34 @@ import {
 import {
   Editor,
   EditorState,
-  convertFromRaw,
   CompositeDecorator,
   convertFromHTML,
   ContentState,
-  SelectionState,
+  convertFromRaw,
 } from 'draft-js'
-import 'draft-js/dist/Draft.css' // check if needed
-import { Typography, useTheme } from '@mui/material'
+import 'draft-js/dist/Draft.css'
+import { Avatar, Typography, useTheme } from '@mui/material'
 
 import constants from '../../constants'
+import { Box } from '@mui/system'
 
 const { HASHTAG_REGEX } = constants
 
-// const initialEditorState = convertFromRaw({
-//   entityMap: {},
-//   blocks: [
-//     {
-//       text: '',
-//       key: '',
-//       type: 'unstyled',
-//       entityRanges: [],
-//       depth: 0,
-//       inlineStyleRanges: [],
-//     },
-//   ],
-// })
-
 type DraftStrategyCallback = (start: number, end: number) => void
+
+const emptyContentState = convertFromRaw({
+  entityMap: {},
+  blocks: [
+    {
+      depth: 0,
+      entityRanges: [],
+      inlineStyleRanges: [],
+      key: 'key',
+      text: '',
+      type: 'unstyled',
+    },
+  ],
+})
 
 const createRegexStrategy = (regex: RegExp) => (
   contentBlock: Draft.ContentBlock,
@@ -74,7 +76,15 @@ type Props = {
   disabled?: boolean
   focusOnMount?: boolean
   onChange?: (text: string) => void
-  value?: string
+  onCommandEnter?: () => void
+  placeholder?: string
+  username: string
+}
+
+export interface PostBodyTextAreaRef {
+  clear?: () => void
+  getValue?: () => string
+  replaceText?: (text: string) => void
 }
 
 const PostBodyTextArea = (
@@ -82,30 +92,25 @@ const PostBodyTextArea = (
     disabled,
     focusOnMount,
     onChange,
-    value = '',
+    onCommandEnter,
+    placeholder,
+    username,
   }: Props,
+  ref: React.Ref<PostBodyTextAreaRef>
 ) => {
-  const [editorState, setEditorState] = useState(() => {
-    const blocksFromHTML = convertFromHTML(value)
-    const contentState = ContentState.createFromBlockArray(
-      blocksFromHTML.contentBlocks,
-      blocksFromHTML.entityMap
-    )
-    const editorState = EditorState.createWithContent(
-      contentState,
-      compositeDecorator
-    )
-    return editorState
-  })
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createWithContent(emptyContentState, compositeDecorator)
+  )
+
   const editorRef = useRef<Editor>()
   const { palette } = useTheme()
 
-  useEffect(() => {
-    const blocksFromHTML = convertFromHTML(value)
+  const replaceText = useCallback((text: string) => {
+    const content = convertFromHTML(text)
 
     const contentState = ContentState.createFromBlockArray(
-      blocksFromHTML.contentBlocks,
-      blocksFromHTML.entityMap
+      content.contentBlocks,
+      content.entityMap
     )
 
     const editorState = EditorState.createWithContent(
@@ -113,55 +118,86 @@ const PostBodyTextArea = (
       compositeDecorator
     )
 
-    setEditorState(editorState)
-  }, [value])
+    const selectionEditorState = EditorState.moveSelectionToEnd(editorState)
 
-  const currentText = editorState.getCurrentContent().getPlainText()
-  useEffect(() => {
-    onChange?.(currentText)
-  }, [currentText, onChange])
+    const newState = EditorState.forceSelection(
+      editorState,
+      selectionEditorState.getSelection()
+    )
+
+    setEditorState(newState)
+  }, [])
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      clear: () => replaceText(''),
+      getValue: () => editorState.getCurrentContent().getPlainText(),
+      replaceText,
+    }),
+    [editorState, replaceText]
+  )
 
   useEffect(() => {
     if (!focusOnMount) return
     editorRef.current?.focus()
   }, [focusOnMount])
 
-  // const clear = () => {
-  //   const content = convertFromHTML('')
-  //   const contentState = ContentState.createFromBlockArray(
-  //     content.contentBlocks,
-  //     content.entityMap
-  //   )
-  //   const cleanState = EditorState.createWithContent(
-  //     contentState,
-  //     compositeDecorator
-  //   )
-  //   setEditorState(cleanState)
-  // }
-
-  // useImperativeHandle(ref, () => ({ clear }))
-
-  const onEditorStateChange = (editorState: EditorState) =>
+  const onEditorStateChange = (editorState: EditorState) => {
     setEditorState(editorState)
+    onChange?.(editorState.getCurrentContent().getPlainText())
+  }
+
+  const handleReturn = (event: KeyboardEvent) => {
+    if (!event.metaKey && !event.ctrlKey) {
+      return 'not-handled'
+    }
+    onCommandEnter?.()
+    return 'handled'
+  }
+
+  const avatarLetter = username.charAt(0).toUpperCase()
 
   return (
-    <Typography
-      component="div"
-      variant="body1"
-      sx={{ opacity: disabled ? palette.action.disabledOpacity : 1 }}
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'min-content 1fr',
+        alignItems: 'baseline',
+        gap: 2,
+        py: 2,
+      }}
     >
-      <Editor
-        // @ts-ignore
-        ref={editorRef}
-        preserveSelectionOnBlur={true}
-        editorKey="editor"
-        editorState={editorState}
-        onChange={onEditorStateChange}
-        readOnly={disabled}
-        placeholder="Write a reply"
-      />
-    </Typography>
+      <Box>
+        <Avatar>{avatarLetter}</Avatar>
+      </Box>
+      <Box>
+        <Typography
+          component="div"
+          variant="body1"
+          sx={{
+            opacity: disabled ? palette.action.disabledOpacity : 1,
+            '.public-DraftEditorPlaceholder-root, .public-DraftEditorPlaceholder-hasFocus':
+              {
+                color: palette.text.disabled,
+              },
+          }}
+        >
+          <Editor
+            // @ts-ignore
+            ref={editorRef}
+            preserveSelectionOnBlur={true}
+            editorKey="editor"
+            editorState={editorState}
+            onChange={onEditorStateChange}
+            readOnly={disabled}
+            placeholder={placeholder}
+            handleReturn={handleReturn}
+          />
+        </Typography>
+      </Box>
+    </Box>
   )
 }
 
-export default PostBodyTextArea
+export default forwardRef(PostBodyTextArea)

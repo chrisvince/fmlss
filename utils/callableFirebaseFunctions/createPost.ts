@@ -9,8 +9,13 @@ interface Input {
   replyingToReference?: string
 }
 
+type Response = {
+  data: {
+    id: string
+    slug: string
+  }
+}
+
 export const createPost = functions.httpsCallable('createPost') as (
   input: Input
-) => Promise<{
-  data: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
-}>
+) => Promise<Response>

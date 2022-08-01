@@ -2,10 +2,7 @@ import { SyntheticEvent, useRef, useState } from 'react'
 
 import { createPost } from '../../utils/callableFirebaseFunctions'
 import usePost from '../../utils/data/post/usePost'
-import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import PostBodyTextArea from '../PostBodyTextArea'
-
-const BODY_ID = 'body'
 
 type PropTypes = {
   slug: string
@@ -49,13 +46,16 @@ const PostReplyForm = ({ slug, onSuccess }: PropTypes) => {
       console.error(error)
     }
   }
+
   return (
     <form onSubmit={handleSubmit}>
       <div>
         <PostBodyTextArea
-          ref={postBodyTextAreaRef}
           disabled={disableTextarea}
           onChange={handleTextInput}
+          ref={postBodyTextAreaRef}
+          username="chrisvince"
+          placeholder="Write a reply"
         />
       </div>
       <button type="submit">Submit</button>

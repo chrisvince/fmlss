@@ -14,7 +14,7 @@ type PropTypes = {
 }
 
 const PostItem = ({ hideActionBar, slug }: PropTypes) => {
-  const { post } = usePost(slug)
+  const { post, isLoading } = usePost(slug)
   const { toggleLike, likesCount, like } = useLikeState({ post })
 
   const handleLikeButtonClick = () => {
@@ -22,9 +22,13 @@ const PostItem = ({ hideActionBar, slug }: PropTypes) => {
     // update like with usePost
   }
 
-  const byUser = !!post.user?.created
+  const byUser = !!post?.user?.created
   const postCaptionType = byUser ? 'byUser' : null
   const ariaLabelledById = useId()
+
+  if (isLoading) {
+    return null
+  }
 
   return (
     <Box
@@ -45,15 +49,19 @@ const PostItem = ({ hideActionBar, slug }: PropTypes) => {
           }}
         >
           <PostCaption type={postCaptionType} />
-          <PostBody body={post.data.body} id={ariaLabelledById} />
+          <PostBody
+            body={post!.data.body}
+            id={ariaLabelledById}
+            size="large"
+          />
           {!hideActionBar && (
             <PostActionBar
-              createdAt={post.data.createdAt}
+              createdAt={post!.data.createdAt}
               like={like}
               likesCount={likesCount}
               onLike={handleLikeButtonClick}
-              postsCount={post.data.postsCount}
-              slug={post.data.slug}
+              postsCount={post!.data.postsCount}
+              slug={post!.data.slug}
             />
           )}
         </Box>
