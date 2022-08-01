@@ -2,27 +2,17 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
-import Page from '../components/Page'
 
-import SignUpForm from '../components/SignUpForm'
-import Link from 'next/link'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../config/withAuthConfig'
+import SignUpPage from '../components/SignUpPage'
 
 const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
 
 const SignUp = () => {
-  return (
-    <Page pageTitle="Sign up">
-      <h1>Sign up</h1>
-      <SignUpForm />
-      <p>
-        Already have an account?{' '}
-        <Link href="/">
-          <a>Sign in</a>
-        </Link>
-      </p>
-    </Page>
-  )
+  return <SignUpPage />
 }
 
 export const getServerSideProps =

@@ -18,7 +18,6 @@ const auth = firebase.auth()
 const UI_STATES = {
   NOT_SUBMITTED: 'not-submitted',
   LOADING: 'loading',
-  SUBMITTED: 'submitted',
   CREDENTIAL_ERROR: 'credential-error',
   ERROR: 'error',
 }
@@ -38,9 +37,7 @@ const SignInForm = () => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
     const email = formData.get(EMAIL_ID) as string | undefined
-    console.log('email', email)
     const password = formData.get(PASSWORD_ID) as string | undefined
-    console.log('password', password)
 
     if (!email || !password) {
       setUiState(UI_STATES.CREDENTIAL_ERROR)
@@ -50,7 +47,6 @@ const SignInForm = () => {
     try {
       setUiState(UI_STATES.LOADING)
       await auth.signInWithEmailAndPassword(email as string, password as string)
-      setUiState(UI_STATES.SUBMITTED)
     } catch (error: any) {
       if (CREDENTIAL_ERRORS.includes(error.code)) {
         setUiState(UI_STATES.CREDENTIAL_ERROR)
@@ -61,16 +57,8 @@ const SignInForm = () => {
     }
   }
 
-  const handleGoogleAuthSuccess = () => setUiState(UI_STATES.SUBMITTED)
   const handleGoogleAuthError = () => setUiState(UI_STATES.ERROR)
-
-  if (uiState === UI_STATES.LOADING) {
-    return <p>Loading...</p>
-  }
-
-  if (uiState === UI_STATES.SUBMITTED) {
-    return <p>Sign in successful.</p>
-  }
+  const formDisabled = uiState === UI_STATES.LOADING
 
   return (
     <Box
@@ -93,9 +81,9 @@ const SignInForm = () => {
         }}
       >
         <GoogleAuthButton
+          disabled={formDisabled}
           mode="signIn"
           onAuthError={handleGoogleAuthError}
-          onAuthSuccess={handleGoogleAuthSuccess}
         />
         <Divider>
           <Typography variant="body2" color="action.active">
@@ -117,6 +105,7 @@ const SignInForm = () => {
           }}
         >
           <TextField
+            disabled={formDisabled}
             fullWidth
             id={EMAIL_ID}
             label={EMAIL_LABEL}
@@ -125,6 +114,7 @@ const SignInForm = () => {
             variant="outlined"
           />
           <TextField
+            disabled={formDisabled}
             fullWidth
             id={PASSWORD_ID}
             label={PASSWORD_LABEL}
@@ -132,7 +122,11 @@ const SignInForm = () => {
             type="password"
             variant="outlined"
           />
-          <Button variant="contained" type="submit">
+          <Button
+            disabled={formDisabled}
+            type="submit"
+            variant="contained"
+          >
             Sign in
           </Button>
           {uiState === UI_STATES.CREDENTIAL_ERROR && (

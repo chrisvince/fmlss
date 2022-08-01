@@ -1,8 +1,10 @@
 import { AuthAction } from 'next-firebase-auth'
 
+import PageSpinner from '../components/PageSpinner'
+
 type Modes = 'SEND_AUTHED_TO_APP' | 'SEND_UNAUTHED_TO_LOGIN'
 
-const LoaderComponent = () => <p>Loading...</p>
+const LoaderComponent = () => <PageSpinner />
 
 type ConfigType = (mode: Modes) => any
 
