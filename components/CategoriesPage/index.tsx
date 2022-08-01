@@ -11,6 +11,9 @@ import CategoriesList from '../CategoriesList'
 import useCategories from '../../utils/data/categories/useCategories'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MobileContainer from '../MobileContainer'
+import constants from '../../constants'
+
+const { CELL_CACHE_MEASURER_CATEGORY_ITEM_MIN_HEIGHT } = constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -34,6 +37,7 @@ const SORT_MODE_MAP: {
 
 const cellMeasurerCache = new CellMeasurerCache({
   fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_CATEGORY_ITEM_MIN_HEIGHT,
 })
 
 const CategoriesPage = () => {

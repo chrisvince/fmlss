@@ -5,9 +5,13 @@ import Feed from '../Feed'
 import useUserPosts from '../../utils/data/userPosts/useUserPosts'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
+import constants from '../../constants'
+
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
 const cellMeasurerCache = new CellMeasurerCache({
   fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
 })
 
 const UserRepliesPage = () => {

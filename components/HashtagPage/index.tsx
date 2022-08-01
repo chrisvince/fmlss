@@ -13,6 +13,9 @@ import { HashtagSortMode } from '../../types'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MobileContainer from '../MobileContainer'
+import constants from '../../constants'
+
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
 type PropTypes = {
   hashtag: string
@@ -46,6 +49,7 @@ const SORT_MODE_MAP: {
 
 const cellMeasurerCache = new CellMeasurerCache({
   fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
 })
 
 const HashtagPage = ({ hashtag }: PropTypes) => {

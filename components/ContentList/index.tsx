@@ -1,6 +1,6 @@
 import { CircularProgress, useMediaQuery } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { LegacyRef, Ref, useCallback, useEffect } from 'react'
+import { LegacyRef, useCallback } from 'react'
 import {
   AutoSizer,
   CellMeasurer,

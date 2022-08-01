@@ -11,6 +11,9 @@ import { CategorySortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import unslugify from '../../utils/unslugify'
+import constants from '../../constants'
+
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
 type PropTypes = {
   slug: string
@@ -44,6 +47,7 @@ const SORT_MODE_MAP: {
 
 const cellMeasurerCache = new CellMeasurerCache({
   fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
 })
 
 const CategoryPage = ({ slug }: PropTypes) => {
