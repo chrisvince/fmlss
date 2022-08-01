@@ -35,6 +35,7 @@ const GoogleAuthButton = ({
 
   return (
     <GoogleButton
+      style={{ width: '100%' }}
       disabled={disabled}
       label={label}
       onClick={handleClick}

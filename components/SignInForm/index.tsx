@@ -1,6 +1,16 @@
 import React, { SyntheticEvent, useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import Link from 'next/link'
+import {
+  Button,
+  Divider,
+  TextField,
+  Typography,
+  Link as MuiLink,
+} from '@mui/material'
+import { Box } from '@mui/system'
+
 import GoogleAuthButton from '../GoogleAuthButton'
 
 const auth = firebase.auth()
@@ -28,7 +38,9 @@ const SignInForm = () => {
     event.preventDefault()
     const formData = new FormData(event.target as HTMLFormElement)
     const email = formData.get(EMAIL_ID) as string | undefined
+    console.log('email', email)
     const password = formData.get(PASSWORD_ID) as string | undefined
+    console.log('password', password)
 
     if (!email || !password) {
       setUiState(UI_STATES.CREDENTIAL_ERROR)
@@ -61,30 +73,94 @@ const SignInForm = () => {
   }
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <div>
-          <label htmlFor={EMAIL_ID}>{EMAIL_LABEL}</label>
-          <input id={EMAIL_ID} name={EMAIL_ID} type="email" />
-        </div>
-        <div>
-          <label htmlFor={EMAIL_ID}>{PASSWORD_LABEL}</label>
-          <input id={PASSWORD_ID} name={PASSWORD_ID} type="password" />
-        </div>
-        <button type="submit">Sign in</button>
-        {uiState === UI_STATES.CREDENTIAL_ERROR && (
-          <p>Your email or password is incorrect. Please try again.</p>
-        )}
-        {uiState === UI_STATES.ERROR && (
-          <p>There was an error. Please try again later.</p>
-        )}
-      </form>
-      <GoogleAuthButton
-        mode="signIn"
-        onAuthError={handleGoogleAuthError}
-        onAuthSuccess={handleGoogleAuthSuccess}
-      />
-    </div>
+    <Box
+      sx={{
+        mt: 6,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'stretch',
+        gap: 8,
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'stretch',
+          gap: 6,
+        }}
+      >
+        <GoogleAuthButton
+          mode="signIn"
+          onAuthError={handleGoogleAuthError}
+          onAuthSuccess={handleGoogleAuthSuccess}
+        />
+        <Divider>
+          <Typography variant="body2" color="action.active">
+            or
+          </Typography>
+        </Divider>
+        <Box
+          component="form"
+          onSubmit={onSubmit}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'stretch',
+            gap: 2,
+            '& *:first-child': {
+              marginTop: 0,
+            },
+          }}
+        >
+          <TextField
+            fullWidth
+            id={EMAIL_ID}
+            label={EMAIL_LABEL}
+            name={EMAIL_ID}
+            type="email"
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            id={PASSWORD_ID}
+            label={PASSWORD_LABEL}
+            name={PASSWORD_ID}
+            type="password"
+            variant="outlined"
+          />
+          <Button variant="contained" type="submit">
+            Sign in
+          </Button>
+          {uiState === UI_STATES.CREDENTIAL_ERROR && (
+            <Typography variant="caption" color="error">
+              Your email or password is incorrect. Please try again.
+            </Typography>
+          )}
+          {uiState === UI_STATES.ERROR && (
+            <Typography variant="caption" color="error">
+              There was an error. Please try again later.
+            </Typography>
+          )}
+        </Box>
+      </Box>
+      <Box>
+        <Box>
+          <Link href="/forgot-password" passHref>
+            <MuiLink variant="body2">Forgot password?</MuiLink>
+          </Link>
+          <Typography variant="body2">
+            Don&apos;t have an account?{' '}
+            <Link href="/sign-up" passHref>
+              <MuiLink variant="body2">Sign up</MuiLink>
+            </Link>
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   )
 }
 

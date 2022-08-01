@@ -10,9 +10,14 @@ const { SIDEBAR_GAP_MD, SIDEBAR_GAP_SM, SIDEBAR_WIDTH_LG } = constants
 interface PropTypes {
   main: React.ReactNode
   rightPanelChildren?: React.ReactNode
+  thinContainer?: boolean
 }
 
-const NestedLayout = ({ main, rightPanelChildren }: PropTypes) => {
+const NestedLayout = ({
+  main,
+  rightPanelChildren,
+  thinContainer,
+}: PropTypes) => {
   const theme = useTheme()
   const renderRightPanel = useMediaQuery(theme.breakpoints.up('md'))
 
@@ -31,7 +36,7 @@ const NestedLayout = ({ main, rightPanelChildren }: PropTypes) => {
       }}
     >
       <Box component="main">
-        <CenterSectionContainer>
+        <CenterSectionContainer thin={thinContainer}>
           {main}
         </CenterSectionContainer>
       </Box>

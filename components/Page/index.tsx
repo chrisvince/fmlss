@@ -16,6 +16,7 @@ interface PropTypes {
   noPageTitle?: boolean
   pageTitle?: string
   rightPanelChildren?: ReactNode
+  thinContainer?: boolean
   title?: string
   uiPageTitle?: string
 }
@@ -31,6 +32,7 @@ const Page = ({
   noPageTitle = false,
   pageTitle,
   rightPanelChildren,
+  thinContainer = false,
   title,
   uiPageTitle,
 }: PropTypes) => {
@@ -50,6 +52,7 @@ const Page = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <NestedLayout
+        thinContainer={thinContainer}
         main={
           <>
             {renderUiTitle && (
