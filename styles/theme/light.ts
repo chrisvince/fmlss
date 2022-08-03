@@ -198,9 +198,9 @@ const theme = createTheme({
     MuiDialogActions: {
       styleOverrides: {
         root: ({ theme }) => ({
-          padding: theme.spacing(2),
+          padding: theme.spacing(1, 2),
           [theme.breakpoints.up('sm')]: {
-            padding: theme.spacing(3),
+            padding: theme.spacing(2, 3),
           },
         }),
       },
