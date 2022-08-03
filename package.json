@@ -9,14 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/cache": "^11.9.3",
-    "@emotion/react": "^11.9.3",
-    "@emotion/server": "^11.4.0",
-    "@emotion/styled": "^11.9.3",
+    "@emotion/cache": "^11.10.1",
+    "@emotion/react": "^11.10.0",
+    "@emotion/server": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.2",
-    "@mui/styles": "^5.9.2",
-    "@mui/system": "^5.8.7",
+    "@mui/material": "^5.9.3",
+    "@mui/styles": "^5.9.3",
+    "@mui/system": "^5.9.3",
     "autoprefixer": "^10.4.8",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
@@ -35,25 +35,22 @@
     "react-google-button": "^0.7.2",
     "react-string-replace": "^1.1.0",
     "react-virtualized": "^9.22.3",
-    "sass": "^1.53.0",
+    "sass": "^1.54.1",
     "swr": "^1.3.0",
     "title-case": "^3.0.3"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^4.11.1",
+    "@netlify/plugin-nextjs": "^4.14.0",
     "@types/draft-js": "^0.11.9",
     "@types/memory-cache": "^0.2.2",
-    "@types/node": "18.6.2",
+    "@types/node": "18.6.3",
     "@types/numeral": "^2.0.2",
     "@types/ramda": "^0.28.14",
     "@types/react": "18.0.15",
     "@types/react-dom": "18.0.6",
     "@types/react-virtualized": "^9.21.21",
-    "eslint": "8.20.0",
+    "eslint": "8.21.0",
     "eslint-config-next": "12.2.3",
     "typescript": "4.7.4"
-  },
-  "resolutions": {
-    "react-transition-group": "4.4.2"
   }
 }
