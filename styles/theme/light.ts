@@ -100,6 +100,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 100,
+          textTransform: 'none',
         },
       },
     },
