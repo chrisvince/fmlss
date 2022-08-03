@@ -1,9 +1,10 @@
 import { createTheme } from '@mui/material/styles'
 
 const FONT_SIZE = {
-  SMALL: '0.86667rem',
+  SM: '0.86667rem',
   BASE: '1rem',
-  LARGE: '1.13333rem',
+  LG: '1.13333rem',
+  XL: '1.2666666666666666rem',
 }
 
 const theme = createTheme({
@@ -44,7 +45,8 @@ const theme = createTheme({
     fontWeightBold: 700,
     htmlFontSize: 15,
     h5: {
-      fontSize: FONT_SIZE.LARGE,
+      fontSize: FONT_SIZE.XL,
+      fontWeight: '500',
     },
     h6: {
       fontSize: FONT_SIZE.BASE,
@@ -52,11 +54,11 @@ const theme = createTheme({
       fontWeight: 600,
     },
     caption: {
-      fontSize: FONT_SIZE.SMALL,
+      fontSize: FONT_SIZE.SM,
       fontWeight: '300',
     },
     body1: {
-      fontSize: FONT_SIZE.LARGE,
+      fontSize: FONT_SIZE.LG,
       fontWeight: '500',
     },
     body2: {
@@ -74,7 +76,7 @@ const theme = createTheme({
         },
         '.ReactVirtualized__List': {
           outline: 'none',
-        }
+        },
       },
     },
     MuiAppBar: {
@@ -109,7 +111,7 @@ const theme = createTheme({
       },
       styleOverrides: {
         grouped: {
-          fontSize: FONT_SIZE.SMALL,
+          fontSize: FONT_SIZE.SM,
         },
       },
     },
@@ -189,7 +191,7 @@ const theme = createTheme({
     MuiListItemText: {
       styleOverrides: {
         secondary: {
-          fontSize: FONT_SIZE.SMALL,
+          fontSize: FONT_SIZE.SM,
         },
       },
     },
