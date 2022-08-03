@@ -59,7 +59,7 @@ const getPost: GetPost = async (
 
   if (!uid) {
     return {
-      data: data,
+      data,
       doc: !isServer ? doc : null,
     }
   }
