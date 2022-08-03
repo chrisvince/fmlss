@@ -41,6 +41,7 @@ type UsePostReplies = (
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
   replies: Post[]
+  refresh: () => Promise<void>
 }
 
 const usePostReplies: UsePostReplies = (
