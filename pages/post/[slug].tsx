@@ -6,23 +6,23 @@ import {
 } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
+import { NextApiRequest } from 'next'
+import Error from 'next/error'
 
 import getPost from '../../utils/data/post/getPost'
 import PostPage from '../../components/PostPage'
 import getPostReplies from '../../utils/data/postReplies/getPostReplies'
 import {
-  createPostRepliesCacheKey,
-  createPostCacheKey,
-  createMiniHashtagsCacheKey,
   createMiniCategoriesCacheKey,
+  createMiniHashtagsCacheKey,
+  createPostCacheKey,
+  createPostRepliesCacheKey,
 } from '../../utils/createCacheKeys'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getCategories from '../../utils/data/categories/getCategories'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
-import { NextApiRequest } from 'next'
 import usePost from '../../utils/data/post/usePost'
-import Error from 'next/error'
 
 const {
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
