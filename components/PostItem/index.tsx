@@ -31,13 +31,7 @@ const PostItem = ({ hideActionBar, slug }: PropTypes) => {
   }
 
   return (
-    <Box
-      sx={{
-        pb: 2,
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-      }}
-    >
+    <Box sx={{ pb: 2 }}>
       <MobileContainer>
         <Box
           sx={{

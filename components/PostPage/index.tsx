@@ -39,7 +39,7 @@ const PostPage = ({ slug }: PropTypes) => {
           flexDirection: 'column',
           alignItems: 'stretch',
           justifyContent: 'flex-start',
-          gap: 10,
+          gap: 2,
         }}
       >
         <PostItem slug={slug} />
