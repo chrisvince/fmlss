@@ -1,12 +1,12 @@
 import { CircularProgress } from '@mui/material'
 import { Box } from '@mui/system'
 
-const ModalSpinner = () => (
+const ContentSpinner = () => (
   <Box
     sx={{
       height: {
         xs: '100%',
-        sm: '30vh',
+        sm: '300px',
       },
       display: 'flex',
       alignItems: 'center',
@@ -17,4 +17,4 @@ const ModalSpinner = () => (
   </Box>
 )
 
-export default ModalSpinner
+export default ContentSpinner

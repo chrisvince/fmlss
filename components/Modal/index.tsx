@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/system'
 
-import ModalSpinner from '../ModalSpinner'
+import ModalSpinner from '../ContentSpinner'
 
 interface Props {
   actions: React.ReactNode

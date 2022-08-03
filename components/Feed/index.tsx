@@ -6,6 +6,7 @@ import ContentList from '../ContentList'
 
 type PropTypes = {
   cellMeasurerCache: CellMeasurerCache
+  contentSpinner?: boolean
   isLoading: boolean
   moreToLoad: boolean
   onLikePost: (slug: string) => Promise<void>
@@ -15,18 +16,20 @@ type PropTypes = {
 
 const Feed = ({
   cellMeasurerCache,
+  contentSpinner = false,
   isLoading,
   moreToLoad,
+  onLikePost,
   onLoadMore,
   posts,
-  onLikePost,
 }: PropTypes) => (
   <ContentList
     cellMeasurerCache={cellMeasurerCache}
+    contentSpinner={contentSpinner}
     isLoading={isLoading}
+    items={posts}
     moreToLoad={moreToLoad}
     onLoadMore={onLoadMore}
-    items={posts}
   >
     {post => (
       <PostListItem

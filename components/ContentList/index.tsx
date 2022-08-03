@@ -14,24 +14,27 @@ import {
 import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
 import useOnWindowResize from '../../utils/useOnWindowResize'
+import ContentSpinner from '../ContentSpinner'
 
 const { INFINITY_LOADING_THRESHOLD, VIRTUALIZED_OVERSCAN_ROW_COUNT } = constants
 interface PropTypes {
   cellMeasurerCache: CellMeasurerCache
+  children: (item: any) => JSX.Element
+  contentSpinner?: boolean
   isLoading: boolean
   items: any[]
   moreToLoad: boolean
   onLoadMore: () => Promise<any>
-  children: (item: any) => JSX.Element
 }
 
 const ContentList = ({
   cellMeasurerCache,
+  children: render,
+  contentSpinner = false,
   isLoading,
   items,
   moreToLoad,
   onLoadMore,
-  children: render,
 }: PropTypes) => {
   const theme = useTheme()
   const rowCount = items.length + 1
@@ -91,7 +94,7 @@ const ContentList = ({
   )
 
   if (isLoading) {
-    return <PageSpinner />
+    return contentSpinner ? <ContentSpinner /> : <PageSpinner />
   }
 
   return (
