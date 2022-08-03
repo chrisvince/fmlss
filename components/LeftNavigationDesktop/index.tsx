@@ -113,9 +113,9 @@ const LeftNavigationDesktop = () => {
           <nav>
             <List>
               <LeftNavigationListItem
+                avatarText="C"
                 exact
                 href="/profile"
-                icon={PersonOutlineRounded}
                 iconCurrent={PersonRounded}
                 primary="Profile"
                 secondary={email}

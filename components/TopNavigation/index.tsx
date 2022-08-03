@@ -3,12 +3,14 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useAuthUser } from 'next-firebase-auth'
 import {
+  Avatar,
   Box,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Typography,
   useMediaQuery,
   useScrollTrigger,
   useTheme,
@@ -191,7 +193,7 @@ const TopNavigation = () => {
                 <Box
                   sx={{
                     display: {
-                      marginRight: theme.spacing(-1),
+                      marginRight: theme.spacing(-0.7),
                     },
                   }}
                 >
@@ -200,14 +202,18 @@ const TopNavigation = () => {
                     aria-label="Profile menu"
                     ref={profileMenuButtonRef}
                     onClick={handleProfileMenuButtonClick}
+                    sx={{ padding: 0.7 }}
                   >
-                    <AccountCircleRounded
+                    <Avatar
                       sx={{
-                        height: '32px',
-                        width: '32px',
-                        color: 'grey.400',
+                        height: '34px',
+                        width: '34px',
                       }}
-                    />
+                    >
+                      <Typography variant="body1">
+                        C
+                      </Typography>
+                    </Avatar>
                   </IconButton>
                   <Menu
                     anchorEl={profileMenuButtonRef.current}

@@ -1,4 +1,5 @@
 import {
+  Avatar,
   ListItem,
   ListItemButton,
   ListItemIcon,
@@ -6,14 +7,16 @@ import {
   SvgIconTypeMap,
 } from '@mui/material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
+import { Box } from '@mui/system'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 interface LeftNavigationListItemPropTypes {
+  avatarText?: string
   currentPaths?: string[]
   exact?: boolean
   href: string
-  icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
+  icon?: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
     muiName: string
   }
   iconCurrent?: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
@@ -33,6 +36,7 @@ const includesAny = (
   )
 
 const LeftNavigationListItem = ({
+  avatarText,
   currentPaths,
   exact,
   href,
@@ -56,13 +60,22 @@ const LeftNavigationListItem = ({
     <ListItem disablePadding>
       <Link href={href} passHref>
         <ListItemButton>
-          <ListItemIcon>
-            {(IconCurrent && isCurrentLink) ? (
-              <IconCurrent color={iconColor} />
-            ) : (
-              <Icon color={iconColor} />
-            )}
-          </ListItemIcon>
+          {Icon && (
+            <ListItemIcon>
+              {(IconCurrent && isCurrentLink) ? (
+                <IconCurrent color={iconColor} />
+              ) : (
+                <Icon color={iconColor} />
+              )}
+            </ListItemIcon>
+          )}
+          {avatarText && (
+            <Box sx={{ minWidth: '56px' }}>
+              <Avatar>
+                {avatarText}
+              </Avatar>
+            </Box>
+          )}
           <ListItemText
             sx={{
               '& .MuiListItemText-primary': {

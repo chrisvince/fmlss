@@ -125,16 +125,14 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
         <Box>
           <nav>
             <List>
-              <ListItem disablePadding>
-                <Link href="/profile" passHref>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <PersonRounded />
-                    </ListItemIcon>
-                    <ListItemText primary="Profile" secondary={email} />
-                  </ListItemButton>
-                </Link>
-              </ListItem>
+              <LeftNavigationListItem
+                avatarText="C"
+                exact
+                href="/profile"
+                iconCurrent={PersonRounded}
+                primary="Profile"
+                secondary={email}
+              />
             </List>
           </nav>
         </Box>
