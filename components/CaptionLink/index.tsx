@@ -19,6 +19,7 @@ const CaptionLink = ({
       variant="caption"
       sx={{
         textDecoration: 'none',
+        color: 'text.secondary',
         '&:hover': {
           textDecoration: 'underline',
         },
