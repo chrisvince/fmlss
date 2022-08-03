@@ -1,14 +1,15 @@
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 
 import Modal from '../Modal'
+import SignUpForm from '../SignUpForm'
 
 interface Props {
   open: boolean
   onClose: () => void
 }
 
-const LoginModal = ({ onClose, open }: Props) => {
+const SignUpModal = ({ onClose, open }: Props) => {
   const handleLoginButtonClick = () => {
     console.log('handleLoginButtonClick')
   }
@@ -27,19 +28,16 @@ const LoginModal = ({ onClose, open }: Props) => {
         </Button>
       }
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'stretch',
-          gap: 4,
-        }}
-      >
-        Login
+      <Box>
+        <Typography variant="h4" align="center">
+          Be part of the conversation.
+          <br />
+          Sign up to reply.
+        </Typography>
+        <SignUpForm />
       </Box>
     </Modal>
   )
 }
 
-export default LoginModal
+export default SignUpModal

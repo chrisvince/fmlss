@@ -14,7 +14,7 @@ import ReplyButton from '../ReplyButton'
 import ShareButton from '../ShareButton'
 
 const ReplyModal = dynamic(() => import('../ReplyModal'), { ssr: false })
-const LoginModal = dynamic(() => import('../LoginModal'), { ssr: false })
+const SignUpModal = dynamic(() => import('../SignUpModal'), { ssr: false })
 
 interface PropTypes {
   createdAt: string
@@ -40,18 +40,18 @@ const PostActionBar = ({
   const { breakpoints } = useTheme()
   const isMobileDevice = useMediaQuery(breakpoints.down('sm'))
 
-  const [renderLoginModal, setRenderLoginModal] = useState(false)
+  const [renderSignUpModal, setRenderSignUpModal] = useState(false)
   const [renderReplyModal, setRenderReplyModal] = useState(false)
-  const [loginModalOpen, setLoginModalOpen] = useState(false)
+  const [loginModalOpen, setSignUpModalOpen] = useState(false)
   const [replyModalOpen, setReplyModalOpen] = useState(false)
 
-  const handleLoginModalClose = () => setLoginModalOpen(false)
+  const handleSignUpModalClose = () => setSignUpModalOpen(false)
   const handleReplyModalClose = () => setReplyModalOpen(false)
 
   const handleLikeButtonClick = () => {
     if (!isLoggedIn) {
-      setRenderLoginModal(true)
-      setLoginModalOpen(true)
+      setRenderSignUpModal(true)
+      setSignUpModalOpen(true)
       return
     }
     onLike()
@@ -59,8 +59,8 @@ const PostActionBar = ({
 
   const handleReplyButtonClick = () => {
     if (!isLoggedIn) {
-      setRenderLoginModal(true)
-      setLoginModalOpen(true)
+      setRenderSignUpModal(true)
+      setSignUpModalOpen(true)
       return
     }
     setRenderReplyModal(true)
@@ -69,8 +69,8 @@ const PostActionBar = ({
 
   const handleHighlightButtonClick = () => {
     if (!isLoggedIn) {
-      setRenderLoginModal(true)
-      setLoginModalOpen(true)
+      setRenderSignUpModal(true)
+      setSignUpModalOpen(true)
       return
     }
     console.log('highlight post')
@@ -143,10 +143,10 @@ const PostActionBar = ({
           <ShareButton slug={slug} />
         </Box>
       </Box>
-      {renderLoginModal && (
-        <LoginModal
+      {renderSignUpModal && (
+        <SignUpModal
           open={loginModalOpen}
-          onClose={handleLoginModalClose}
+          onClose={handleSignUpModalClose}
         />
       )}
       {renderReplyModal && (
