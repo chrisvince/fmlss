@@ -1,8 +1,9 @@
-import { Button, Typography } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useRef } from 'react'
+
 import useCreatePost from '../../utils/data/post/useCreatePost'
-import MobileContainer from '../MobileContainer'
 import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
 
 interface Props {
@@ -50,16 +51,17 @@ const InlineCreatePost = ({ slug }: Props) => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          height: '72px'
+          height: '72px',
         }}
       >
-        <Button
+        <LoadingButton
           variant="contained"
           onClick={submitPost}
           disabled={isLoading}
+          loading={isLoading}
         >
           Post
-        </Button>
+        </LoadingButton>
       </Box>
     </Box>
   )
