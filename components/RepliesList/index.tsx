@@ -1,13 +1,24 @@
 import { Typography } from '@mui/material'
-import { useState } from 'react'
+import { CellMeasurerCache } from 'react-virtualized'
+import { Box } from '@mui/system'
 
 import usePost from '../../utils/data/post/usePost'
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import SectionHeading from '../SectionHeading'
-import PostList from '../PostList'
-import PostListItem from '../PostListItem'
-import PostReplyForm from '../PostReplyForm'
 import ScrollLink from '../ScrollLink'
+import Feed from '../Feed'
+import constants from '../../constants'
+import InlineCreatePost from '../InlineCreatePost'
+import MobileContainer from '../MobileContainer'
+
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
+
+const SHOW_TOP_CREATE_POST_COUNT = 6
+
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+})
 
 type PropTypes = {
   slug: string
@@ -15,53 +26,58 @@ type PropTypes = {
 
 const RepliesList = ({ slug }: PropTypes) => {
   const { post } = usePost(slug)
-  const [viewMode, setViewMode] = useState<'start' | 'end'>('start')
 
-  const { likePost, loadMore, moreToLoad, replies } = usePostReplies(slug, {
-    viewMode,
-  })
-
-  const handleNewReply = async () => {
-    setViewMode('end')
-
-    // TODO: Create mutation for this!
-
-    window.scrollTo({
-      behavior: 'smooth',
-      top: document.body.scrollHeight
-    })
-  }
+  const { isLoading, likePost, loadMore, moreToLoad, replies } = usePostReplies(
+    slug,
+  )
 
   return (
-    <div>
+    <Box>
       <ScrollLink id="replies" />
-      <SectionHeading sticky={false}>
-        Replies {!!post?.data.postsCount && <> ({post.data.postsCount})</>}
-      </SectionHeading>
-      {!!replies?.length ? (
-        <>
-          {viewMode === 'end' && moreToLoad && (
-            <button onClick={loadMore}>Load more</button>
-          )}
-          <PostList>
-            {replies.map((reply) => (
-              <li key={reply.data!.id}>
-                <PostListItem
-                  onLikePost={likePost}
-                  post={reply}
-                />
-              </li>
-            ))}
-          </PostList>
-          {viewMode === 'start' && moreToLoad && (
-            <button onClick={loadMore}>Load more</button>
-          )}
-        </>
+      {!isLoading && !replies?.length ? (
+        <Box>
+          <Box
+            sx={{
+              paddingBottom: 6,
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+            }}
+          >
+            <Typography align="center" variant="h5">
+              No replies yet!
+              <br />
+              Be the first to reply.
+            </Typography>
+          </Box>
+          <MobileContainer>
+            <InlineCreatePost slug={slug} />
+          </MobileContainer>
+        </Box>
       ) : (
-        <p>No replies</p>
+        <>
+          <SectionHeading sticky={false}>
+            Replies {!!post?.data.postsCount && <> ({post.data.postsCount})</>}
+          </SectionHeading>
+          {replies.length >= SHOW_TOP_CREATE_POST_COUNT && (
+            <Box sx={{ px: 2 }}>
+              <InlineCreatePost slug={slug} />
+            </Box>
+          )}
+          <Feed
+            cellMeasurerCache={cellMeasurerCache}
+            contentSpinner
+            isLoading={isLoading}
+            moreToLoad={moreToLoad}
+            onLikePost={likePost}
+            onLoadMore={loadMore}
+            posts={replies}
+          />
+          <Box sx={{ px: 2 }}>
+            <InlineCreatePost slug={slug} />
+          </Box>
+        </>
       )}
-      <PostReplyForm slug={slug} onSuccess={handleNewReply} />
-    </div>
+    </Box>
   )
 }
 
