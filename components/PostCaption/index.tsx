@@ -1,4 +1,4 @@
-import { PersonRounded } from '@mui/icons-material'
+import { LockRounded } from '@mui/icons-material'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import CaptionLink from '../CaptionLink'
@@ -11,7 +11,7 @@ const PostCaption = ({ type }: PropTypes) => {
   if (!type) return null
 
   const Icon = {
-    byUser: PersonRounded,
+    byUser: LockRounded,
   }[type]
 
   const text = {
@@ -22,6 +22,10 @@ const PostCaption = ({ type }: PropTypes) => {
     byUser: '/profile/posts',
   }[type]
 
+  const tooltip = {
+    byUser: 'Only seen by you',
+  }[type]
+
   if (href) {
     return (
       <Box
@@ -30,7 +34,11 @@ const PostCaption = ({ type }: PropTypes) => {
           justifyContent: 'flex-start',
         }}
       >
-        <CaptionLink href={href}>
+        <CaptionLink
+          href={href}
+          tooltip={tooltip}
+          tooltipPlacement="right"
+        >
           <Box
             sx={{
               display: 'flex',
