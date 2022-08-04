@@ -38,12 +38,13 @@ const RepliesList = ({ slug }: PropTypes) => {
         <Box>
           <Box
             sx={{
+              paddingTop: 4,
               paddingBottom: 6,
               borderBottom: '1px solid',
               borderColor: 'divider',
             }}
           >
-            <Typography align="center" variant="h5">
+            <Typography align="center" variant="body1">
               No replies yet!
               <br />
               Be the first to reply.
