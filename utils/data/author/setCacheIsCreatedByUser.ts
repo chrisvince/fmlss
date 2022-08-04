@@ -1,6 +1,7 @@
 import { put } from 'memory-cache'
 import constants from '../../../constants'
 import { createPostAuthorCacheKey } from '../../createCacheKeys'
+import isServer from '../../isServer'
 
 const { POST_AUTHOR_CACHE_TIME } = constants
 
@@ -8,8 +9,6 @@ type SetCacheIsCreatedByUser = (
   slug: string,
   uid: string,
 ) => void
-
-const isServer = typeof window === 'undefined'
 
 const setCacheIsCreatedByUser: SetCacheIsCreatedByUser = (slug, uid) => {
   if (!isServer) return

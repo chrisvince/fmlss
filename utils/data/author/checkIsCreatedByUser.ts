@@ -4,6 +4,7 @@ import { get, put } from 'memory-cache'
 
 import { createPostAuthorCacheKey } from '../../createCacheKeys'
 import constants from '../../../constants'
+import isServer from '../../isServer'
 
 const {
   AUTHORED_POSTS_COLLECTION,
@@ -11,21 +12,17 @@ const {
   USERS_COLLECTION,
 } = constants
 
-const firebaseDb = firebase.firestore()
-
-const isServer = typeof window === 'undefined'
-
 const checkIsCreatedByUser = async (
   slug: string,
   uid: string,
   {
-    db = firebaseDb,
+    db: dbProp,
   }: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
   } = {},
 ) => {
+  const db = dbProp || firebase.firestore()
   let createdByUser: boolean = false
-
   const postAuthorCacheKey = createPostAuthorCacheKey(slug)
   const cachedAuthorUid = get(postAuthorCacheKey)
 

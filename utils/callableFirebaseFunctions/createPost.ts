@@ -1,8 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/functions'
 
-const functions = firebase.functions()
-
 interface Input {
   body: string
   category?: string | null
@@ -16,6 +14,9 @@ type Response = {
   }
 }
 
-export const createPost = functions.httpsCallable('createPost') as (
-  input: Input
-) => Promise<Response>
+type CreatePost = (data: Input) => Promise<Response>
+
+export const createPost: CreatePost = data => {
+  const functions = firebase.functions()
+  return functions.httpsCallable('createPost')(data)
+}

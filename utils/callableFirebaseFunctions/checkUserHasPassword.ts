@@ -1,13 +1,14 @@
 import firebase from 'firebase/app'
 import 'firebase/functions'
 
-const functions = firebase.functions()
-
 interface Input {
   uid: string
 }
 
-export const checkUserHasPassword = functions.httpsCallable(
-  'checkUserHasPassword'
-) as (data: Input) => Promise<{ data: boolean }>
+type CheckUserHasPassword = (data: Input) => Promise<{ data: boolean }>
+
+export const checkUserHasPassword: CheckUserHasPassword = data => {
+  const functions = firebase.functions()
+  return functions.httpsCallable('checkUserHasPassword')(data)
+}
 
