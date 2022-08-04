@@ -1,18 +1,14 @@
 import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
 
-import NewPostForm from '../../components/NewPostForm'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
-import Page from '../../components/Page'
+import NewPostPage from '../../components/NewPostPage'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
-const NewPost = () => {
-  return (
-    <Page pageTitle="Create a New Post" uiPageTitle="Post">
-      <NewPostForm />
-    </Page>
-  )
-}
+const NewPost = () => <NewPostPage />
 
 export const getServerSideProps = withAuthUserTokenSSR(
   withAuthUserTokenSSRConfig(ROUTE_MODE)

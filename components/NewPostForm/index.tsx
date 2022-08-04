@@ -1,51 +1,67 @@
+import { Box } from '@mui/system'
+import { Typography } from '@mui/material'
 import { SyntheticEvent, useRef, useState } from 'react'
-import { useRouter } from 'next/router'
 
-import { createPost } from '../../utils/callableFirebaseFunctions'
 import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
+import { LoadingButton } from '@mui/lab'
+import useCreatePost from '../../utils/data/post/useCreatePost'
 
 const NewPostForm = () => {
-  const router = useRouter()
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
-  const [disableTextarea, setDisableTextarea] = useState<boolean>(false)
-  const [textareaValue, setTextareaValue] = useState<string>('')
-  const handleTextInput = (text: string) => setTextareaValue(text)
+  const [hasContent, setHasContent] = useState<boolean>(false)
+  const { createPost, isLoading, errorMessage } = useCreatePost()
 
-  const handleSubmit = async (event: SyntheticEvent) => {
+  const submitPost = async () => {
+    const body = postBodyTextAreaRef.current?.getValue?.()
+    await createPost({ body })
+  }
+
+  const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault()
-    const formData = new FormData(event.target as HTMLFormElement)
-    const category = formData.get('category') as string | null
+    submitPost()
+  }
 
-    if (!textareaValue) {
-      console.error('Must have a body')
-      return
-    }
-
-    setDisableTextarea(true)
-
-    try {
-      const response = await createPost({ body: textareaValue, category })
-      router.push(`/post/${encodeURIComponent(response.data.id)}`)
-      postBodyTextAreaRef.current?.clear?.()
-    } catch (error) {
-      setDisableTextarea(false)
-      console.error(error)
-    }
+  const handleTextChange = (text: string) => {
+    setHasContent(!!text)
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+    >
+      <Box>
         <PostBodyTextArea
-          disabled={disableTextarea}
-          onChange={handleTextInput}
+          disabled={isLoading}
+          focusOnMount
+          onChange={handleTextChange}
+          onCommandEnter={submitPost}
+          placeholder="What's on your mind?"
           ref={postBodyTextAreaRef}
           username="chrisvince"
-          placeholder="What's on your mind?"
         />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+        {errorMessage && (
+          <Typography variant="caption" color="error">
+            {errorMessage}
+          </Typography>
+        )}
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <LoadingButton
+          type="submit"
+          variant="contained"
+          loading={isLoading}
+          disabled={!hasContent}
+        >
+          Submit
+        </LoadingButton>
+      </Box>
+    </Box>
   )
 }
 

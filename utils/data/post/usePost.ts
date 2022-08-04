@@ -18,7 +18,7 @@ const DEFAULT_SWR_CONFIG: SWRConfig = {
 }
 
 type UsePost = (
-  slug: string,
+  slug?: string | null,
   options?: {
     swrConfig?: SWRConfig,
   },

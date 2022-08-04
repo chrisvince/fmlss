@@ -8,24 +8,34 @@ interface HandleCreatePost {
   category?: string
 }
 
-const useCreatePost = (slug: string) => {
+const useCreatePost = (slug?: string) => {
   const { push: navigate } = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { post } = usePost(slug)
 
   const handleCreatePost = async ({ body, category }: HandleCreatePost) => {
-    if (!post?.data.reference) {
-      console.error('No reference passed')
-      return
-    }
-
     if (!body) {
       setErrorMessage('Body is required.')
       return
     }
 
     setIsLoading(true)
+
+    if (!post?.data.reference) {
+      try {
+        const { data } = await createPost({
+          body,
+          category,
+        })
+        navigate(`/post/${data.slug}`)
+      } catch (error) {
+        setIsLoading(false)
+        setErrorMessage('There was an error. Please try again later.')
+        console.error('error', error)
+      }
+      return
+    }
 
     try {
       const { data } = await createPost({

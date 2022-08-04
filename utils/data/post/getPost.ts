@@ -13,7 +13,7 @@ import isServer from '../../isServer'
 const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
 
 type GetPost = (
-  slug: string,
+  slug?: string | null,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     uid?: string | null
@@ -27,6 +27,8 @@ const getPost: GetPost = async (
     uid,
   } = {},
 ) => {
+  if (!slug) return null
+
   const db = dbProp || firebase.firestore()
 
   let doc:

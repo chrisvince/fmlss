@@ -3,25 +3,20 @@ import { Typography } from '@mui/material'
 import { useRef, useState } from 'react'
 import useCreatePost from '../../utils/data/post/useCreatePost'
 
-import usePost from '../../utils/data/post/usePost'
 import Modal from '../Modal'
 import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
-import PostItem from '../PostItem'
 
 interface Props {
   open: boolean
   onClose: () => void
-  slug: string
 }
 
-const ReplyModal = ({ onClose, open, slug }: Props) => {
-  const { isLoading: postIsLoading } = usePost(slug)
-
+const NewPostModal = ({ onClose, open }: Props) => {
   const {
     createPost,
     isLoading: createPostLoading,
     errorMessage,
-  } = useCreatePost(slug)
+  } = useCreatePost()
 
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
   const [hasContent, setHasContent] = useState<boolean>(false)
@@ -37,10 +32,9 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
 
   return (
     <Modal
-      isLoading={postIsLoading}
       onClose={onClose}
       open={open}
-      title="Reply to Post"
+      title="Post"
       actions={
         <LoadingButton
           variant="contained"
@@ -52,7 +46,6 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
         </LoadingButton>
       }
     >
-      <PostItem hideActionBar slug={slug} />
       <PostBodyTextArea
         disabled={createPostLoading}
         focusOnMount
@@ -60,7 +53,7 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
         onCommandEnter={submitPost}
         ref={postBodyTextAreaRef}
         username="chrisvince"
-        placeholder="Write a reply"
+        placeholder="What's on your mind?"
       />
       {errorMessage && (
         <Typography variant="caption" color="error">
@@ -71,4 +64,4 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
   )
 }
 
-export default ReplyModal
+export default NewPostModal

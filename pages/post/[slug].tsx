@@ -69,7 +69,7 @@ const getServerSidePropsFn = async ({
   const slug = decodeURIComponent(encodedSlug)
   const uid = AuthUser.id
 
-  const postCacheKey = createPostCacheKey(slug)
+  const postCacheKey = createPostCacheKey(slug)!
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniCategoriesCacheKey = createMiniCategoriesCacheKey()

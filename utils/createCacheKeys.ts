@@ -9,7 +9,7 @@ const createHashtagPostsCacheKey = (
 
 const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 
-const createPostCacheKey = (slug: string) => `post/${slug}`
+const createPostCacheKey = (slug?: string | null) => slug ? `post/${slug}` : null
 
 const createPostFeedCacheKey = (
   sortMode: FeedSortMode,

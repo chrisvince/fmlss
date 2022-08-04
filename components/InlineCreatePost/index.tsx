@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useRef } from 'react'
+import { SyntheticEvent, useRef } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
@@ -24,8 +24,15 @@ const InlineCreatePost = ({ slug }: Props) => {
     await createPost({ body })
   }
 
+  const handleSubmit = (event: SyntheticEvent) => {
+    event.preventDefault()
+    submitPost()
+  }
+
   return (
     <Box
+      component="form"
+      onSubmit={handleSubmit}
       sx={{
         display: 'grid',
         alignItems: 'flex-start',
@@ -56,9 +63,9 @@ const InlineCreatePost = ({ slug }: Props) => {
       >
         <LoadingButton
           variant="contained"
-          onClick={submitPost}
           disabled={isLoading}
           loading={isLoading}
+          type="submit"
         >
           Post
         </LoadingButton>

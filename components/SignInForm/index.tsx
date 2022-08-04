@@ -62,6 +62,8 @@ const SignInForm = () => {
 
   return (
     <Box
+      component="form"
+      onSubmit={onSubmit}
       sx={{
         mt: 6,
         display: 'flex',
@@ -91,8 +93,6 @@ const SignInForm = () => {
           </Typography>
         </Divider>
         <Box
-          component="form"
-          onSubmit={onSubmit}
           sx={{
             display: 'flex',
             flexDirection: 'column',
