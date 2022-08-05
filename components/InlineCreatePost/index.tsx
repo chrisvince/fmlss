@@ -62,10 +62,9 @@ const InlineCreatePost = ({ slug }: Props) => {
         }}
       >
         <LoadingButton
-          variant="contained"
-          disabled={isLoading}
           loading={isLoading}
           type="submit"
+          variant="contained"
         >
           Post
         </LoadingButton>

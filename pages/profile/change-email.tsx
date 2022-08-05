@@ -4,11 +4,7 @@ import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/wit
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
-const ChangeEmail = () => {
-  return (
-    <ChangeEmailPage />
-  )
-}
+const ChangeEmail = () => <ChangeEmailPage />
 
 export const getServerSideProps = withAuthUserTokenSSR(
   withAuthUserTokenSSRConfig(ROUTE_MODE)

@@ -136,6 +136,12 @@ const theme = createTheme({
       defaultProps: {
         margin: 'dense',
       },
+      styleOverrides: {
+        root: {
+          marginLeft: 0,
+          marginRight: 0,
+        },
+      },
     },
     MuiIconButton: {
       defaultProps: {

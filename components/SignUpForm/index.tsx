@@ -1,74 +1,76 @@
-import React, { SyntheticEvent, useState } from 'react'
+import React, { useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import GoogleAuthButton from '../GoogleAuthButton'
 import Link from 'next/link'
 import { Box } from '@mui/system'
-import {
-  Button,
-  Divider,
-  TextField,
-  Typography,
-  Link as MuiLink,
-} from '@mui/material'
+import { Divider, TextField, Typography, Link as MuiLink } from '@mui/material'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
+
+import GoogleAuthButton from '../GoogleAuthButton'
+import { createUser } from '../../utils/callableFirebaseFunctions'
+import constants from '../../constants'
+import { LoadingButton } from '@mui/lab'
+
+const {
+  EMAIL_REGEX_PATTERN,
+  FORM_MESSAGING,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX_PATTERN,
+} = constants
 
 const auth = firebase.auth()
 
-const UI_STATES = {
-  EMAIL_IN_USE_ERROR: 'email-in-use-error',
-  ERROR: 'error',
-  LOADING: 'loading',
-  NOT_SUBMITTED: 'not-submitted',
+const FORM_IDS = {
+  EMAIL: 'email',
+  PASSWORD: 'password',
 }
 
-const EMAIL_ID = 'email'
-const EMAIL_LABEL = 'Email'
-
-const PASSWORD_ID = 'password'
-const PASSWORD_LABEL = 'Password'
+const GENERIC_ERROR_MESSAGE =
+  'There was an error signing you up. Please try again later.'
 
 const SignUpForm = () => {
-  const [uiState, setUiState] = useState(UI_STATES.NOT_SUBMITTED)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [formError, setFormError] = useState<{ message: string } | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const onSubmit = async (event: SyntheticEvent) => {
-    event.preventDefault()
-    const formData = new FormData(event.target as HTMLFormElement)
-    const email = formData.get(EMAIL_ID) as string | undefined
-    const password = formData.get(PASSWORD_ID) as string | undefined
+  const { control, handleSubmit, setError } = useForm()
 
+  const onSubmit = async (data: FieldValues) => {
+    const email = data[FORM_IDS.EMAIL] as string
+    const password = data[FORM_IDS.PASSWORD] as string
+
+    setFormError(null)
+    setIsLoading(true)
     try {
-      setErrorMessage(null)
-      setUiState(UI_STATES.LOADING)
-      await auth.createUserWithEmailAndPassword(
-        email as string,
-        password as string,
-      )
+      await createUser({ email, password })
+      await auth.signInWithEmailAndPassword(email, password)
     } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        setUiState(UI_STATES.EMAIL_IN_USE_ERROR)
+      if (error.code === 'already-exists') {
+        setError(FORM_IDS.EMAIL, { message: 'This email is already in use.' })
+        setIsLoading(false)
         return
       }
-      setErrorMessage(
-        error.message ?? 'There was an error. Please try again later.'
-      )
-      setUiState(UI_STATES.ERROR)
-      console.error(error)
+      setFormError({
+        message: GENERIC_ERROR_MESSAGE,
+      })
+      setIsLoading(false)
     }
   }
 
-  const handleGoogleAuthError = () => setUiState(UI_STATES.ERROR)
-  const formDisabled = uiState === UI_STATES.LOADING
+  const handleGoogleAuthError = () =>
+    setFormError({ message: GENERIC_ERROR_MESSAGE })
 
   return (
     <Box
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
       sx={{
         mt: 6,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'stretch',
-        gap: 8,
+        gap: 5,
       }}
     >
       <Box
@@ -77,11 +79,11 @@ const SignUpForm = () => {
           flexDirection: 'column',
           justifyContent: 'flex-start',
           alignItems: 'stretch',
-          gap: 6,
+          gap: 3,
         }}
       >
         <GoogleAuthButton
-          disabled={formDisabled}
+          disabled={isLoading}
           mode="signUp"
           onAuthError={handleGoogleAuthError}
         />
@@ -91,57 +93,84 @@ const SignUpForm = () => {
           </Typography>
         </Divider>
         <Box
-          component="form"
-          onSubmit={onSubmit}
           sx={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
             alignItems: 'stretch',
             gap: 2,
-            '& *:first-child': {
+            '& *:first-of-type': {
               marginTop: 0,
             },
           }}
         >
-          <TextField
-            disabled={formDisabled}
-            fullWidth
-            id={EMAIL_ID}
-            label={EMAIL_LABEL}
-            name={EMAIL_ID}
-            type="email"
-            variant="outlined"
+          <Controller
+            name={FORM_IDS.EMAIL}
+            control={control}
+            defaultValue=""
+            rules={{
+              required: FORM_MESSAGING.REQUIRED,
+              pattern: {
+                value: EMAIL_REGEX_PATTERN,
+                message: FORM_MESSAGING.VALID_EMAIL,
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <TextField
+                fullWidth
+                {...field}
+                disabled={isLoading}
+                label="Email"
+                type="email"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+              />
+            )}
           />
-          <TextField
-            disabled={formDisabled}
-            fullWidth
-            id={PASSWORD_ID}
-            label={PASSWORD_LABEL}
-            name={PASSWORD_ID}
-            type="password"
-            variant="outlined"
+          <Controller
+            name={FORM_IDS.PASSWORD}
+            control={control}
+            defaultValue=""
+            rules={{
+              required: FORM_MESSAGING.REQUIRED,
+              pattern: {
+                value: PASSWORD_REGEX_PATTERN,
+                message: FORM_MESSAGING.PATTERN,
+              },
+              minLength: {
+                value: PASSWORD_MIN_LENGTH,
+                message: FORM_MESSAGING.MIN_LENGTH,
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <TextField
+                fullWidth
+                {...field}
+                disabled={isLoading}
+                label="Password"
+                type="password"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+              />
+            )}
           />
-          <Button
-            disabled={formDisabled}
-            type="submit"
-            variant="contained"
-          >
-            Sign up
-          </Button>
-          {uiState === UI_STATES.ERROR && (
-            <Typography variant="caption" color="error">
-              {errorMessage}
-            </Typography>
-          )}
-          {uiState === UI_STATES.EMAIL_IN_USE_ERROR && (
-            <Typography variant="caption" color="error">
-              The email is already in use.{' '}
-              <Link href="/" passHref>
-                <MuiLink>Sign in</MuiLink>
-              </Link>
-            </Typography>
-          )}
+          <Box>
+            <LoadingButton
+              fullWidth
+              loading={isLoading}
+              type="submit"
+              variant="contained"
+            >
+              Sign up
+            </LoadingButton>
+            {formError && (
+              <Typography variant="caption" color="error">
+                {formError.message}
+              </Typography>
+            )}
+          </Box>
         </Box>
       </Box>
       <Box>

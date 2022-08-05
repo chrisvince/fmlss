@@ -18,7 +18,7 @@ const UserProfile = () => {
   const handleSignOutClick = authUser.signOut
 
   return (
-    <Page pageTitle="Profile">
+    <Page pageTitle="Profile" thinContainer>
       <p>Your email is {authUser.email}.</p>
       <div>{!authUser.emailVerified && <EmailVerificationLink />}</div>
       <div>

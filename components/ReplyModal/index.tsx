@@ -43,10 +43,9 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
       title="Reply to Post"
       actions={
         <LoadingButton
-          variant="contained"
-          onClick={submitPost}
-          disabled={!hasContent}
           loading={createPostLoading}
+          onClick={submitPost}
+          variant="contained"
         >
           Post
         </LoadingButton>

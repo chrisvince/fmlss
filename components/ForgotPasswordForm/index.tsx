@@ -1,63 +1,130 @@
-import React, { SyntheticEvent, useState } from 'react'
+import { Box } from '@mui/system'
+import React, { useState } from 'react'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import { forgotPassword } from '../../utils/callableFirebaseFunctions'
+import constants from '../../constants'
+import { TextField, Typography, Link as MuiLink } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import Link from 'next/link'
 
-const UI_STATES = {
-  NOT_SUBMITTED: 'not-submitted',
-  LOADING: 'loading',
-  ERROR: 'error',
-  SUBMITTED: 'submitted',
-}
+const { FORM_MESSAGING, EMAIL_REGEX_PATTERN } = constants
 
 const EMAIL_ID = 'email'
-const EMAIL_LABEL = 'Email'
 
 const ForgotPasswordForm = () => {
-  const [uiState, setUiState] = useState(UI_STATES.NOT_SUBMITTED)
-  const handleFormSubmit = async (event: SyntheticEvent) => {
-    setUiState(UI_STATES.LOADING)
-    event.preventDefault()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [submitted, setSubmitted] = useState<boolean>(false)
+  const [formError, setFormError] = useState<{ message: string } | null>(null)
+
+  const { control, handleSubmit } = useForm()
+
+  const onSubmit = async (data: FieldValues) => {
+    const email = data[EMAIL_ID] as string
+    setFormError(null)
+    setIsLoading(true)
+
     try {
-      const formData = new FormData(event.target as HTMLFormElement)
-      const email = formData.get(EMAIL_ID) as string | undefined
-      if (!email) {
-        console.error('Must have an email')
-        return
-      }
       await forgotPassword({ email })
-      setUiState(UI_STATES.SUBMITTED)
+      setSubmitted(true)
+      setIsLoading(false)
     } catch (error) {
       console.error(error)
-      setUiState(UI_STATES.ERROR)
+      setFormError({
+        message:
+          'There was an issue resetting your password. Please try again.',
+      })
     }
   }
 
-  if (uiState === UI_STATES.LOADING) {
-    return <p>Loading...</p>
-  }
-
-  if (uiState === UI_STATES.SUBMITTED) {
+  if (submitted) {
     return (
-      <p>
-        Your forgot password request was sent. If an account matching the email
-        entered exists, you will recieve an email.
-      </p>
+      <Typography variant="body2">
+        Thanks! Your password reset request has been recieved.
+        <br/>
+        If an account
+        exists, you will recieve an email.
+      </Typography>
     )
   }
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <div>
-        <label htmlFor={EMAIL_ID}>
-          {EMAIL_LABEL}
-        </label>
-        <input type="email" id={EMAIL_ID} name={EMAIL_ID} />
-      </div>
-      <button type="submit">Submit</button>
-      {uiState === UI_STATES.ERROR && (
-        <p>There was an error, please try again.</p>
-      )}
-    </form>
+    <Box
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'stretch',
+          gap: 6,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'stretch',
+            gap: 2,
+            '& *:first-of-type': {
+              marginTop: 0,
+            },
+          }}
+        >
+          <Controller
+            name={EMAIL_ID}
+            control={control}
+            defaultValue=""
+            rules={{
+              required: FORM_MESSAGING.REQUIRED,
+              pattern: {
+                value: EMAIL_REGEX_PATTERN,
+                message: FORM_MESSAGING.VALID_EMAIL,
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <TextField
+                fullWidth
+                {...field}
+                disabled={isLoading}
+                label="Email"
+                type="email"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+              />
+            )}
+          />
+          <Box>
+            <LoadingButton
+              fullWidth
+              loading={isLoading}
+              type="submit"
+              variant="contained"
+            >
+              Reset password
+            </LoadingButton>
+            {formError && (
+              <Typography variant="caption" color="error">
+                {formError.message}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+        <Link
+          href="/"
+          passHref
+        >
+          <MuiLink variant="body2">
+            Already know your password?
+          </MuiLink>
+        </Link>
+      </Box>
+    </Box>
   )
 }
 

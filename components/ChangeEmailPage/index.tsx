@@ -1,13 +1,10 @@
 import ChangeEmailForm from '../ChangeEmailForm'
 import Page from '../Page'
 
-const ChangeEmailPage = () => {
-  return (
-    <Page pageTitle="Profile">
-      <h1>Change Email</h1>
-      <ChangeEmailForm />
-    </Page>
-  )
-}
+const ChangeEmailPage = () => (
+  <Page pageTitle="Change Email" thinContainer>
+    <ChangeEmailForm />
+  </Page>
+)
 
 export default ChangeEmailPage

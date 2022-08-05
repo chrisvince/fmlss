@@ -1,5 +1,7 @@
 const hourToMs = (hours: number) => hours * 60 * 60 * 1000
 
+const PASSWORD_MIN_LENGTH = 8
+
 const constants = {
   AUTHORED_POSTS_COLLECTION: 'authoredPosts',
   BRAND_NAME: 'Fameless',
@@ -25,6 +27,9 @@ const constants = {
   PAGE_SORT_SELECTOR_HEIGHT: '45px',
   PAGE_TITLE_HEIGHT: '34.59px',
   PAGINATION_COUNT: 25,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX_PATTERN: /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/g,
+  EMAIL_REGEX_PATTERN: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever
   POST_CACHE_TIME: 30_000,
   POST_LIKES_CACHE_TIME: 10_000,
@@ -45,6 +50,13 @@ const constants = {
   USER_POSTS_CACHE_TIME: 10_000,
   USERS_COLLECTION: 'users',
   VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
+  FORM_MESSAGING: {
+    MATCH: 'Passwords must match',
+    MIN_LENGTH: `Must be at least ${PASSWORD_MIN_LENGTH} characters long`,
+    PATTERN: 'Must contain at least an uppercase letter, a lowercase letter, a number, and a special character',
+    REQUIRED: 'This field is required',
+    VALID_EMAIL: 'Must be a valid email address',
+  },
 }
 
 export default constants

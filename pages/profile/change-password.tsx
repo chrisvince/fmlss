@@ -4,27 +4,21 @@ import {
   AuthUser,
 } from 'next-firebase-auth'
 
-import ChangePasswordForm from '../../components/ChangePasswordForm'
 import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
 import { checkUserHasPassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
+import ChangePasswordPage from '../../components/ChangePasswordPage'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
-interface PropTypes {
+interface Props {
   userHasPassword: boolean
 }
 
-const ChangePassword = ({ userHasPassword }: PropTypes) => {
-  return (
-    <div>
-      <h1>{userHasPassword ? 'Change password' : 'Create password'}</h1>
-      <ChangePasswordForm userHasPassword={userHasPassword} />
-    </div>
-  )
-}
+const ChangePassword = ({ userHasPassword }: Props) =>
+  <ChangePasswordPage userHasPassword ={userHasPassword} />
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)

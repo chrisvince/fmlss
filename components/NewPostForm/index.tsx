@@ -55,10 +55,9 @@ const NewPostForm = () => {
           }}
         >
           <LoadingButton
+            loading={isLoading}
             type="submit"
             variant="contained"
-            loading={isLoading}
-            disabled={!hasContent}
           >
             Submit
           </LoadingButton>

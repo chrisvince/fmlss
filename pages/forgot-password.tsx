@@ -1,26 +1,14 @@
 import {
   withAuthUser,
   withAuthUserTokenSSR,
-  AuthAction,
 } from 'next-firebase-auth'
-import Link from 'next/link'
 
-import Page from '../components/Page'
-import ForgotPasswordForm from '../components/ForgotPasswordForm'
 import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+import ForgotPasswordPage from '../components/ForgotPasswordPage'
 
 const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
 
-const ForgotPassword = () => {
-  return (
-    <Page pageTitle="Forgot Password">
-      <ForgotPasswordForm />
-      <Link href="/">
-        <a>Already know your password?</a>
-      </Link>
-    </Page>
-  )
-}
+const ForgotPassword = () => <ForgotPasswordPage />
 
 export const getServerSideProps = withAuthUserTokenSSR(
   withAuthUserTokenSSRConfig(ROUTE_MODE)

@@ -1,101 +1,185 @@
-import { SyntheticEvent, useState } from 'react'
+import { useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import { Box } from '@mui/system'
+import { TextField, Typography } from '@mui/material'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import { changeEmail } from '../../utils/callableFirebaseFunctions/changeEmail'
+import constants from '../../constants'
+import { useAuthUser } from 'next-firebase-auth'
+import { LoadingButton } from '@mui/lab'
+
+const {
+  EMAIL_REGEX_PATTERN,
+  FORM_MESSAGING,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX_PATTERN,
+} = constants
 
 const auth = firebase.auth()
 
-const UI_STATES = {
-  ERROR: 'error',
-  LOADING: 'loading',
-  NOT_SUBMITTED: 'not-submitted',
-  SAME_EMAIL_ERROR: 'same-email-error',
-  SUBMITTED: 'submitted',
-  WRONG_CURRENT_PASSWORD_ERROR: 'wrong-current-password-error',
+const FORM_IDS = {
+  EMAIL: 'email',
+  PASSWORD: 'password',
 }
 
-const EMAIL_ID = 'email'
-const EMAIL_LABEL = 'New email'
-
-const PASSWORD_ID = 'password'
-const PASSWORD_LABEL = 'password'
-
 const ChangeEmailForm = () => {
-  const [uiState, setUiState] = useState(UI_STATES.NOT_SUBMITTED)
+  const authUser = useAuthUser()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [submitted, setSubmitted] = useState<boolean>(false)
+  const [formError, setFormError] = useState<{ message: string } | null>(null)
 
-  const handleSubmit = async (event: SyntheticEvent) => {
-    const formData = new FormData(event.target as HTMLFormElement)
-    const email = formData.get(EMAIL_ID) as string | undefined
-    const password = formData.get(PASSWORD_ID) as string | undefined
+  const { control, handleSubmit, setError } = useForm()
 
-    if (!email) {
-      console.error('Email is required')
+  const onSubmit = async (data: FieldValues) => {
+    const email = data[FORM_IDS.EMAIL] as string
+    const password = data[FORM_IDS.PASSWORD] as string
+
+    if (email === authUser.email) {
+      setError(FORM_IDS.EMAIL, {
+        message: 'The email must be different from the current email.',
+      })
       return
     }
 
-    if (!password) {
-      console.error('Password is required')
-      return
-    }
+    setFormError(null)
+    setIsLoading(true)
 
     try {
-      setUiState(UI_STATES.LOADING)
       await changeEmail({ email, password })
       await auth.signInWithEmailAndPassword(email, password)
-      setUiState(UI_STATES.SUBMITTED)
+      setSubmitted(true)
+      setIsLoading(false)
     } catch (error: any) {
       if (
         error.code === 'invalid-argument' &&
         error.message === '`password` is incorrect.'
       ) {
-        setUiState(UI_STATES.WRONG_CURRENT_PASSWORD_ERROR)
+        setError(FORM_IDS.PASSWORD, {
+          message: 'The password entered is incorrect.',
+        })
+        setIsLoading(false)
         return
       }
+
       if (
         error.code === 'invalid-argument' &&
         error.message === '`email` must be different from the current email.'
       ) {
-        setUiState(UI_STATES.SAME_EMAIL_ERROR)
+        setError(FORM_IDS.EMAIL, {
+          message: 'The email must be different from the current email.',
+        })
+        setIsLoading(false)
         return
       }
-      setUiState(UI_STATES.ERROR)
-      console.error(error)
+
+      if (error.code === 'already-exists') {
+        setError(FORM_IDS.EMAIL, {
+          message: 'This email is already in use. Please try another email.',
+        })
+        setIsLoading(false)
+        return
+      }
+
+      setFormError({
+        message: 'There was an issue changing your email. Please try again.',
+      })
+      setIsLoading(false)
     }
   }
 
-  if (uiState === UI_STATES.LOADING) {
-    return <p>Loading...</p>
-  }
-
-  if (uiState === UI_STATES.ERROR) {
-    return <p>There was an error.</p>
-  }
-
-  if (uiState === UI_STATES.WRONG_CURRENT_PASSWORD_ERROR) {
-    return <p>The password entered is incorrect. Please try again.</p>
-  }
-
-  if (uiState === UI_STATES.SUBMITTED) {
-    return <p>Your email has been changed.</p>
-  }
-
-  if (uiState === UI_STATES.SAME_EMAIL_ERROR) {
-    return <p>The email must be different from your current email.</p>
+  if (submitted) {
+    return (
+      <Typography variant="body2">
+        Your email has been changed.
+      </Typography>
+    )
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor={EMAIL_ID}>{EMAIL_LABEL}</label>
-        <input id={EMAIL_ID} name={EMAIL_ID} type="email" />
-      </div>
-      <div>
-        <label htmlFor={PASSWORD_ID}>{PASSWORD_LABEL}</label>
-        <input id={PASSWORD_ID} name={PASSWORD_ID} type="password" />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+    <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'stretch',
+          gap: 2,
+          '& *:first-of-type': {
+            marginTop: 0,
+          },
+        }}
+      >
+        <Controller
+          name={FORM_IDS.EMAIL}
+          control={control}
+          defaultValue=""
+          rules={{
+            required: FORM_MESSAGING.REQUIRED,
+            pattern: {
+              value: EMAIL_REGEX_PATTERN,
+              message: FORM_MESSAGING.VALID_EMAIL,
+            },
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              fullWidth
+              {...field}
+              disabled={isLoading}
+              label="New email"
+              type="email"
+              variant="outlined"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
+        />
+        <Controller
+          name={FORM_IDS.PASSWORD}
+          control={control}
+          defaultValue=""
+          rules={{
+            required: FORM_MESSAGING.REQUIRED,
+            pattern: {
+              value: PASSWORD_REGEX_PATTERN,
+              message: FORM_MESSAGING.PATTERN,
+            },
+            minLength: {
+              value: PASSWORD_MIN_LENGTH,
+              message: FORM_MESSAGING.MIN_LENGTH,
+            },
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              fullWidth
+              {...field}
+              disabled={isLoading}
+              label="Current password"
+              type="password"
+              variant="outlined"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
+        />
+        <Box>
+          <LoadingButton
+            loading={isLoading}
+            type="submit"
+            variant="contained"
+            fullWidth
+          >
+            Change email
+          </LoadingButton>
+          {formError && (
+            <Typography variant="caption" color="error">
+              {formError.message}
+            </Typography>
+          )}
+        </Box>
+      </Box>
+    </Box>
   )
 }
 
