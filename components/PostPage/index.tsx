@@ -11,6 +11,7 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import PageSpinner from '../PageSpinner'
 import useUser from '../../utils/data/user/useUser'
+import Error from 'next/error'
 
 const FirstPostModal = dynamic(() => import('../FirstPostModal'), {
   ssr: false,
@@ -34,6 +35,10 @@ const PostPage = ({ slug }: PropTypes) => {
     setFirstPostModalOpen(true)
     updateUser({ shownFirstPostMessage: true })
   }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser])
+
+  if (!isLoading && !post) {
+    return <Error statusCode={404} />
+  }
 
   if (isLoading) {
     return <PageSpinner />

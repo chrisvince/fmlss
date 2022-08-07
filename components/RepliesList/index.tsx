@@ -10,6 +10,7 @@ import Feed from '../Feed'
 import constants from '../../constants'
 import InlineCreatePost from '../InlineCreatePost'
 import MobileContainer from '../MobileContainer'
+import ContentSpinner from '../ContentSpinner'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -27,14 +28,20 @@ type PropTypes = {
 const RepliesList = ({ slug }: PropTypes) => {
   const { post } = usePost(slug)
 
-  const { isLoading, likePost, loadMore, moreToLoad, replies } = usePostReplies(
-    slug,
-  )
+  const {
+    isLoading: repliesAreLoading,
+    likePost,
+    loadMore,
+    moreToLoad,
+    replies,
+  } = usePostReplies(slug)
 
   return (
     <Box>
       <ScrollLink id="replies" />
-      {!isLoading && !replies?.length ? (
+      {repliesAreLoading ? (
+        <ContentSpinner />
+      ) : !replies?.length ? (
         <Box>
           <Box
             sx={{

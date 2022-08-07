@@ -37,6 +37,7 @@ const NewPostModal = ({ onClose, open }: Props) => {
       title="Post"
       actions={
         <LoadingButton
+          disabled={!hasContent}
           loading={createPostLoading}
           onClick={submitPost}
           variant="contained"

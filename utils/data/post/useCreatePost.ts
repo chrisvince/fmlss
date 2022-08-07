@@ -28,7 +28,8 @@ const useCreatePost = (slug?: string) => {
           body,
           category,
         })
-        navigate(`/post/${data.slug}`)
+        await navigate(`/post/${data.slug}`)
+        setIsLoading(false)
       } catch (error) {
         setIsLoading(false)
         setErrorMessage('There was an error. Please try again later.')

@@ -51,7 +51,7 @@ const getPost: GetPost = async (
       .get()
 
     if (postsRef.empty) {
-      return null
+      throw new Error('Post not found')
     }
 
     doc = postsRef.docs[0]
@@ -74,7 +74,7 @@ const getPost: GetPost = async (
   const [createdByUser, likedByUser] = await Promise.all(supportingDataPromises)
 
   return {
-    data: data,
+    data,
     doc: !isServer ? doc : null,
     user: {
       created: createdByUser,

@@ -46,7 +46,7 @@ const getCategory: GetCategory = async (
       .get()
 
     if (categoriesRef.empty) {
-      return null
+      throw new Error('Category not found')
     }
 
     doc = categoriesRef.docs[0]
