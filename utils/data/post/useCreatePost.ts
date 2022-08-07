@@ -8,11 +8,11 @@ interface HandleCreatePost {
   category?: string
 }
 
-const useCreatePost = (slug?: string) => {
+const useCreatePost = (parentSlug?: string) => {
   const { push: navigate } = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const { post } = usePost(slug)
+  const { post } = usePost(parentSlug)
 
   const handleCreatePost = async ({ body, category }: HandleCreatePost) => {
     if (!body) {
@@ -22,29 +22,14 @@ const useCreatePost = (slug?: string) => {
 
     setIsLoading(true)
 
-    if (!post?.data.reference) {
-      try {
-        const { data } = await createPost({
-          body,
-          category,
-        })
-        await navigate(`/post/${data.slug}`)
-        setIsLoading(false)
-      } catch (error) {
-        setIsLoading(false)
-        setErrorMessage('There was an error. Please try again later.')
-        console.error('error', error)
-      }
-      return
-    }
-
     try {
       const { data } = await createPost({
         body,
         category,
-        replyingToReference: post.data.reference,
+        replyingToReference: post?.data.reference,
       })
-      navigate(`/post/${data.slug}`)
+      await navigate(`/post/${data.slug}`)
+      setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
       setErrorMessage('There was an error. Please try again later.')
