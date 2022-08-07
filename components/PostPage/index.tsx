@@ -12,6 +12,8 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import PageSpinner from '../PageSpinner'
 import useUser from '../../utils/data/user/useUser'
 import Error from 'next/error'
+import MobileContainer from '../MobileContainer'
+import { Divider } from '@mui/material'
 
 const FirstPostModal = dynamic(() => import('../FirstPostModal'), {
   ssr: false,
@@ -64,13 +66,19 @@ const PostPage = ({ slug }: PropTypes) => {
             flexDirection: 'column',
             alignItems: 'stretch',
             justifyContent: 'flex-start',
-            gap: 2,
+            gap: 4,
           }}
         >
-          <PostItem
-            onLikePost={likePost}
-            post={post!}
-          />
+          <Box>
+            <MobileContainer>
+              <PostItem
+                bodySize="large"
+                onLikePost={likePost}
+                post={post!}
+              />
+            </MobileContainer>
+            <Divider sx={{ mt: 2 }} />
+          </Box>
           <RepliesList slug={slug} />
         </Box>
       </Page>

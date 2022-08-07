@@ -37,19 +37,19 @@ const SectionHeading = ({ children, sticky = true }: PropTypes) => {
         },
         marginBottom: {
           xs: 1,
-          sm: 2,
+          sm: sticky ? 2 : null,
         },
         ...stickyStyles,
         zIndex: {
           sm: 1208,
         },
         borderBottom: {
-          sm: '1px solid',
+          sm: sticky ? '1px solid' : null,
         },
         borderColor: {
-          sm: 'divider',
+          sm: sticky ? 'divider' : null,
         },
-        paddingBottom: 0.5,
+        paddingBottom: sticky ? 0.5 : null,
         paddingTop: {
           xs: 1,
           sm: 0,

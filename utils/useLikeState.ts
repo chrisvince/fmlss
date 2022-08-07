@@ -11,7 +11,7 @@ const useLikeState = ({
   const [like, setLike] = useState<boolean>(!!post?.user?.like)
   const [likesCount, setLikesCount] = useState<number>(post?.data.likesCount ?? 0)
 
-  const toggleLike = useCallback(async () => {
+  const toggleLike = useCallback(() => {
     if (like) {
       setLikesCount(likesCount <= 0 ? 0 : likesCount - 1)
       setLike(false)

@@ -1,8 +1,8 @@
 import { LoadingButton } from '@mui/lab'
-import { Typography } from '@mui/material'
+import { Divider, Typography } from '@mui/material'
 import { useRef, useState } from 'react'
-import useCreatePost from '../../utils/data/post/useCreatePost'
 
+import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
 import Modal from '../Modal'
 import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
@@ -52,7 +52,12 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
         </LoadingButton>
       }
     >
-      <PostItem hideActionBar post={post!} />
+      <PostItem
+        bodySize="large"
+        hideActionBar
+        post={post!}
+      />
+      <Divider sx={{ mt: 2 }} />
       <PostBodyTextArea
         disabled={createPostLoading}
         focusOnMount

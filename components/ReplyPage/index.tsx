@@ -1,6 +1,8 @@
+import { Divider } from '@mui/material'
 import usePost from '../../utils/data/post/usePost'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
+import MobileContainer from '../MobileContainer'
 import Page from '../Page'
 import PageSpinner from '../PageSpinner'
 import PostItem from '../PostItem'
@@ -26,10 +28,15 @@ const ReplyPage = ({ slug }: Props) => {
       {isLoading ? (
         <PageSpinner />
       ) : (
-        <>
-          <PostItem hideActionBar post={post!} />
+        <MobileContainer>
+          <PostItem
+            bodySize="large"
+            hideActionBar
+            post={post!}
+          />
+          <Divider sx={{ mt: 2 }} />
           <PostReplyForm slug={slug} />
-        </>
+        </MobileContainer>
       )}
     </Page>
   )
