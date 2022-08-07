@@ -73,8 +73,6 @@ const RepliesList = ({ slug }: PropTypes) => {
           )}
           <Feed
             cellMeasurerCache={cellMeasurerCache}
-            contentSpinner
-            isLoading={isLoading}
             moreToLoad={moreToLoad}
             onLikePost={likePost}
             onLoadMore={loadMore}

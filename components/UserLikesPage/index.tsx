@@ -6,6 +6,7 @@ import useUserLikes from '../../utils/data/userLikes/useUserLikes'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import constants from '../../constants'
+import PageSpinner from '../PageSpinner'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -32,14 +33,17 @@ const UserLikesPage = () => {
         </>
       }
     >
-      <Feed
-        cellMeasurerCache={cellMeasurerCache}
-        isLoading={isLoading}
-        moreToLoad={moreToLoad}
-        onLikePost={likePost}
-        onLoadMore={loadMore}
-        posts={posts}
-      />
+      {isLoading ? (
+        <PageSpinner />
+      ) : (
+        <Feed
+          cellMeasurerCache={cellMeasurerCache}
+          moreToLoad={moreToLoad}
+          onLikePost={likePost}
+          onLoadMore={loadMore}
+          posts={posts}
+        />
+      )}
     </Page>
   )
 }

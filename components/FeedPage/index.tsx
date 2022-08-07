@@ -13,6 +13,7 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
+import PageSpinner from '../PageSpinner'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -93,14 +94,17 @@ const FeedPage = () => {
           )}
         </ViewSelectorButtonGroup>
       </MobileContainer>
-      <Feed
-        cellMeasurerCache={cellMeasurerCache}
-        isLoading={isLoading}
-        moreToLoad={moreToLoad}
-        onLikePost={likePost}
-        onLoadMore={loadMore}
-        posts={posts}
-      />
+      {isLoading ? (
+        <PageSpinner />
+      ) : (
+        <Feed
+          cellMeasurerCache={cellMeasurerCache}
+          moreToLoad={moreToLoad}
+          onLikePost={likePost}
+          onLoadMore={loadMore}
+          posts={posts}
+        />
+      )}
     </Page>
   )
 }

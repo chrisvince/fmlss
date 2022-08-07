@@ -3,6 +3,7 @@ import { CellMeasurerCache } from 'react-virtualized'
 import { Category } from '../../types'
 import CategoryListItem from '../CategoryListItem'
 import ContentList from '../ContentList'
+import ContentSpinner from '../ContentSpinner'
 
 type PropTypes = {
   cellMeasurerCache: CellMeasurerCache
@@ -18,16 +19,18 @@ const CategoriesList = ({
   moreToLoad,
   onLoadMore,
   categories,
-}: PropTypes) => (
-  <ContentList
-    cellMeasurerCache={cellMeasurerCache}
-    isLoading={isLoading}
-    moreToLoad={moreToLoad}
-    onLoadMore={onLoadMore}
-    items={categories}
-  >
-    {category => <CategoryListItem category={category} />}
-  </ContentList>
-)
+}: PropTypes) =>
+  isLoading ? (
+    <ContentSpinner />
+  ) : (
+    <ContentList
+      cellMeasurerCache={cellMeasurerCache}
+      moreToLoad={moreToLoad}
+      onLoadMore={onLoadMore}
+      items={categories}
+    >
+      {category => <CategoryListItem category={category} />}
+    </ContentList>
+  )
 
 export default CategoriesList

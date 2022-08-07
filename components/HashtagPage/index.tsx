@@ -14,6 +14,7 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
+import PageSpinner from '../PageSpinner'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -112,14 +113,17 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
           labelPlacement="start"
         />
       </Box>
-      <Feed
-        cellMeasurerCache={cellMeasurerCache}
-        isLoading={isLoading}
-        moreToLoad={moreToLoad}
-        onLikePost={likePost}
-        onLoadMore={loadMore}
-        posts={posts}
-      />
+      {isLoading ? (
+        <PageSpinner />
+      ) : (
+        <Feed
+          cellMeasurerCache={cellMeasurerCache}
+          moreToLoad={moreToLoad}
+          onLikePost={likePost}
+          onLoadMore={loadMore}
+          posts={posts}
+        />
+      )}
     </Page>
   )
 }

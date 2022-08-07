@@ -6,6 +6,7 @@ import useUserPosts from '../../utils/data/userPosts/useUserPosts'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import constants from '../../constants'
+import PageSpinner from '../PageSpinner'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -33,14 +34,17 @@ const UserRepliesPage = () => {
         </>
       }
     >
-      <Feed
-        cellMeasurerCache={cellMeasurerCache}
-        isLoading={isLoading}
-        moreToLoad={moreToLoad}
-        onLikePost={likePost}
-        onLoadMore={loadMore}
-        posts={posts}
-      />
+      {isLoading ? (
+        <PageSpinner />
+      ) : (
+        <Feed
+          cellMeasurerCache={cellMeasurerCache}
+          moreToLoad={moreToLoad}
+          onLikePost={likePost}
+          onLoadMore={loadMore}
+          posts={posts}
+        />
+      )}
     </Page>
   )
 }

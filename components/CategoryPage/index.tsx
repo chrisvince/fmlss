@@ -12,6 +12,7 @@ import MobileContainer from '../MobileContainer'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import unslugify from '../../utils/unslugify'
 import constants from '../../constants'
+import PageSpinner from '../PageSpinner'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -85,14 +86,17 @@ const CategoryPage = ({ slug }: PropTypes) => {
           ))}
         </ViewSelectorButtonGroup>
       </MobileContainer>
-      <Feed
-        cellMeasurerCache={cellMeasurerCache}
-        isLoading={isLoading}
-        moreToLoad={moreToLoad}
-        onLikePost={likePost}
-        onLoadMore={loadMore}
-        posts={posts}
-      />
+      {isLoading ? (
+        <PageSpinner />
+      ) : (
+        <Feed
+          cellMeasurerCache={cellMeasurerCache}
+          moreToLoad={moreToLoad}
+          onLikePost={likePost}
+          onLoadMore={loadMore}
+          posts={posts}
+        />
+      )}
     </Page>
   )
 }
