@@ -22,7 +22,7 @@ type PropTypes = {
 }
 
 const PostPage = ({ slug }: PropTypes) => {
-  const { post, isLoading } = usePost(slug)
+  const { isLoading, likePost, post } = usePost(slug)
   const { user, update: updateUser, isLoading: userIsLoading } = useUser()
   const [firstPostModalOpen, setFirstPostModalOpen] = useState(false)
   const { shownFirstPostMessage } = user?.data ?? {}
@@ -67,7 +67,10 @@ const PostPage = ({ slug }: PropTypes) => {
             gap: 2,
           }}
         >
-          <PostItem slug={slug} />
+          <PostItem
+            onLikePost={likePost}
+            post={post!}
+          />
           <RepliesList slug={slug} />
         </Box>
       </Page>

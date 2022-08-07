@@ -30,13 +30,12 @@ type UseCategory = (
   isLoading: boolean
   error: any
   isValidating: boolean
-  mutate: KeyedMutator<Category>
 }
 
 const useCategory: UseCategory = (slug, { swrConfig = {} } = {}) => {
   const categoryCacheKey = createCategoryCacheKey(slug)
 
-  const { data, error, isValidating, mutate } = useSWR(
+  const { data, error, isValidating } = useSWR(
     categoryCacheKey,
     () => getCategory(slug),
     {
@@ -47,10 +46,9 @@ const useCategory: UseCategory = (slug, { swrConfig = {} } = {}) => {
 
   return {
     category: data,
+    error,
     isLoading: !error && !data,
     isValidating,
-    error,
-    mutate: mutate as KeyedMutator<Category>,
   }
 }
 

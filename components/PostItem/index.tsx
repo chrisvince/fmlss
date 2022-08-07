@@ -1,7 +1,7 @@
 import { Box } from '@mui/system'
 import { useId } from 'react'
 
-import usePost from '../../utils/data/post/usePost'
+import { Post } from '../../types'
 import useLikeState from '../../utils/useLikeState'
 import MobileContainer from '../MobileContainer'
 import PostActionBar from '../PostActionBar'
@@ -10,24 +10,19 @@ import PostCaption from '../PostCaption'
 
 type PropTypes = {
   hideActionBar?: boolean
-  slug: string
+  onLikePost?: (slug: string) => Promise<void>
+  post: Post
 }
 
-const PostItem = ({ hideActionBar, slug }: PropTypes) => {
-  const { post, isLoading } = usePost(slug)
+const PostItem = ({ hideActionBar, onLikePost, post }: PropTypes) => {
   const { toggleLike, likesCount, like } = useLikeState({ post })
+  const ariaLabelledById = useId()
+  const byUser = !!post.user?.created
+  const postCaptionType = byUser ? 'byUser' : null
 
   const handleLikeButtonClick = () => {
     toggleLike()
-    // update like with usePost
-  }
-
-  const byUser = !!post?.user?.created
-  const postCaptionType = byUser ? 'byUser' : null
-  const ariaLabelledById = useId()
-
-  if (isLoading) {
-    return null
+    onLikePost?.(post.data.slug)
   }
 
   return (

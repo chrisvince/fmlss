@@ -1,6 +1,6 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
-import { useSWRConfig } from 'swr'
+import { MutatorCallback, useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { FeedSortMode, FirebaseDoc, Post } from '../../../types'
@@ -11,10 +11,10 @@ import {
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import getPostFeed from './getPostFeed'
 import constants from '../../../constants'
-import mutatePostLikeInData from '../utils/data-infinite-loading/mutatePostLikeInData'
+import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import type { InfiniteData } from '../types'
-import checkUserLikesPost from '../utils/data-infinite-loading/checkUserLikesPost'
-import updatePostLikeInServer from '../utils/data-infinite-loading/updatePostLikeInServer'
+import checkUserLikesPost from '../utils/checkUserLikesPost'
+import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 
 const { PAGINATION_COUNT } = constants
 
@@ -101,15 +101,15 @@ const usePostFeed: UsePostFeed = ({
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
 
   const likePost = useCallback(async (slug: string) => {
-    const handleMutation = async (currentData: any) => {
+    const handleMutation: MutatorCallback<InfiniteData> = async currentData => {
+      if (!currentData) return
       const userLikesPost = checkUserLikesPost(slug, currentData)
-
       await updatePostLikeInServer(userLikesPost, slug)
 
-      const mutatedData = mutatePostLikeInData(
+      const mutatedData = mutatePostLikeInfiniteData(
         userLikesPost,
         slug,
-        currentData as InfiniteData
+        currentData
       )
 
       return mutatedData

@@ -26,10 +26,9 @@ type UsePopularHashtags = (options?: {
   swrConfig?: SWRInfiniteConfiguration
 }) => {
   error: any
+  hashtags: Hashtag[]
   isLoading: boolean
   isValidating: boolean
-  mutate: KeyedMutator<Hashtag[]>
-  hashtags: Hashtag[]
 }
 
 const usePopularHashtags: UsePopularHashtags = ({
@@ -37,7 +36,7 @@ const usePopularHashtags: UsePopularHashtags = ({
 } = {}) => {
   const cacheKey = createMiniHashtagsCacheKey()
 
-  const { data, error, isValidating, mutate } = useSWR(
+  const { data, error, isValidating } = useSWR(
     cacheKey,
     () =>
       getHashtags({
@@ -51,11 +50,10 @@ const usePopularHashtags: UsePopularHashtags = ({
   )
 
   return {
+    error,
     hashtags: data,
     isLoading: !error && !data,
     isValidating,
-    error,
-    mutate: mutate as KeyedMutator<Hashtag[]>,
   }
 }
 

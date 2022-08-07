@@ -28,7 +28,6 @@ type UsePopularCategories = (options?: {
   error: any
   isLoading: boolean
   isValidating: boolean
-  mutate: KeyedMutator<Category[]>
   categories: Category[]
 }
 
@@ -37,7 +36,7 @@ const usePopularCategories: UsePopularCategories = ({
 } = {}) => {
   const cacheKey = createMiniCategoriesCacheKey()
 
-  const { data, error, isValidating, mutate } = useSWR(
+  const { data, error, isValidating } = useSWR(
     cacheKey,
     () =>
       getCategories({
@@ -52,10 +51,9 @@ const usePopularCategories: UsePopularCategories = ({
 
   return {
     categories: data,
+    error,
     isLoading: !error && !data,
     isValidating,
-    error,
-    mutate: mutate as KeyedMutator<Category[]>,
   }
 }
 

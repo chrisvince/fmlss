@@ -15,7 +15,7 @@ interface Props {
 }
 
 const ReplyModal = ({ onClose, open, slug }: Props) => {
-  const { isLoading: postIsLoading } = usePost(slug)
+  const { isLoading: postIsLoading, post } = usePost(slug)
 
   const {
     createPost,
@@ -52,7 +52,7 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
         </LoadingButton>
       }
     >
-      <PostItem hideActionBar slug={slug} />
+      <PostItem hideActionBar post={post!} />
       <PostBodyTextArea
         disabled={createPostLoading}
         focusOnMount

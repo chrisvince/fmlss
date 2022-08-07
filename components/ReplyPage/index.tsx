@@ -11,11 +11,7 @@ interface Props {
 }
 
 const ReplyPage = ({ slug }: Props) => {
-  const { isLoading } = usePost(slug)
-
-  if (isLoading) {
-    return <PageSpinner />
-  }
+  const { isLoading, post } = usePost(slug)
 
   return (
     <Page
@@ -27,8 +23,14 @@ const ReplyPage = ({ slug }: Props) => {
         </>
       }
     >
-      <PostItem hideActionBar slug={slug} />
-      <PostReplyForm slug={slug} />
+      {isLoading ? (
+        <PageSpinner />
+      ) : (
+        <>
+          <PostItem hideActionBar post={post!} />
+          <PostReplyForm slug={slug} />
+        </>
+      )}
     </Page>
   )
 }

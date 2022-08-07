@@ -1,7 +1,7 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { KeyedMutator, useSWRConfig } from 'swr'
+import { MutatorCallback, useSWRConfig } from 'swr'
 
 import { CategorySortMode, FirebaseDoc, Post } from '../../../types'
 import {
@@ -11,9 +11,9 @@ import {
 import getCategoryPosts from './getCategoryPosts'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
-import checkUserLikesPost from '../utils/data-infinite-loading/checkUserLikesPost'
-import updatePostLikeInServer from '../utils/data-infinite-loading/updatePostLikeInServer'
-import mutatePostLikeInData from '../utils/data-infinite-loading/mutatePostLikeInData'
+import checkUserLikesPost from '../utils/checkUserLikesPost'
+import updatePostLikeInServer from '../utils/updatePostLikeInServer'
+import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import { InfiniteData } from '../types'
 
 const { PAGINATION_COUNT } = constants
@@ -100,15 +100,15 @@ const useCategoryPosts: UseCategoryPosts = (
   }
 
   const likePost = useCallback(async (slug: string) => {
-    const handleMutation = async (currentData: any) => {
+    const handleMutation: MutatorCallback<InfiniteData> = async currentData => {
+      if (!currentData) return
       const userLikesPost = checkUserLikesPost(slug, currentData)
-
       await updatePostLikeInServer(userLikesPost, slug)
 
-      const mutatedData = mutatePostLikeInData(
+      const mutatedData = mutatePostLikeInfiniteData(
         userLikesPost,
         slug,
-        currentData as InfiniteData
+        currentData
       )
 
       return mutatedData

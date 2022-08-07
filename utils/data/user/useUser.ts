@@ -27,7 +27,6 @@ type UseUser = (options?: { swrConfig?: SWRConfig }) => {
   error: any
   isLoading: boolean
   isValidating: boolean
-  mutate: KeyedMutator<User>
   update: (data: UserDataInput) => Promise<void>
   user: User | null | undefined
 }
@@ -68,7 +67,6 @@ const useUser: UseUser = ({ swrConfig = {} } = {}) => {
     error,
     isLoading: (!error && !data) || updateIsLoading,
     isValidating,
-    mutate: mutate as KeyedMutator<User>,
     update,
     user: data,
   }

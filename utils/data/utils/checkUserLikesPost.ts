@@ -1,5 +1,5 @@
-import { Post } from '../../../../types'
-import { InfiniteData } from '../../types'
+import { Post } from '../../../types'
+import { InfiniteData } from '../types'
 
 type CheckUserLikesPost = (
   slug: string,

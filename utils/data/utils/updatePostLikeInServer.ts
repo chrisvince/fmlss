@@ -1,7 +1,7 @@
 import {
   createPostLike,
   removePostLike,
-} from '../../../callableFirebaseFunctions'
+} from '../../callableFirebaseFunctions'
 
 const updatePostLikeInServer = async (
   userLikesPost: boolean,

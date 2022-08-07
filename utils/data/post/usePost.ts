@@ -1,8 +1,15 @@
 import { useAuthUser } from 'next-firebase-auth'
-import useSWR, { KeyedMutator } from 'swr'
-import { FetcherResponse, PublicConfiguration } from 'swr/dist/types'
+import { useCallback } from 'react'
+import useSWR from 'swr'
+import {
+  FetcherResponse,
+  MutatorCallback,
+  PublicConfiguration,
+} from 'swr/dist/types'
 import { Post } from '../../../types'
 import { createPostCacheKey } from '../../createCacheKeys'
+import { mutatePostLike } from '../utils/mutatePostLike'
+import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import getPost from './getPost'
 
 type SWRConfig = Partial<
@@ -23,11 +30,11 @@ type UsePost = (
     swrConfig?: SWRConfig,
   },
 ) => {
-  post: Post | null | undefined
-  isLoading: boolean
   error: any
+  isLoading: boolean
   isValidating: boolean
-  mutate: KeyedMutator<Post>
+  likePost: () => Promise<void>
+  post: Post | null | undefined
 }
 
 const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
@@ -43,12 +50,24 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
     }
   )
 
+  const likePost = useCallback(async () => {
+    const handleMutation: MutatorCallback<Post | null> = async post => {
+      if (!post) return
+      const userLikesPost = !!post.user?.like
+      await updatePostLikeInServer(userLikesPost, post.data.slug)
+      const mutatedData = mutatePostLike(userLikesPost, post)
+      return mutatedData
+    }
+
+    await mutate(handleMutation, false)
+  }, [mutate])
+
   return {
-    post: data,
+    error,
     isLoading: !error && !data,
     isValidating,
-    error,
-    mutate: mutate as KeyedMutator<Post>,
+    likePost,
+    post: data,
   }
 }
 
