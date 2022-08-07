@@ -23,12 +23,9 @@ const useLikeState = ({
   }, [like, likesCount])
 
   useEffect(() => {
-    setLikesCount(post?.data.likesCount ?? 0)
-  }, [post?.data.likesCount])
-
-  useEffect(() => {
     setLike(!!post?.user?.like)
-  }, [post?.user?.like])
+    setLikesCount(post?.data.likesCount ?? 0)
+  }, [post?.user?.like, post?.data.likesCount])
 
   return {
     toggleLike,
