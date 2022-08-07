@@ -9,6 +9,6 @@ type CheckUserHasPassword = (data: Input) => Promise<{ data: boolean }>
 
 export const checkUserHasPassword: CheckUserHasPassword = data => {
   const functions = firebase.functions()
-  return functions.httpsCallable('checkUserHasPassword')(data)
+  return functions.httpsCallable('auth-password-hasPassword')(data)
 }
 

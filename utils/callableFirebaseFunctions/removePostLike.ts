@@ -9,5 +9,5 @@ type RemovePostLike = (data: Input) => Promise<{ data: void }>
 
 export const removePostLike: RemovePostLike = data => {
   const functions = firebase.functions()
-  return functions.httpsCallable('removePostLike')(data)
+  return functions.httpsCallable('postLike-remove')(data)
 }

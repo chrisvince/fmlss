@@ -10,5 +10,5 @@ type ChangeEmail = (data: Input) => Promise<{ data: void }>
 
 export const changeEmail: ChangeEmail = data => {
   const functions = firebase.functions()
-  return functions.httpsCallable('changeEmail')(data)
+  return functions.httpsCallable('auth-email-change')(data)
 }

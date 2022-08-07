@@ -9,5 +9,5 @@ type ForgotPassword = (data: Input) => Promise<{ data: void }>
 
 export const forgotPassword: ForgotPassword = data => {
   const functions = firebase.functions()
-  return functions.httpsCallable('forgotPassword')(data)
+  return functions.httpsCallable('auth-password-forgot')(data)
 }

@@ -18,5 +18,5 @@ type CreatePost = (data: Input) => Promise<Response>
 
 export const createPost: CreatePost = data => {
   const functions = firebase.functions()
-  return functions.httpsCallable('createPost')(data)
+  return functions.httpsCallable('post-create')(data)
 }

@@ -11,5 +11,5 @@ type ChangePassword = (data: Input) => Promise<{ data: void }>
 
 export const changePassword: ChangePassword = data => {
   const functions = firebase.functions()
-  return functions.httpsCallable('changePassword')(data)
+  return functions.httpsCallable('auth-password-change')(data)
 }

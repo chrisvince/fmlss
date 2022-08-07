@@ -9,5 +9,5 @@ type CreatePostLike = (data: Input) => Promise<{ data: void }>
 
 export const createPostLike: CreatePostLike = data => {
   const functions = firebase.functions()
-  return functions.httpsCallable('createPostLike')(data)
+  return functions.httpsCallable('postLike-create')(data)
 }

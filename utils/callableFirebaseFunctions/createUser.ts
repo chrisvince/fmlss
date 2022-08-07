@@ -11,5 +11,5 @@ type CreateUser = (data: Input) => Promise<{ data: UserRecord }>
 
 export const createUser: CreateUser = (data) => {
   const functions = firebase.functions()
-  return functions.httpsCallable('createUser')(data)
+  return functions.httpsCallable('auth-create')(data)
 }
