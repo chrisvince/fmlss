@@ -111,6 +111,9 @@ const ChangeEmailForm = () => {
           },
         }}
       >
+        <Typography variant="body2">
+          Enter a new email and current password below to change your email.
+        </Typography>
         <Controller
           name={FORM_IDS.EMAIL}
           control={control}
