@@ -48,7 +48,7 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
           onClick={submitPost}
           variant="contained"
         >
-          Post
+          Reply
         </LoadingButton>
       }
     >

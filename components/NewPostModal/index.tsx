@@ -1,8 +1,8 @@
 import { LoadingButton } from '@mui/lab'
 import { Typography } from '@mui/material'
 import { useRef, useState } from 'react'
-import useCreatePost from '../../utils/data/post/useCreatePost'
 
+import useCreatePost from '../../utils/data/post/useCreatePost'
 import Modal from '../Modal'
 import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
 
