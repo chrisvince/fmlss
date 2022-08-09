@@ -48,7 +48,8 @@ const NewPostPage = () => {
         <LoadingButton
           disabled={!hasContent}
           loading={isLoading}
-          type="submit"
+          type="button"
+          onClick={submitPost}
           variant="contained"
         >
           Post

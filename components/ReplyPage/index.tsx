@@ -76,7 +76,8 @@ const ReplyPage = ({ slug }: Props) => {
             <LoadingButton
               disabled={!hasContent}
               loading={isLoading}
-              type="submit"
+              type="button"
+              onClick={submitPost}
               variant="contained"
             >
               Reply
