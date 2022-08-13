@@ -45,7 +45,7 @@ const RepliesList = ({ slug }: PropTypes) => {
         <Box>
           <Box
             sx={{
-              paddingTop: 4,
+              paddingTop: 2,
               paddingBottom: 6,
               borderBottom: '1px solid',
               borderColor: 'divider',
