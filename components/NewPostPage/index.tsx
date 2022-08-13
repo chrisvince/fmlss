@@ -1,9 +1,12 @@
 import Page from '../Page'
 import NewPostForm from '../NewPostForm'
+import MobileContainer from '../MobileContainer'
 
 const NewPostPage = () => (
   <Page pageTitle="Create a New Post" uiPageTitle="Post" thinContainer>
-    <NewPostForm />
+    <MobileContainer>
+      <NewPostForm />
+    </MobileContainer>
   </Page>
 )
 
