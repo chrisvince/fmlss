@@ -1,5 +1,9 @@
 export interface PostData {
   body: string
+  category?: {
+    name: string
+    slug: string
+  }
   createdAt: string
   id: string
   likesCount: number

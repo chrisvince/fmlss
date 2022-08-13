@@ -2,6 +2,7 @@ import { Box } from '@mui/system'
 
 import { Post } from '../../types'
 import useLikeState from '../../utils/useLikeState'
+import CategoryChip from '../CategoryChip'
 import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
 import PostCaption from '../PostCaption'
@@ -40,7 +41,33 @@ const PostItem = ({
         gap: 2,
       }}
     >
-      <PostCaption type={postCaptionType} />
+      {(postCaptionType || post.data.category) && (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr',
+            gap: 2,
+            gridTemplateAreas: `"caption category"`,
+          }}
+        >
+          <Box sx={{ gridArea: 'caption' }}>
+            <PostCaption type={postCaptionType} />
+          </Box>
+          {post.data.category && (
+            <Box
+              sx={{
+                gridArea: 'category',
+                justifySelf: 'end',
+              }}
+            >
+              <CategoryChip
+                name={post.data.category.name}
+                slug={post.data.category.slug}
+              />
+            </Box>
+          )}
+        </Box>
+      )}
       <PostBody
         body={post.data.body}
         id={bodyElementId}

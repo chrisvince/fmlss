@@ -256,6 +256,13 @@ const theme = createTheme({
         }),
       },
     },
+    MuiChip: {
+      styleOverrides: {
+        sizeSmall: {
+          fontSize: FONT_SIZE.XS,
+        },
+      },
+    },
   },
   spacing: 8,
 })

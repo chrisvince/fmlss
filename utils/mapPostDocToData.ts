@@ -15,6 +15,12 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
     reference: postDoc.ref.path as string,
     slug: postData.slug as string,
     updatedAt: postData.updatedAt.toMillis() as string,
+    ...(postData.category ? {
+      category: {
+        name: postData.category.name as string,
+        slug: postData.category.slug as string,
+      }
+    } : {}),
   }
 }
 
