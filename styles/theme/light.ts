@@ -1,6 +1,7 @@
 import { createTheme } from '@mui/material/styles'
 
 const FONT_SIZE = {
+  XS: '0.73333rem',
   SM: '0.86667rem',
   BASE: '1rem',
   LG: '1.13333rem',
@@ -232,6 +233,25 @@ const theme = createTheme({
           [theme.breakpoints.up('sm')]: {
             paddingLeft: theme.spacing(3),
             paddingRight: theme.spacing(3),
+          },
+        }),
+      },
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        arrow: ({ theme }) => ({
+          color: theme.palette.common.white,
+          ':before': {
+            boxShadow: theme.shadows[1],
+          },
+        }),
+        tooltip: ({ theme }) => ({
+          backgroundColor: theme.palette.common.white,
+          color: theme.palette.text.primary,
+          boxShadow: theme.shadows[1],
+          fontSize: FONT_SIZE.XS,
+          '.MuiTooltip-popper[data-popper-placement*="bottom"] &': {
+            marginTop: '7px',
           },
         }),
       },

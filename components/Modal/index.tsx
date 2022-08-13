@@ -13,18 +13,20 @@ import { useTheme } from '@mui/system'
 import ModalSpinner from '../ContentSpinner'
 
 interface Props {
-  actions: React.ReactNode
+  actions?: React.ReactNode
   children: React.ReactNode
+  disableNestedComponents?: boolean
   isLoading?: boolean
   onClose: () => void
   open: boolean
-  title: string
   showCloseButton?: boolean
+  title: string
 }
 
 const Modal = ({
   actions,
   children,
+  disableNestedComponents = false,
   isLoading,
   onClose,
   open,
@@ -58,17 +60,25 @@ const Modal = ({
           <Close />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
-        {isLoading ? <ModalSpinner /> : children}
-      </DialogContent>
-      <DialogActions
-        sx={{
-          visibility: isLoading ? 'hidden' : 'visible',
-          userSelect: isLoading ? 'none' : 'auto',
-        }}
-      >
-        {actions}
-      </DialogActions>
+      {disableNestedComponents ? (
+        isLoading ? <ModalSpinner /> : children
+      ) : (
+        <>
+          <DialogContent>
+            {isLoading ? <ModalSpinner /> : children}
+          </DialogContent>
+          {actions && (
+            <DialogActions
+              sx={{
+                visibility: isLoading ? 'hidden' : 'visible',
+                userSelect: isLoading ? 'none' : 'auto',
+              }}
+            >
+              {actions}
+            </DialogActions>
+          )}
+        </>
+      )}
     </Dialog>
   )
 }

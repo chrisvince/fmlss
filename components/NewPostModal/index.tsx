@@ -1,67 +1,20 @@
-import { LoadingButton } from '@mui/lab'
-import { Typography } from '@mui/material'
-import { useRef, useState } from 'react'
-
-import useCreatePost from '../../utils/data/post/useCreatePost'
 import Modal from '../Modal'
-import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
+import NewPostForm from '../NewPostForm'
 
 interface Props {
   open: boolean
   onClose: () => void
 }
 
-const NewPostModal = ({ onClose, open }: Props) => {
-  const {
-    createPost,
-    isLoading: createPostLoading,
-    errorMessage,
-  } = useCreatePost()
-
-  const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
-  const [hasContent, setHasContent] = useState<boolean>(false)
-
-  const submitPost = async () => {
-    const body = postBodyTextAreaRef.current?.getValue?.()
-    await createPost({ body })
-  }
-
-  const handleTextChange = (text: string) => {
-    setHasContent(!!text)
-  }
-
-  return (
-    <Modal
-      onClose={onClose}
-      open={open}
-      title="Post"
-      actions={
-        <LoadingButton
-          disabled={!hasContent}
-          loading={createPostLoading}
-          onClick={submitPost}
-          variant="contained"
-        >
-          Post
-        </LoadingButton>
-      }
-    >
-      <PostBodyTextArea
-        disabled={createPostLoading}
-        focusOnMount
-        onChange={handleTextChange}
-        onCommandEnter={submitPost}
-        ref={postBodyTextAreaRef}
-        username="chrisvince"
-        placeholder="What's on your mind?"
-      />
-      {errorMessage && (
-        <Typography variant="caption" color="error">
-          {errorMessage}
-        </Typography>
-      )}
-    </Modal>
-  )
-}
+const NewPostModal = ({ onClose, open }: Props) => (
+  <Modal
+    onClose={onClose}
+    open={open}
+    title="Post"
+    disableNestedComponents
+  >
+    <NewPostForm isInModal />
+  </Modal>
+)
 
 export default NewPostModal
