@@ -25,6 +25,7 @@ const CategoryListItem = ({ category }: PropTypes) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: 2,
         }}
       >
         <Typography component="div" variant="h5">
@@ -36,6 +37,7 @@ const CategoryListItem = ({ category }: PropTypes) => {
             alignItems: 'center',
             justifyContent: 'flex-end',
             gap: 2,
+            whiteSpace: 'nowrap',
           }}
         >
           {postCount && (

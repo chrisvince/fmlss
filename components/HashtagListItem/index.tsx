@@ -25,6 +25,7 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: 2,
         }}
       >
         <Typography
@@ -39,6 +40,7 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
             alignItems: 'center',
             justifyContent: 'flex-end',
             gap: 2,
+            whiteSpace: 'nowrap',
           }}
         >
           {postCount && (
