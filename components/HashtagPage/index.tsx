@@ -99,20 +99,20 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
             </Link>
           ))}
         </ViewSelectorButtonGroup>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            paddingY: 2,
+          }}
+        >
+          <FormControlLabel
+            control={<Switch onChange={handleIncludeRepliesChange} />}
+            label="Include replies"
+            labelPlacement="start"
+          />
+        </Box>
       </MobileContainer>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          paddingY: 2,
-        }}
-      >
-        <FormControlLabel
-          control={<Switch onChange={handleIncludeRepliesChange} />}
-          label="Include replies"
-          labelPlacement="start"
-        />
-      </Box>
       {isLoading ? (
         <PageSpinner />
       ) : (
