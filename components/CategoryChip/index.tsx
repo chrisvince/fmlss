@@ -1,6 +1,8 @@
 import { Chip, Link as MuiLink } from '@mui/material'
 import Link from 'next/link'
 
+import truncateString from '../../utils/truncateString'
+
 interface Props {
   name: string
   slug: string
@@ -13,7 +15,7 @@ const CategoryChip = ({ name, slug }: Props) => (
       sx={{ display: 'flex' }}
     >
       <Chip
-        label={name}
+        label={truncateString(name)}
         size="small"
         variant="outlined"
         clickable
