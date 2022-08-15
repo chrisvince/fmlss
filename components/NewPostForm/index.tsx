@@ -81,11 +81,6 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
           username="chrisvince"
           placeholder="What's on your mind?"
         />
-        {errorMessage && (
-          <Typography variant="caption" color="error">
-            {errorMessage}
-          </Typography>
-        )}
       </Box>
       {!slug && (
         <Tooltip
@@ -112,6 +107,11 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
         >
           {button}
         </Box>
+      )}
+     {errorMessage && (
+        <Typography variant="caption" color="error">
+          {errorMessage}
+        </Typography>
       )}
     </Box>
   )
