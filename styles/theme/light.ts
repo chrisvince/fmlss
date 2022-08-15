@@ -26,6 +26,9 @@ const theme = createTheme({
     success: {
       main: '#4caf50',
     },
+    warning: {
+      main: '#e0bb00',
+    },
     divider: '#eeeeee',
   },
   breakpoints: {

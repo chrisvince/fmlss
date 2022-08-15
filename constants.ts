@@ -46,6 +46,7 @@ const constants = {
   POST_CACHE_TIME: secondsToMs(30),
   POST_LIKES_CACHE_TIME: secondsToMs(10),
   POST_LIKES_COLLECTION: 'postLikes',
+  POST_MAX_LENGTH: 480,
   POSTS_COLLECTION: 'posts',
   REPLIES_CACHE_TIME: secondsToMs(10),
   SIDEBAR_GAP_MD: 8,

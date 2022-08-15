@@ -21,7 +21,15 @@ import { Avatar, Typography, useTheme } from '@mui/material'
 import constants from '../../constants'
 import { Box } from '@mui/system'
 
-const { HASHTAG_REGEX } = constants
+const { HASHTAG_REGEX, POST_MAX_LENGTH } = constants
+
+const POST_WARNING_LENGTH = POST_MAX_LENGTH - 20
+
+export enum postLengthStatusType {
+  warning = 'warning',
+  error = 'error',
+  none = 'none',
+}
 
 type DraftStrategyCallback = (start: number, end: number) => void
 
@@ -77,6 +85,7 @@ type Props = {
   focusOnMount?: boolean
   onChange?: (text: string) => void
   onCommandEnter?: () => void
+  onLengthStatusChange?: (status: postLengthStatusType) => void
   placeholder?: string
   username: string
 }
@@ -93,6 +102,7 @@ const PostBodyTextArea = (
     focusOnMount,
     onChange,
     onCommandEnter,
+    onLengthStatusChange,
     placeholder,
     username,
   }: Props,
@@ -101,6 +111,9 @@ const PostBodyTextArea = (
   const [editorState, setEditorState] = useState(() =>
     EditorState.createWithContent(emptyContentState, compositeDecorator)
   )
+  const [postLengthStatus, setPostLengthStatus] =
+    useState<postLengthStatusType>(postLengthStatusType.none)
+
 
   const editorRef = useRef<Editor>()
   const { palette } = useTheme()
@@ -157,6 +170,22 @@ const PostBodyTextArea = (
   }
 
   const avatarLetter = username.charAt(0).toUpperCase()
+  const value = editorState.getCurrentContent().getPlainText()
+
+  useEffect(() => {
+    if (value.length > POST_MAX_LENGTH) {
+      setPostLengthStatus(postLengthStatusType.error)
+      onLengthStatusChange?.(postLengthStatusType.error)
+      return
+    }
+    if (value.length >= POST_WARNING_LENGTH) {
+      setPostLengthStatus(postLengthStatusType.warning)
+      onLengthStatusChange?.(postLengthStatusType.warning)
+      return
+    }
+    setPostLengthStatus(postLengthStatusType.none)
+    onLengthStatusChange?.(postLengthStatusType.none)
+  }, [onLengthStatusChange, value])
 
   return (
     <Box
@@ -165,7 +194,7 @@ const PostBodyTextArea = (
         gridTemplateColumns: 'min-content 1fr',
         alignItems: 'baseline',
         gap: 2,
-        py: 2,
+        pt: 2,
       }}
     >
       <Box>
@@ -195,6 +224,32 @@ const PostBodyTextArea = (
             handleReturn={handleReturn}
           />
         </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            visibility: value.length ? 'visible' : 'hidden',
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight:
+                postLengthStatus === postLengthStatusType.warning ||
+                postLengthStatus === postLengthStatusType.error
+                  ? 'bold'
+                  : undefined,
+              color:
+                postLengthStatus === postLengthStatusType.error
+                  ? 'error.main'
+                  : postLengthStatus === postLengthStatusType.warning
+                  ? 'warning.main'
+                  : undefined,
+            }}
+          >
+            {value.length}/{POST_MAX_LENGTH}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   )

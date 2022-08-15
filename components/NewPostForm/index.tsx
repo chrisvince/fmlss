@@ -7,7 +7,10 @@ import reply from '../../pages/post/[slug]/reply'
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
 import CategorySelect from '../CategorySelect'
-import PostBodyTextArea, { PostBodyTextAreaRef } from '../PostBodyTextArea'
+import PostBodyTextArea, {
+  PostBodyTextAreaRef,
+  postLengthStatusType,
+} from '../PostBodyTextArea'
 import PostItem from '../PostItem'
 
 interface Props {
@@ -26,6 +29,9 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
   const [category, setCategory] = useState<string>('')
   const handleCategoryChange = async (value: string) => setCategory(value)
 
+  const [postLengthStatus, setPostLengthStatus] =
+    useState<postLengthStatusType>()
+
   const submitPost = async () => {
     const body = postBodyTextAreaRef.current?.getValue?.()
     await createPost({ body, category })
@@ -41,9 +47,12 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
     }
   }, [])
 
+  const disableButton =
+    !hasContent || postLengthStatus === postLengthStatusType.error
+
   const button = (
     <LoadingButton
-      disabled={!hasContent}
+      disabled={disableButton}
       loading={isLoading}
       type="button"
       onClick={submitPost}
@@ -77,9 +86,10 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
           focusOnMount
           onChange={handleTextChange}
           onCommandEnter={submitPost}
+          onLengthStatusChange={setPostLengthStatus}
+          placeholder="What's on your mind?"
           ref={postBodyTextAreaRef}
           username="chrisvince"
-          placeholder="What's on your mind?"
         />
       </Box>
       {!slug && (

@@ -16,7 +16,7 @@ const useCreatePost = (parentSlug?: string) => {
 
   const handleCreatePost = async ({ body, category }: HandleCreatePost) => {
     if (!body) {
-      setErrorMessage('Body is required.')
+      setErrorMessage('Post is required!')
       return
     }
 
