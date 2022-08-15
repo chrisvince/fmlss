@@ -18,12 +18,14 @@ const constants = {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT: 123.2,
   CENTER_SECTION_CONTAINER_MAX_WIDTH: '520px',
   CENTER_SECTION_CONTAINER_THIN_MAX_WIDTH: '420px',
-  EMAIL_REGEX_PATTERN: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
+  EMAIL_REGEX_PATTERN:
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
   FEED_CACHE_TIME: secondsToMs(30),
   FORM_MESSAGING: {
     MATCH: 'Passwords must match',
     MIN_LENGTH: `Must be at least ${PASSWORD_MIN_LENGTH} characters long`,
-    PATTERN: 'Must contain at least an uppercase letter, a lowercase letter, a number, and a special character',
+    PATTERN:
+      'Must contain at least an uppercase letter, a lowercase letter, a number, and a special character',
     REQUIRED: 'This field is required',
     VALID_EMAIL: 'Must be a valid email address',
   },
@@ -34,7 +36,6 @@ const constants = {
   HASHTAGS_COLLECTION: 'hashtags',
   INFINITY_LOADING_THRESHOLD: 10,
   LEFT_NAVIGATION_PADDING_BOTTOM: 1,
-  MAX_POST_DEPTH: 80,
   MINI_LIST_CACHE_TIME: hoursToMs(12),
   MINI_LIST_COUNT: 6,
   PAGE_SORT_SELECTOR_HEIGHT: '45px',
@@ -46,6 +47,7 @@ const constants = {
   POST_CACHE_TIME: secondsToMs(30),
   POST_LIKES_CACHE_TIME: secondsToMs(10),
   POST_LIKES_COLLECTION: 'postLikes',
+  POST_MAX_DEPTH: 80,
   POST_MAX_LENGTH: 480,
   POSTS_COLLECTION: 'posts',
   REPLIES_CACHE_TIME: secondsToMs(10),

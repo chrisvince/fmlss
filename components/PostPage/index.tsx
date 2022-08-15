@@ -16,7 +16,7 @@ import MobileContainer from '../MobileContainer'
 import { Divider } from '@mui/material'
 import constants from '../../constants'
 
-const { MAX_POST_DEPTH } = constants
+const { POST_MAX_DEPTH } = constants
 
 const FirstPostModal = dynamic(() => import('../FirstPostModal'), {
   ssr: false,
@@ -49,7 +49,7 @@ const PostPage = ({ slug }: PropTypes) => {
   }
 
   const pageTitle = truncateString(post!.data.body)
-  const allowReplying = post!.data.documentDepth < MAX_POST_DEPTH
+  const allowReplying = post!.data.documentDepth < POST_MAX_DEPTH
 
   return (
     <>

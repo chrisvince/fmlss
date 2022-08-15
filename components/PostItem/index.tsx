@@ -8,7 +8,7 @@ import PostBody from '../PostBody'
 import PostCaption from '../PostCaption'
 import constants from '../../constants'
 
-const { MAX_POST_DEPTH } = constants
+const { POST_MAX_DEPTH } = constants
 
 type PropTypes = {
   bodyElementId?: string
@@ -28,7 +28,7 @@ const PostItem = ({
   const { toggleLike, likesCount, like } = useLikeState({ post })
   const byUser = !!post.user?.created
   const postCaptionType = byUser ? 'byUser' : null
-  const allowReplying = post.data.documentDepth < MAX_POST_DEPTH
+  const allowReplying = post.data.documentDepth < POST_MAX_DEPTH
 
   const handleLikeButtonClick = () => {
     toggleLike()
