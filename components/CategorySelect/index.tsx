@@ -4,6 +4,9 @@ import throttle from 'lodash.throttle'
 
 import useCategoriesStartsWith from '../../utils/data/categories/useCategoriesStartsWith'
 import { Category } from '../../types'
+import constants from '../../constants'
+
+const { CATEGORY_MAX_LENGTH } = constants
 
 interface Props {
   id?: string
@@ -61,8 +64,12 @@ const CategorySelect = ({ id, onFocus, onChange }: Props) => {
       renderInput={params => (
         <TextField
           {...params}
-          label="Category"
           fullWidth
+          inputProps={{
+            ...params.inputProps,
+            maxLength: CATEGORY_MAX_LENGTH,
+          }}
+          label="Category"
           variant="outlined"
         />
       )}
