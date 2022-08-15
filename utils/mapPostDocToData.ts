@@ -8,6 +8,7 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
   return {
     body: postData.body as string,
     createdAt: postData.createdAt.toMillis() as string,
+    documentDepth: postData.documentDepth as number,
     id: postDoc.id as string,
     likesCount: postData.likesCount as number,
     parentId: getParentIdFromDbReference(postDoc.ref.path) as string,

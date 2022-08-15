@@ -5,6 +5,7 @@ export interface PostData {
     slug: string
   }
   createdAt: string
+  documentDepth: number
   id: string
   likesCount: number
   parentId: string

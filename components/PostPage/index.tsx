@@ -14,6 +14,9 @@ import useUser from '../../utils/data/user/useUser'
 import Error from 'next/error'
 import MobileContainer from '../MobileContainer'
 import { Divider } from '@mui/material'
+import constants from '../../constants'
+
+const { MAX_POST_DEPTH } = constants
 
 const FirstPostModal = dynamic(() => import('../FirstPostModal'), {
   ssr: false,
@@ -29,7 +32,6 @@ const PostPage = ({ slug }: PropTypes) => {
   const [firstPostModalOpen, setFirstPostModalOpen] = useState(false)
   const { shownFirstPostMessage } = user?.data ?? {}
   const createdByUser = !!post?.user?.created
-
   const handleFirstPostModalClose = () => setFirstPostModalOpen(false)
 
   useEffect(() => {
@@ -47,6 +49,7 @@ const PostPage = ({ slug }: PropTypes) => {
   }
 
   const pageTitle = truncateString(post!.data.body)
+  const allowReplying = post!.data.documentDepth < MAX_POST_DEPTH
 
   return (
     <>
@@ -79,7 +82,7 @@ const PostPage = ({ slug }: PropTypes) => {
             </MobileContainer>
             <Divider sx={{ mt: 2 }} />
           </Box>
-          <RepliesList slug={slug} />
+          {allowReplying && <RepliesList slug={slug} />}
         </Box>
       </Page>
       <FirstPostModal

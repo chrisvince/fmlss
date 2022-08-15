@@ -22,6 +22,7 @@ interface PropTypes {
   likesCount: number
   onLike: () => any
   postsCount: number
+  showReplyButton: boolean
   slug: string
 }
 
@@ -31,6 +32,7 @@ const PostActionBar = ({
   likesCount,
   onLike,
   postsCount,
+  showReplyButton = true,
   slug,
 }: PropTypes) => {
   const user = useAuthUser()
@@ -135,11 +137,12 @@ const PostActionBar = ({
           }}
         >
           <LikeButton like={like} onClick={handleLikeButtonClick} />
-          <ReplyButton
-            onClick={!isMobileDevice ? handleReplyButtonClick : undefined}
-            href={isMobileDevice ? `/post/${slug}/reply` : undefined}
-          />
-          <HighlightButton onClick={handleHighlightButtonClick} />
+          {showReplyButton && (
+            <ReplyButton
+              onClick={!isMobileDevice ? handleReplyButtonClick : undefined}
+              href={isMobileDevice ? `/post/${slug}/reply` : undefined}
+            />
+          )}
           <ShareButton slug={slug} />
         </Box>
       </Box>
