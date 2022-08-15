@@ -17,7 +17,6 @@ import {
 } from '@mui/material'
 import { Container } from '@mui/system'
 import {
-  AccountCircleRounded,
   LogoutRounded,
   Menu as MenuIcon,
   PersonRounded,
