@@ -68,6 +68,11 @@ const Page = ({
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="og:url" content={`${URL}${urlPath ?? asPath}`} />
         <meta property="og:image" content={`${URL}/og-image.png`} />
+        <meta property="og:image:secure_url" content={`${URL}/og-image.png`} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={BRAND_NAME} />
         <meta property="twitter:image" content={`${URL}/twitter-image.png`} />
         <meta property="twitter:image:alt" content={BRAND_NAME} />
         <meta name="description" content={description} />
