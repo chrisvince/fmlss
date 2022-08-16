@@ -1,6 +1,21 @@
-import { LinkRounded, LogoutRounded } from '@mui/icons-material'
-import { ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
+import {
+  Facebook,
+  LinkRounded,
+  LogoutRounded,
+  Twitter,
+} from '@mui/icons-material'
+import {
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Link,
+  ListItem,
+} from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
+
+import generateFacebookPostLink from '../../utils/generateFacebookPostLink'
+import generateTweetPostLink from '../../utils/generateTweetPostLink'
 import ActionButton from '../ActionButton'
 
 interface Props {
@@ -92,6 +107,36 @@ const ShareButton = ({ slug }: Props) => {
             <ListItemText>Share...</ListItemText>
           </MenuItem>
         )}
+        <MenuItem disableGutters>
+          <Link
+            href={generateTweetPostLink(slug)}
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="none"
+          >
+            <ListItem>
+              <ListItemIcon>
+                <Twitter />
+              </ListItemIcon>
+              <ListItemText primary="Twitter" />
+            </ListItem>
+          </Link>
+        </MenuItem>
+        <MenuItem disableGutters>
+          <Link
+            href={generateFacebookPostLink(slug)}
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="none"
+          >
+            <ListItem>
+              <ListItemIcon>
+                <Facebook />
+              </ListItemIcon>
+              <ListItemText primary="Facebook" />
+            </ListItem>
+          </Link>
+        </MenuItem>
       </Menu>
     </>
   )
