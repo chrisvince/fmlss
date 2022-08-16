@@ -20,7 +20,7 @@ const renderTitle = ({ title, pageTitle }: RenderTitle) => {
   return BRAND_NAME
 }
 
-interface PropTypes {
+interface Props {
   article?: {
     publishedTime?: string
     modifiedTime?: string
@@ -48,10 +48,10 @@ const Page = ({
   rightPanelChildren,
   thinContainer = false,
   title,
-  type,
+  type = 'website',
   uiPageTitle,
   urlPath,
-}: PropTypes) => {
+}: Props) => {
   const uiTitle = uiPageTitle ?? pageTitle
   const renderUiTitle = !noPageTitle && uiTitle
 

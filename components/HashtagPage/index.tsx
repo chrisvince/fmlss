@@ -79,6 +79,7 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
 
   return (
     <Page
+      description={`See posts with the ${title} hashtag`}
       pageTitle={title}
       rightPanelChildren={
         <>

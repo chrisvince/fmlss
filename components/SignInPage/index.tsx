@@ -4,7 +4,11 @@ import SignInForm from '../SignInForm'
 
 const SignInPage = () => {
   return (
-    <Page pageTitle="Sign in" thinContainer>
+    <Page
+      description="Join the conversation. Sign in to Fameless."
+      pageTitle="Sign in"
+      thinContainer
+    >
       <MobileContainer>
         <SignInForm />
       </MobileContainer>

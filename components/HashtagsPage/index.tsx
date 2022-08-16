@@ -61,6 +61,7 @@ const HashtagsPage = () => {
 
   return (
     <Page
+      description="See posts by hashtags posted on Fameless"
       pageTitle="Hashtags"
       rightPanelChildren={<MiniCategoriesSection />}
     >

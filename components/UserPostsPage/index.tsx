@@ -26,6 +26,7 @@ const UserPostsPage = () => {
 
   return (
     <Page
+      description="See posts you've posted on Fameless"
       pageTitle="Posts"
       rightPanelChildren={
         <>

@@ -4,7 +4,11 @@ import SignUpForm from '../SignUpForm'
 
 const SignUpPage = () => {
   return (
-    <Page pageTitle="Sign up" thinContainer>
+    <Page
+      description="Join the conversation. Sign up to Fameless."
+      pageTitle="Sign up"
+      thinContainer
+    >
       <MobileContainer>
         <SignUpForm />
       </MobileContainer>

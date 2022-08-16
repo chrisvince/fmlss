@@ -3,7 +3,12 @@ import NewPostForm from '../NewPostForm'
 import MobileContainer from '../MobileContainer'
 
 const NewPostPage = () => (
-  <Page pageTitle="Create a New Post" uiPageTitle="Post" thinContainer>
+  <Page
+    description="Join the conversation. Create a new post on Fameless."
+    pageTitle="Create a New Post"
+    thinContainer
+    uiPageTitle="Post"
+  >
     <MobileContainer>
       <NewPostForm />
     </MobileContainer>

@@ -62,6 +62,7 @@ const CategoriesPage = () => {
 
   return (
     <Page
+      description="See categories of posts made on Fameless"
       pageTitle="Categories"
       rightPanelChildren={<MiniHashtagsSection />}
     >

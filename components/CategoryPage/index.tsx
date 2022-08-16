@@ -70,6 +70,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   return (
     <Page
+      description={`See posts in the ${categoryName} category`}
       pageTitle={categoryName}
       rightPanelChildren={<MiniHashtagsSection />}
     >

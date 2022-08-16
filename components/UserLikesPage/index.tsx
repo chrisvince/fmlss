@@ -25,6 +25,7 @@ const UserLikesPage = () => {
 
   return (
     <Page
+      description="See posts you've liked on Fameless"
       pageTitle="Likes"
       rightPanelChildren={
         <>
