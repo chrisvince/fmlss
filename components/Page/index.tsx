@@ -4,9 +4,10 @@ import type { ReactNode } from 'react'
 import PageTitle from '../SectionHeading'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
+import { useRouter } from 'next/router'
 
-const { BRAND_NAME, DOMAIN, TWITTER_USERNAME } = constants
-
+const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
+const URL = process.env.VERCEL_URL ?? APP_URL
 const DEFAULT_DESCRIPTION = `${BRAND_NAME}, the nameless, faceless networking platform.`
 
 interface RenderTitle {
@@ -54,6 +55,7 @@ const Page = ({
 }: Props) => {
   const uiTitle = uiPageTitle ?? pageTitle
   const renderUiTitle = !noPageTitle && uiTitle
+  const { asPath } = useRouter()
 
   return (
     <>
@@ -63,8 +65,8 @@ const Page = ({
         {type && <meta property="og:type" content={type} />}
         <meta property="twitter:site" content={TWITTER_USERNAME} />
         <meta name="twitter:card" content="summary" />
-        {urlPath && <meta property="og:url" content={`${DOMAIN}${urlPath}`} />}
-        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:url" content={`${URL}${urlPath ?? asPath}`} />
+        <meta property="og:image" content={`${URL}/og-image.png`} />
         <meta name="description" content={description} />
         <meta name="og:description" content={description} />
         <link rel="icon" href="/favicon.ico" />

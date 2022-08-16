@@ -58,7 +58,6 @@ const PostPage = ({ slug }: PropTypes) => {
       <Page
         pageTitle={pageTitle}
         uiPageTitle="Post"
-        urlPath={`/post/${slug}`}
         type="article"
         article={{
           publishedTime: createdAt,
