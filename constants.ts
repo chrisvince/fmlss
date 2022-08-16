@@ -18,6 +18,7 @@ const constants = {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT: 123.2,
   CENTER_SECTION_CONTAINER_MAX_WIDTH: '520px',
   CENTER_SECTION_CONTAINER_THIN_MAX_WIDTH: '420px',
+  DOMAIN: 'https://fameless.net',
   EMAIL_REGEX_PATTERN:
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
   FEED_CACHE_TIME: secondsToMs(30),
@@ -60,6 +61,7 @@ const constants = {
   TOP_NAVIGATION_HEIGHT: '52px',
   TOP_NAVIGATION_MARGIN_BOTTOM_SM: 6,
   TOP_NAVIGATION_MARGIN_BOTTOM_XS: 1,
+  TWITTER_USERNAME: '@famelessnetwork',
   USER_CACHE_TIME: secondsToMs(60),
   USER_LIKES_CACHE_TIME: secondsToMs(10),
   USER_POSTS_CACHE_TIME: secondsToMs(10),

@@ -6,6 +6,7 @@ export interface PostData {
   }
   createdAt: string
   documentDepth: number
+  hashtags: string[]
   id: string
   likesCount: number
   parentId: string

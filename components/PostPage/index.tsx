@@ -50,12 +50,23 @@ const PostPage = ({ slug }: PropTypes) => {
 
   const pageTitle = truncateString(post!.data.body)
   const allowReplying = post!.data.documentDepth < POST_MAX_DEPTH
+  const createdAt = new Date(post!.data.createdAt).toISOString()
+  const updatedAt = new Date(post!.data.updatedAt).toISOString()
 
   return (
     <>
       <Page
         pageTitle={pageTitle}
         uiPageTitle="Post"
+        urlPath={`/post/${slug}`}
+        type="article"
+        article={{
+          publishedTime: createdAt,
+          modifiedTime: updatedAt,
+          section: post!.data.category?.name,
+          tags: post!.data.hashtags,
+        }}
+        description={post!.data.body}
         rightPanelChildren={
           <>
             <MiniHashtagsSection />
