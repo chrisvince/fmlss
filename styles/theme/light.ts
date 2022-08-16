@@ -107,7 +107,9 @@ const theme = createTheme({
           textTransform: 'none',
         },
         fullWidth: {
-          height: '39px',
+          ':not(.MuiButtonGroup-grouped)': {
+            height: '39px',
+          },
         }
       },
     },
