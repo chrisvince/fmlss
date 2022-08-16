@@ -62,13 +62,17 @@ const Page = ({
       <Head>
         <title>{renderTitle({ title, pageTitle })}</title>
         <meta property="og:title" content={pageTitle ?? title} />
+        <meta property="twitter:title" content={pageTitle ?? title} />
         {type && <meta property="og:type" content={type} />}
         <meta property="twitter:site" content={TWITTER_USERNAME} />
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta property="og:url" content={`${URL}${urlPath ?? asPath}`} />
         <meta property="og:image" content={`${URL}/og-image.png`} />
+        <meta property="twitter:image" content={`${URL}/twitter-image.png`} />
+        <meta property="twitter:image:alt" content={BRAND_NAME} />
         <meta name="description" content={description} />
         <meta name="og:description" content={description} />
+        <meta name="twitter:description" content={description} />
         <link rel="icon" href="/favicon.ico" />
         {article.publishedTime && (
           <meta name="article:published_time" content={article.publishedTime} />
