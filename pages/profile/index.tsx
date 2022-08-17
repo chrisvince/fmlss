@@ -3,13 +3,8 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
-import Page from '../../components/Page'
-import EmailVerificationLink from '../../components/EmailVerificationLink'
 import Link from 'next/link'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
+
 import {
   List,
   ListItem,
@@ -17,6 +12,14 @@ import {
   ListItemButton,
   ListSubheader,
 } from '@mui/material'
+
+import MobileContainer from '../../components/MobileContainer'
+import EmailVerificationLink from '../../components/EmailVerificationLink'
+import Page from '../../components/Page'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -42,9 +45,11 @@ const UserProfile = () => {
           },
         }}
         subheader={
-          <ListSubheader component="div" disableGutters>
-            Account
-          </ListSubheader>
+          <MobileContainer>
+            <ListSubheader component="div" disableGutters>
+              Account
+            </ListSubheader>
+          </MobileContainer>
         }
       >
         <ListItem
@@ -76,9 +81,11 @@ const UserProfile = () => {
           },
         }}
         subheader={
-          <ListSubheader component="div" disableGutters>
-            Security
-          </ListSubheader>
+          <MobileContainer>
+            <ListSubheader component="div" disableGutters>
+              Security
+            </ListSubheader>
+          </MobileContainer>
         }
       >
         <ListItem disableGutters>
