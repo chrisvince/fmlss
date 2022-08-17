@@ -9,10 +9,10 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import constants from '../../constants'
+import { resetPassword } from '../../utils/callableFirebaseFunctions'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
-const resetPassword = firebase.functions().httpsCallable('resetPassword')
 const checkPasswordResetRequestValid = firebase
   .functions()
   .httpsCallable('checkPasswordResetRequestValid')
@@ -83,7 +83,7 @@ const ResetPassword = ({
       await resetPassword({
         newPassword,
         confirmNewPassword,
-        passwordResetRequestId,
+        passwordResetRequestId: passwordResetRequestId!,
       })
       setUiState(UI_STATES.CHANGED)
     } catch (error) {

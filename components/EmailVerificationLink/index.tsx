@@ -1,4 +1,5 @@
-import { Button } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Typography } from '@mui/material'
 import { useState } from 'react'
 
 import { sendEmailVerificationEmail } from '../../utils/callableFirebaseFunctions'
@@ -24,22 +25,35 @@ const EmailVerificationLink = () => {
     }
   }
 
-  if (uiState === UI_STATES.LOADING) {
-    return <p>Loading...</p>
-  }
-  
   if (uiState === UI_STATES.ERROR) {
-    return <p>There was an error.</p>
+    return (
+      <Typography
+        variant="caption"
+        color="error"
+      >
+        There was an error. Please try again.
+      </Typography>
+    )
   }
 
   if (uiState === UI_STATES.SUBMITTED) {
-    return <p>You will receive a verification email.</p>
+    return (
+      <Typography variant="caption">
+        You will receive a verification email.
+      </Typography>
+    )
   }
 
   return (
-    <Button onClick={handleVerifyEmailClick}>
-      Verify email
-    </Button>
+    <LoadingButton
+      onClick={handleVerifyEmailClick}
+      variant="outlined"
+      loading={uiState === UI_STATES.LOADING}
+    >
+      <Typography variant="caption">
+        Verify email
+      </Typography>
+    </LoadingButton>
   )
 }
 

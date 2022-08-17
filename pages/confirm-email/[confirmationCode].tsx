@@ -1,11 +1,7 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
-
 import constants from '../../constants'
+import { verifyEmail } from '../../utils/callableFirebaseFunctions'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
-
-const verifyEmail = firebase.functions().httpsCallable('verifyEmail')
 
 const UI_STATES = {
   VERIFIED: 'verified',
