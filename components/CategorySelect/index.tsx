@@ -1,6 +1,6 @@
 import { Autocomplete, TextField } from '@mui/material'
-import { SyntheticEvent, useMemo, useState } from 'react'
-import throttle from 'lodash.throttle'
+import { SyntheticEvent, useEffect, useMemo, useState } from 'react'
+import debounce from 'lodash.debounce'
 
 import useCategoriesStartsWith from '../../utils/data/categories/useCategoriesStartsWith'
 import { Category } from '../../types'
@@ -19,14 +19,16 @@ const CategorySelect = ({ id, onFocus, onChange }: Props) => {
   const [inputValue, setInputValue] = useState('')
   const { categories, search } = useCategoriesStartsWith()
 
-  const throttledSearch = useMemo(
-    () =>
-      throttle((searchString: string) => search(searchString), 800, {
-        leading: false,
-        trailing: true,
-      }),
+  const debouncedSearch = useMemo(
+    () => debounce((searchString: string) => search(searchString), 1000),
     [search]
   )
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel()
+    }
+  }, [debouncedSearch])
 
   const handleInput = async (
     _: SyntheticEvent<Element, Event>,
@@ -35,7 +37,7 @@ const CategorySelect = ({ id, onFocus, onChange }: Props) => {
     setInputValue(newInputValue)
     onChange?.(newInputValue)
     if (newInputValue.length < 2) return
-    throttledSearch(newInputValue)
+    debouncedSearch(newInputValue)
   }
 
   const handleChange = (

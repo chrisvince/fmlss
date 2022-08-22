@@ -2,7 +2,6 @@ import { LoadingButton } from '@mui/lab'
 import { DialogActions, DialogContent, Divider, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useEffect, useId, useRef, useState } from 'react'
-import reply from '../../pages/post/[slug]/reply'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
@@ -33,7 +32,7 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
     useState<postLengthStatusType>()
 
   const submitPost = async () => {
-    const body = postBodyTextAreaRef.current?.getValue?.()
+    const body = postBodyTextAreaRef.current?.value
     await createPost({ body, category })
   }
 

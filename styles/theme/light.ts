@@ -60,6 +60,7 @@ const theme = createTheme({
     caption: {
       fontSize: FONT_SIZE.SM,
       fontWeight: '300',
+      lineHeight: '1.375',
     },
     body1: {
       fontSize: FONT_SIZE.LG,

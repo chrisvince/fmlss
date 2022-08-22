@@ -12,6 +12,9 @@
     "deploy-functions": "firebase deploy --only functions:auth && firebase deploy --only functions:authoredPost && firebase deploy --only functions:post && firebase deploy --only functions:postLike && yarn deploy-functions:onPostCreate && yarn deploy-functions:onPostDelete"
   },
   "dependencies": {
+    "@draft-js-plugins/editor": "^4.1.3",
+    "@draft-js-plugins/hashtag": "^4.2.2",
+    "@draft-js-plugins/linkify": "^4.2.1",
     "@emotion/cache": "^11.10.1",
     "@emotion/react": "^11.10.0",
     "@emotion/server": "^11.10.0",
@@ -26,9 +29,10 @@
     "classnames": "^2.3.1",
     "clean-css": "^5.3.1",
     "draft-js": "^0.11.7",
+    "fetch-meta-tags": "^1.0.10",
     "firebase": "^8.10.1",
     "firebase-admin": "^11.0.1",
-    "lodash.throttle": "^4.1.1",
+    "lodash.debounce": "^4.0.8",
     "memory-cache": "^0.2.0",
     "next": "^12.2.4",
     "next-firebase-auth": "^0.14.4-alpha.0",
@@ -47,7 +51,7 @@
   "devDependencies": {
     "@netlify/plugin-nextjs": "^4.14.1",
     "@types/draft-js": "^0.11.9",
-    "@types/lodash.throttle": "^4.1.7",
+    "@types/lodash.debounce": "^4.0.7",
     "@types/memory-cache": "^0.2.2",
     "@types/node": "18.7.1",
     "@types/numeral": "^2.0.2",
