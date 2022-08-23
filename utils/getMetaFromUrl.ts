@@ -2,6 +2,7 @@ export type UrlMeta = {
   description?: string
   icon?: string | undefined
   image?: string | undefined
+  siteName?: string
   title: string
   url: string
 }

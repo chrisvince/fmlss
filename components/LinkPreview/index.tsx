@@ -36,12 +36,12 @@ const LinkPreview = ({ url }: Props) => {
     return null
   }
 
-  const { description, image, title, icon } = meta
+  const { description, image, title, icon, siteName } = meta
 
   return (
     <PostCard
       href={href}
-      title={title}
+      title={siteName}
       subtitle={host}
       description={description}
       image={{

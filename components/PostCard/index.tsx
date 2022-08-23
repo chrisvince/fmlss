@@ -18,7 +18,7 @@ const getLayoutFromImageDimensions = ({
   if (!height || !width) {
     return 'text'
   }
-  if (width > 1100 && height <= ((width / 3) * 2)) {
+  if (width > 800 && height <= ((width / 3) * 2)) {
     return 'imageLarge'
   }
   return 'imageSmall'
@@ -31,7 +31,7 @@ interface ImageNaturalDimensions {
 
 interface Props {
   href: string
-  title: string
+  title?: string
   subtitle?: string
   description?: string
   image?: {
@@ -57,7 +57,7 @@ const PostCard = ({ href, image, description, title, subtitle }: Props) => {
     }
   }, [image])
 
-  if (image && !imageNaturalDimensions) {
+  if (image?.src && !imageNaturalDimensions) {
     return null
   }
 
@@ -135,9 +135,14 @@ const PostCard = ({ href, image, description, title, subtitle }: Props) => {
             />
           </Box>
         )}
-        <Box sx={{ gridArea: 'text' }}>
+        <Box
+          sx={{
+            gridArea: 'text',
+            alignSelf: 'center',
+          }}
+        >
           <Typography variant="caption" component="div">
-            {title}
+            {title ?? href}
           </Typography>
           {subtitle && (
             <Typography variant="caption" component="div">
