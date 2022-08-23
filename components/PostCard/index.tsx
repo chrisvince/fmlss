@@ -1,6 +1,7 @@
-import { Link, Typography } from '@mui/material'
+import { CloseRounded } from '@mui/icons-material'
+import { ButtonBase, Link, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useEffect, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 
 import truncateString from '../../utils/truncateString'
 
@@ -30,18 +31,35 @@ interface ImageNaturalDimensions {
 }
 
 interface Props {
-  href: string
-  title?: string
-  subtitle?: string
   description?: string
+  href: string
   image?: {
     src?: string
     alt?: string
   }
+  onClose?: () => void
+  subtitle?: string
+  title?: string
 }
 
-const PostCard = ({ href, image, description, title, subtitle }: Props) => {
-  const [imageNaturalDimensions, setImageNaturalDimensions] = useState<ImageNaturalDimensions>()
+const PostCard = ({
+  description,
+  href,
+  image,
+  onClose: handleCloseButtonClick,
+  subtitle,
+  title,
+}: Props) => {
+  const [imageNaturalDimensions, setImageNaturalDimensions] =
+    useState<ImageNaturalDimensions>()
+
+  const handleClick = (event: SyntheticEvent) => {
+    const isClickableElement = (event.target as HTMLAnchorElement).closest(
+      'button'
+    )
+    if (!isClickableElement) return
+    event.preventDefault()
+  }
 
   useEffect(() => {
     if (!image?.src) return
@@ -71,7 +89,9 @@ const PostCard = ({ href, image, description, title, subtitle }: Props) => {
       target="_blank"
       rel="noopener"
       underline="none"
+      onClick={handleClick}
       sx={{
+        position: 'relative',
         display: 'block',
         border: '1px solid',
         borderColor: 'divider',
@@ -84,10 +104,44 @@ const PostCard = ({ href, image, description, title, subtitle }: Props) => {
         '@media (hover: hover)': {
           '&:hover': {
             backgroundColor: 'action.hover',
+            '.MuiButtonBase-root': {
+              opacity: 1,
+            },
           },
         },
       }}
     >
+      <ButtonBase
+        onClick={handleCloseButtonClick}
+        aria-label="Close"
+        sx={{
+          opacity: 0,
+          position: 'absolute',
+          top: '-12px',
+          right: '-12px',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '50%',
+            backgroundColor: 'grey.300',
+            padding: 0.4,
+            '&:hover': {
+              backgroundColor: 'grey.200',
+            },
+          }}
+        >
+          <CloseRounded
+            sx={{
+              height: '16px',
+              width: '16px',
+            }}
+          />
+        </Box>
+      </ButtonBase>
       <Box
         sx={{
           display: 'grid',
