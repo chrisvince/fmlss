@@ -2,13 +2,14 @@ import debounce from 'lodash.debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import getMetaFromUrl, { UrlMeta } from '../../utils/getMetaFromUrl'
-import PostCard from '../PostCard'
+import PostPreview from '../PostPreview'
 
 interface Props {
+  onClose?: () => void
   url: string
 }
 
-const LinkPreview = ({ url }: Props) => {
+const PostLinkPreview = ({ onClose, url }: Props) => {
   const { href, host } = new URL(url)
   const [meta, setMeta] = useState<UrlMeta>()
 
@@ -39,17 +40,18 @@ const LinkPreview = ({ url }: Props) => {
   const { description, image, title, icon, siteName } = meta
 
   return (
-    <PostCard
-      href={href}
-      title={siteName}
-      subtitle={host}
+    <PostPreview
       description={description}
+      href={href}
       image={{
         src: image ?? icon,
         alt: title,
       }}
+      onClose={onClose}
+      subtitle={host}
+      title={siteName}
     />
   )
 }
 
-export default LinkPreview
+export default PostLinkPreview

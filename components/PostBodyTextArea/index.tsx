@@ -9,7 +9,7 @@ import createLinkifyPlugin, { extractLinks } from '@draft-js-plugins/linkify'
 import constants from '../../constants'
 import { Box } from '@mui/system'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
-import LinkPreviews from '../LinkPreviews'
+import PostPreviews, { Preview } from '../PostPreviews'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -40,6 +40,12 @@ const hashtagPlugin = createHashtagPlugin({
 const linkifyPlugin = createLinkifyPlugin({
   component: LinkifyLink,
 })
+
+const mapLinksToPreviews = (links: { url: string }[] | null): Preview[] =>
+  links?.map(link => ({
+    url: link.url,
+    type: 'link',
+  })) ?? []
 
 export interface PostBodyTextAreaRef {
   value: string
@@ -100,6 +106,7 @@ const PostBodyTextArea = (
   const avatarLetter = username.charAt(0).toUpperCase()
   const value = editorState?.getCurrentContent().getPlainText()
   const links = extractLinks(value)
+  const linkPreviews = mapLinksToPreviews(links)
 
   useImperativeHandle(ref, () => ({
     value,
@@ -186,7 +193,7 @@ const PostBodyTextArea = (
           </Box>
         </Box>
       </Box>
-      <LinkPreviews links={links} />
+      <PostPreviews previews={linkPreviews} />
     </Box>
   )
 }

@@ -42,7 +42,7 @@ interface Props {
   title?: string
 }
 
-const PostCard = ({
+const PostPreview = ({
   description,
   href,
   image,
@@ -218,4 +218,4 @@ const PostCard = ({
   )
 }
 
-export default PostCard
+export default PostPreview
