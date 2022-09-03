@@ -1,9 +1,12 @@
 import firebase from 'firebase/app'
 import 'firebase/functions'
 
+import { PostPreview } from '../../types'
+
 interface Input {
   body: string
   category?: string | null
+  linkPreviews?: PostPreview[]
   replyingToReference?: string
 }
 

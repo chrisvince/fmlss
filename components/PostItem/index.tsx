@@ -7,6 +7,7 @@ import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
 import PostCaption from '../PostCaption'
 import constants from '../../constants'
+import PostPreview from '../PostPreview'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -77,6 +78,12 @@ const PostItem = ({
         id={bodyElementId}
         size={bodySize}
       />
+      {post.data.linkPreviews.map(linkPreview => (
+        <PostPreview
+          key={linkPreview.href}
+          postPreview={linkPreview}
+        />
+      ))}
       {!hideActionBar && (
         <PostActionBar
           createdAt={post.data.createdAt}

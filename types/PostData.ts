@@ -1,3 +1,5 @@
+import { PostPreview } from '.'
+
 export interface PostData {
   body: string
   category?: {
@@ -9,6 +11,7 @@ export interface PostData {
   hashtags: string[]
   id: string
   likesCount: number
+  linkPreviews: PostPreview[]
   parentId: string
   postsCount: number
   reference: string

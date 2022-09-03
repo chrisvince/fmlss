@@ -1,4 +1,4 @@
-import type { FirebaseDoc, PostData } from '../types'
+import type { FirebaseDoc, PostData, PostPreview } from '../types'
 import { getParentIdFromDbReference } from './dbReferences'
 
 type MapPostDbToClient = (postDoc: FirebaseDoc) => PostData
@@ -12,6 +12,7 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
     hashtags: postData.hashtags as string[],
     id: postDoc.id as string,
     likesCount: postData.likesCount as number,
+    linkPreviews: postData.linkPreviews as PostPreview[] ?? [],
     parentId: getParentIdFromDbReference(postDoc.ref.path) as string,
     postsCount: postData.postsCount as number,
     reference: postDoc.ref.path as string,

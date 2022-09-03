@@ -1,15 +1,25 @@
-import { forwardRef, KeyboardEvent, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import {
+  forwardRef,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import createHashtagPlugin, { HashtagProps } from '@draft-js-plugins/hashtag'
 import { EditorState } from 'draft-js'
 import Editor from '@draft-js-plugins/editor'
 import 'draft-js/dist/Draft.css'
 import { Avatar, Typography, useTheme } from '@mui/material'
 import createLinkifyPlugin, { extractLinks } from '@draft-js-plugins/linkify'
-
-import constants from '../../constants'
 import { Box } from '@mui/system'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
-import PostPreviews, { Preview } from '../PostPreviews'
+
+import constants from '../../constants'
+import { PostPreview as PostPreviewType } from '../../types'
+import PostBodyTextAreaLinkPreview from '../PostBodyTextAreaLinkPreview'
+import { update } from 'ramda'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -41,13 +51,8 @@ const linkifyPlugin = createLinkifyPlugin({
   component: LinkifyLink,
 })
 
-const mapLinksToPreviews = (links: { url: string }[] | null): Preview[] =>
-  links?.map(link => ({
-    url: link.url,
-    type: 'link',
-  })) ?? []
-
 export interface PostBodyTextAreaRef {
+  linkPreviews: PostPreviewType[]
   value: string
 }
 
@@ -78,6 +83,8 @@ const PostBodyTextArea = (
   )
   const [postLengthStatus, setPostLengthStatus] =
     useState<postLengthStatusType>(postLengthStatusType.none)
+  
+  const [linkPreviews, setLinkPreviews] = useState<PostPreviewType[]>([])
 
   const editorRef = useRef<Editor>()
   const { palette } = useTheme()
@@ -106,11 +113,11 @@ const PostBodyTextArea = (
   const avatarLetter = username.charAt(0).toUpperCase()
   const value = editorState?.getCurrentContent().getPlainText()
   const links = extractLinks(value)
-  const linkPreviews = mapLinksToPreviews(links)
 
   useImperativeHandle(ref, () => ({
+    linkPreviews,
     value,
-  }), [value])
+  }), [linkPreviews, value])
 
   useEffect(() => {
     if (value.length > POST_MAX_LENGTH) {
@@ -126,6 +133,32 @@ const PostBodyTextArea = (
     setPostLengthStatus(postLengthStatusType.none)
     onLengthStatusChange?.(postLengthStatusType.none)
   }, [onLengthStatusChange, value])
+
+  const handleLinkPreviewChange = useCallback((newPostPreview: PostPreviewType) => {
+    setLinkPreviews(currentPostPreviews => {
+      const matchingPostPreviewIndex = currentPostPreviews.findIndex(
+        postPreview => postPreview.href === newPostPreview.href
+      )
+
+      if (matchingPostPreviewIndex === -1) {
+        return [...currentPostPreviews, newPostPreview]
+      }
+
+      return update(
+        matchingPostPreviewIndex,
+        newPostPreview,
+        currentPostPreviews
+      )
+    })
+  }, [])
+
+  const handleLinkPreviewClose = useCallback((closedPostPreview: PostPreviewType) => {
+    setLinkPreviews(currentPostPreviews =>
+      currentPostPreviews.filter(
+        ({ href }) => href !== closedPostPreview.href
+      )
+    )
+  }, [])
 
   return (
     <Box>
@@ -169,7 +202,8 @@ const PostBodyTextArea = (
             sx={{
               display: 'flex',
               justifyContent: 'flex-end',
-              visibility: value?.length ? 'visible' : 'hidden',
+              visibility:
+                value?.length > POST_WARNING_LENGTH ? 'visible' : 'hidden',
             }}
           >
             <Typography
@@ -193,7 +227,14 @@ const PostBodyTextArea = (
           </Box>
         </Box>
       </Box>
-      <PostPreviews previews={linkPreviews} />
+      {links?.map(({ url }) => (
+        <PostBodyTextAreaLinkPreview
+          key={url}
+          url={url}
+          onChange={handleLinkPreviewChange}
+          onClose={handleLinkPreviewClose}
+        />
+      ))}
     </Box>
   )
 }

@@ -2,6 +2,7 @@ import { CloseRounded } from '@mui/icons-material'
 import { ButtonBase, Link, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { SyntheticEvent, useEffect, useState } from 'react'
+import { PostPreview as PostPreviewType } from '../../types'
 
 import truncateString from '../../utils/truncateString'
 
@@ -12,6 +13,9 @@ interface GetLayoutFromImageDimensions {
   width?: number
 }
 
+const getIsLandscape = (width: number, height: number) =>
+  width > 599 && height <= (width / 3) * 2
+
 const getLayoutFromImageDimensions = ({
   height,
   width,
@@ -19,7 +23,8 @@ const getLayoutFromImageDimensions = ({
   if (!height || !width) {
     return 'text'
   }
-  if (width > 800 && height <= ((width / 3) * 2)) {
+
+  if (getIsLandscape(width, height)) {
     return 'imageLarge'
   }
   return 'imageSmall'
@@ -31,27 +36,17 @@ interface ImageNaturalDimensions {
 }
 
 interface Props {
-  description?: string
-  href: string
-  image?: {
-    src?: string
-    alt?: string
-  }
-  onClose?: () => void
-  subtitle?: string
-  title?: string
+  onClose?: (href: string) => void
+  postPreview: PostPreviewType
 }
 
-const PostPreview = ({
-  description,
-  href,
-  image,
-  onClose: handleCloseButtonClick,
-  subtitle,
-  title,
-}: Props) => {
+const PostPreview = ({ onClose, postPreview }: Props) => {
+  const { description, href, image, subtitle, title } = postPreview
+
   const [imageNaturalDimensions, setImageNaturalDimensions] =
     useState<ImageNaturalDimensions>()
+
+  const [imageLoadFailed, setImageLoadFailed] = useState<boolean>(false)
 
   const handleClick = (event: SyntheticEvent) => {
     const isClickableElement = (event.target as HTMLAnchorElement).closest(
@@ -60,6 +55,8 @@ const PostPreview = ({
     if (!isClickableElement) return
     event.preventDefault()
   }
+
+  const handleClose = () => onClose?.(href)
 
   useEffect(() => {
     if (!image?.src) return
@@ -73,9 +70,12 @@ const PostPreview = ({
         height: currentTarget!.naturalHeight,
       })
     }
+    imageNode.onerror = () => {
+      setImageLoadFailed(true)
+    }
   }, [image])
 
-  if (image?.src && !imageNaturalDimensions) {
+  if (image?.src && !imageNaturalDimensions && !imageLoadFailed) {
     return null
   }
 
@@ -111,37 +111,39 @@ const PostPreview = ({
         },
       }}
     >
-      <ButtonBase
-        onClick={handleCloseButtonClick}
-        aria-label="Close"
-        sx={{
-          opacity: 0,
-          position: 'absolute',
-          top: '-12px',
-          right: '-12px',
-        }}
-      >
-        <Box
+      {onClose && (
+        <ButtonBase
+          onClick={handleClose}
+          aria-label="Close"
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: '50%',
-            backgroundColor: 'grey.300',
-            padding: 0.4,
-            '&:hover': {
-              backgroundColor: 'grey.200',
-            },
+            opacity: 0,
+            position: 'absolute',
+            top: '-12px',
+            right: '-12px',
           }}
         >
-          <CloseRounded
+          <Box
             sx={{
-              height: '16px',
-              width: '16px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '50%',
+              backgroundColor: 'grey.300',
+              padding: 0.4,
+              '&:hover': {
+                backgroundColor: 'grey.200',
+              },
             }}
-          />
-        </Box>
-      </ButtonBase>
+          >
+            <CloseRounded
+              sx={{
+                height: '16px',
+                width: '16px',
+              }}
+            />
+          </Box>
+        </ButtonBase>
+      )}
       <Box
         sx={{
           display: 'grid',

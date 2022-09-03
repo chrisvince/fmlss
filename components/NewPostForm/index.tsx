@@ -33,7 +33,8 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
 
   const submitPost = async () => {
     const body = postBodyTextAreaRef.current?.value
-    await createPost({ body, category })
+    const linkPreviews = postBodyTextAreaRef.current?.linkPreviews
+    await createPost({ body, category, linkPreviews })
   }
 
   useEffect(() => {

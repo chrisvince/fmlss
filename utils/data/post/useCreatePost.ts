@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { PostPreview } from '../../../types'
 import { createPost } from '../../callableFirebaseFunctions'
 import usePost from './usePost'
 
 interface HandleCreatePost {
   body?: string
   category?: string
+  linkPreviews?: PostPreview[]
 }
 
 const useCreatePost = (parentSlug?: string) => {
@@ -14,7 +16,11 @@ const useCreatePost = (parentSlug?: string) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { post } = usePost(parentSlug)
 
-  const handleCreatePost = async ({ body, category }: HandleCreatePost) => {
+  const handleCreatePost = async ({
+    body,
+    category,
+    linkPreviews,
+  }: HandleCreatePost) => {
     if (!body) {
       setErrorMessage('Post is required!')
       return
@@ -26,6 +32,7 @@ const useCreatePost = (parentSlug?: string) => {
       const { data } = await createPost({
         body,
         category,
+        linkPreviews,
         replyingToReference: post?.data.reference,
       })
       await navigate(`/post/${data.slug}`)
