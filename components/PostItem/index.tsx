@@ -16,6 +16,7 @@ type PropTypes = {
   bodySize?: 'small' | 'large'
   hideActionBar?: boolean
   onLikePost?: (slug: string) => Promise<void> | void
+  onLoad?: () => void
   post: Post
 }
 
@@ -24,6 +25,7 @@ const PostItem = ({
   bodySize = 'small',
   hideActionBar,
   onLikePost,
+  onLoad,
   post,
 }: PropTypes) => {
   const { toggleLike, likesCount, like } = useLikeState({ post })
@@ -81,6 +83,7 @@ const PostItem = ({
       {post.data.linkPreviews.map(linkPreview => (
         <PostPreview
           key={linkPreview.href}
+          onLoad={onLoad}
           postPreview={linkPreview}
         />
       ))}

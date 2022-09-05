@@ -17,7 +17,7 @@ import useOnWindowResize from '../../utils/useOnWindowResize'
 const { INFINITY_LOADING_THRESHOLD, VIRTUALIZED_OVERSCAN_ROW_COUNT } = constants
 interface PropTypes {
   cellMeasurerCache: CellMeasurerCache
-  children: (item: any) => JSX.Element
+  children: (item: any, index: number) => JSX.Element
   items: any[]
   moreToLoad: boolean
   onLoadMore: () => Promise<any>
@@ -76,7 +76,7 @@ const ContentList = ({
             <div ref={registerChild as LegacyRef<HTMLDivElement>} style={style}>
               <div onLoad={measure}>
                 {isRowLoaded({ index }) && items[index]
-                  ? render(items[index])
+                  ? render(items[index], index)
                   : renderLoader(moreToLoad)}
               </div>
             </div>

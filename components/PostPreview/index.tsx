@@ -37,10 +37,11 @@ interface ImageNaturalDimensions {
 
 interface Props {
   onClose?: (href: string) => void
+  onLoad?: () => void
   postPreview: PostPreviewType
 }
 
-const PostPreview = ({ onClose, postPreview }: Props) => {
+const PostPreview = ({ onClose, onLoad, postPreview }: Props) => {
   const { description, href, image, subtitle, title } = postPreview
 
   const [imageNaturalDimensions, setImageNaturalDimensions] =
@@ -69,11 +70,13 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
         // @ts-ignore
         height: currentTarget!.naturalHeight,
       })
+      onLoad?.()
     }
     imageNode.onerror = () => {
       setImageLoadFailed(true)
+      onLoad?.()
     }
-  }, [image])
+  }, [image, onLoad])
 
   if (image?.src && !imageNaturalDimensions && !imageLoadFailed) {
     return null

@@ -7,10 +7,11 @@ import PostItem from '../PostItem'
 
 type PropTypes = {
   post: Post
+  onLoad?: () => void
   onLikePost: (slug: string) => Promise<void>
 }
 
-const PostListItem = ({ post, onLikePost }: PropTypes) => {
+const PostListItem = ({ onLikePost, onLoad, post }: PropTypes) => {
   const { push: navigate } = useRouter()
   const ariaLabelledById = useId()
 
@@ -26,6 +27,7 @@ const PostListItem = ({ post, onLikePost }: PropTypes) => {
       <PostItem
         bodyElementId={ariaLabelledById}
         onLikePost={onLikePost}
+        onLoad={onLoad}
         post={post}
       />
     </ListItemFrame>
