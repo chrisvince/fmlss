@@ -25,17 +25,12 @@ const Feed = ({
     moreToLoad={moreToLoad}
     onLoadMore={onLoadMore}
   >
-    {(post, index) => {
-      const handleOnLoad = () => cellMeasurerCache.clear(index, 0)
-
-      return (
-        <PostListItem
-          onLikePost={onLikePost}
-          onLoad={handleOnLoad}
-          post={post}
-        />
-      )
-    }}
+    {post => (
+      <PostListItem
+        onLikePost={onLikePost}
+        post={post}
+      />
+    )}
   </ContentList>
 )
 

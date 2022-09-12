@@ -2,8 +2,10 @@ export interface PostPreview {
   description?: string
   href: string
   image?: {
-    src?: string
-    alt?: string
+    alt: string
+    height?: number
+    src: string
+    width?: number
   }
   subtitle?: string
   title?: string

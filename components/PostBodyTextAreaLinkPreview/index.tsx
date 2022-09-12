@@ -12,10 +12,10 @@ const mapUrlMetaToPostPreview = (
   return {
     description: meta?.description,
     href,
-    image: {
-      src: meta?.image,
-      alt: meta?.title,
-    },
+    image: meta?.image ? {
+      src: meta.image,
+      alt: meta.title,
+    } : undefined,
     subtitle: host,
     title: meta?.siteName,
   }

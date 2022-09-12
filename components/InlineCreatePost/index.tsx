@@ -28,7 +28,7 @@ const InlineCreatePost = ({ slug }: Props) => {
   } = useCreatePost(slug)
 
   const submitPost = async () => {
-    const body = postBodyTextAreaRef.current?.getValue?.()
+    const body = postBodyTextAreaRef.current?.value
     await createPost({ body })
   }
 
