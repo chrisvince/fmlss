@@ -152,13 +152,16 @@ const PostBodyTextArea = (
     })
   }, [])
 
-  const handleLinkPreviewClose = useCallback((closedPostPreview: PostPreviewType) => {
-    setLinkPreviews(currentPostPreviews =>
-      currentPostPreviews.filter(
-        ({ href }) => href !== closedPostPreview.href
+  const handleLinkPreviewClose = useCallback(
+    (closedPostPreview: PostPreviewType) => {
+      setLinkPreviews(currentPostPreviews =>
+        currentPostPreviews.filter(
+          ({ href }) => href !== closedPostPreview.href
+        )
       )
-    )
-  }, [])
+    },
+    []
+  )
 
   return (
     <Box>

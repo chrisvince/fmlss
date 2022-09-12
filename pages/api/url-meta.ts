@@ -31,7 +31,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (error.code === 'ENOTFOUND') {
       return res.status(404)
     }
-    console.log('error')
     return res.status(500)
   }
 }
