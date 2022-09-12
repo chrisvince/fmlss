@@ -1,6 +1,6 @@
 import { CloseRounded } from '@mui/icons-material'
 import { ButtonBase, Link, Typography } from '@mui/material'
-import { Box } from '@mui/system'
+import { Box, useTheme } from '@mui/system'
 import NextImage from 'next/image'
 import { SyntheticEvent, useEffect, useState } from 'react'
 import { PostPreview as PostPreviewType } from '../../types'
@@ -8,6 +8,7 @@ import { PostPreview as PostPreviewType } from '../../types'
 import truncateString from '../../utils/truncateString'
 
 const IMAGE_SMALL_SIZE: number = 80
+const IMAGE_TRANSITION = 'ease-in 200ms'
 
 const getIsLandscape = (width: number, height: number) =>
   width > 599 && height <= (width / 3) * 2
@@ -39,6 +40,8 @@ interface Props {
 const PostPreview = ({ onClose, postPreview }: Props) => {
   const { description, href, image, subtitle, title } = postPreview
   const [dynamicImage, setDynamicImage] = useState<ImageDimensionsState>()
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false)
+  const { palette } = useTheme()
 
   const handleClick = (event: SyntheticEvent) => {
     const isClickableElement = (event.target as HTMLAnchorElement).closest(
@@ -95,7 +98,7 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
         borderRadius: 1,
         mt: 2,
         px: 1.5,
-        py: 1,
+        py: 1.5,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
         '@media (hover: hover)': {
@@ -171,19 +174,33 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
                 alt={image!.alt}
                 style={{
                   ...imageStyle,
+                  height: dynamicImage.height,
+                  width: dynamicImage.width,
                   objectFit: 'contain',
                 }}
               />
             ) : (
-              <NextImage
-                src={image!.src}
-                alt={image!.alt}
-                width={width}
-                height={height}
-                layout="responsive"
-                objectFit="contain"
-                style={imageStyle}
-              />
+              <Box
+                sx={{
+                  backgroundColor: !imageLoaded && palette.action.hover,
+                  transition: `background-color ${IMAGE_TRANSITION}`,
+                }}
+              >
+                <NextImage
+                  src={image!.src}
+                  alt={image!.alt}
+                  width={width}
+                  height={height}
+                  layout="responsive"
+                  objectFit="contain"
+                  style={{
+                    ...imageStyle,
+                    opacity: imageLoaded ? 1 : 0,
+                    transition: `opacity ${IMAGE_TRANSITION}`,
+                  }}
+                  onLoadingComplete={() => setImageLoaded(true)}
+                />
+              </Box>
             )}
           </Box>
         )}
