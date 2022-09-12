@@ -15,11 +15,11 @@ import { Avatar, Typography, useTheme } from '@mui/material'
 import createLinkifyPlugin, { extractLinks } from '@draft-js-plugins/linkify'
 import { Box } from '@mui/system'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
+import { update } from 'ramda'
 
 import constants from '../../constants'
 import { PostPreview as PostPreviewType } from '../../types'
 import PostBodyTextAreaLinkPreview from '../PostBodyTextAreaLinkPreview'
-import { update } from 'ramda'
 
 const { POST_MAX_LENGTH } = constants
 
