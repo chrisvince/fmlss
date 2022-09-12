@@ -25,17 +25,17 @@ const MiniCategoriesList = ({
     )
   }
 
+  if (!categories.length) return null
+
   return (
     <div>
-      {categories.length && (
-        <PostList>
-          {categories.map(category => (
-            <li key={category.data.id}>
-              <MiniCategoryListItem category={category} />
-            </li>
-          ))}
-        </PostList>
-      )}
+      <PostList>
+        {categories.map(category => (
+          <li key={category.data.id}>
+            <MiniCategoryListItem category={category} />
+          </li>
+        ))}
+      </PostList>
     </div>
   )
 }

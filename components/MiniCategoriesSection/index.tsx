@@ -14,6 +14,8 @@ const MiniCategoriesSection = () => {
     },
   })
 
+  if (!isLoading && !categories.length) return null
+
   return (
     <Box>
       <MiniSectionHeading>Popular Categories</MiniSectionHeading>

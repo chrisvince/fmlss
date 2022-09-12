@@ -25,17 +25,17 @@ const MiniHashtagsList = ({
     )
   }
 
+  if (!hashtags.length) return null
+
   return (
     <Box>
-      {hashtags.length && (
-        <PostList>
-          {hashtags.map((hashtag) => (
-            <li key={hashtag.data.id}>
-              <MiniHashtagListItem hashtag={hashtag} />
-            </li>
-          ))}
-        </PostList>
-      )}
+      <PostList>
+        {hashtags.map((hashtag) => (
+          <li key={hashtag.data.id}>
+            <MiniHashtagListItem hashtag={hashtag} />
+          </li>
+        ))}
+      </PostList>
     </Box>
   )
 }

@@ -14,6 +14,8 @@ const MiniHashtagsSection = () => {
     },
   })
 
+  if (!isLoading && !hashtags.length) return null
+
   return (
     <Box>
       <MiniSectionHeading>Popular Hashtags</MiniSectionHeading>
