@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/functions'
+import { isNil, reject } from 'ramda'
 
 import { PostPreview } from '../../types'
 
@@ -20,6 +21,7 @@ type Response = {
 type CreatePost = (data: Input) => Promise<Response>
 
 export const createPost: CreatePost = data => {
+  const filteredData = reject(isNil)(data)
   const functions = firebase.functions()
-  return functions.httpsCallable('post-create')(data)
+  return functions.httpsCallable('post-create')(filteredData)
 }
