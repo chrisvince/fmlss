@@ -19,7 +19,11 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
       open={open}
       title="Reply to Post"
     >
-      <NewPostForm slug={slug} isInModal />
+      <NewPostForm
+        slug={slug}
+        placeholder="Write a reply"
+        isInModal
+      />
     </Modal>
   )
 }

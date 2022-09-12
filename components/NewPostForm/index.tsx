@@ -13,11 +13,16 @@ import PostBodyTextArea, {
 import PostItem from '../PostItem'
 
 interface Props {
-  slug?: string
   isInModal?: boolean
+  placeholder?: string
+  slug?: string
 }
 
-const NewPostForm = ({ slug, isInModal = false }: Props) => {
+const NewPostForm = ({
+  isInModal = false,
+  placeholder = `What's on your mind?`,
+  slug,
+}: Props) => {
   const { post: replyingToPost } = usePost(slug)
   const [hasContent, setHasContent] = useState<boolean>(false)
   const handleTextChange = (text: string) => setHasContent(!!text)
@@ -87,7 +92,7 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
           onChange={handleTextChange}
           onCommandEnter={submitPost}
           onLengthStatusChange={setPostLengthStatus}
-          placeholder="What's on your mind?"
+          placeholder={placeholder}
           ref={postBodyTextAreaRef}
           username="chrisvince"
         />
@@ -118,7 +123,7 @@ const NewPostForm = ({ slug, isInModal = false }: Props) => {
           {button}
         </Box>
       )}
-     {errorMessage && (
+      {errorMessage && (
         <Typography variant="caption" color="error">
           {errorMessage}
         </Typography>
