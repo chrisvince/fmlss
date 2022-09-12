@@ -66,7 +66,7 @@ const constants = {
   USER_LIKES_CACHE_TIME: secondsToMs(10),
   USER_POSTS_CACHE_TIME: secondsToMs(10),
   USERS_COLLECTION: 'users',
-  VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
+  VIRTUALIZED_OVERSCAN_ROW_COUNT: 15,
 }
 
 export default constants
