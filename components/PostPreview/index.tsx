@@ -33,7 +33,7 @@ interface ImageDimensionsState {
 }
 
 interface Props {
-  onClose?: (href: string) => void
+  onClose?: (postPreview: PostPreviewType) => void
   postPreview: PostPreviewType
 }
 
@@ -51,7 +51,7 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
     event.preventDefault()
   }
 
-  const handleClose = () => onClose?.(href)
+  const handleClose = () => onClose?.(postPreview)
 
   useEffect(() => {
     if (!image || (image.width && image.height)) return
@@ -155,7 +155,7 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
           gridTemplateColumns: {
             text: '1fr',
             imageSmall: `${IMAGE_SMALL_SIZE}px 1fr`,
-            imageLarge: `100%`,
+            imageLarge: '100%',
           }[layout],
           gridTemplateRows: {
             text: '1fr',
@@ -172,12 +172,7 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
               <img
                 src={image!.src}
                 alt={image!.alt}
-                style={{
-                  ...imageStyle,
-                  height: dynamicImage.height,
-                  width: dynamicImage.width,
-                  objectFit: 'contain',
-                }}
+                style={imageStyle}
               />
             ) : (
               <Box

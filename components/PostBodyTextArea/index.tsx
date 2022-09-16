@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -15,15 +16,73 @@ import { Avatar, Typography, useTheme } from '@mui/material'
 import createLinkifyPlugin, { extractLinks } from '@draft-js-plugins/linkify'
 import { Box } from '@mui/system'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
-import { update } from 'ramda'
+import debounce from 'lodash.debounce'
+import { Match } from 'linkify-it'
 
 import constants from '../../constants'
 import { PostPreview as PostPreviewType } from '../../types'
-import PostBodyTextAreaLinkPreview from '../PostBodyTextAreaLinkPreview'
+import getMetaFromUrl, { UrlMeta } from '../../utils/getMetaFromUrl'
+import PostPreview from '../PostPreview'
 
 const { POST_MAX_LENGTH } = constants
 
 const POST_WARNING_LENGTH = POST_MAX_LENGTH - 20
+
+interface TrackedLinkPreview {
+  match: Match
+  linkPreview: PostPreviewType
+  closed: boolean
+  inBody: boolean
+}
+
+const preprocessTrackedLinkPreview = (
+  trackedLinkPreview: TrackedLinkPreview[],
+  links: Match[]
+) =>
+  trackedLinkPreview.reduce((acc, ye) => {
+    const existingLink = links.some(({ url }) => url === ye.match.url)
+
+    if (!existingLink && ye.closed) {
+      return acc
+    }
+
+    if (!existingLink) {
+      return [...acc, { ...ye, inBody: false }]
+    }
+
+    return [...acc, ye]
+  }, [] as TrackedLinkPreview[])
+
+const checkTrackedLinkPreviewEquality = (
+  aTrackedLinkPreview: TrackedLinkPreview[],
+  bTrackedLinkPreview: TrackedLinkPreview[]
+) => {
+  if (aTrackedLinkPreview.length !== bTrackedLinkPreview.length) return false
+
+  return aTrackedLinkPreview.every((a) => {
+    const b = bTrackedLinkPreview.find(({ match }) => match.url === a.match.url)
+    if (!b) return false
+
+    return [a.closed === b.closed, a.inBody === b.inBody].every((x) => x)
+  })
+}
+
+const mapUrlMetaToPostPreview = (
+  meta: UrlMeta | undefined,
+  url: string
+): PostPreviewType => {
+  const { href, host } = new URL(url)
+  return {
+    description: meta?.description,
+    href,
+    image: meta?.image ? {
+      src: meta.image,
+      alt: meta.title,
+    } : undefined,
+    subtitle: host,
+    title: meta?.siteName,
+  }
+}
 
 export enum postLengthStatusType {
   warning = 'warning',
@@ -78,13 +137,25 @@ const PostBodyTextArea = (
   }: Props,
   ref: React.Ref<PostBodyTextAreaRef>
 ) => {
-  const [editorState, setEditorState] = useState<EditorState>(
-    () => EditorState.createEmpty()
+  const [
+    editorState,
+    setEditorState,
+  ] = useState<EditorState>(() => EditorState.createEmpty())
+
+  const [
+    postLengthStatus,
+    setPostLengthStatus,
+  ] = useState<postLengthStatusType>(postLengthStatusType.none)
+
+  const [
+    trackedLinkPreviews,
+    setTrackedLinkPreviews,
+  ] = useState<TrackedLinkPreview[]>([])
+
+  const displayedTrackedLinkPreviews = useMemo(
+    () => trackedLinkPreviews.filter(({ closed }) => !closed).slice(0, 2),
+    [trackedLinkPreviews]
   )
-  const [postLengthStatus, setPostLengthStatus] =
-    useState<postLengthStatusType>(postLengthStatusType.none)
-  
-  const [linkPreviews, setLinkPreviews] = useState<PostPreviewType[]>([])
 
   const editorRef = useRef<Editor>()
   const { palette } = useTheme()
@@ -115,9 +186,11 @@ const PostBodyTextArea = (
   const links = extractLinks(value)
 
   useImperativeHandle(ref, () => ({
-    linkPreviews,
+    linkPreviews: displayedTrackedLinkPreviews.map(
+      ({ linkPreview }) => linkPreview
+    ),
     value,
-  }), [linkPreviews, value])
+  }), [displayedTrackedLinkPreviews, value])
 
   useEffect(() => {
     if (value.length > POST_MAX_LENGTH) {
@@ -134,34 +207,87 @@ const PostBodyTextArea = (
     onLengthStatusChange?.(postLengthStatusType.none)
   }, [onLengthStatusChange, value])
 
-  const handleLinkPreviewChange = useCallback((newPostPreview: PostPreviewType) => {
-    setLinkPreviews(currentPostPreviews => {
-      const matchingPostPreviewIndex = currentPostPreviews.findIndex(
-        postPreview => postPreview.href === newPostPreview.href
-      )
+  const handleLinkPreviewClose = useCallback((url: string) => () => {
+    setTrackedLinkPreviews(currentTrackedLinkPreviews =>
+      currentTrackedLinkPreviews.reduce((acc, currentTrackedLinkPreview) => {
+        if (currentTrackedLinkPreview.match.url !== url) {
+          return [...acc, currentTrackedLinkPreview]
+        }
 
-      if (matchingPostPreviewIndex === -1) {
-        return [...currentPostPreviews, newPostPreview]
-      }
+        if (!currentTrackedLinkPreview.inBody) {
+          return acc
+        }
 
-      return update(
-        matchingPostPreviewIndex,
-        newPostPreview,
-        currentPostPreviews
-      )
-    })
+        const newPayload: TrackedLinkPreview = {
+          ...currentTrackedLinkPreview,
+          closed: true,
+        }
+
+        return [...acc, newPayload]
+      }, [] as TrackedLinkPreview[])
+    )
   }, [])
 
-  const handleLinkPreviewClose = useCallback(
-    (closedPostPreview: PostPreviewType) => {
-      setLinkPreviews(currentPostPreviews =>
-        currentPostPreviews.filter(
-          ({ href }) => href !== closedPostPreview.href
-        )
+  const updateTrackedLinkPreviews = useCallback(async (links: Match[]) => {
+    const run = async () => {
+      const newTrackedLinkPreviews = await links.reduce(
+        async (acc, link) => {
+          const existingLink = trackedLinkPreviews.some(
+            ({ match }) => match.url === link.url
+          )
+
+          if (existingLink) {
+            return acc
+          }
+
+          const meta = await getMetaFromUrl(link.url)
+          const postPreview = mapUrlMetaToPostPreview(meta, link.url)
+
+          const newLink: TrackedLinkPreview = {
+            closed: false,
+            linkPreview: postPreview,
+            match: link,
+            inBody: true,
+          }
+
+          return [...(await acc), newLink]
+        },
+        Promise.resolve(trackedLinkPreviews)
       )
-    },
-    []
+
+      const trackedLinkPreviewsEqual = checkTrackedLinkPreviewEquality(
+        trackedLinkPreviews,
+        newTrackedLinkPreviews
+      )
+
+      if (trackedLinkPreviewsEqual) return
+      setTrackedLinkPreviews(newTrackedLinkPreviews)
+    }
+
+    run()
+  }, [trackedLinkPreviews])
+
+  const debouncedUpdateTrackedLinkPreviews = useMemo(
+    () => debounce(updateTrackedLinkPreviews, 1000),
+    [updateTrackedLinkPreviews]
   )
+
+  useEffect(() => {
+    setTrackedLinkPreviews(currentTrackedLinkPreviews => {
+      const neww = preprocessTrackedLinkPreview(
+        currentTrackedLinkPreviews,
+        links || []
+      )
+
+      if (checkTrackedLinkPreviewEquality(currentTrackedLinkPreviews, neww)) {
+        return currentTrackedLinkPreviews
+      }
+
+      return neww
+    })
+
+    debouncedUpdateTrackedLinkPreviews(links || [])
+  }, [debouncedUpdateTrackedLinkPreviews, links])
 
   return (
     <Box>
@@ -230,12 +356,11 @@ const PostBodyTextArea = (
           </Box>
         </Box>
       </Box>
-      {links?.map(({ url }) => (
-        <PostBodyTextAreaLinkPreview
-          key={url}
-          url={url}
-          onChange={handleLinkPreviewChange}
-          onClose={handleLinkPreviewClose}
+      {displayedTrackedLinkPreviews.map(({ match, linkPreview }) => (
+        <PostPreview
+          key={linkPreview.href}
+          postPreview={linkPreview}
+          onClose={handleLinkPreviewClose(match.url)}
         />
       ))}
     </Box>
