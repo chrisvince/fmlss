@@ -101,6 +101,11 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
         py: 1.5,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
+        '@media (hover: none)': {
+          '.MuiButtonBase-root': {
+            opacity: 1,
+          },
+        },
         '@media (hover: hover)': {
           '&:hover': {
             backgroundColor: 'action.hover',
@@ -130,8 +135,13 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
               borderRadius: '50%',
               backgroundColor: 'grey.300',
               padding: 0.4,
-              '&:hover': {
+              '@media (hover: none)': {
                 backgroundColor: 'grey.200',
+              },
+              '@media (hover: hover)': {
+                '&:hover': {
+                  backgroundColor: 'grey.200',
+                },
               },
             }}
           >
