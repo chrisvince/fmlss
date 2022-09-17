@@ -15,6 +15,7 @@ import Error from 'next/error'
 import MobileContainer from '../MobileContainer'
 import { Divider } from '@mui/material'
 import constants from '../../constants'
+import useTracking from '../../utils/tracking/useTracking'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -33,12 +34,22 @@ const PostPage = ({ slug }: PropTypes) => {
   const { shownFirstPostMessage } = user?.data ?? {}
   const createdByUser = !!post?.user?.created
   const handleFirstPostModalClose = () => setFirstPostModalOpen(false)
+  const { track } = useTracking()
+  const pageTitle = truncateString(post?.data.body)
 
   useEffect(() => {
     if (userIsLoading || !createdByUser || shownFirstPostMessage) return
     setFirstPostModalOpen(true)
     updateUser({ shownFirstPostMessage: true })
   }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser])
+
+  useEffect(() => {
+    if (isLoading || (!isLoading && !post)) return
+    track('Post View', {
+      title: pageTitle,
+      slug,
+    }, { onceOnly: true })
+  }, [isLoading, pageTitle, post, slug, track])
 
   if (!isLoading && !post) {
     return <Error statusCode={404} />
@@ -48,7 +59,6 @@ const PostPage = ({ slug }: PropTypes) => {
     return <PageSpinner />
   }
 
-  const pageTitle = truncateString(post!.data.body)
   const allowReplying = post!.data.documentDepth < POST_MAX_DEPTH
   const createdAt = new Date(post!.data.createdAt).toISOString()
   const updatedAt = new Date(post!.data.updatedAt).toISOString()

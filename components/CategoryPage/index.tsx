@@ -13,6 +13,8 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import unslugify from '../../utils/unslugify'
 import constants from '../../constants'
 import PageSpinner from '../PageSpinner'
+import useTracking from '../../utils/tracking/useTracking'
+import { useEffect } from 'react'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -53,6 +55,7 @@ const cellMeasurerCache = new CellMeasurerCache({
 
 const CategoryPage = ({ slug }: PropTypes) => {
   const { query: { sort } } = useRouter()
+  const { track } = useTracking()
 
   const sortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as CategorySortMode
@@ -67,6 +70,14 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   const categoryName = unslugify(slug)
   const sortOptions = generateSortOptions(slug)
+
+  useEffect(() => {
+    if (isLoading) return
+    track('Category View', {
+      category: categoryName,
+      slug,
+    }, { onceOnly: true })
+  }, [categoryName, isLoading, slug, track])
 
   return (
     <Page

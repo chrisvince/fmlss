@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Button, FormControlLabel, Switch } from '@mui/material'
 import { useRouter } from 'next/router'
@@ -15,6 +15,7 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import PageSpinner from '../PageSpinner'
+import useTracking from '../../utils/tracking/useTracking'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -56,6 +57,7 @@ const cellMeasurerCache = new CellMeasurerCache({
 const HashtagPage = ({ hashtag }: PropTypes) => {
   const { query: { sort } } = useRouter()
   const [showType, setShowType] = useState<'post' | 'both'>('post')
+  const { track } = useTracking()
 
   const sortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as HashtagSortMode
@@ -76,6 +78,14 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
 
   const sortOptions = generateSortOptions(hashtag)
   const title = `#${hashtag}`
+
+  useEffect(() => {
+    if (isLoading) return
+    track('Hashtag View', {
+      hashtag,
+      title,
+    }, { onceOnly: true })
+  }, [hashtag, isLoading, title, track])
 
   return (
     <Page

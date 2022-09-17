@@ -1,9 +1,10 @@
 type TruncateString = (
-  str: string,
+  str: string | null | undefined,
   maxLength?: number,
 ) => string
 
 const truncateString: TruncateString = (str, maxLength = 30) => {
+  if (!str) return ''
   if (str.length <= maxLength) {
     return str
   }

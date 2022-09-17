@@ -9,6 +9,9 @@ import React from 'react'
 import { ServerStyleSheets as JSSServerStyleSheets } from '@mui/styles'
 import createEmotionServer from '@emotion/server/create-instance'
 import createEmotionCache from '../utils/createEmotionCache'
+import isDevelopment from '../utils/isDevelopment'
+
+const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
 const Document = () => {
   return (
@@ -33,6 +36,13 @@ const Document = () => {
       <body>
         <Main />
         <NextScript />
+        {!isDevelopment && GOOGLE_TAG_MANAGER_ID && (
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+            }}
+          />
+        )}
       </body>
     </Html>
   )
