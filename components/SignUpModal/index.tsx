@@ -11,19 +11,14 @@ interface Props {
 }
 
 const SignUpModal = ({ actionText, onClose, open }: Props) => {
-  const handleLoginButtonClick = () => {
-    console.log('handleLoginButtonClick')
+  const handleSignUpSuccess = () => {
+    onClose()
   }
 
   return (
     <Modal
       onClose={onClose}
       open={open}
-      actions={
-        <Button variant="contained" onClick={handleLoginButtonClick}>
-          Login
-        </Button>
-      }
     >
       <Box>
         <Typography variant="h4" align="center">
@@ -35,7 +30,7 @@ const SignUpModal = ({ actionText, onClose, open }: Props) => {
             </>
           )}
         </Typography>
-        <SignUpForm />
+        <SignUpForm onSuccess={handleSignUpSuccess} />
       </Box>
     </Modal>
   )

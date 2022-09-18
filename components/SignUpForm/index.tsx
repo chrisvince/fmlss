@@ -28,7 +28,11 @@ const FORM_IDS = {
 const GENERIC_ERROR_MESSAGE =
   'There was an error signing you up. Please try again later.'
 
-const SignUpForm = () => {
+interface Props {
+  onSuccess?: () => any
+}
+
+const SignUpForm = ({ onSuccess }: Props) => {
   const [formError, setFormError] = useState<{ message: string } | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -43,6 +47,7 @@ const SignUpForm = () => {
     try {
       await createUser({ email, password })
       await auth.signInWithEmailAndPassword(email, password)
+      onSuccess?.()
     } catch (error: any) {
       if (error.code === 'already-exists') {
         setError(FORM_IDS.EMAIL, { message: 'This email is already in use.' })
