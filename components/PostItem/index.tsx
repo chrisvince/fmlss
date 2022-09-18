@@ -53,6 +53,7 @@ const PostItem = ({
             gridTemplateColumns: 'auto 1fr',
             gap: 2,
             gridTemplateAreas: `"caption category"`,
+            height: '18px',
           }}
         >
           <Box sx={{ gridArea: 'caption' }}>
