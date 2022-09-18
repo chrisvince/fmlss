@@ -18,7 +18,7 @@ const {
 } = constants
 
 type GetHashtagPosts = (
-  hashtag: string,
+  slug: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
@@ -29,7 +29,7 @@ type GetHashtagPosts = (
 ) => Promise<Post[]>
 
 const getHashtagPosts: GetHashtagPosts = async (
-  hashtag,
+  slug,
   {
     db: dbProp,
     startAfter,
@@ -46,9 +46,9 @@ const getHashtagPosts: GetHashtagPosts = async (
     | null
   let postData: PostData[] = []
 
-  const lowerCaseHashtag = hashtag.toLowerCase()
+  const lowerCaseSlug = slug.toLowerCase()
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
-    lowerCaseHashtag,
+    lowerCaseSlug,
     showType,
     sortMode
   )
@@ -62,7 +62,7 @@ const getHashtagPosts: GetHashtagPosts = async (
       () =>
         db
           .collectionGroup(POSTS_COLLECTION)
-          .where('hashtags', 'array-contains', lowerCaseHashtag),
+          .where('hashtags', 'array-contains', lowerCaseSlug),
       query =>
         showType !== 'both' ? query.where('type', '==', showType) : query,
       query =>

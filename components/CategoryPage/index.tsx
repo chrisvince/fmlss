@@ -73,7 +73,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   useEffect(() => {
     if (isLoading) return
-    track('Category View', {
+    track('category', {
       category: categoryName,
       slug,
     }, { onceOnly: true })

@@ -45,7 +45,8 @@ const PostPage = ({ slug }: PropTypes) => {
 
   useEffect(() => {
     if (isLoading || (!isLoading && !post)) return
-    track('Post View', {
+
+    track('post', {
       title: pageTitle,
       slug,
     }, { onceOnly: true })

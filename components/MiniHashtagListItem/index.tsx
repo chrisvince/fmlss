@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import { Hashtag } from '../../types'
@@ -12,12 +11,12 @@ type PropTypes = {
 
 const MiniHashtagListItem = ({ hashtag }: PropTypes) => {
   const { push: navigate } = useRouter()
-  const handleOpen = () => navigate(`/hashtag/${hashtag.data.hashtag}`)
+  const handleOpen = () => navigate(`/hashtag/${hashtag.data.slug}`)
 
   return (
     <ListItemFrame onOpen={handleOpen} mini>
       <MiniListItem
-        leftText={`#${hashtag.data.hashtag}`}
+        leftText={hashtag.data.display}
         rightText={formatPostCount(hashtag.data.usageCount)}
       />
     </ListItemFrame>

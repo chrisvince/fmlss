@@ -26,7 +26,7 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 }
 
 type UsePostFeed = (
-  hashtag: string,
+  slug: string,
   options?: {
     showType?: 'post' | 'reply' | 'both'
     sortMode?: HashtagSortMode
@@ -43,7 +43,7 @@ type UsePostFeed = (
 }
 
 const useHashtagPosts: UsePostFeed = (
-  hashtag,
+  slug,
   {
     showType = 'post',
     sortMode = 'latest',
@@ -57,7 +57,7 @@ const useHashtagPosts: UsePostFeed = (
   const { fallback } = useSWRConfig()
 
   const fallbackData =
-    fallback[createHashtagPostsCacheKey(hashtag, showType, sortMode)]
+    fallback[createHashtagPostsCacheKey(slug, showType, sortMode)]
 
   const { id: uid } = useAuthUser()
 
@@ -73,11 +73,11 @@ const useHashtagPosts: UsePostFeed = (
       if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
         return null
       }
-      return createHashtagPostsCacheKey(hashtag, showType, sortMode, index)
+      return createHashtagPostsCacheKey(slug, showType, sortMode, index)
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
-      return getHashtagPosts(hashtag, {
+      return getHashtagPosts(slug, {
         sortMode,
         startAfter: pageStartAfterTrace[pageIndex],
         showType,

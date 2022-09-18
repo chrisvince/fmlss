@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { onResourceView } from '../callableFirebaseFunctions'
 
 declare global {
   interface Window {
@@ -6,13 +7,26 @@ declare global {
   }
 }
 
-type Event = 'Page View' | 'Post View' | 'Category View' | 'Hashtag View'
+type Resource = 'post' | 'category' | 'hashtag'
+
+const resourceEventMap = {
+  post: 'Post View',
+  category: 'Category View',
+  hashtag: 'Hashtag View',
+}
 
 interface Options {
   onceOnly: boolean
 }
 
-type EventFunction = (event: Event, data: any, options: Options) => void
+type EventFunction = (
+  resource: Resource,
+  data: {
+    slug: string,
+    [key: string]: any,
+  },
+  options?: Options,
+) => void
 
 type UseTracking = () => {
   track: EventFunction
@@ -22,13 +36,16 @@ const useTracking: UseTracking = () => {
   const eventFiredRef = useRef<boolean>(false)
 
   const track: EventFunction = (
-    event,
+    resource,
     data,
-    { onceOnly }
+    { onceOnly } = { onceOnly: false }
   ) => {
     if (typeof window === 'undefined') return
     if (onceOnly && eventFiredRef.current) return
     eventFiredRef.current = true
+    const event = resourceEventMap[resource]
+
+    onResourceView({ resource, slug: data.slug })
 
     if (!window.dataLayer) {
       window.dataLayer = []

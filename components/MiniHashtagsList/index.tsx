@@ -30,7 +30,7 @@ const MiniHashtagsList = ({
   return (
     <Box>
       <PostList>
-        {hashtags.map((hashtag) => (
+        {hashtags.map(hashtag => (
           <li key={hashtag.data.id}>
             <MiniHashtagListItem hashtag={hashtag} />
           </li>

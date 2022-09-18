@@ -13,7 +13,7 @@ type PropTypes = {
 
 const HashtagListItem = ({ hashtag }: PropTypes) => {
   const { push: navigate } = useRouter()
-  const handleOpen = () => navigate(`/hashtag/${hashtag.data.hashtag}`)
+  const handleOpen = () => navigate(`/hashtag/${hashtag.data.slug}`)
 
   const postCount = formatPostCount(hashtag.data.usageCount)
   const viewCount = formatViewCount(hashtag.data.viewCount)
@@ -32,7 +32,7 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
           component="div"
           variant="h5"
         >
-          #{hashtag.data.hashtag}
+          {hashtag.data.display}
         </Typography>
         <Box
           sx={{

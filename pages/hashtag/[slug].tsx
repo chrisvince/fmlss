@@ -28,12 +28,12 @@ interface PropTypes {
   fallback: {
     [key: string]: any
   }
-  hashtag: string
+  slug: string
 }
 
-const Hashtag = ({ fallback, hashtag }: PropTypes) => (
+const Hashtag = ({ fallback, slug }: PropTypes) => (
   <SWRConfig value={{ fallback }}>
-    <HashtagPage hashtag={hashtag} />
+    <HashtagPage slug={slug} />
   </SWRConfig>
 )
 
@@ -47,12 +47,12 @@ const SORT_MODE_MAP: {
 
 const getServerSidePropsFn = async ({
   AuthUser,
-  params: { hashtag },
+  params: { slug },
   query: { sort = 'latest' },
   req,
 }: {
   AuthUser: AuthUser
-  params: { hashtag: string }
+  params: { slug: string }
   query: { sort: string }
   req: NextApiRequest
 }) => {
@@ -63,7 +63,7 @@ const getServerSidePropsFn = async ({
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as HashtagSortMode
 
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
-    hashtag,
+    slug,
     DEFAULT_POST_TYPE,
     sortMode,
   )
@@ -93,13 +93,13 @@ const getServerSidePropsFn = async ({
           [miniHashtagsCacheKey]: miniHashtags,
           [hashtagPostsCacheKey]: null,
         },
-        hashtag,
+        slug,
         key: hashtagPostsCacheKey,
       },
     }
   }
 
-  const posts = await getHashtagPosts(hashtag, {
+  const posts = await getHashtagPosts(slug, {
     db: adminDb,
     uid,
     showType: DEFAULT_POST_TYPE,
@@ -114,7 +114,7 @@ const getServerSidePropsFn = async ({
         [miniHashtagsCacheKey]: miniHashtags,
         [hashtagPostsCacheKey]: posts,
       },
-      hashtag,
+      slug,
       key: hashtagPostsCacheKey,
     },
   }

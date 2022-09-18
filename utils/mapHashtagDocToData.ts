@@ -6,8 +6,9 @@ const mapHashtagDocToData: MapHashtagDocToData = doc => {
   const data = doc.data()!
   return {
     createdAt: data.createdAt.toMillis() as string,
-    hashtag: data.hashtag as string,
+    display: data.display as string,
     id: doc.id as string,
+    slug: data.slug as string,
     updatedAt: data.updatedAt.toMillis() as string,
     usageCount: data.usageCount as number,
     viewCount: data.viewCount as number,

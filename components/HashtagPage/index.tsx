@@ -20,17 +20,17 @@ import useTracking from '../../utils/tracking/useTracking'
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
 type PropTypes = {
-  hashtag: string
+  slug: string
 }
 
-const generateSortOptions = (hashtag: string) => [
+const generateSortOptions = (slug: string) => [
   {
-    href: `/hashtag/${hashtag}`,
+    href: `/hashtag/${slug}`,
     label: 'Latest',
     sortMode: 'latest',
   },
   {
-    href: `/hashtag/${hashtag}?sort=popular`,
+    href: `/hashtag/${slug}?sort=popular`,
     label: 'Popular',
     sortMode: 'popular',
   },
@@ -54,7 +54,7 @@ const cellMeasurerCache = new CellMeasurerCache({
   minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
 })
 
-const HashtagPage = ({ hashtag }: PropTypes) => {
+const HashtagPage = ({ slug }: PropTypes) => {
   const { query: { sort } } = useRouter()
   const [showType, setShowType] = useState<'post' | 'both'>('post')
   const { track } = useTracking()
@@ -63,7 +63,7 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
     (SORT_MODE_MAP[sort as string] ?? 'latest') as HashtagSortMode
 
   const { isLoading, likePost, loadMore, moreToLoad, posts } =
-    useHashtagPosts(hashtag, {
+    useHashtagPosts(slug, {
       showType: showType,
       sortMode,
       swrConfig: {
@@ -76,16 +76,16 @@ const HashtagPage = ({ hashtag }: PropTypes) => {
     setShowType(checked ? 'both' : 'post')
   }
 
-  const sortOptions = generateSortOptions(hashtag)
-  const title = `#${hashtag}`
+  const sortOptions = generateSortOptions(slug)
+  const title = `#${slug}`
 
   useEffect(() => {
     if (isLoading) return
-    track('Hashtag View', {
-      hashtag,
+    track('hashtag', {
+      slug,
       title,
     }, { onceOnly: true })
-  }, [hashtag, isLoading, title, track])
+  }, [isLoading, slug, title, track])
 
   return (
     <Page

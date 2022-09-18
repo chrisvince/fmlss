@@ -1,11 +1,11 @@
 import type { FeedSortMode } from '../types'
 
 const createHashtagPostsCacheKey = (
-  hashtag: string,
+  slug: string,
   showType: 'post' | 'reply' | 'both',
   sortMode: FeedSortMode = 'latest',
   pageIndex: number | null = 0
-) => `hashtag/${hashtag}/posts/${showType}/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
+) => `hashtag/${slug}/posts/${showType}/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
 const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 
