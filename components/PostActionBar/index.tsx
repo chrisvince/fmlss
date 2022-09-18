@@ -43,6 +43,7 @@ const PostActionBar = ({
   const isMobileDevice = useMediaQuery(breakpoints.down('sm'))
 
   const [renderSignUpModal, setRenderSignUpModal] = useState(false)
+  const [modalActionText, setModalActionText] = useState('')
   const [renderReplyModal, setRenderReplyModal] = useState(false)
   const [loginModalOpen, setSignUpModalOpen] = useState(false)
   const [replyModalOpen, setReplyModalOpen] = useState(false)
@@ -52,6 +53,7 @@ const PostActionBar = ({
 
   const handleLikeButtonClick = () => {
     if (!isLoggedIn) {
+      setModalActionText('Sign up to like this post.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
       return
@@ -61,6 +63,7 @@ const PostActionBar = ({
 
   const handleReplyButtonClick = () => {
     if (!isLoggedIn) {
+      setModalActionText('Sign up to reply.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
       return
@@ -71,6 +74,7 @@ const PostActionBar = ({
 
   const handleHighlightButtonClick = () => {
     if (!isLoggedIn) {
+      setModalActionText('Sign up to highlight this post.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
       return
@@ -143,13 +147,15 @@ const PostActionBar = ({
               href={isMobileDevice ? `/post/${slug}/reply` : undefined}
             />
           )}
+          <HighlightButton onClick={handleHighlightButtonClick} />
           <ShareButton slug={slug} />
         </Box>
       </Box>
       {renderSignUpModal && (
         <SignUpModal
-          open={loginModalOpen}
+          actionText={modalActionText}
           onClose={handleSignUpModalClose}
+          open={loginModalOpen}
         />
       )}
       {renderReplyModal && (

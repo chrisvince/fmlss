@@ -20,7 +20,7 @@ interface Props {
   onClose: () => void
   open: boolean
   showCloseButton?: boolean
-  title: string
+  title?: string
 }
 
 const Modal = ({
@@ -42,7 +42,7 @@ const Modal = ({
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: !!title ? 'space-between' : 'flex-end',
           paddingRight: {
             xs: `calc(${spacing(2)} - 5px)`,
             sm: `calc(${spacing(3)} - 7px)`,
@@ -53,9 +53,11 @@ const Modal = ({
           },
         }}
       >
-        <Typography variant="h6" component="h2">
-          {title}
-        </Typography>
+        {title && (
+          <Typography variant="h6" component="h2">
+            {title}
+          </Typography>
+        )}
         <IconButton aria-label="Close" onClick={onClose}>
           <Close />
         </IconButton>

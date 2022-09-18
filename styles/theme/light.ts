@@ -48,6 +48,9 @@ const theme = createTheme({
     fontWeightMedium: 500,
     fontWeightBold: 700,
     htmlFontSize: 15,
+    h4: {
+      lineHeight: '1.45',
+    },
     h5: {
       fontSize: FONT_SIZE.XL,
       fontWeight: '500',
@@ -111,7 +114,7 @@ const theme = createTheme({
           ':not(.MuiButtonGroup-grouped)': {
             height: '39px',
           },
-        }
+        },
       },
     },
     MuiButtonGroup: {

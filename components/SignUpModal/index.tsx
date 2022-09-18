@@ -5,11 +5,12 @@ import Modal from '../Modal'
 import SignUpForm from '../SignUpForm'
 
 interface Props {
-  open: boolean
+  actionText?: string
   onClose: () => void
+  open: boolean
 }
 
-const SignUpModal = ({ onClose, open }: Props) => {
+const SignUpModal = ({ actionText, onClose, open }: Props) => {
   const handleLoginButtonClick = () => {
     console.log('handleLoginButtonClick')
   }
@@ -18,12 +19,8 @@ const SignUpModal = ({ onClose, open }: Props) => {
     <Modal
       onClose={onClose}
       open={open}
-      title="Login"
       actions={
-        <Button
-          variant="contained"
-          onClick={handleLoginButtonClick}
-        >
+        <Button variant="contained" onClick={handleLoginButtonClick}>
           Login
         </Button>
       }
@@ -31,8 +28,12 @@ const SignUpModal = ({ onClose, open }: Props) => {
       <Box>
         <Typography variant="h4" align="center">
           Be part of the conversation.
-          <br />
-          Sign up to reply.
+          {actionText && (
+            <>
+              <br />
+              {actionText}
+            </>
+          )}
         </Typography>
         <SignUpForm />
       </Box>
