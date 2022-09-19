@@ -72,7 +72,11 @@ const ActionButton = ({
           fontSize="small"
         />
       )}
-      <Typography variant="caption" id={labelledById}>
+      <Typography
+        id={labelledById}
+        sx={{ color: 'text.primary' }}
+        variant="caption"
+      >
         {text}
       </Typography>
     </Button>
