@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import { onResourceView } from '../callableFirebaseFunctions'
 
 declare global {
   interface Window {
@@ -44,8 +43,6 @@ const useTracking: UseTracking = () => {
     if (onceOnly && eventFiredRef.current) return
     eventFiredRef.current = true
     const event = resourceEventMap[resource]
-
-    onResourceView({ resource, slug: data.slug })
 
     if (!window.dataLayer) {
       window.dataLayer = []
