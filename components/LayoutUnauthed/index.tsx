@@ -17,6 +17,8 @@ const LayoutUnauthed = ({ children }: PropTypes) => (
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        pt: 3,
+        pb: 5,
       }}
     >
       {children}

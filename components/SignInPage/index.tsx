@@ -15,10 +15,18 @@ const SignInPage = () => (
     <Container maxWidth="lg">
       <Box
         sx={{
-          alignItems: 'center',
-          columnGap: 30,
-          display: 'grid',
-          gridTemplateColumns: '1fr 400px',
+          alignItems: {
+            sm: 'center',
+          },
+          columnGap: {
+            sm: 30,
+          },
+          display: {
+            sm: 'grid',
+          },
+          gridTemplateColumns: {
+            sm: '1fr 400px',
+          },
         }}
       >
         <Box
