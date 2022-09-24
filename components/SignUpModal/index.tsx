@@ -20,7 +20,13 @@ const SignUpModal = ({ actionText, onClose, open }: Props) => {
       onClose={onClose}
       open={open}
     >
-      <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 5,
+        }}
+      >
         <Typography variant="h4" align="center">
           Be part of the conversation.
           {actionText && (
