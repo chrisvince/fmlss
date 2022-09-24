@@ -150,12 +150,11 @@ const TopNavigation = () => {
                   </IconButton>
                 </Box>
                 <Box>
-                  <Link href="/">
+                  <Link href="/" passHref>
                     <Box
                       component="a"
                       sx={{
                         display: 'flex',
-                        cursor: 'pointer',
                         padding: 1,
                         margin: -1,
                       }}
