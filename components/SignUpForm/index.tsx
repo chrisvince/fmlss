@@ -3,7 +3,7 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import Link from 'next/link'
 import { Box } from '@mui/system'
-import { Divider, TextField, Typography, Link as MuiLink } from '@mui/material'
+import { Divider, TextField, Typography, Button } from '@mui/material'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import GoogleAuthButton from '../GoogleAuthButton'
@@ -70,7 +70,6 @@ const SignUpForm = ({ onSuccess }: Props) => {
       onSubmit={handleSubmit(onSubmit)}
       noValidate
       sx={{
-        mt: 6,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
@@ -161,34 +160,49 @@ const SignUpForm = ({ onSuccess }: Props) => {
               />
             )}
           />
-          <Box>
-            <LoadingButton
-              fullWidth
-              loading={isLoading}
-              type="submit"
-              variant="contained"
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              gap: 4,
+            }}
+          >
+            <Box>
+              <LoadingButton
+                fullWidth
+                loading={isLoading}
+                type="submit"
+                variant="contained"
+              >
+                Create account
+              </LoadingButton>
+              {formError && (
+                <Typography variant="caption" color="error">
+                  {formError.message}
+                </Typography>
+              )}
+            </Box>
+            <Divider />
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+                gap: 2,
+              }}
             >
-              Sign up
-            </LoadingButton>
-            {formError && (
-              <Typography variant="caption" color="error">
-                {formError.message}
+              <Typography variant="body1" component="h2">
+                Already have an account?{' '}
               </Typography>
-            )}
+              <Link href="/" passHref>
+                <Button variant="outlined" fullWidth>
+                  Sign in
+                </Button>
+              </Link>
+            </Box>
           </Box>
-        </Box>
-      </Box>
-      <Box>
-        <Box>
-          <Link href="/forgot-password" passHref>
-            <MuiLink variant="body2">Forgot password?</MuiLink>
-          </Link>
-          <Typography variant="body2">
-            Already have an account?{' '}
-            <Link href="/" passHref>
-              <MuiLink variant="body2">Sign in</MuiLink>
-            </Link>
-          </Typography>
         </Box>
       </Box>
     </Box>
