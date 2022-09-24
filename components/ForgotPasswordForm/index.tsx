@@ -4,7 +4,7 @@ import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import { forgotPassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
-import { TextField, Typography, Link as MuiLink } from '@mui/material'
+import { Button, Divider, TextField, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import Link from 'next/link'
 
@@ -68,61 +68,79 @@ const ForgotPasswordForm = () => {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-start',
-            alignItems: 'stretch',
-            gap: 2,
-            '& *:first-of-type': {
-              marginTop: 0,
-            },
+            gap: 4,
           }}
         >
-          <Controller
-            name={EMAIL_ID}
-            control={control}
-            defaultValue=""
-            rules={{
-              required: FORM_MESSAGING.REQUIRED,
-              pattern: {
-                value: EMAIL_REGEX_PATTERN,
-                message: FORM_MESSAGING.VALID_EMAIL,
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignItems: 'stretch',
+              gap: 2,
+              '& *:first-of-type': {
+                marginTop: 0,
               },
             }}
-            render={({ field, fieldState }) => (
-              <TextField
+          >
+            <Controller
+              name={EMAIL_ID}
+              control={control}
+              defaultValue=""
+              rules={{
+                required: FORM_MESSAGING.REQUIRED,
+                pattern: {
+                  value: EMAIL_REGEX_PATTERN,
+                  message: FORM_MESSAGING.VALID_EMAIL,
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  fullWidth
+                  {...field}
+                  disabled={isLoading}
+                  label="Email"
+                  type="email"
+                  variant="outlined"
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
+              )}
+            />
+            <Box>
+              <LoadingButton
                 fullWidth
-                {...field}
-                disabled={isLoading}
-                label="Email"
-                type="email"
-                variant="outlined"
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-              />
-            )}
-          />
-          <Box>
-            <LoadingButton
-              fullWidth
-              loading={isLoading}
-              type="submit"
-              variant="contained"
-            >
-              Reset password
-            </LoadingButton>
-            {formError && (
-              <Typography variant="caption" color="error">
-                {formError.message}
-              </Typography>
-            )}
+                loading={isLoading}
+                type="submit"
+                variant="contained"
+              >
+                Reset password
+              </LoadingButton>
+              {formError && (
+                <Typography variant="caption" color="error">
+                  {formError.message}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          <Divider />
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              gap: 2,
+            }}
+          >
+            <Typography variant="body1" component="h1">
+              Already know your password?
+            </Typography>
+            <Link href="/" passHref>
+              <Button variant="outlined" fullWidth>Sign in</Button>
+            </Link>
           </Box>
         </Box>
-        <Link
-          href="/"
-          passHref
-        >
-          <MuiLink variant="body2">
-            Already know your password?
-          </MuiLink>
-        </Link>
       </Box>
     </Box>
   )
