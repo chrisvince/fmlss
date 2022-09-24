@@ -10,7 +10,6 @@ const SignUpPage = () => {
     <Page
       description="Join the conversation. Sign up to Fameless."
       pageTitle="Sign up"
-      thinContainer
       layout="none"
       noPageTitle
     >

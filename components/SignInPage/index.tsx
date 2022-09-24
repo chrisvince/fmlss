@@ -10,7 +10,6 @@ const SignInPage = () => (
     layout="none"
     noPageTitle
     pageTitle="Sign in or create an account"
-    thinContainer
   >
     <Container maxWidth="lg">
       <Box
