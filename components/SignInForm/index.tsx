@@ -37,7 +37,6 @@ const GENERIC_ERROR_MESSAGE =
   'There was an error signing you in. Please try again later.'
 
 const SignInForm = () => {
-  const [uiState, setUiState] = useState(UI_STATES.NOT_SUBMITTED)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
 
