@@ -37,6 +37,7 @@ const SignUpForm = ({ onSuccess }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const { control, handleSubmit, setError } = useForm()
+  const handleGoogleAuthSuccess = () => onSuccess?.()
 
   const onSubmit = async (data: FieldValues) => {
     const email = data[FORM_IDS.EMAIL] as string
@@ -90,6 +91,7 @@ const SignUpForm = ({ onSuccess }: Props) => {
           disabled={isLoading}
           mode="signUp"
           onAuthError={handleGoogleAuthError}
+          onAuthSuccess={handleGoogleAuthSuccess}
         />
         <Divider>
           <Typography variant="body2" color="action.active">
