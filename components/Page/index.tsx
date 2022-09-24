@@ -30,6 +30,7 @@ interface Props {
   }
   children: ReactNode
   description?: string
+  layout?: 'rightPanel' | 'none'
   noPageTitle?: boolean
   pageTitle?: string
   rightPanelChildren?: ReactNode
@@ -44,6 +45,7 @@ const Page = ({
   article = {},
   children,
   description = DEFAULT_DESCRIPTION,
+  layout = 'rightPanel',
   noPageTitle = false,
   pageTitle,
   rightPanelChildren,
@@ -92,16 +94,23 @@ const Page = ({
           <meta key={`${tag}-${index}`} name="article:tag" content={tag} />
         ))}
       </Head>
-      <NestedLayout
-        thinContainer={thinContainer}
-        main={
-          <>
-            {renderUiTitle && <PageTitle>{uiTitle}</PageTitle>}
-            {children}
-          </>
-        }
-        rightPanelChildren={<RightSideBar>{rightPanelChildren}</RightSideBar>}
-      />
+      {layout === 'rightPanel' ? (
+        <NestedLayout
+          thinContainer={thinContainer}
+          main={
+            <>
+              {renderUiTitle && <PageTitle>{uiTitle}</PageTitle>}
+              {children}
+            </>
+          }
+          rightPanelChildren={<RightSideBar>{rightPanelChildren}</RightSideBar>}
+        />
+      ) : (
+        <>
+          {renderUiTitle && <PageTitle>{uiTitle}</PageTitle>}
+          {children}
+        </>
+      )}
     </>
   )
 }

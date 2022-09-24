@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import Link from 'next/link'
-import { Divider, TextField, Typography, Link as MuiLink } from '@mui/material'
+import { Divider, TextField, Typography, Link as MuiLink, Button } from '@mui/material'
 import { Box } from '@mui/system'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { LoadingButton } from '@mui/lab'
@@ -109,7 +109,7 @@ const SignInForm = () => {
             justifyContent: 'flex-start',
             alignItems: 'stretch',
             gap: 2,
-            '& *:first-of-type': {
+            '&>*:first-of-type': {
               marginTop: 0,
             },
           }}
@@ -166,34 +166,49 @@ const SignInForm = () => {
               />
             )}
           />
-          <Box>
-            <LoadingButton
-              fullWidth
-              loading={isLoading}
-              type="submit"
-              variant="contained"
-            >
-              Sign in
-            </LoadingButton>
-            {formError && (
-              <Typography variant="caption" color="error">
-                {formError.message}
-              </Typography>
-            )}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              gap: 4,
+            }}
+          >
+            <Box>
+              <LoadingButton
+                fullWidth
+                loading={isLoading}
+                type="submit"
+                variant="contained"
+              >
+                Sign in
+              </LoadingButton>
+              {formError && (
+                <Typography variant="caption" color="error">
+                  {formError.message}
+                </Typography>
+              )}
+              <Box
+                sx={{
+                  mt: 2,
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <Link href="/forgot-password" passHref>
+                  <MuiLink variant="body2">Forgot password?</MuiLink>
+                </Link>
+              </Box>
+            </Box>
+            <Divider />
+            <Box>
+              <Link href="/sign-up" passHref>
+                <Button variant="outlined" fullWidth>
+                  Create new account
+                </Button>
+              </Link>
+            </Box>
           </Box>
-        </Box>
-      </Box>
-      <Box>
-        <Box>
-          <Link href="/forgot-password" passHref>
-            <MuiLink variant="body2">Forgot password?</MuiLink>
-          </Link>
-          <Typography variant="body2">
-            Don&apos;t have an account?{' '}
-            <Link href="/sign-up" passHref>
-              <MuiLink variant="body2">Sign up</MuiLink>
-            </Link>
-          </Typography>
         </Box>
       </Box>
     </Box>

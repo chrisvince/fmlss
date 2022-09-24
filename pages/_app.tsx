@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
+import { ReactElement, ReactNode, useEffect } from 'react'
 import type { AppProps } from 'next/app'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { withAuthUser } from 'next-firebase-auth'
@@ -12,6 +12,7 @@ import Layout from '../components/Layout'
 import { light } from '../styles/theme'
 import createEmotionCache from '../utils/createEmotionServer'
 import isDevelopment from '../utils/isDevelopment'
+import { NextPage } from 'next'
 
 initFirebase()
 initAuth()
@@ -19,7 +20,12 @@ initAuth()
 const clientSideEmotionCache = createEmotionCache()
 const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
-interface Props extends AppProps {
+type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
+
+type Props = AppProps & {
+  Component: NextPageWithLayout
   emotionCache?: EmotionCache
 }
 
@@ -34,6 +40,10 @@ const App = ({
       jssStyles?.parentElement?.removeChild(jssStyles)
     }
   }, [])
+
+  const getLayout = Component.getLayout ?? (page => (
+    <Layout>{page}</Layout>
+  ))
 
   return (
     <CacheProvider value={emotionCache}>
@@ -53,9 +63,7 @@ const App = ({
       )}
       <ThemeProvider theme={light}>
         <CssBaseline />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        {getLayout(<Component {...pageProps} />)}
       </ThemeProvider>
     </CacheProvider>
   )

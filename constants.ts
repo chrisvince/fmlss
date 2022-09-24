@@ -22,6 +22,7 @@ const constants = {
   EMAIL_REGEX_PATTERN:
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
   FEED_CACHE_TIME: secondsToMs(30),
+  FOOTER_BASIC_HEIGHT: '56px',
   FORM_MESSAGING: {
     MATCH: 'Passwords must match',
     MIN_LENGTH: `Must be at least ${PASSWORD_MIN_LENGTH} characters long`,
