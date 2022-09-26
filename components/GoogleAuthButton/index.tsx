@@ -2,8 +2,6 @@ import GoogleButton from 'react-google-button'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-const auth = firebase.auth()
-
 interface PropTypes {
   disabled?: boolean
   mode?: 'signIn' | 'signUp'
@@ -17,6 +15,7 @@ const GoogleAuthButton = ({
   onAuthSuccess,
   onAuthError,
 }: PropTypes) => {
+  const auth = firebase.auth()
   const provider = new firebase.auth.GoogleAuthProvider()
 
   const handleClick = async () => {

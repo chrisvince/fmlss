@@ -18,8 +18,6 @@ const {
   PASSWORD_REGEX_PATTERN,
 } = constants
 
-const auth = firebase.auth()
-
 const FORM_IDS = {
   EMAIL: 'email',
   PASSWORD: 'password',
@@ -33,9 +31,9 @@ interface Props {
 }
 
 const SignUpForm = ({ onSuccess }: Props) => {
+  const auth = firebase.auth()
   const [formError, setFormError] = useState<{ message: string } | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
   const { control, handleSubmit, setError } = useForm()
   const handleGoogleAuthSuccess = () => onSuccess?.()
 

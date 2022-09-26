@@ -17,14 +17,13 @@ const {
   PASSWORD_REGEX_PATTERN,
 } = constants
 
-const auth = firebase.auth()
-
 const FORM_IDS = {
   EMAIL: 'email',
   PASSWORD: 'password',
 }
 
 const ChangeEmailForm = () => {
+  const auth = firebase.auth()
   const authUser = useAuthUser()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [submitted, setSubmitted] = useState<boolean>(false)

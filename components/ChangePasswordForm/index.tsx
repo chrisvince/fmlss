@@ -14,8 +14,6 @@ import constants from '../../constants'
 const { PASSWORD_MIN_LENGTH, PASSWORD_REGEX_PATTERN, FORM_MESSAGING } =
   constants
 
-const auth = firebase.auth()
-
 const FORM_IDS = {
   CURRENT_PASSWORD: 'current-password',
   NEW_PASSWORD: 'new-password',
@@ -27,6 +25,7 @@ interface PropTypes {
 }
 
 const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
+  const auth = firebase.auth()
   const [isLoading, setIsLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)

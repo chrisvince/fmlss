@@ -17,8 +17,6 @@ const {
   PASSWORD_REGEX_PATTERN,
 } = constants
 
-const auth = firebase.auth()
-
 const UI_STATES = {
   NOT_SUBMITTED: 'not-submitted',
   LOADING: 'loading',
@@ -37,6 +35,7 @@ const GENERIC_ERROR_MESSAGE =
   'There was an error signing you in. Please try again later.'
 
 const SignInForm = () => {
+  const auth = firebase.auth()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
 
