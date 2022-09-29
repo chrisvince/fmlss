@@ -28,6 +28,7 @@ const {
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
   MINI_LIST_CACHE_TIME,
   MINI_LIST_COUNT,
+  POST_REPLIES_SSR,
 } = constants
 
 interface PropTypes {
@@ -113,10 +114,12 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
-  const replies = await getPostReplies(post.data.reference, slug, {
-    uid,
-    db: adminDb,
-  })
+  const replies = POST_REPLIES_SSR
+    ? await getPostReplies(post.data.reference, slug, {
+        uid,
+        db: adminDb,
+      })
+    : null
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
