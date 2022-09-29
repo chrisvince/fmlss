@@ -192,39 +192,24 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
             />
           )}
         />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-end',
-            }}
+        {formError && (
+          <Typography
+            variant="caption"
+            color="error"
+            component="div"
+            mb={1}
           >
-            {formError && (
-              <Typography
-                variant="caption"
-                color="error"
-                component="div"
-                mb={1}
-              >
-                {formError.message}
-              </Typography>
-            )}
-            <LoadingButton
-              loading={isLoading}
-              type="submit"
-              variant="contained"
-            >
-              Submit
-            </LoadingButton>
-          </Box>
-        </Box>
+            {formError.message}
+          </Typography>
+        )}
+        <LoadingButton
+          fullWidth
+          loading={isLoading}
+          type="submit"
+          variant="contained"
+        >
+          Submit
+        </LoadingButton>
       </Box>
     </Box>
   )
