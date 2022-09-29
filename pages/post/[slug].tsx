@@ -37,7 +37,7 @@ interface PropTypes {
   }
 }
 
-const PostPageProvider = ({ fallback }: PropTypes) => {
+const Post = ({ fallback }: PropTypes) => {
   const router = useRouter()
   const { slug } = router.query as { slug: string }
   const { post, isLoading } = usePost(slug)
@@ -143,4 +143,4 @@ const getServerSidePropsFn = async ({
 export const getServerSideProps =
   withAuthUserTokenSSR()(getServerSidePropsFn as any)
 
-export default withAuthUser()(PostPageProvider as any)
+export default withAuthUser()(Post as any)
