@@ -1,0 +1,58 @@
+import { getFirebaseAdmin } from 'next-firebase-auth'
+import { SWRConfig } from 'swr'
+import NotFoundPage from '../components/NotFoundPage'
+import constants from '../constants'
+import {
+  createMiniCategoriesCacheKey,
+  createMiniHashtagsCacheKey,
+} from '../utils/createCacheKeys'
+import getCategories from '../utils/data/categories/getCategories'
+import getHashtags from '../utils/data/hashtags/getHashtags'
+import msToSeconds from '../utils/msToSeconds'
+
+const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+
+interface Props {
+  fallback: {
+    [key: string]: any
+  }
+}
+
+const NotFound = ({ fallback }: Props) => (
+  <SWRConfig value={{ fallback }}>
+    <NotFoundPage />
+  </SWRConfig>
+)
+
+export const getStaticProps = async () => {
+  const admin = getFirebaseAdmin()
+  const adminDb = admin.firestore()
+  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+
+  const miniHashtags = await getHashtags({
+    cacheKey: miniHashtagsCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
+  const miniCategories = await getCategories({
+    cacheKey: miniCategoriesCacheKey,
+    cacheTime: MINI_LIST_CACHE_TIME,
+    db: adminDb,
+    limit: MINI_LIST_COUNT,
+  })
+
+  return {
+    props: {
+      fallback: {
+        [miniCategoriesCacheKey]: miniCategories,
+        [miniHashtagsCacheKey]: miniHashtags,
+      },
+    },
+    revalidate: msToSeconds(MINI_LIST_CACHE_TIME),
+  }
+}
+
+export default NotFound
