@@ -1,4 +1,5 @@
 export * from './changePassword'
+export * from './checkPasswordResetRequestValid'
 export * from './checkUserHasPassword'
 export * from './createPost'
 export * from './createPostLike'
