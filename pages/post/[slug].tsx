@@ -104,10 +104,15 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const post = await getPost(slug, {
-    uid,
-    db: adminDb,
-  })
+  let post
+  try {
+    post = await getPost(slug, {
+      uid,
+      db: adminDb,
+    })
+  } catch (error) {
+    return { notFound: true }
+  }
 
   if (!post) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
