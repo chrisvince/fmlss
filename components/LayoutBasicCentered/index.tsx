@@ -9,7 +9,7 @@ interface PropTypes {
   children: React.ReactNode
 }
 
-const LayoutUnauthed = ({ children }: PropTypes) => (
+const LayoutBasicCentered = ({ children }: PropTypes) => (
   <>
     <Box
       sx={{
@@ -27,4 +27,4 @@ const LayoutUnauthed = ({ children }: PropTypes) => (
   </>
 )
 
-export default LayoutUnauthed
+export default LayoutBasicCentered
