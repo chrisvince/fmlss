@@ -1,5 +1,5 @@
 import { Box } from '@mui/system'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import { forgotPassword } from '../../utils/callableFirebaseFunctions'
@@ -8,6 +8,8 @@ import { Button, Divider, TextField, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import Link from 'next/link'
 import TextAndCta from '../TextAndCta'
+import { useAuthUser } from 'next-firebase-auth'
+import PageSpinner from '../PageSpinner'
 
 const { FORM_MESSAGING, EMAIL_REGEX_PATTERN } = constants
 
@@ -15,38 +17,63 @@ const EMAIL_ID = 'email'
 const EMAIL_LABEL = 'Email'
 
 const ForgotPasswordForm = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
   const [submitted, setSubmitted] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
-
   const { control, handleSubmit } = useForm()
+  const { email: authEmail } = useAuthUser()
 
-  const onSubmit = async (data: FieldValues) => {
-    const email = data[EMAIL_ID] as string
-    setFormError(null)
-    setIsLoading(true)
-
+  const performRequest = async ({ email }: { email: string }) => {
     try {
       await forgotPassword({ email })
       setSubmitted(true)
-      setIsLoading(false)
+      setFormIsLoading(false)
     } catch (error) {
       console.error(error)
       setFormError({
         message:
-          'There was an issue resetting your password. Please try again.',
+          'There was an issue resetting your password. Please try again later.',
       })
     }
   }
 
+  const onSubmit = async (data: FieldValues) => {
+    const email = data[EMAIL_ID] as string
+    setFormError(null)
+    setFormIsLoading(true)
+    await performRequest({ email })
+  }
+
+  useEffect(() => {
+    if (!authEmail) return
+    performRequest({ email: authEmail })
+  }, [authEmail])
+
   if (submitted) {
     return (
       <TextAndCta
-        message="Thanks! Your password reset request has been recieved. If an account exists, you will recieve an email."
-        ctaText="Sign in"
-        ctaHref="/"
-      />  
+        ctaHref={authEmail ? '/profile' : '/'}
+        ctaText={authEmail ? 'Go to profile' : 'Sign in'}
+        message={`Your password reset request has been recieved. ${
+          authEmail ? 'Y' : 'If an account exists, y'
+        }ou will recieve an email with instructions to reset your password.`}
+      />
     )
+  }
+
+  if (authEmail && formError) {
+    return (
+      <TextAndCta
+        ctaHref="/"
+        ctaText="Go to sign in"
+        message={formError.message}
+        variant="error"
+      />
+    )
+  }
+
+  if (authEmail && !submitted) {
+    return <PageSpinner />
   }
 
   return (
@@ -109,7 +136,7 @@ const ForgotPasswordForm = () => {
                   <TextField
                     fullWidth
                     {...field}
-                    disabled={isLoading}
+                    disabled={formIsLoading}
                     label={EMAIL_LABEL}
                     type="email"
                     variant="outlined"
@@ -121,7 +148,7 @@ const ForgotPasswordForm = () => {
               <Box>
                 <LoadingButton
                   fullWidth
-                  loading={isLoading}
+                  loading={formIsLoading}
                   type="submit"
                   variant="contained"
                 >

@@ -13,8 +13,5 @@ ForgotPassword.getLayout = (page: ReactElement) => (
   <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
 )
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-)()
-
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(ForgotPassword)
+export const getServerSideProps = withAuthUserTokenSSR()()
+export default withAuthUser()(ForgotPassword)
