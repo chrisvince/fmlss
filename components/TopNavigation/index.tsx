@@ -21,11 +21,11 @@ import {
   Menu as MenuIcon,
   PersonRounded,
 } from '@mui/icons-material'
-import Image from 'next/image'
 
 import constants from '../../constants'
 import CenterSectionContainer from '../CenterSectionContainer'
 import LeftNavigationMobile from '../LeftNavigationMobile'
+import Brand from '../Brand'
 
 const {
   SIDEBAR_GAP_MD,
@@ -150,23 +150,7 @@ const TopNavigation = () => {
                   </IconButton>
                 </Box>
                 <Box>
-                  <Link href="/" passHref>
-                    <Box
-                      component="a"
-                      sx={{
-                        display: 'flex',
-                        padding: 1,
-                        margin: -1,
-                      }}
-                    >
-                      <Image
-                        alt="FAMELESS"
-                        src="/fameless.svg"
-                        height={19}
-                        width={116}
-                      />
-                    </Box>
-                  </Link>
+                  <Brand height={19} width={116} padded />
                 </Box>
               </Box>
               <Box

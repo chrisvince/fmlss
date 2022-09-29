@@ -1,9 +1,8 @@
 import { Box, Container } from '@mui/system'
-import Link from 'next/link'
-import Image from 'next/image'
 
 import FooterBasic from '../FooterBasic'
 import constants from '../../constants'
+import Brand from '../Brand'
 
 const { FOOTER_BASIC_HEIGHT } = constants
 
@@ -33,16 +32,7 @@ const LayoutBasicSlimBranded = ({ children }: PropTypes) => (
             justifyContent: 'center',
           }}
         >
-          <Link href="/" passHref>
-            <Box component="a">
-              <Image
-                alt="FAMELESS"
-                src="/fameless.svg"
-                height={21}
-                width={130}
-              />
-            </Box>
-          </Link>
+          <Brand height={21} width={130} />
         </Box>
         <Box>{children}</Box>
       </Box>

@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 import { Box, Container } from '@mui/system'
-import Image from 'next/image'
+import Brand from '../Brand'
 import Page from '../Page'
 import SignInForm from '../SignInForm'
 
@@ -37,12 +37,8 @@ const SignInPage = () => (
             justifyContent: 'flex-start',
           }}
         >
-          <Image alt="FAMELESS" src="/fameless.svg" height={34} width={210} />
-          <Typography
-            component="h2"
-            sx={{ lineHeight: 1 }}
-            variant="h4"
-          >
+          <Brand height={34} width={210} />
+          <Typography component="h2" sx={{ lineHeight: 1 }} variant="h4">
             The network where nobody knows your name.
           </Typography>
         </Box>
