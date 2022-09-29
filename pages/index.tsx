@@ -6,7 +6,7 @@ import {
 } from '../config/withAuthConfig'
 import SignInPage from '../components/SignInPage'
 import { ReactElement } from 'react'
-import LayoutUnauthed from '../components/LayoutUnauthed'
+import LayoutBasicCentered from '../components/LayoutBasicCentered'
 
 const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
 
@@ -15,7 +15,7 @@ const SignIn = () => {
 }
 
 SignIn.getLayout = function getLayout(page: ReactElement) {
-  return <LayoutUnauthed>{page}</LayoutUnauthed>
+  return <LayoutBasicCentered>{page}</LayoutBasicCentered>
 }
 
 export const getServerSideProps = withAuthUserTokenSSR(

@@ -8,17 +8,15 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../config/withAuthConfig'
 import SignUpPage from '../components/SignUpPage'
-import LayoutUnauthed from '../components/LayoutUnauthed'
+import LayoutBasicSlimBranded from '../components/LayoutBasicSlimBranded'
 import { ReactElement } from 'react'
 
 const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
 
-const SignUp = () => {
-  return <SignUpPage />
-}
+const SignUp = () => <SignUpPage />
 
 SignUp.getLayout = function getLayout(page: ReactElement) {
-  return <LayoutUnauthed>{page}</LayoutUnauthed>
+  return <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
 }
 
 export const getServerSideProps =
