@@ -2,9 +2,9 @@ import firebase from 'firebase/app'
 import 'firebase/functions'
 
 interface Input {
-  newPassword: string
   confirmNewPassword: string
-  passwordResetRequestId: string
+  newPassword: string
+  requestId: string
 }
 
 type ResetPassword = (data: Input) => Promise<{ data: void }>
