@@ -13,6 +13,7 @@ export interface PostData {
   likesCount: number
   linkPreviews: PostPreview[]
   parentId: string
+  parentSlug: string | null
   postsCount: number
   reference: string
   slug: string

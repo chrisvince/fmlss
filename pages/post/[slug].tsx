@@ -23,6 +23,8 @@ import getCategories from '../../utils/data/categories/getCategories'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import usePost from '../../utils/data/post/usePost'
+import { ReactElement } from 'react'
+import Layout from '../../components/Layout'
 
 const {
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
@@ -52,6 +54,10 @@ const Post = ({ fallback }: PropTypes) => {
     </SWRConfig>
   )
 }
+
+Post.getLayout = (page: ReactElement) => (
+  <Layout noNavigationMarginBottom>{page}</Layout>
+)
 
 const getServerSidePropsFn = async ({
   AuthUser,

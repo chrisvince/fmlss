@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { Box } from '@mui/system'
+import { Box, useTheme } from '@mui/system'
 
 import PostItem from '../PostItem'
 import RepliesList from '../RepliesList'
@@ -13,9 +13,9 @@ import PageSpinner from '../PageSpinner'
 import useUser from '../../utils/data/user/useUser'
 import Error from 'next/error'
 import MobileContainer from '../MobileContainer'
-import { Divider } from '@mui/material'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
+import PostPageParentPost from '../PostPageParentPost'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -31,11 +31,14 @@ const PostPage = ({ slug }: PropTypes) => {
   const { isLoading, likePost, post } = usePost(slug)
   const { user, update: updateUser, isLoading: userIsLoading } = useUser()
   const [firstPostModalOpen, setFirstPostModalOpen] = useState(false)
+  const [parentPostLoaded, setParentPostLoaded] = useState(false)
   const { shownFirstPostMessage } = user?.data ?? {}
   const createdByUser = !!post?.user?.created
   const handleFirstPostModalClose = () => setFirstPostModalOpen(false)
   const { track } = useTracking()
+  const theme = useTheme()
   const pageTitle = truncateString(post?.data.body)
+  const handleParentPostLoad = () => setParentPostLoaded(true)
 
   useEffect(() => {
     if (userIsLoading || !createdByUser || shownFirstPostMessage) return
@@ -60,9 +63,11 @@ const PostPage = ({ slug }: PropTypes) => {
     return <PageSpinner />
   }
 
-  const allowReplying = post!.data.documentDepth < POST_MAX_DEPTH
   const createdAt = new Date(post!.data.createdAt).toISOString()
   const updatedAt = new Date(post!.data.updatedAt).toISOString()
+  const allowReplying = post!.data.documentDepth < POST_MAX_DEPTH
+  const hasParentPost = !!post!.data.parentSlug
+  const parentPostLoading = hasParentPost && !parentPostLoaded
 
   return (
     <>
@@ -70,6 +75,7 @@ const PostPage = ({ slug }: PropTypes) => {
         pageTitle={pageTitle}
         uiPageTitle="Post"
         type="article"
+        noPageTitle
         article={{
           publishedTime: createdAt,
           modifiedTime: updatedAt,
@@ -84,27 +90,32 @@ const PostPage = ({ slug }: PropTypes) => {
           </>
         }
       >
+        {post!.data.parentSlug && (
+          <PostPageParentPost
+            slug={post!.data.parentSlug}
+            onLoad={handleParentPostLoad}
+          />
+        )}
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            justifyContent: 'flex-start',
-            gap: 4,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            boxShadow: `0 -1px 0 ${theme.palette.divider}`,
+            py: 2,
           }}
         >
-          <Box>
-            <MobileContainer>
-              <PostItem
-                bodySize="large"
-                onLikePost={likePost}
-                post={post!}
-              />
-            </MobileContainer>
-            <Divider sx={{ mt: 2 }} />
-          </Box>
-          {allowReplying && <RepliesList slug={slug} />}
+          <MobileContainer>
+            <PostItem
+              bodySize="large"
+              noBottomBorder
+              onLikePost={likePost}
+              post={post!}
+            />
+          </MobileContainer>
         </Box>
+        {allowReplying && (
+          <RepliesList slug={slug} loading={parentPostLoading} />
+        )}
       </Page>
       <FirstPostModal
         open={firstPostModalOpen}

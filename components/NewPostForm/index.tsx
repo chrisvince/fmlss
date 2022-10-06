@@ -85,7 +85,6 @@ const NewPostForm = ({
         />
       )}
       <Box>
-        {replyingToPost && <Divider />}
         <PostBodyTextArea
           disabled={isLoading}
           focusOnMount

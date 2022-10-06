@@ -15,6 +15,7 @@ type PropTypes = {
   bodyElementId?: string
   bodySize?: 'small' | 'large'
   hideActionBar?: boolean
+  noBottomBorder?: boolean
   onLikePost?: (slug: string) => Promise<void> | void
   post: Post
 }
@@ -23,6 +24,7 @@ const PostItem = ({
   bodyElementId,
   bodySize = 'small',
   hideActionBar,
+  noBottomBorder,
   onLikePost,
   post,
 }: PropTypes) => {
@@ -43,6 +45,9 @@ const PostItem = ({
         flexDirection: 'column',
         alignItems: 'stretch',
         justifyContent: 'flex-start',
+        borderBottom: !noBottomBorder ? '1px solid' : undefined,
+        borderColor: !noBottomBorder ? 'divider' : undefined,
+        pb: !noBottomBorder ? 2 : undefined,
         gap: 2,
       }}
     >

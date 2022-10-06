@@ -14,6 +14,7 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
     likesCount: postData.likesCount as number,
     linkPreviews: postData.linkPreviews as PostPreview[] ?? [],
     parentId: getParentIdFromDbReference(postDoc.ref.path) as string,
+    parentSlug: postData.parentSlug as string ?? null,
     postsCount: postData.postsCount as number,
     reference: postDoc.ref.path as string,
     slug: postData.slug as string,

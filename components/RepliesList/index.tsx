@@ -1,16 +1,15 @@
-import { Typography } from '@mui/material'
+import { Divider, Typography } from '@mui/material'
 import { CellMeasurerCache } from 'react-virtualized'
 import { Box } from '@mui/system'
 
-import usePost from '../../utils/data/post/usePost'
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
-import SectionHeading from '../SectionHeading'
 import ScrollLink from '../ScrollLink'
 import Feed from '../Feed'
 import constants from '../../constants'
 import InlineCreatePost from '../InlineCreatePost'
 import MobileContainer from '../MobileContainer'
 import ContentSpinner from '../ContentSpinner'
+import PostTypeSpacer from '../PostTypeSpacer'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -22,11 +21,11 @@ const cellMeasurerCache = new CellMeasurerCache({
 })
 
 type PropTypes = {
+  loading?: boolean
   slug: string
 }
 
-const RepliesList = ({ slug }: PropTypes) => {
-  const { post } = usePost(slug)
+const RepliesList = ({ loading = false, slug }: PropTypes) => {
 
   const {
     isLoading: repliesAreLoading,
@@ -39,7 +38,7 @@ const RepliesList = ({ slug }: PropTypes) => {
   return (
     <Box>
       <ScrollLink id="replies" />
-      {repliesAreLoading ? (
+      {loading || repliesAreLoading ? (
         <ContentSpinner />
       ) : !replies?.length ? (
         <Box>
@@ -63,14 +62,13 @@ const RepliesList = ({ slug }: PropTypes) => {
         </Box>
       ) : (
         <>
-          <SectionHeading sticky={false}>
-            Replies {!!post?.data.postsCount && <> ({post.data.postsCount})</>}
-          </SectionHeading>
+          <PostTypeSpacer />
           {replies.length >= SHOW_TOP_CREATE_POST_COUNT && (
             <Box sx={{ px: 2 }}>
               <InlineCreatePost slug={slug} />
             </Box>
           )}
+          <Divider />
           <Feed
             cellMeasurerCache={cellMeasurerCache}
             moreToLoad={moreToLoad}

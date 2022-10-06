@@ -19,14 +19,15 @@ const PostListItem = ({ onLikePost, post }: PropTypes) => {
 
   return (
     <ListItemFrame
+      aria-labelledby={ariaLabelledById}
       component="article"
       onOpen={handleOpen}
-      aria-labelledby={ariaLabelledById}
     >
       <PostItem
         bodyElementId={ariaLabelledById}
         onLikePost={onLikePost}
         post={post}
+        noBottomBorder
       />
     </ListItemFrame>
   )

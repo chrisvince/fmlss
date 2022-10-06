@@ -15,15 +15,16 @@ const {
 
 interface PropTypes {
   children: React.ReactNode
+  noNavigationMarginBottom?: boolean
 }
 
-const Layout = ({ children }: PropTypes) => {
+const Layout = ({ children, noNavigationMarginBottom }: PropTypes) => {
   const theme = useTheme()
   const disableGutters = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <>
-      <TopNavigation />
+      <TopNavigation noMarginBottom={noNavigationMarginBottom} />
       <Container disableGutters={disableGutters}>
         <Box
           sx={{

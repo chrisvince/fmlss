@@ -39,7 +39,11 @@ const {
   TOP_NAVIGATION_MARGIN_BOTTOM_XS,
 } = constants
 
-const TopNavigation = () => {
+interface Props {
+  noMarginBottom?: boolean
+}
+
+const TopNavigation = ({ noMarginBottom = false }: Props) => {
   const { email, signOut } = useAuthUser()
   const router = useRouter()
   const profileMenuButtonRef = useRef<HTMLButtonElement>(null)
@@ -104,9 +108,11 @@ const TopNavigation = () => {
             borderBottomColor: 'divider',
             height: TOP_NAVIGATION_HEIGHT,
             marginBottom: {
-              xs: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS),
+              xs: !noMarginBottom
+                ? theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)
+                : undefined,
               sm: 'unset',
-            }
+            },
           }}
         >
           <Container sx={{ height: '100%' }}>
