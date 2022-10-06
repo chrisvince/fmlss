@@ -66,7 +66,7 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
       {!isLoading && (
         <Box ref={innerRef}>
           <PostListItem onLikePost={likePost} post={post!} />
-          <PostTypeSpacer />
+          <PostTypeSpacer type="reply-to" />
         </Box>
       )}
     </Box>

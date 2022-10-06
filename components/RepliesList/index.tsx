@@ -62,7 +62,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
         </Box>
       ) : (
         <>
-          <PostTypeSpacer />
+          <PostTypeSpacer type="replies" />
           {replies.length >= SHOW_TOP_CREATE_POST_COUNT && (
             <Box sx={{ px: 2 }}>
               <InlineCreatePost slug={slug} />
