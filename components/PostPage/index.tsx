@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Box, useTheme } from '@mui/system'
 
@@ -39,6 +39,8 @@ const PostPage = ({ slug }: PropTypes) => {
   const theme = useTheme()
   const pageTitle = truncateString(post?.data.body)
   const handleParentPostLoad = () => setParentPostLoaded(true)
+  const mainContentWrapperRef = useRef<HTMLDivElement>(null)
+  const [mainContentMinHeight, setContentMinHeight] = useState<number | undefined>()
 
   useEffect(() => {
     if (userIsLoading || !createdByUser || shownFirstPostMessage) return
@@ -54,6 +56,12 @@ const PostPage = ({ slug }: PropTypes) => {
       slug,
     }, { onceOnly: true })
   }, [isLoading, pageTitle, post, slug, track])
+
+  useEffect(() => {
+    if (!mainContentWrapperRef.current) return
+    const { top = 0 } = mainContentWrapperRef.current.getBoundingClientRect()
+    setContentMinHeight(window.innerHeight - top)
+  }, [])
 
   if (!isLoading && !post) {
     return <Error statusCode={404} />
@@ -97,25 +105,33 @@ const PostPage = ({ slug }: PropTypes) => {
           />
         )}
         <Box
-          sx={{
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            boxShadow: `0 -1px 0 ${theme.palette.divider}`,
-            py: 2,
-          }}
+          ref={mainContentWrapperRef}
+          sx={{ minHeight: mainContentMinHeight ?? '100vh' }}
         >
-          <MobileContainer>
-            <PostItem
-              bodySize="large"
-              noBottomBorder
-              onLikePost={likePost}
-              post={post!}
+          <Box
+            sx={{
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              boxShadow: `0 -1px 0 ${theme.palette.divider}`,
+              py: 2,
+            }}
+          >
+            <MobileContainer>
+              <PostItem
+                bodySize="large"
+                noBottomBorder
+                onLikePost={likePost}
+                post={post!}
+              />
+            </MobileContainer>
+          </Box>
+          {allowReplying && (
+            <RepliesList
+              loading={parentPostLoading}
+              slug={slug}
             />
-          </MobileContainer>
+          )}
         </Box>
-        {allowReplying && (
-          <RepliesList slug={slug} loading={parentPostLoading} />
-        )}
       </Page>
       <FirstPostModal
         open={firstPostModalOpen}
