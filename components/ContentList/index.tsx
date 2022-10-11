@@ -31,7 +31,6 @@ const ContentList = ({
   onLoadMore,
 }: PropTypes) => {
   const theme = useTheme()
-  const rowCount = items.length + 1
   const disableClearCellCacheOnResize = useMediaQuery('(min-width: 1300px)')
 
   const isRowLoaded = useCallback(
@@ -92,7 +91,7 @@ const ContentList = ({
     <InfiniteLoader
       isRowLoaded={isRowLoaded}
       loadMoreRows={handleLoadMoreRows}
-      rowCount={rowCount}
+      rowCount={items.length}
       threshold={INFINITY_LOADING_THRESHOLD}
     >
       {({ onRowsRendered, registerChild: infiniteLoaderRef = () => {} }) => (
@@ -115,7 +114,7 @@ const ContentList = ({
                     onRowsRendered={onRowsRendered}
                     overscanRowCount={VIRTUALIZED_OVERSCAN_ROW_COUNT}
                     ref={infiniteLoaderRef}
-                    rowCount={rowCount}
+                    rowCount={items.length}
                     rowHeight={cellMeasurerCache.rowHeight}
                     rowRenderer={rowRenderer}
                     scrollTop={scrollTop}
