@@ -40,7 +40,11 @@ const PostPage = ({ slug }: PropTypes) => {
   const pageTitle = truncateString(post?.data.body)
   const handleParentPostLoad = () => setParentPostLoaded(true)
   const mainContentWrapperRef = useRef<HTMLDivElement>(null)
-  const [mainContentMinHeight, setContentMinHeight] = useState<number | undefined>()
+
+  const [
+    mainContentMinHeight,
+    setContentMinHeight
+  ] = useState<number | undefined>()
 
   useEffect(() => {
     if (userIsLoading || !createdByUser || shownFirstPostMessage) return
