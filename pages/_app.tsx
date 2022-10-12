@@ -5,6 +5,9 @@ import { ThemeProvider, CssBaseline } from '@mui/material'
 import { withAuthUser } from 'next-firebase-auth'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import Script from 'next/script'
+import { NextPage } from 'next'
+import { store } from '../store'
+import { Provider as ReduxProvider } from 'react-redux'
 
 import initAuth from '../utils/initAuth'
 import initFirebase from '../utils/initFirebase'
@@ -12,7 +15,6 @@ import Layout from '../components/Layout'
 import { light } from '../styles/theme'
 import createEmotionCache from '../utils/createEmotionServer'
 import isDevelopment from '../utils/isDevelopment'
-import { NextPage } from 'next'
 
 initFirebase()
 initAuth()
@@ -61,10 +63,12 @@ const App = ({
         `}
         </Script>
       )}
-      <ThemeProvider theme={light}>
-        <CssBaseline />
-        {getLayout(<Component {...pageProps} />)}
-      </ThemeProvider>
+      <ReduxProvider store={store}>
+        <ThemeProvider theme={light}>
+          <CssBaseline />
+          {getLayout(<Component {...pageProps} />)}
+        </ThemeProvider>
+      </ReduxProvider>
     </CacheProvider>
   )
 }

@@ -26,6 +26,8 @@ import constants from '../../constants'
 import CenterSectionContainer from '../CenterSectionContainer'
 import LeftNavigationMobile from '../LeftNavigationMobile'
 import Brand from '../Brand'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 const {
   SIDEBAR_GAP_MD,
@@ -51,6 +53,9 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const theme = useTheme()
   const isAboveSm = useMediaQuery(theme.breakpoints.up('sm'))
+  const shouldCollapse = useSelector(
+    (state: RootState) => state.navigation.shouldCollapse
+  )
 
   const handleMobileMenuOpen = () => setMobileNavigationOpen(true)
   const handleMobileMenuClose = () => setMobileNavigationOpen(false)
@@ -80,7 +85,7 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
   }, [router.events])
 
   const showMobileNav = !useScrollTrigger({
-    threshold: parseInt(TOP_NAVIGATION_HEIGHT),
+    threshold: shouldCollapse ? parseInt(TOP_NAVIGATION_HEIGHT) : Infinity,
   })
 
   return (

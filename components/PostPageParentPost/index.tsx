@@ -1,6 +1,8 @@
 import { useMediaQuery } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { shouldCollapse } from '../../store/slices/navigationSlice'
 import usePost from '../../utils/data/post/usePost'
 import PostListItem from '../PostListItem'
 import PostTypeSpacer from '../PostTypeSpacer'
@@ -18,6 +20,11 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
   const { isLoading, likePost, post } = usePost(slug)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(shouldCollapse(false))
+  }, [dispatch])
 
   useLayoutEffect(() => {
     if (hasDisplayedPost.current || isLoading || !innerRef.current) return
@@ -38,6 +45,7 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
 
     const handle = () => {
       setHeight(undefined)
+      dispatch(shouldCollapse(true))
       window.removeEventListener('resize', handle)
       window.removeEventListener('scroll', handle)
     }
@@ -52,7 +60,7 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
       window.removeEventListener('resize', handle)
       window.removeEventListener('scroll', handle)
     }
-  }, [height])
+  }, [dispatch, height])
 
   if (isLoading) return null
 
