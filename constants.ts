@@ -33,7 +33,6 @@ const constants = {
   },
   GET_SERVER_SIDE_PROPS_TIME_LABEL: 'getServerSideProps processed in',
   HASHTAG_LIST_CACHE_TIME: secondsToMs(30),
-  HASHTAG_REGEX: /\B(#[a-zA-Z0-9_%]{1,})/g,
   HASHTAGS_CACHE_TIME: secondsToMs(60),
   HASHTAGS_COLLECTION: 'hashtags',
   INFINITY_LOADING_THRESHOLD: 10,

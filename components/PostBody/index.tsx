@@ -1,9 +1,5 @@
-import { Typography, Link as MuiLink } from '@mui/material'
-import Link from 'next/link'
-import reactStringReplace from 'react-string-replace'
-import constants from '../../constants'
-
-const { HASHTAG_REGEX } = constants
+import { Typography } from '@mui/material'
+import createPostBodyLinks from '../../utils/createPostBodyLinks'
 
 interface Props {
   body: string
@@ -24,28 +20,7 @@ const PostBody = ({ body, id, size = 'small' }: Props) => {
       component="p"
       id={id}
     >
-      {reactStringReplace(body, HASHTAG_REGEX, (hashtag, index) => {
-        const hashtagValue = hashtag.slice(1).toLowerCase()
-        return (
-          <Link
-            href={`/hashtag/${hashtagValue}`}
-            key={`${hashtagValue}-${index}`}
-            passHref
-          >
-            <MuiLink
-              sx={{
-                textDecoration: 'none',
-                color: 'secondary.main',
-                '&:hover': {
-                  textDecoration: 'underline',
-                },
-              }}
-            >
-              {hashtag}
-            </MuiLink>
-          </Link>
-        )
-      })}
+      {createPostBodyLinks(body)}
     </Typography>
   )
 }
