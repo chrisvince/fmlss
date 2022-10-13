@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useRouter } from 'next/router'
 
 import { Hashtag } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
@@ -12,14 +11,11 @@ type PropTypes = {
 }
 
 const HashtagListItem = ({ hashtag }: PropTypes) => {
-  const { push: navigate } = useRouter()
-  const handleOpen = () => navigate(`/hashtag/${hashtag.data.slug}`)
-
   const postCount = formatPostCount(hashtag.data.usageCount)
   const viewCount = formatViewCount(hashtag.data.viewCount)
 
   return (
-    <ListItemFrame onOpen={handleOpen}>
+    <ListItemFrame href={`/hashtag/${encodeURIComponent(hashtag.data.slug)}`}>
       <Box
         sx={{
           display: 'flex',

@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useRouter } from 'next/router'
 
 import { Category } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
@@ -12,14 +11,11 @@ type PropTypes = {
 }
 
 const CategoryListItem = ({ category }: PropTypes) => {
-  const { push: navigate } = useRouter()
-  const handleOpen = () => navigate(`/category/${category.data.slug}`)
-
   const postCount = formatPostCount(category.data.postCount)
   const viewCount = formatViewCount(category.data.viewCount)
 
   return (
-    <ListItemFrame onOpen={handleOpen}>
+    <ListItemFrame href={`/category/${encodeURIComponent(category.data.slug)}`}>
       <Box
         sx={{
           display: 'flex',

@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { useId } from 'react'
 
 import { Post } from '../../types'
@@ -11,17 +10,13 @@ type PropTypes = {
 }
 
 const PostListItem = ({ onLikePost, post }: PropTypes) => {
-  const { push: navigate } = useRouter()
   const ariaLabelledById = useId()
-
-  const handleOpen = () =>
-    navigate(`/post/${encodeURIComponent(post.data.slug)}`)
 
   return (
     <ListItemFrame
       aria-labelledby={ariaLabelledById}
       component="article"
-      onOpen={handleOpen}
+      href={`/post/${encodeURIComponent(post.data.slug)}`}
     >
       <PostItem
         bodyElementId={ariaLabelledById}
