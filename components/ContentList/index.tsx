@@ -71,13 +71,11 @@ const ContentList = ({
           parent={parent}
           rowIndex={index}
         >
-          {({ measure, registerChild }) => (
+          {({ registerChild }) => (
             <div ref={registerChild as LegacyRef<HTMLDivElement>} style={style}>
-              <div onLoad={measure}>
-                {isRowLoaded({ index }) && items[index]
-                  ? render(items[index], index)
-                  : renderLoader(moreToLoad)}
-              </div>
+              {isRowLoaded({ index }) && items[index]
+                ? render(items[index], index)
+                : renderLoader(moreToLoad)}
             </div>
           )}
         </CellMeasurer>
