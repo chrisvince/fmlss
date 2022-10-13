@@ -85,7 +85,6 @@ const createUrlLinks = (body: string) => {
 
 const createHashtagLinksNew = (body: string) => {
   const links = extractHashtagsWithIndices(body)
-  console.log('links', links)
   if (!links.length) return [body]
 
   return links.reduce((acc, hashtagIndice, index, arr) => {
