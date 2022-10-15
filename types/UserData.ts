@@ -3,4 +3,5 @@ export interface UserData {
   id: string
   shownFirstPostMessage: boolean
   updatedAt: string
+  username?: string
 }
