@@ -1,6 +1,7 @@
 export * from './changePassword'
 export * from './checkPasswordResetRequestValid'
 export * from './checkUserHasPassword'
+export * from './checkUsernameAvailability'
 export * from './createPost'
 export * from './createPostLike'
 export * from './createUser'
