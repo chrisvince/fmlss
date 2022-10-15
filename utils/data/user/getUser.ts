@@ -10,15 +10,14 @@ import mapUserDocToData from '../../mapUserDocToData'
 
 const { USER_CACHE_TIME, USERS_COLLECTION } = constants
 
-type GetPost = (
+type GetUser = (
   uid: string | undefined | null,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-    uid?: string | null
   }
 ) => Promise<User | null>
 
-const getUser: GetPost = async (uid, { db: dbProp } = {}) => {
+const getUser: GetUser = async (uid, { db: dbProp } = {}) => {
   if (!uid) return null
 
   const db = dbProp || firebase.firestore()

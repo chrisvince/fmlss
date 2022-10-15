@@ -31,8 +31,6 @@ type UseUser = (options?: { swrConfig?: SWRConfig }) => {
   user: User | null | undefined
 }
 
-const db = firebase.firestore()
-
 const useUser: UseUser = ({ swrConfig = {} } = {}) => {
   const [updateIsLoading, setUpdateIsLoading] = useState(false)
   const { id: uid } = useAuthUser()
@@ -51,7 +49,8 @@ const useUser: UseUser = ({ swrConfig = {} } = {}) => {
     if (!uid) {
       throw new Error('User is not authenticated')
     }
-    
+
+    const db = firebase.firestore()
     setUpdateIsLoading(true)
 
     await db.collection(USERS_COLLECTION).doc(uid).update({
