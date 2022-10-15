@@ -14,11 +14,12 @@ import {
   WorkspacesOutlined,
   WorkspacesRounded,
 } from '@mui/icons-material'
+import { useAuthUser } from 'next-firebase-auth'
 
 import NewPostButton from '../NewPostButton'
 import constants from '../../constants'
-import { useAuthUser } from 'next-firebase-auth'
 import LeftNavigationListItem from '../LeftNavigaionListItem'
+import useUser from '../../utils/data/user/useUser'
 
 const {
   LEFT_NAVIGATION_PADDING_BOTTOM,
@@ -67,9 +68,11 @@ const NAVIGATION_ITEMS = [
 
 const LeftNavigationDesktop = () => {
   const { email } = useAuthUser()
+  const { user } = useUser()
   const theme = useTheme()
   const navMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
   const marginBottom = theme.spacing(LEFT_NAVIGATION_PADDING_BOTTOM)
+  const avatarLetter = user?.data.username?.charAt(0).toUpperCase()
 
   return (
     <Box
@@ -113,7 +116,7 @@ const LeftNavigationDesktop = () => {
           <nav>
             <List>
               <LeftNavigationListItem
-                avatarText="C"
+                avatarText={avatarLetter}
                 exact
                 href="/profile"
                 iconCurrent={PersonRounded}

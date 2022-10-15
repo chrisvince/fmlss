@@ -21,6 +21,7 @@ import {
   Menu as MenuIcon,
   PersonRounded,
 } from '@mui/icons-material'
+import useUser from '../../utils/data/user/useUser'
 
 import constants from '../../constants'
 import CenterSectionContainer from '../CenterSectionContainer'
@@ -47,6 +48,7 @@ interface Props {
 
 const TopNavigation = ({ noMarginBottom = false }: Props) => {
   const { email, signOut } = useAuthUser()
+  const { user } = useUser()
   const router = useRouter()
   const profileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)
@@ -87,6 +89,8 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
   const showMobileNav = !useScrollTrigger({
     threshold: shouldCollapse ? parseInt(TOP_NAVIGATION_HEIGHT) : Infinity,
   })
+
+  const avatarLetter = user?.data.username?.charAt(0).toUpperCase()
 
   return (
     <>
@@ -204,7 +208,7 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
                       }}
                     >
                       <Typography variant="body1">
-                        C
+                        {avatarLetter}
                       </Typography>
                     </Avatar>
                   </IconButton>
