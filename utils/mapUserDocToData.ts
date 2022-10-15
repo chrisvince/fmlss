@@ -9,6 +9,7 @@ const mapUserDocToData: MapUserDocToData = userDoc => {
     id: userDoc.id as string,
     shownFirstPostMessage: !!userData.shownFirstPostMessage as boolean,
     updatedAt: userData.updatedAt.toMillis() as string,
+    username: userData.username as string,
   }
 }
 
