@@ -6,9 +6,9 @@ import {
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
-} from '../config/withAuthConfig'
-import SignUpPage from '../components/SignUpPage'
-import LayoutBasicSlimBranded from '../components/LayoutBasicSlimBranded'
+} from '../../config/withAuthConfig'
+import SignUpPage from '../../components/SignUpPage'
+import LayoutBasicSlimBranded from '../../components/LayoutBasicSlimBranded'
 import { ReactElement } from 'react'
 
 const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
