@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 import { Box } from '@mui/system'
-import { TextField, Typography } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
-
-import constants from '../../constants'
 import { LoadingButton } from '@mui/lab'
 import debounce from 'lodash.debounce'
-import { useAuthUser } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
+
+import constants from '../../constants'
 import { checkUsernameAvailability } from '../../utils/callableFirebaseFunctions'
 import { updateUsername } from '../../utils/callableFirebaseFunctions/updateUsername'
 
@@ -22,13 +19,11 @@ const {
 const USERNAME_ID = 'username'
 
 const GENERIC_ERROR_MESSAGE =
-  'There was an error signing you up. Please try again later.'
+  'There was an error creating your username. Please try again later.'
 
 const SignUpForm = () => {
-  const { id: uid } = useAuthUser()
   const { push: navigate } = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [formCanBeSubmitted, setFormCanBeSubmitted] = useState<boolean>(false)
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false)
   const { control, handleSubmit, setError, watch, clearErrors } = useForm()
   const [loadingAvailability, setLoadingAvailability] = useState<boolean>(false)
@@ -62,8 +57,6 @@ const SignUpForm = () => {
         data: { usernameAvailable },
       } = await checkUsernameAvailability({ username })
 
-      setFormCanBeSubmitted(usernameAvailable)
-
       if (usernameAvailable) {
         setUsernameAvailable(true)
         setLoadingAvailability(false)
@@ -79,10 +72,19 @@ const SignUpForm = () => {
     const subscription = watch((values, { name }) => {
       if (name !== USERNAME_ID) return
       const value = values[USERNAME_ID] as string
-      const validUsername = new RegExp(USERNAME_REGEX_PATTERN).test(value)
       setUsernameAvailable(false)
 
+      if (value.length < USERNAME_MIN_LENGTH) {
+        checkUsernameAvailable.cancel()
+        setLoadingAvailability(false)
+        clearErrors(USERNAME_ID)
+        return
+      }
+
+      const validUsername = new RegExp(USERNAME_REGEX_PATTERN).test(value)
+
       if (!validUsername) {
+        checkUsernameAvailable.cancel()
         setLoadingAvailability(false)
         setError(USERNAME_ID, {
           message: FORM_MESSAGING.USERNAME.PATTERN,
@@ -157,9 +159,8 @@ const SignUpForm = () => {
       />
       <Box>
         <LoadingButton
-          disabled={!formCanBeSubmitted}
           fullWidth
-          loading={isLoading || loadingAvailability}
+          loading={isLoading}
           type="submit"
           variant="contained"
         >
