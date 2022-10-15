@@ -129,7 +129,7 @@ const ForgotPasswordForm = () => {
                   required: FORM_MESSAGING.REQUIRED,
                   pattern: {
                     value: EMAIL_REGEX_PATTERN,
-                    message: FORM_MESSAGING.VALID_EMAIL,
+                    message: FORM_MESSAGING.EMAIL.VALID,
                   },
                 }}
                 render={({ field, fieldState }) => (

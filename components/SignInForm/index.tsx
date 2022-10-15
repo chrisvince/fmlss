@@ -120,7 +120,7 @@ const SignInForm = () => {
               required: FORM_MESSAGING.REQUIRED,
               pattern: {
                 value: EMAIL_REGEX_PATTERN,
-                message: FORM_MESSAGING.VALID_EMAIL,
+                message: FORM_MESSAGING.EMAIL.VALID,
               },
             }}
             render={({ field, fieldState }) => (
@@ -144,11 +144,11 @@ const SignInForm = () => {
               required: FORM_MESSAGING.REQUIRED,
               pattern: {
                 value: PASSWORD_REGEX_PATTERN,
-                message: FORM_MESSAGING.PATTERN,
+                message: FORM_MESSAGING.PASSWORD.PATTERN,
               },
               minLength: {
                 value: PASSWORD_MIN_LENGTH,
-                message: FORM_MESSAGING.MIN_LENGTH,
+                message: FORM_MESSAGING.PASSWORD.MIN_LENGTH,
               },
             }}
             render={({ field, fieldState }) => (

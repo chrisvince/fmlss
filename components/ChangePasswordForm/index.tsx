@@ -106,11 +106,11 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
                 required: FORM_MESSAGING.REQUIRED,
                 pattern: {
                   value: PASSWORD_REGEX_PATTERN,
-                  message: FORM_MESSAGING.PATTERN,
+                  message: FORM_MESSAGING.PASSWORD.PATTERN,
                 },
                 minLength: {
                   value: PASSWORD_MIN_LENGTH,
-                  message: FORM_MESSAGING.MIN_LENGTH,
+                  message: FORM_MESSAGING.PASSWORD.MIN_LENGTH,
                 },
               }}
               render={({ field, fieldState }) => (
@@ -139,11 +139,11 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
             required: FORM_MESSAGING.REQUIRED,
             minLength: {
               value: PASSWORD_MIN_LENGTH,
-              message: FORM_MESSAGING.MIN_LENGTH,
+              message: FORM_MESSAGING.PASSWORD.MIN_LENGTH,
             },
             pattern: {
               value: PASSWORD_REGEX_PATTERN,
-              message: FORM_MESSAGING.PATTERN,
+              message: FORM_MESSAGING.PASSWORD.PATTERN,
             },
           }}
           render={({ field, fieldState }) => (
@@ -167,16 +167,16 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
             required: FORM_MESSAGING.REQUIRED,
             pattern: {
               value: PASSWORD_REGEX_PATTERN,
-              message: FORM_MESSAGING.PATTERN,
+              message: FORM_MESSAGING.PASSWORD.PATTERN,
             },
             minLength: {
               value: PASSWORD_MIN_LENGTH,
-              message: FORM_MESSAGING.MIN_LENGTH,
+              message: FORM_MESSAGING.PASSWORD.MIN_LENGTH,
             },
             validate: (value: string) => {
               const newPassword = getValues(FORM_IDS.NEW_PASSWORD)
               if (newPassword === value) return
-              return FORM_MESSAGING.MATCH
+              return FORM_MESSAGING.PASSWORD.MATCH
             },
           }}
           render={({ field, fieldState }) => (
