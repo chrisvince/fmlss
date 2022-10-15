@@ -121,7 +121,7 @@ const LeftNavigationDesktop = () => {
                 href="/profile"
                 iconCurrent={PersonRounded}
                 primary="Profile"
-                secondary={email}
+                secondary={user?.data.username ?? email}
               />
             </List>
           </nav>

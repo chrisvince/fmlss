@@ -225,7 +225,10 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
                         <ListItemIcon>
                           <PersonRounded />
                         </ListItemIcon>
-                        <ListItemText primary="Profile" secondary={email} />
+                        <ListItemText
+                          primary="Profile"
+                          secondary={user?.data.username ?? email}
+                        />
                       </MenuItem>
                     </Link>
                     <MenuItem onClick={handleSignOutClick}>
