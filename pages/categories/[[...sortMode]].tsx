@@ -1,4 +1,5 @@
 import {
+  AuthUser,
   getFirebaseAdmin,
   withAuthUser,
   withAuthUserTokenSSR,
@@ -16,6 +17,7 @@ import constants from '../../constants'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
+import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const {
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
@@ -43,9 +45,11 @@ const SORT_MODE_MAP: {
 }
 
 const getServerSidePropsFn = async ({
+  AuthUser,
   params: { sortMode: sortModeArray },
   req,
 }: {
+  AuthUser: AuthUser
   params: { sortMode: string }
   req: NextApiRequest,
 }) => {
@@ -68,6 +72,18 @@ const getServerSidePropsFn = async ({
 
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
+  const uid = AuthUser.id
+  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
+
+  if (uid && !userHasUsername) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      redirect: {
+        destination: '/sign-up/username',
+        permanent: false,
+      },
+    }
+  }
 
   const miniHashtags = await getHashtags({
     cacheKey: miniHashtagsCacheKey,

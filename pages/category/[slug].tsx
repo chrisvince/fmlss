@@ -19,6 +19,7 @@ import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
 import useCategory from '../../utils/data/category/useCategory'
 import Error from 'next/error'
+import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const {
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
@@ -71,9 +72,19 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const uid = AuthUser.id
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as CategorySortMode
-
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const categoryPostsCacheKey = createCategoryPostsCacheKey(slug, sortMode)
+  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
+
+  if (uid && !userHasUsername) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      redirect: {
+        destination: '/sign-up/username',
+        permanent: false,
+      },
+    }
+  }
 
   const miniHashtags = await getHashtags({
     cacheKey: miniHashtagsCacheKey,

@@ -25,6 +25,7 @@ import isInternalRequest from '../../utils/isInternalRequest'
 import usePost from '../../utils/data/post/usePost'
 import { ReactElement } from 'react'
 import Layout from '../../components/Layout'
+import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const {
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
@@ -75,6 +76,17 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const slug = decodeURIComponent(encodedSlug)
   const uid = AuthUser.id
+  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
+
+  if (uid && !userHasUsername) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      redirect: {
+        destination: '/sign-up/username',
+        permanent: false,
+      },
+    }
+  }
 
   const postCacheKey = createPostCacheKey(slug)!
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)

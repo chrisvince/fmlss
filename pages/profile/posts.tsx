@@ -12,6 +12,7 @@ import getUserPosts from '../../utils/data/userPosts/getUserPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
+import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const {
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
@@ -49,6 +50,19 @@ const getServerSidePropsFn = async ({
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return { notFound: true }
   }
+
+  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
+
+  if (uid && !userHasUsername) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      redirect: {
+        destination: '/sign-up/username',
+        permanent: false,
+      },
+    }
+  }
+
   const userPostsCacheKey = createUserPostsCacheKey(uid)
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
