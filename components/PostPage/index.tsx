@@ -71,15 +71,13 @@ const PostPage = ({ slug }: PropTypes) => {
     return <Error statusCode={404} />
   }
 
-  if (isLoading) {
-    return <PageSpinner />
-  }
+  const createdAt = !isLoading
+    ? new Date(post!.data.createdAt).toISOString()
+    : undefined
 
-  const createdAt = new Date(post!.data.createdAt).toISOString()
-  const updatedAt = new Date(post!.data.updatedAt).toISOString()
-  const allowReplying = post!.data.documentDepth < POST_MAX_DEPTH
-  const hasParentPost = !!post!.data.parentSlug
-  const parentPostLoading = hasParentPost && !parentPostLoaded
+  const updatedAt = !isLoading
+    ? new Date(post!.data.updatedAt).toISOString()
+    : undefined
 
   return (
     <>
@@ -91,10 +89,10 @@ const PostPage = ({ slug }: PropTypes) => {
         article={{
           publishedTime: createdAt,
           modifiedTime: updatedAt,
-          section: post!.data.category?.name,
-          tags: post!.data.hashtags,
+          section: post?.data.category?.name,
+          tags: post?.data.hashtags,
         }}
-        description={post!.data.body}
+        description={post?.data.body}
         rightPanelChildren={
           <>
             <MiniHashtagsSection />
@@ -102,40 +100,46 @@ const PostPage = ({ slug }: PropTypes) => {
           </>
         }
       >
-        {post!.data.parentSlug && (
-          <PostPageParentPost
-            slug={post!.data.parentSlug}
-            onLoad={handleParentPostLoad}
-          />
-        )}
-        <Box
-          ref={mainContentWrapperRef}
-          sx={{ minHeight: mainContentMinHeight ?? '100vh' }}
-        >
-          <Box
-            sx={{
-              borderBottom: '1px solid',
-              borderColor: 'divider',
-              boxShadow: `0 -1px 0 ${theme.palette.divider}`,
-              py: 2,
-            }}
-          >
-            <MobileContainer>
-              <PostItem
-                bodySize="large"
-                noBottomBorder
-                onLikePost={likePost}
-                post={post!}
+        {isLoading ? (
+          <PageSpinner />
+        ) : (
+          <>
+            {post!.data.parentSlug && (
+              <PostPageParentPost
+                slug={post!.data.parentSlug}
+                onLoad={handleParentPostLoad}
               />
-            </MobileContainer>
-          </Box>
-          {allowReplying && (
-            <RepliesList
-              loading={parentPostLoading}
-              slug={slug}
-            />
-          )}
-        </Box>
+            )}
+            <Box
+              ref={mainContentWrapperRef}
+              sx={{ minHeight: mainContentMinHeight ?? '100vh' }}
+            >
+              <Box
+                sx={{
+                  borderBottom: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: `0 -1px 0 ${theme.palette.divider}`,
+                  py: 2,
+                }}
+              >
+                <MobileContainer>
+                  <PostItem
+                    bodySize="large"
+                    noBottomBorder
+                    onLikePost={likePost}
+                    post={post!}
+                  />
+                </MobileContainer>
+              </Box>
+              {post!.data.documentDepth < POST_MAX_DEPTH && (
+                <RepliesList
+                  loading={!!post!.data.parentSlug && !parentPostLoaded}
+                  slug={slug}
+                />
+              )}
+            </Box>
+          </>
+        )}
       </Page>
       <FirstPostModal
         open={firstPostModalOpen}
