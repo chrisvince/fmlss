@@ -12,6 +12,7 @@ import { updateUsername } from '../../utils/callableFirebaseFunctions/updateUser
 
 const {
   FORM_MESSAGING,
+  USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
   USERNAME_REGEX_PATTERN,
 } = constants
@@ -25,7 +26,9 @@ const SignUpForm = () => {
   const { push: navigate } = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false)
-  const { control, handleSubmit, setError, watch, clearErrors } = useForm()
+  const { control, handleSubmit, setError, watch, clearErrors } = useForm({
+    mode: 'onChange',
+  })
   const [loadingAvailability, setLoadingAvailability] = useState<boolean>(false)
 
   const onSubmit = async (data: FieldValues) => {
@@ -74,7 +77,10 @@ const SignUpForm = () => {
       const value = values[USERNAME_ID] as string
       setUsernameAvailable(false)
 
-      if (value.length < USERNAME_MIN_LENGTH) {
+      if (
+        value.length < USERNAME_MIN_LENGTH ||
+        value.length > USERNAME_MAX_LENGTH
+      ) {
         checkUsernameAvailable.cancel()
         setLoadingAvailability(false)
         clearErrors(USERNAME_ID)
@@ -124,6 +130,10 @@ const SignUpForm = () => {
           pattern: {
             value: USERNAME_REGEX_PATTERN,
             message: FORM_MESSAGING.USERNAME.PATTERN,
+          },
+          maxLength: {
+            value: USERNAME_MAX_LENGTH,
+            message: FORM_MESSAGING.USERNAME.MAX_LENGTH,
           },
           minLength: {
             value: USERNAME_MIN_LENGTH,

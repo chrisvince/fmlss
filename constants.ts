@@ -2,6 +2,7 @@ const hoursToMs = (hours: number) => hours * 60 * 60 * 1000
 const secondsToMs = (seconds: number) => seconds * 1000
 
 const PASSWORD_MIN_LENGTH = 8
+const USERNAME_MAX_LENGTH = 30
 const USERNAME_MIN_LENGTH = 5
 
 const constants = {
@@ -36,6 +37,7 @@ const constants = {
     },
     REQUIRED: 'This field is required',
     USERNAME: {
+      MAX_LENGTH: `Must be no more than ${USERNAME_MAX_LENGTH} characters long`,
       MIN_LENGTH: `Must be at least ${USERNAME_MIN_LENGTH} characters long`,
       PATTERN: 'Must contain only letters, numbers, and underscores',
       TAKEN: 'This username is already taken',
@@ -77,6 +79,7 @@ const constants = {
   USER_CACHE_TIME: secondsToMs(60),
   USER_LIKES_CACHE_TIME: secondsToMs(10),
   USER_POSTS_CACHE_TIME: secondsToMs(10),
+  USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
   USERNAME_REGEX_PATTERN: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]*$/ig,
   USERS_COLLECTION: 'users',
