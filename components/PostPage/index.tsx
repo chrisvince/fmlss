@@ -17,7 +17,7 @@ import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 import PostPageParentPost from '../PostPageParentPost'
 
-const { POST_MAX_DEPTH } = constants
+const { CATEGORIES_ENABLED, POST_MAX_DEPTH } = constants
 
 const FirstPostModal = dynamic(() => import('../FirstPostModal'), {
   ssr: false,
@@ -98,7 +98,7 @@ const PostPage = ({ slug }: PropTypes) => {
         rightPanelChildren={
           <>
             <MiniHashtagsSection />
-            <MiniCategoriesSection />
+            {CATEGORIES_ENABLED && <MiniCategoriesSection />}
           </>
         }
       >

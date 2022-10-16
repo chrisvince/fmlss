@@ -13,7 +13,10 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 
-const { CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT } = constants
+const {
+  CATEGORIES_ENABLED,
+  CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT,
+} = constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -63,7 +66,7 @@ const HashtagsPage = () => {
     <Page
       description="See posts by hashtags posted on Fameless"
       pageTitle="Hashtags"
-      rightPanelChildren={<MiniCategoriesSection />}
+      rightPanelChildren={CATEGORIES_ENABLED && <MiniCategoriesSection />}
     >
       <MobileContainer>
         <ViewSelectorButtonGroup>

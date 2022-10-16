@@ -1,9 +1,12 @@
-import { Typography } from "@mui/material"
-import { Box } from "@mui/system"
-import MiniCategoriesSection from "../MiniCategoriesSection"
-import MiniHashtagsSection from "../MiniHashtagsSection"
-import Page from "../Page"
-import TextAndCta from "../TextAndCta"
+import { Typography } from '@mui/material'
+import { Box } from '@mui/system'
+import MiniCategoriesSection from '../MiniCategoriesSection'
+import MiniHashtagsSection from '../MiniHashtagsSection'
+import Page from '../Page'
+import TextAndCta from '../TextAndCta'
+import constants from '../../constants'
+
+const { CATEGORIES_ENABLED } = constants
 
 const NotFoundPage = () => (
   <Page
@@ -12,7 +15,7 @@ const NotFoundPage = () => (
     rightPanelChildren={
       <>
         <MiniHashtagsSection />
-        <MiniCategoriesSection />
+        {CATEGORIES_ENABLED && <MiniCategoriesSection />}
       </>
     }
   >

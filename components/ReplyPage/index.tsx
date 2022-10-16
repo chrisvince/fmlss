@@ -7,6 +7,9 @@ import MobileContainer from '../MobileContainer'
 import NewPostForm from '../NewPostForm'
 import Page from '../Page'
 import PageSpinner from '../PageSpinner'
+import constants from '../../constants'
+
+const { CATEGORIES_ENABLED } = constants
 
 interface Props {
   slug: string
@@ -26,7 +29,7 @@ const ReplyPage = ({ slug }: Props) => {
       rightPanelChildren={
         <>
           <MiniHashtagsSection />
-          <MiniCategoriesSection />
+          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
         </>
       }
     >

@@ -31,7 +31,7 @@ import constants from '../../constants'
 import LeftNavigationListItem from '../LeftNavigaionListItem'
 import NewPostButton from '../NewPostButton'
 
-const { TOP_NAVIGATION_HEIGHT } = constants
+const { CATEGORIES_ENABLED, TOP_NAVIGATION_HEIGHT } = constants
 
 interface PropTypes {
   open: boolean
@@ -46,13 +46,13 @@ const NAVIGATION_ITEMS = [
     iconCurrent: ViewStreamRounded,
     label: 'Feed',
   },
-  {
+  ...(CATEGORIES_ENABLED ? [{
     currentPaths: ['/categories', '/category'],
     href: '/categories',
     icon: WorkspacesOutlined,
     iconCurrent: WorkspacesRounded,
     label: 'Categories',
-  },
+  }] : []),
   {
     currentPaths: ['/hashtags', '/hashtag'],
     href: '/hashtags',

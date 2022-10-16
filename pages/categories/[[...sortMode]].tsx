@@ -20,6 +20,7 @@ import isInternalRequest from '../../utils/isInternalRequest'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const {
+  CATEGORIES_ENABLED,
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
   MINI_LIST_CACHE_TIME,
   MINI_LIST_COUNT,
@@ -54,6 +55,14 @@ const getServerSidePropsFn = async ({
   req: NextApiRequest,
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+  if (!CATEGORIES_ENABLED) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      notFound: true,
+    }
+  }
+
   if (sortModeArray?.length > 1) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return { notFound: true }

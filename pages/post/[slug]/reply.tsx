@@ -22,6 +22,7 @@ import constants from '../../../constants'
 import checkIfUserHasUsername from '../../../utils/data/user/checkIfUserHasUsername'
 
 const {
+  CATEGORIES_ENABLED,
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
   MINI_LIST_CACHE_TIME,
   MINI_LIST_COUNT,
@@ -83,19 +84,21 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategories = await getCategories({
+  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
     cacheKey: miniCategoriesCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
-  })
+  }) : []
 
   if (isInternalRequest(req)) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       props: {
         fallback: {
-          [miniCategoriesCacheKey]: miniCategories,
+          ...(CATEGORIES_ENABLED
+            ? { [miniCategoriesCacheKey]: miniCategories }
+            : {}),
           [miniHashtagsCacheKey]: miniHashtags,
           [postCacheKey]: null,
         },

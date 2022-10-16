@@ -8,7 +8,10 @@ import MiniHashtagsSection from '../MiniHashtagsSection'
 import constants from '../../constants'
 import PageSpinner from '../PageSpinner'
 
-const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
+const {
+  CATEGORIES_ENABLED,
+  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+} = constants
 
 const cellMeasurerCache = new CellMeasurerCache({
   fixedWidth: true,
@@ -31,7 +34,7 @@ const UserRepliesPage = () => {
       rightPanelChildren={
         <>
           <MiniHashtagsSection />
-          <MiniCategoriesSection />
+          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
         </>
       }
     >

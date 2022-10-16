@@ -17,7 +17,10 @@ import constants from '../../constants'
 import PageSpinner from '../PageSpinner'
 import useTracking from '../../utils/tracking/useTracking'
 
-const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
+const {
+  CATEGORIES_ENABLED,
+  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+} = constants
 
 type PropTypes = {
   slug: string
@@ -94,7 +97,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
       rightPanelChildren={
         <>
           <MiniHashtagsSection />
-          <MiniCategoriesSection />
+          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
         </>
       }
     >

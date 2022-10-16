@@ -11,6 +11,9 @@ import PostBodyTextArea, {
   postLengthStatusType,
 } from '../PostBodyTextArea'
 import PostItem from '../PostItem'
+import constants from '../../constants'
+
+const { CATEGORIES_ENABLED } = constants
 
 interface Props {
   isInModal?: boolean
@@ -96,7 +99,7 @@ const NewPostForm = ({
           username="chrisvince"
         />
       </Box>
-      {!slug && (
+      {CATEGORIES_ENABLED && !slug && (
         <Tooltip
           placement="bottom"
           title="Help people find your post by giving it a category"

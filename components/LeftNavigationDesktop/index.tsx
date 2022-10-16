@@ -22,6 +22,7 @@ import LeftNavigationListItem from '../LeftNavigaionListItem'
 import useUser from '../../utils/data/user/useUser'
 
 const {
+  CATEGORIES_ENABLED,
   LEFT_NAVIGATION_PADDING_BOTTOM,
   TOP_NAVIGATION_HEIGHT,
   TOP_NAVIGATION_MARGIN_BOTTOM_SM,
@@ -34,13 +35,13 @@ const NAVIGATION_ITEMS = [
     iconCurrent: ViewStreamRounded,
     label: 'Feed',
   },
-  {
+  ...(CATEGORIES_ENABLED ? [{
     currentPaths: ['/categories', '/category'],
     href: '/categories',
     icon: WorkspacesOutlined,
     iconCurrent: WorkspacesRounded,
     label: 'Categories',
-  },
+  }] : []),
   {
     currentPaths: ['/hashtags', '/hashtag'],
     href: '/hashtags',

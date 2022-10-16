@@ -15,7 +15,10 @@ import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import PageSpinner from '../PageSpinner'
 
-const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
+const {
+  CATEGORIES_ENABLED,
+  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+} = constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -73,7 +76,7 @@ const FeedPage = () => {
       rightPanelChildren={
         <>
           <MiniHashtagsSection />
-          <MiniCategoriesSection />
+          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
         </>
       }
     >

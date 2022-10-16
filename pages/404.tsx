@@ -10,7 +10,7 @@ import getCategories from '../utils/data/categories/getCategories'
 import getHashtags from '../utils/data/hashtags/getHashtags'
 import msToSeconds from '../utils/msToSeconds'
 
-const { MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+const { CATEGORIES_ENABLED, MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface Props {
   fallback: {
@@ -37,17 +37,19 @@ export const getStaticProps = async () => {
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategories = await getCategories({
+  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
     cacheKey: miniCategoriesCacheKey,
     cacheTime: MINI_LIST_CACHE_TIME,
     db: adminDb,
     limit: MINI_LIST_COUNT,
-  })
+  }) : []
 
   return {
     props: {
       fallback: {
-        [miniCategoriesCacheKey]: miniCategories,
+        ...(CATEGORIES_ENABLED
+          ? { [miniCategoriesCacheKey]: miniCategories }
+          : {}),
         [miniHashtagsCacheKey]: miniHashtags,
       },
     },

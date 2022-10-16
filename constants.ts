@@ -12,6 +12,7 @@ const constants = {
   BRAND_NAME: 'Fameless',
   CATEGORIES_CACHE_TIME: secondsToMs(60),
   CATEGORIES_COLLECTION: 'categories',
+  CATEGORIES_ENABLED: false,
   CATEGORY_CACHE_TIME: secondsToMs(60),
   CATEGORY_LIST_CACHE_TIME: secondsToMs(30),
   CATEGORY_MAX_LENGTH: 60,

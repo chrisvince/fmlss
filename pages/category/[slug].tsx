@@ -22,6 +22,7 @@ import Error from 'next/error'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const {
+  CATEGORIES_ENABLED,
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
   MINI_LIST_CACHE_TIME,
   MINI_LIST_COUNT,
@@ -68,6 +69,14 @@ const getServerSidePropsFn = async ({
   req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+  if (!CATEGORIES_ENABLED) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      notFound: true,
+    }
+  }
+
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
