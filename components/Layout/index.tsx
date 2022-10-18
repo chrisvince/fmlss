@@ -20,12 +20,22 @@ interface PropTypes {
 
 const Layout = ({ children, noNavigationMarginBottom }: PropTypes) => {
   const theme = useTheme()
-  const disableGutters = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <>
       <TopNavigation noMarginBottom={noNavigationMarginBottom} />
-      <Container disableGutters={disableGutters}>
+      <Container
+        sx={{
+          paddingLeft: {
+            xs: 0,
+            sm: theme.spacing(2),
+          },
+          paddingRight: {
+            xs: 0,
+            sm: theme.spacing(2),
+          },
+        }}
+      >
         <Box
           sx={{
             display: 'grid',
