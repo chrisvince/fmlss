@@ -41,7 +41,8 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Assistant',
+    fontFamily:
+      '"Assistant", "Helvetica Neue", "Helvetica", "Arial", sans-serif',
     fontSize: 15,
     fontWeightLight: 300,
     fontWeightRegular: 400,
@@ -53,24 +54,24 @@ const theme = createTheme({
     },
     h5: {
       fontSize: FONT_SIZE.XL,
-      fontWeight: '500',
+      fontWeight: 500,
     },
     h6: {
       fontSize: FONT_SIZE.BASE,
+      fontWeight: 500,
       textTransform: 'uppercase',
-      fontWeight: 600,
     },
     caption: {
       fontSize: FONT_SIZE.SM,
-      fontWeight: '300',
+      fontWeight: 300,
       lineHeight: '1.375',
     },
     body1: {
       fontSize: FONT_SIZE.LG,
-      fontWeight: '500',
+      fontWeight: 500,
     },
     body2: {
-      fontWeight: '500',
+      fontWeight: 500,
     },
   },
   components: {
