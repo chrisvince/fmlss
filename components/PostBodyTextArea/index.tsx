@@ -122,7 +122,7 @@ type Props = {
   onCommandEnter?: () => void
   onLengthStatusChange?: (status: postLengthStatusType) => void
   placeholder?: string
-  username: string
+  username?: string
 }
 
 const PostBodyTextArea = (
@@ -181,7 +181,7 @@ const PostBodyTextArea = (
     return 'handled'
   }
 
-  const avatarLetter = username.charAt(0).toUpperCase()
+  const avatarLetter = username?.charAt(0).toUpperCase()
   const value = editorState?.getCurrentContent().getPlainText()
   const links = extractLinks(value)
 

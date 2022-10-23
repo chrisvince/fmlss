@@ -4,6 +4,8 @@ import { Box } from '@mui/system'
 import { SyntheticEvent, useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
+import useUser from '../../utils/data/user/useUser'
+import MobileContainer from '../MobileContainer'
 import PostBodyTextArea, {
   PostBodyTextAreaRef,
   postLengthStatusType,
@@ -14,6 +16,7 @@ interface Props {
 }
 
 const InlineCreatePost = ({ slug }: Props) => {
+  const { user } = useUser()
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
 
   const [postLengthStatus, setPostLengthStatus] =
@@ -38,48 +41,50 @@ const InlineCreatePost = ({ slug }: Props) => {
   }
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        display: 'grid',
-        alignItems: 'flex-start',
-        gridTemplateColumns: '1fr min-content',
-        gap: 3,
-      }}
-    >
-      <Box>
-        <PostBodyTextArea
-          disabled={isLoading}
-          onCommandEnter={submitPost}
-          onLengthStatusChange={setPostLengthStatus}
-          placeholder="Write a reply"
-          ref={postBodyTextAreaRef}
-          username="chrisvince"
-        />
-        {errorMessage && (
-          <Typography variant="caption" color="error">
-            {errorMessage}
-          </Typography>
-        )}
-      </Box>
+    <MobileContainer>
       <Box
+        component="form"
+        onSubmit={handleSubmit}
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          height: '72px',
+          display: 'grid',
+          alignItems: 'flex-start',
+          gridTemplateColumns: '1fr min-content',
+          gap: 3,
         }}
       >
-        <LoadingButton
-          disabled={disableButton}
-          loading={isLoading}
-          type="submit"
-          variant="contained"
+        <Box>
+          <PostBodyTextArea
+            disabled={isLoading}
+            onCommandEnter={submitPost}
+            onLengthStatusChange={setPostLengthStatus}
+            placeholder="Write a reply"
+            ref={postBodyTextAreaRef}
+            username={user?.data.username}
+          />
+          {errorMessage && (
+            <Typography variant="caption" color="error">
+              {errorMessage}
+            </Typography>
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '72px',
+          }}
         >
-          Post
-        </LoadingButton>
+          <LoadingButton
+            disabled={disableButton}
+            loading={isLoading}
+            type="submit"
+            variant="contained"
+          >
+            Post
+          </LoadingButton>
+        </Box>
       </Box>
-    </Box>
+    </MobileContainer>
   )
 }
 
