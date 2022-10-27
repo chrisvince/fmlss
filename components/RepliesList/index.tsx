@@ -36,37 +36,13 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
   } = usePostReplies(slug)
 
   return (
-    <Box>
+    <Box sx={{ paddingBottom: 3 }}>
       <ScrollLink id="replies" />
       {loading || repliesAreLoading ? (
         <ContentSpinner />
-      ) : !replies?.length ? (
-        <Box>
-          <Box
-            sx={{
-              py: 6,
-              borderBottom: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
-            <Typography align="center" variant="body1">
-              No replies yet!
-              <br />
-              Be the first to reply.
-            </Typography>
-          </Box>
-          <MobileContainer>
-            <InlineCreatePost slug={slug} />
-          </MobileContainer>
-        </Box>
       ) : (
         <>
-          <PostTypeSpacer type="replies" />
-          {replies.length >= SHOW_TOP_CREATE_POST_COUNT && (
-            <Box sx={{ px: 2 }}>
-              <InlineCreatePost slug={slug} />
-            </Box>
-          )}
+          <InlineCreatePost slug={slug} />
           <Divider />
           <Feed
             cellMeasurerCache={cellMeasurerCache}
@@ -75,9 +51,6 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
             onLoadMore={loadMore}
             posts={replies}
           />
-          <Box sx={{ px: 2 }}>
-            <InlineCreatePost slug={slug} />
-          </Box>
         </>
       )}
     </Box>
