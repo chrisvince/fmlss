@@ -68,7 +68,7 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
-  const { email } = useAuthUser()
+  const { email, id: uid } = useAuthUser()
   const theme = useTheme()
   const { user } = useUser()
   const avatarLetter = user?.data.username?.charAt(0).toUpperCase()
@@ -119,9 +119,9 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
               <LeftNavigationListItem
                 avatarText={avatarLetter}
                 exact
-                href="/profile"
+                href={uid ? '/profile' : '/'}
                 iconCurrent={PersonRounded}
-                primary="Profile"
+                primary={uid ? 'Profile' : 'Login'}
                 secondary={user?.data.username ?? email}
               />
             </List>

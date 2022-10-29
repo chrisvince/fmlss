@@ -15,6 +15,7 @@ import constants from '../../constants'
 import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
+import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
 
 const {
   CATEGORIES_ENABLED,
@@ -22,6 +23,8 @@ const {
   MINI_LIST_CACHE_TIME,
   MINI_LIST_COUNT,
 } = constants
+
+const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface PropTypes {
   fallback: {
@@ -120,8 +123,8 @@ const getServerSidePropsFn = async ({
   }
 }
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  getServerSidePropsFn as any
-)
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)(getServerSidePropsFn as any)
 
-export default withAuthUser()(Hashtags as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Hashtags as any)

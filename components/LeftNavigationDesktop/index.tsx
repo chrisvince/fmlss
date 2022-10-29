@@ -68,7 +68,7 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationDesktop = () => {
-  const { email } = useAuthUser()
+  const { email, id: uid } = useAuthUser()
   const { user } = useUser()
   const theme = useTheme()
   const navMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
@@ -119,9 +119,9 @@ const LeftNavigationDesktop = () => {
               <LeftNavigationListItem
                 avatarText={avatarLetter}
                 exact
-                href="/profile"
+                href={uid ? '/profile' : '/'}
                 iconCurrent={PersonRounded}
-                primary="Profile"
+                primary={uid ? 'Profile' : 'Login'}
                 secondary={user?.data.username ?? email}
               />
             </List>
