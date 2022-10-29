@@ -220,17 +220,18 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
                       'aria-labelledby': 'profile-menu-button',
                     }}
                   >
-                    <Link href="/profile" passHref>
-                      <MenuItem>
-                        <ListItemIcon>
-                          <PersonRounded />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary="Profile"
-                          secondary={user?.data.username ?? email}
-                        />
-                      </MenuItem>
-                    </Link>
+                    <MenuItem
+                      component={Link}
+                      href="/profile"
+                    >
+                      <ListItemIcon>
+                        <PersonRounded />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary="Profile"
+                        secondary={user?.data.username ?? email}
+                      />
+                    </MenuItem>
                     <MenuItem onClick={handleSignOutClick}>
                       <ListItemIcon>
                         <LogoutRounded />

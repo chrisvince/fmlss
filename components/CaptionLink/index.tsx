@@ -16,6 +16,8 @@ const CaptionLink = ({
 }: PropTypes) => {
   const muiLink = (
     <MuiLink
+      component={Link}
+      href={href}
       variant="caption"
       sx={{
         textDecoration: 'none',
@@ -29,16 +31,12 @@ const CaptionLink = ({
     </MuiLink>
   )
 
-  return (
-    <Link href={href} passHref>
-      {tooltip ? (
-        <Tooltip placement={tooltipPlacement} title={tooltip}>
-          {muiLink}
-        </Tooltip>
-      ) : (
-        muiLink
-      )}
-    </Link>
+  return tooltip ? (
+    <Tooltip placement={tooltipPlacement} title={tooltip}>
+      {muiLink}
+    </Tooltip>
+  ) : (
+    muiLink
   )
 }
 

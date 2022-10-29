@@ -29,9 +29,13 @@ const TextAndCta = ({
     >
       {message}
     </Typography>
-    <Link href={ctaHref} passHref>
-      <Button variant="outlined">{ctaText}</Button>
-    </Link>
+    <Button
+      component={Link}
+      href={ctaHref}
+      variant="outlined"
+    >
+      {ctaText}
+    </Button>
   </Box>
 )
 

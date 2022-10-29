@@ -126,9 +126,13 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
                 />
               )}
             />
-            <Link href="/forgot-password" passHref>
-              <MuiLink variant="caption">Forgot password?</MuiLink>
-            </Link>
+            <MuiLink
+              component={Link}
+              href="/forgot-password"
+              variant="caption"
+            >
+              Forgot password?
+            </MuiLink>
           </Box>
         )}
         <Controller

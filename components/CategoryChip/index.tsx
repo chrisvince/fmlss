@@ -27,11 +27,14 @@ const CategoryChip = ({ name, slug }: Props) => {
   }
 
   return (
-    <Link href={`/category/${slug}`} passHref>
-      <MuiLink underline="none" sx={{ display: 'flex' }}>
-        {chipElement}
-      </MuiLink>
-    </Link>
+    <MuiLink
+      component={Link}
+      href={`/category/${slug}`}
+      sx={{ display: 'flex' }}
+      underline="none"
+    >
+      {chipElement}
+    </MuiLink>
   )
 }
 

@@ -191,20 +191,23 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
                   transition: `background-color ${IMAGE_TRANSITION}`,
                 }}
               >
-                <NextImage
-                  src={image!.src}
-                  alt={image!.alt}
-                  width={width}
-                  height={height}
-                  layout="responsive"
-                  objectFit="contain"
-                  style={{
-                    ...imageStyle,
-                    opacity: imageLoaded ? 1 : 0,
-                    transition: `opacity ${IMAGE_TRANSITION}`,
+                <Box
+                  sx={{
+                    aspectRatio: `${width}/${height}`,
+                    position: 'relative',
                   }}
-                  onLoadingComplete={() => setImageLoaded(true)}
-                />
+                >
+                  <NextImage
+                    fill
+                    src={image!.src}
+                    alt={image!.alt}
+                    style={{
+                      opacity: imageLoaded ? 1 : 0,
+                      transition: `opacity ${IMAGE_TRANSITION}`,
+                    }}
+                    onLoadingComplete={() => setImageLoaded(true)}
+                  />
+                </Box>
               </Box>
             )}
           </Box>

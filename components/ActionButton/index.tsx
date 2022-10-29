@@ -40,12 +40,14 @@ const ActionButton = ({
 }: PropTypes, ref: ForwardedRef<HTMLButtonElement>) => {
   const labelledById = useId()
 
-  const button = (
+  return (
     <Button
-      ref={ref}
       aria-labelledby={labelledById}
-      size="small"
+      component={href ? Link : 'button'}
+      href={href}
       onClick={onClick}
+      ref={ref}
+      size="small"
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -81,16 +83,6 @@ const ActionButton = ({
       </Typography>
     </Button>
   )
-
-  if (href) {
-    return (
-      <Link href={href} passHref>
-        {button}
-      </Link>
-    )
-  }
-
-  return button
 }
 
 export default forwardRef(ActionButton)

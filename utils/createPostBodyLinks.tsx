@@ -36,19 +36,19 @@ const InlineLink = ({
   }
 
   return (
-    <Link href={href} passHref>
-      <MuiLink
-        sx={{
-          textDecoration: 'none',
-          color: 'secondary.main',
-          '&:hover': {
-            textDecoration: 'underline',
-          },
-        }}
-      >
-        {children}
-      </MuiLink>
-    </Link>
+    <MuiLink
+      component={Link}
+      href={href}
+      sx={{
+        textDecoration: 'none',
+        color: 'secondary.main',
+        '&:hover': {
+          textDecoration: 'underline',
+        },
+      }}
+    >
+      {children}
+    </MuiLink>
   )
 }
 

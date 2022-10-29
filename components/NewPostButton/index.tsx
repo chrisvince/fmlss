@@ -43,26 +43,19 @@ const NewPostButton = () => {
     }
   })
 
-
   const button = (
     <Button
+      component={isMobileDevice ? Link : 'button'}
       fullWidth
-      size="large"
-      variant="contained"
-      sx={{ marginBottom: 2 }}
+      href={isMobileDevice ? "/post/new" : undefined}
       onClick={!isMobileDevice ? handleButtonClick : undefined}
+      size="large"
+      sx={{ marginBottom: 2 }}
+      variant="contained"
     >
       Post
     </Button>
   )
-
-  if (isMobileDevice) {
-    return (
-      <Link href="/post/new" passHref>
-        {button}
-      </Link>
-    )
-  }
 
   return (
     <>

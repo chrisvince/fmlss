@@ -193,18 +193,25 @@ const SignInForm = () => {
                   justifyContent: 'center',
                 }}
               >
-                <Link href="/forgot-password" passHref>
-                  <MuiLink variant="body2">Forgot password?</MuiLink>
-                </Link>
+                <MuiLink
+                  component={Link}
+                  href="/forgot-password"
+                  variant="body2"
+                >
+                  Forgot password?
+                </MuiLink>
               </Box>
             </Box>
             <Divider />
             <Box>
-              <Link href="/sign-up" passHref>
-                <Button variant="outlined" fullWidth>
-                  Create new account
-                </Button>
-              </Link>
+              <Button
+                component={Link}
+                fullWidth
+                href="/sign-up"
+                variant="outlined"
+              >
+                Create new account
+              </Button>
             </Box>
           </Box>
         </Box>

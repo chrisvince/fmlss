@@ -70,15 +70,21 @@ const HashtagsPage = () => {
     >
       <MobileContainer>
         <ViewSelectorButtonGroup>
-          {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
-            <Link href={href} key={href} passHref shallow>
+          {SORT_MODE_OPTIONS.map(
+            ({ href, sortMode: sortModeOption, label }) => (
               <Button
-                variant={sortModeOption === sortMode ? 'contained' : undefined}
+                component={Link}
+                href={href}
+                key={href}
+                shallow
+                variant={
+                  sortModeOption === sortMode ? 'contained' : undefined
+                }
               >
                 {label}
               </Button>
-            </Link>
-          ))}
+            )
+          )}
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <HashtagsList

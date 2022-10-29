@@ -1,16 +1,5 @@
-import Link from 'next/link'
 import { useAuthUser } from 'next-firebase-auth'
-import {
-  Box,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  SwipeableDrawer,
-  SwipeableDrawerProps,
-} from '@mui/material'
+import { Box, List, SwipeableDrawer, SwipeableDrawerProps } from '@mui/material'
 import {
   ChatOutlined,
   ChatRounded,

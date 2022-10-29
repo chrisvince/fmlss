@@ -58,39 +58,40 @@ const LeftNavigationListItem = ({
 
   return (
     <ListItem disablePadding>
-      <Link href={href} passHref>
-        <ListItemButton>
-          {Icon && (
-            <ListItemIcon>
-              {(IconCurrent && isCurrentLink) ? (
-                <IconCurrent color={iconColor} />
-              ) : (
-                <Icon color={iconColor} />
-              )}
-            </ListItemIcon>
-          )}
-          {avatarText && (
-            <Box sx={{ minWidth: '56px' }}>
-              <Avatar>
-                {avatarText}
-              </Avatar>
-            </Box>
-          )}
-          <ListItemText
-            sx={{
-              '& .MuiListItemText-primary': {
-                color: textColor,
-                fontWeight: isCurrentLink ? 'bold' : undefined,
-              },
-              '& .MuiListItemText-secondary': {
-                color: textColor,
-              },
-            }}
-            primary={primary}
-            secondary={secondary}
-          />
-        </ListItemButton>
-      </Link>
+      <ListItemButton
+        component={Link}
+        href={href}
+      >
+        {Icon && (
+          <ListItemIcon>
+            {(IconCurrent && isCurrentLink) ? (
+              <IconCurrent color={iconColor} />
+            ) : (
+              <Icon color={iconColor} />
+            )}
+          </ListItemIcon>
+        )}
+        {avatarText && (
+          <Box sx={{ minWidth: '56px' }}>
+            <Avatar>
+              {avatarText}
+            </Avatar>
+          </Box>
+        )}
+        <ListItemText
+          sx={{
+            '& .MuiListItemText-primary': {
+              color: textColor,
+              fontWeight: isCurrentLink ? 'bold' : undefined,
+            },
+            '& .MuiListItemText-secondary': {
+              color: textColor,
+            },
+          }}
+          primary={primary}
+          secondary={secondary}
+        />
+      </ListItemButton>
     </ListItem>
   )
 }

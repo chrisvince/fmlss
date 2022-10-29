@@ -64,11 +64,12 @@ const UserProfile = () => {
             !authUser.emailVerified && <EmailVerificationLink />
           }
         >
-          <Link href="/profile/change-email" passHref>
-            <ListItemButton component="a">
-              <ListItemText primary="Change email" secondary={authUser.email} />
-            </ListItemButton>
-          </Link>
+          <ListItemButton
+            component={Link}
+            href="/profile/change-email"
+          >
+            <ListItemText primary="Change email" secondary={authUser.email} />
+          </ListItemButton>
         </ListItem>
       </List>
       <List
@@ -95,11 +96,12 @@ const UserProfile = () => {
         }
       >
         <ListItem disableGutters>
-          <Link href="/profile/change-password" passHref>
-            <ListItemButton component="a">
-              <ListItemText primary="Change password" />
-            </ListItemButton>
-          </Link>
+          <ListItemButton
+            component={Link}
+            href="/profile/change-password"
+          >
+            <ListItemText primary="Change password" />
+          </ListItemButton>
         </ListItem>
         <ListItem disableGutters>
           <ListItemButton onClick={handleSignOutButtonClick}>

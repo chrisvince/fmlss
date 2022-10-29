@@ -196,11 +196,14 @@ const SignUpForm = ({ onSuccess }: Props) => {
               <Typography variant="body1" component="h2">
                 Already have an account?{' '}
               </Typography>
-              <Link href="/" passHref>
-                <Button variant="outlined" fullWidth>
-                  Sign in
-                </Button>
-              </Link>
+              <Button
+                component={Link}
+                fullWidth
+                href="/"
+                variant="outlined"
+              >
+                Sign in
+              </Button>
             </Box>
           </Box>
         </Box>
