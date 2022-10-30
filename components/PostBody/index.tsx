@@ -15,10 +15,13 @@ const PostBody = ({ body, id, size = 'small' }: Props) => {
 
   return (
     <Typography
-      sx={{ whiteSpace: 'pre-wrap' }}
-      variant={typographyVariant}
       component="p"
       id={id}
+      sx={{
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word',
+      }}
+      variant={typographyVariant}
     >
       {createPostBodyLinks(body)}
     </Typography>

@@ -218,11 +218,19 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
             alignSelf: 'center',
           }}
         >
-          <Typography variant="caption" component="div">
+          <Typography
+            component="div"
+            sx={{ wordBreak: 'break-word' }}
+            variant="caption"
+          >
             {title ?? href}
           </Typography>
-          {subtitle && (
-            <Typography variant="caption" component="div">
+          {subtitle && subtitle !== (title ?? href) && (
+            <Typography
+              component="div"
+              sx={{ wordBreak: 'break-word' }}
+              variant="caption"
+            >
               {subtitle}
             </Typography>
           )}
@@ -230,7 +238,10 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
             <Typography
               variant="caption"
               component="p"
-              sx={{ color: 'text.secondary' }}
+              sx={{
+                color: 'text.secondary',
+                wordBreak: 'break-word',
+              }}
             >
               {truncateString(description, 220)}
             </Typography>
