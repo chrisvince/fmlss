@@ -48,16 +48,14 @@ const CategoriesPage = () => {
   ] as CategoriesSortMode
 
   const [sortMode, setSortMode] = useState<CategoriesSortMode>(pathSortMode)
-  const { categories, isLoading, loadMore, moreToLoad } =
-    useCategories({
-      sortMode,
-      swrConfig: {
-        onSuccess: () => cellMeasurerCache.clearAll(),
-      },
-    })
+
+  const { categories, isLoading, loadMore, moreToLoad } = useCategories({
+    sortMode,
+  })
 
   useEffect(() => {
     setSortMode(pathSortMode)
+    cellMeasurerCache.clearAll()
   }, [pathSortMode])
 
   return (

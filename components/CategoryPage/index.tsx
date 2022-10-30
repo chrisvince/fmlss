@@ -14,7 +14,7 @@ import unslugify from '../../utils/unslugify'
 import constants from '../../constants'
 import PageSpinner from '../PageSpinner'
 import useTracking from '../../utils/tracking/useTracking'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -57,16 +57,20 @@ const CategoryPage = ({ slug }: PropTypes) => {
   const { query: { sort } } = useRouter()
   const { track } = useTracking()
 
-  const sortMode =
+  const pathSortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as CategorySortMode
 
-  const { isLoading, loadMore, moreToLoad, posts, likePost } =
-    useCategoryPosts(slug, {
-      sortMode,
-      swrConfig: {
-        onSuccess: () => cellMeasurerCache.clearAll()
-      },
-    })
+  const [sortMode, setSortMode] = useState<CategorySortMode>(pathSortMode)
+  
+  const { isLoading, loadMore, moreToLoad, posts, likePost } = useCategoryPosts(
+    slug,
+    { sortMode }
+  )
+
+  useEffect(() => {
+    setSortMode(pathSortMode)
+    cellMeasurerCache.clearAll()
+  }, [pathSortMode])
 
   const categoryName = unslugify(slug)
   const sortOptions = generateSortOptions(slug)

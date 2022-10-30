@@ -51,15 +51,14 @@ const HashtagsPage = () => {
   ] as HashtagsSortMode
 
   const [sortMode, setSortMode] = useState<HashtagsSortMode>(pathSortMode)
+
   const { isLoading, loadMore, moreToLoad, hashtags } = useHashtags({
     sortMode,
-    swrConfig: {
-      onSuccess: () => cellMeasurerCache.clearAll(),
-    },
   })
 
   useEffect(() => {
     setSortMode(pathSortMode)
+    cellMeasurerCache.clearAll()
   }, [pathSortMode])
 
   return (

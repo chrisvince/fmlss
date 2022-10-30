@@ -19,13 +19,9 @@ const cellMeasurerCache = new CellMeasurerCache({
 })
 
 const UserPostsPage = () => {
-  const { isLoading, likePost, loadMore, moreToLoad, posts } =
-    useUserPosts({
-      type: 'post',
-      swrConfig: {
-        onSuccess: () => cellMeasurerCache.clearAll(),
-      },
-    })
+  const { isLoading, likePost, loadMore, moreToLoad, posts } = useUserPosts({
+    type: 'post',
+  })
 
   return (
     <Page

@@ -58,16 +58,14 @@ const FeedPage = () => {
     SORT_MODE_MAP[path?.split?.('/')?.[2] ?? 'latest'] as FeedSortMode
 
   const [sortMode, setSortMode] = useState<FeedSortMode>(pathSortMode)
-  const { isLoading, loadMore, moreToLoad, posts, likePost } =
-    usePostFeed({
-      sortMode,
-      swrConfig: {
-        onSuccess: () => cellMeasurerCache.clearAll(),
-      }
-    })
+
+  const { isLoading, loadMore, moreToLoad, posts, likePost } = usePostFeed({
+    sortMode,
+  })
 
   useEffect(() => {
     setSortMode(pathSortMode)
+    cellMeasurerCache.clearAll()
   }, [pathSortMode])
 
   return (

@@ -62,17 +62,23 @@ const HashtagPage = ({ slug }: PropTypes) => {
   const [showType, setShowType] = useState<'post' | 'both'>('post')
   const { track } = useTracking()
 
-  const sortMode =
+  const pathSortMode =
     (SORT_MODE_MAP[sort as string] ?? 'latest') as HashtagSortMode
+  
+  const [sortMode, setSortMode] = useState<HashtagSortMode>(pathSortMode)
 
-  const { isLoading, likePost, loadMore, moreToLoad, posts } =
-    useHashtagPosts(slug, {
+  const { isLoading, likePost, loadMore, moreToLoad, posts } = useHashtagPosts(
+    slug,
+    {
       showType: showType,
       sortMode,
-      swrConfig: {
-        onSuccess: () => cellMeasurerCache.clearAll(),
-      },
-    })
+    }
+  )
+
+  useEffect(() => {
+    setSortMode(pathSortMode)
+    cellMeasurerCache.clearAll()
+  }, [pathSortMode])
 
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
     const { checked } = event.target as HTMLInputElement
