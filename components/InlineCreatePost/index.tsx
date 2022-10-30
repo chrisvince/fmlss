@@ -47,7 +47,7 @@ const InlineCreatePost = ({ slug }: Props) => {
         onSubmit={handleSubmit}
         sx={{
           display: 'grid',
-          alignItems: 'flex-start',
+          alignItems: 'start',
           gridTemplateColumns: '1fr min-content',
           gap: 3,
         }}

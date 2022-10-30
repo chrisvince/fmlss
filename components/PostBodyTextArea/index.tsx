@@ -295,7 +295,7 @@ const PostBodyTextArea = (
         sx={{
           display: 'grid',
           gridTemplateColumns: 'min-content 1fr',
-          alignItems: 'baseline',
+          alignItems: 'start',
           gap: 2,
           pt: 2,
         }}
@@ -303,7 +303,7 @@ const PostBodyTextArea = (
         <Box>
           <Avatar>{avatarLetter}</Avatar>
         </Box>
-        <Box>
+        <Box sx={{ paddingTop: 1 }}>
           <Typography
             component="div"
             variant="body1"
