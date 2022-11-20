@@ -1,6 +1,7 @@
 import { CellMeasurerCache } from 'react-virtualized'
 
 import { Hashtag } from '../../types'
+import CenteredMessage from '../CenteredMessage'
 import ContentList from '../ContentList'
 import ContentSpinner from '../ContentSpinner'
 import HashtagListItem from '../HashtagListItem'
@@ -22,7 +23,8 @@ const HashtagsList = ({
 }: Props) =>
   isLoading ? (
     <ContentSpinner />
-  ) : (
+  ) :
+  hashtags.length ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache}
       items={hashtags}
@@ -31,6 +33,10 @@ const HashtagsList = ({
     >
       {hashtag => <HashtagListItem hashtag={hashtag} />}
     </ContentList>
+  ) : (
+    <CenteredMessage>
+      No hashtags.
+    </CenteredMessage>
   )
 
 export default HashtagsList

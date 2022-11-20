@@ -3,6 +3,7 @@ import { CellMeasurerCache } from 'react-virtualized'
 import { Post } from '../../types'
 import PostListItem from '../PostListItem'
 import ContentList from '../ContentList'
+import CenteredMessage from '../CenteredMessage'
 
 type PropTypes = {
   cellMeasurerCache: CellMeasurerCache
@@ -18,7 +19,7 @@ const Feed = ({
   onLikePost,
   onLoadMore,
   posts,
-}: PropTypes) => (
+}: PropTypes) => posts.length ? (
   <ContentList
     cellMeasurerCache={cellMeasurerCache}
     items={posts}
@@ -32,6 +33,10 @@ const Feed = ({
       />
     )}
   </ContentList>
+) : (
+  <CenteredMessage>
+    No posts.
+  </CenteredMessage>
 )
 
 export default Feed
