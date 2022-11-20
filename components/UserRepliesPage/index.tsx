@@ -27,6 +27,7 @@ const UserRepliesPage = () => {
     <Page
       description="See posts you've replied on Fameless"
       pageTitle="Replies"
+      renderPageTitle
       rightPanelChildren={
         <>
           <MiniHashtagsSection />

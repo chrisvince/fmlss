@@ -9,7 +9,6 @@ const SignUpPage = () => {
       description="Join the conversation. Sign up to Fameless."
       pageTitle="Sign up"
       layout="none"
-      noPageTitle
     >
       <Container maxWidth="xs">
         <Box

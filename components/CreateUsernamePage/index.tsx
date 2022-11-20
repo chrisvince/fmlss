@@ -9,7 +9,6 @@ const CreateUsernamePage = () => {
       description="Create a Fameless username."
       pageTitle="Create a username"
       layout="none"
-      noPageTitle
     >
       <Container maxWidth="xs">
         <Box

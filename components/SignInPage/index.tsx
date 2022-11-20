@@ -8,7 +8,6 @@ const SignInPage = () => (
   <Page
     description="Join the conversation. Join Fameless."
     layout="none"
-    noPageTitle
     pageTitle="Sign in or create an account"
   >
     <Container maxWidth="lg">

@@ -4,7 +4,6 @@ import ForgotPasswordForm from '../ForgotPasswordForm'
 const ForgotPasswordPage = () => (
   <Page
     layout="none"
-    noPageTitle
     pageTitle="Forgot Password"
     thinContainer
   >

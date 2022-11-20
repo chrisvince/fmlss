@@ -31,8 +31,8 @@ interface Props {
   children: ReactNode
   description?: string
   layout?: 'rightPanel' | 'none'
-  noPageTitle?: boolean
   pageTitle?: string
+  renderPageTitle?: boolean
   rightPanelChildren?: ReactNode
   thinContainer?: boolean
   title?: string
@@ -46,17 +46,14 @@ const Page = ({
   children,
   description = DEFAULT_DESCRIPTION,
   layout = 'rightPanel',
-  noPageTitle = false,
   pageTitle,
+  renderPageTitle = false,
   rightPanelChildren,
   thinContainer = false,
   title,
   type = 'website',
-  uiPageTitle,
   urlPath,
 }: Props) => {
-  const uiTitle = uiPageTitle ?? pageTitle
-  const renderUiTitle = !noPageTitle && uiTitle
   const { asPath } = useRouter()
 
   return (
@@ -99,7 +96,7 @@ const Page = ({
           thinContainer={thinContainer}
           main={
             <>
-              {renderUiTitle && <PageTitle>{uiTitle}</PageTitle>}
+              {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
               {children}
             </>
           }
@@ -107,7 +104,7 @@ const Page = ({
         />
       ) : (
         <>
-          {renderUiTitle && <PageTitle>{uiTitle}</PageTitle>}
+          {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
           {children}
         </>
       )}

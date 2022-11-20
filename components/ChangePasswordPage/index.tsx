@@ -9,6 +9,7 @@ const ChangePasswordPage = ({ userHasPassword }: Props) => {
   return (
     <Page
       pageTitle={userHasPassword ? 'Change password' : 'Create password'}
+      renderPageTitle
       thinContainer
     >
       <ChangePasswordForm userHasPassword={userHasPassword} />

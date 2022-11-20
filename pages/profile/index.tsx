@@ -34,7 +34,7 @@ const UserProfile = () => {
   const handleSignOutButtonClick = authUser.signOut
 
   return (
-    <Page pageTitle="Profile" thinContainer>
+    <Page pageTitle="Profile" thinContainer renderPageTitle>
       <List
         sx={{
           '& .MuiListItemButton-root': {

@@ -1,5 +1,4 @@
 import { Container, Box, useTheme } from '@mui/system'
-import { useMediaQuery } from '@mui/material'
 
 import TopNavigation from '../TopNavigation'
 import LeftNavigationDesktop from '../LeftNavigationDesktop'

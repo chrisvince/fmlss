@@ -95,11 +95,21 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
   return (
     <>
       <Box
+        component="header"
         sx={{
           position: 'sticky',
           top: 0,
-          backgroundColor: 'background.paper',
           zIndex: 1210,
+          backgroundColor: 'background.paper',
+          borderBottom: '1px solid',
+          borderBottomColor: 'divider',
+          height: TOP_NAVIGATION_HEIGHT,
+          marginBottom: {
+            xs: !noMarginBottom
+              ? theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)
+              : undefined,
+            sm: TOP_NAVIGATION_MARGIN_BOTTOM_SM,
+          },
           transform: {
             xs: showMobileNav ? 'translateY(0)' : 'translateY(-100%)',
             sm: 'unset',
@@ -110,151 +120,120 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
           },
         }}
       >
-        <Box
-          component="header"
-          sx={{
-            borderBottom: '1px solid',
-            borderBottomColor: 'divider',
-            height: TOP_NAVIGATION_HEIGHT,
-            marginBottom: {
-              xs: !noMarginBottom
-                ? theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)
-                : undefined,
-              sm: 'unset',
-            },
-          }}
-        >
-          <Container sx={{ height: '100%' }}>
+        <Container sx={{ height: '100%' }}>
+          <Box
+            sx={{
+              display: 'grid',
+              height: '100%',
+              alignItems: 'center',
+              gridTemplateColumns: {
+                xs: `${SIDEBAR_WIDTH_XS} 1fr`,
+                sm: `${SIDEBAR_WIDTH_SM} 1fr min-content`,
+                md: `${SIDEBAR_WIDTH_MD} 1fr ${SIDEBAR_WIDTH_MD}`,
+                lg: `${SIDEBAR_WIDTH_LG} 1fr ${SIDEBAR_WIDTH_LG}`,
+              },
+              columnGap: {
+                xs: SIDEBAR_GAP_SM,
+                md: SIDEBAR_GAP_MD,
+              },
+            }}
+          >
             <Box
               sx={{
                 display: 'grid',
-                height: '100%',
                 alignItems: 'center',
-                gridTemplateColumns: {
-                  xs: `${SIDEBAR_WIDTH_XS} 1fr`,
-                  sm: `${SIDEBAR_WIDTH_SM} 1fr min-content`,
-                  md: `${SIDEBAR_WIDTH_MD} 1fr ${SIDEBAR_WIDTH_MD}`,
-                  lg: `${SIDEBAR_WIDTH_LG} 1fr ${SIDEBAR_WIDTH_LG}`,
-                },
-                columnGap: {
-                  xs: SIDEBAR_GAP_SM,
-                  md: SIDEBAR_GAP_MD,
-                },
+                gridAutoFlow: 'column',
+                gridTemplateColumns: 'auto 1fr',
+                columnGap: 2,
               }}
             >
               <Box
                 sx={{
-                  display: 'grid',
-                  alignItems: 'center',
-                  gridAutoFlow: 'column',
-                  gridTemplateColumns: 'auto 1fr',
-                  columnGap: 2,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: {
-                      xs: 'block',
-                      sm: 'none',
-                      marginLeft: theme.spacing(-1),
-                    },
-                  }}
-                >
-                  <IconButton onClick={handleMobileMenuButtonClick}>
-                    <MenuIcon />
-                  </IconButton>
-                </Box>
-                <Box>
-                  <Brand height={19} width={116} padded />
-                </Box>
-              </Box>
-              <Box
-                sx={{
                   display: {
-                    xs: 'none',
-                    sm: 'block',
+                    xs: 'block',
+                    sm: 'none',
+                    marginLeft: theme.spacing(-1),
                   },
                 }}
               >
-                <CenterSectionContainer>
-                  {/* middle section */}
-                </CenterSectionContainer>
+                <IconButton onClick={handleMobileMenuButtonClick}>
+                  <MenuIcon />
+                </IconButton>
               </Box>
-              <Box
-                sx={{
-                  position: 'sticky',
-                  top: 0,
-                  justifySelf: 'end',
-                }}
-              >
-                <Box
-                  sx={{
-                    display: {
-                      marginRight: theme.spacing(-0.7),
-                    },
-                  }}
-                >
-                  <IconButton
-                    id="profile-menu-button"
-                    aria-label="Profile menu"
-                    ref={profileMenuButtonRef}
-                    onClick={handleProfileMenuButtonClick}
-                    sx={{ padding: 0.7 }}
-                  >
-                    <Avatar
-                      sx={{
-                        height: '34px',
-                        width: '34px',
-                      }}
-                    >
-                      <Typography variant="body1">
-                        {avatarLetter}
-                      </Typography>
-                    </Avatar>
-                  </IconButton>
-                  <Menu
-                    anchorEl={profileMenuButtonRef.current}
-                    open={profileMenuOpen}
-                    onClose={handleProfileMenuClose}
-                    MenuListProps={{
-                      'aria-labelledby': 'profile-menu-button',
-                    }}
-                  >
-                    <MenuItem
-                      component={Link}
-                      href="/profile"
-                    >
-                      <ListItemIcon>
-                        <PersonRounded />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Profile"
-                        secondary={user?.data.username ?? email}
-                      />
-                    </MenuItem>
-                    <MenuItem onClick={handleSignOutClick}>
-                      <ListItemIcon>
-                        <LogoutRounded />
-                      </ListItemIcon>
-                      <ListItemText>Sign out</ListItemText>
-                    </MenuItem>
-                  </Menu>
-                </Box>
+              <Box>
+                <Brand height={19} width={116} padded />
               </Box>
             </Box>
-          </Container>
-        </Box>
-        <Box
-          sx={{
-            display: {
-              xs: 'none',
-              sm: 'block',
-            },
-            height: {
-              sm: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM),
-            },
-          }}
-        />
+            <Box
+              sx={{
+                display: {
+                  xs: 'none',
+                  sm: 'block',
+                },
+              }}
+            >
+              <CenterSectionContainer>
+                {/* middle section */}
+              </CenterSectionContainer>
+            </Box>
+            <Box
+              sx={{
+                position: 'sticky',
+                top: 0,
+                justifySelf: 'end',
+              }}
+            >
+              <Box
+                sx={{
+                  display: {
+                    marginRight: theme.spacing(-0.7),
+                  },
+                }}
+              >
+                <IconButton
+                  id="profile-menu-button"
+                  aria-label="Profile menu"
+                  ref={profileMenuButtonRef}
+                  onClick={handleProfileMenuButtonClick}
+                  sx={{ padding: 0.7 }}
+                >
+                  <Avatar
+                    sx={{
+                      height: '34px',
+                      width: '34px',
+                    }}
+                  >
+                    <Typography variant="body1">{avatarLetter}</Typography>
+                  </Avatar>
+                </IconButton>
+                <Menu
+                  anchorEl={profileMenuButtonRef.current}
+                  open={profileMenuOpen}
+                  onClose={handleProfileMenuClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'profile-menu-button',
+                  }}
+                >
+                  <MenuItem component={Link} href="/profile">
+                    <ListItemIcon>
+                      <PersonRounded />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Profile"
+                      secondary={user?.data.username ?? email}
+                    />
+                  </MenuItem>
+                  <MenuItem onClick={handleSignOutClick}>
+                    <ListItemIcon>
+                      <LogoutRounded />
+                    </ListItemIcon>
+                    <ListItemText>Sign out</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            </Box>
+          </Box>
+        </Container>
       </Box>
       <LeftNavigationMobile
         open={mobileNavigationOpen}

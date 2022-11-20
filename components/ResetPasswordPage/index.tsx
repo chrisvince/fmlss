@@ -31,7 +31,6 @@ const mapRequestIdStatusToInitialUiState = (
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <Page
     layout="none"
-    noPageTitle
     pageTitle="Forgot Password"
     thinContainer
   >

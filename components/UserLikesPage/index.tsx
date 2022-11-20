@@ -25,6 +25,7 @@ const UserLikesPage = () => {
     <Page
       description="See posts you've liked on Fameless"
       pageTitle="Likes"
+      renderPageTitle
       rightPanelChildren={
         <>
           <MiniHashtagsSection />

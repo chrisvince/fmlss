@@ -11,7 +11,6 @@ const { CATEGORIES_ENABLED } = constants
 const NotFoundPage = () => (
   <Page
     pageTitle="Not found"
-    noPageTitle
     rightPanelChildren={
       <>
         <MiniHashtagsSection />

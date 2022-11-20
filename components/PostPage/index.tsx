@@ -85,7 +85,6 @@ const PostPage = ({ slug }: PropTypes) => {
         pageTitle={pageTitle}
         uiPageTitle="Post"
         type="article"
-        noPageTitle
         article={{
           publishedTime: createdAt,
           modifiedTime: updatedAt,

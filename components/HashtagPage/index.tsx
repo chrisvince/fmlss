@@ -100,6 +100,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
     <Page
       description={`See posts with the ${title} hashtag`}
       pageTitle={title}
+      renderPageTitle
       rightPanelChildren={
         <>
           <MiniHashtagsSection />
