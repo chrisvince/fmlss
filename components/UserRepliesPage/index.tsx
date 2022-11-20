@@ -35,17 +35,14 @@ const UserRepliesPage = () => {
         </>
       }
     >
-      {isLoading ? (
-        <PageSpinner />
-      ) : (
-        <Feed
-          cellMeasurerCache={cellMeasurerCache}
-          moreToLoad={moreToLoad}
-          onLikePost={likePost}
-          onLoadMore={loadMore}
-          posts={posts}
-        />
-      )}
+      <Feed
+        cellMeasurerCache={cellMeasurerCache}
+        moreToLoad={moreToLoad}
+        onLikePost={likePost}
+        onLoadMore={loadMore}
+        posts={posts}
+        isLoading={isLoading}
+      />
     </Page>
   )
 }
