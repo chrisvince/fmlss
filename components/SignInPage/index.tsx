@@ -38,7 +38,7 @@ const SignInPage = () => (
         >
           <Brand height={34} width={210} />
           <Typography component="h2" sx={{ lineHeight: 1 }} variant="h4">
-            The network where nobody knows your name.
+            The anonymous network.
           </Typography>
         </Box>
         <SignInForm />
