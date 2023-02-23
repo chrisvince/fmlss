@@ -23,7 +23,7 @@ const PostCaption = ({ type }: PropTypes) => {
   }[type]
 
   const tooltip = {
-    byUser: 'Only seen by you',
+    byUser: "Only you can see that you're the author of this post",
   }[type]
 
   if (href) {
