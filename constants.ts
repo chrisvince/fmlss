@@ -24,6 +24,7 @@ const constants = {
   CENTER_SECTION_CONTAINER_THIN_MAX_WIDTH: '420px',
   EMAIL_REGEX_PATTERN:
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
+  ENABLE_HIGHLIGHTING: false,
   FEED_CACHE_TIME: secondsToMs(30),
   FOOTER_BASIC_HEIGHT: '56px',
   FORM_MESSAGING: {

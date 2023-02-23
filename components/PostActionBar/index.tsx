@@ -8,13 +8,18 @@ import formatDate from '../../utils/formatting/formatDate'
 import formatLikesCount from '../../utils/formatting/formatLikesCount'
 import formatReplyCount from '../../utils/formatting/formatReplyCount'
 import CaptionLink from '../CaptionLink'
-import HighlightButton from '../HighlightButton'
 import LikeButton from '../LikeButton'
 import ReplyButton from '../ReplyButton'
 import ShareButton from '../ShareButton'
+import constants from '../../constants'
 
+const HighlightButton = dynamic(() => import('../HighlightButton'), {
+  ssr: false,
+})
 const ReplyModal = dynamic(() => import('../ReplyModal'), { ssr: false })
 const SignUpModal = dynamic(() => import('../SignUpModal'), { ssr: false })
+
+const { ENABLE_HIGHLIGHTING } = constants
 
 interface PropTypes {
   createdAt: string
@@ -147,7 +152,9 @@ const PostActionBar = ({
               href={isMobileDevice ? `/post/${slug}/reply` : undefined}
             />
           )}
-          <HighlightButton onClick={handleHighlightButtonClick} />
+          {ENABLE_HIGHLIGHTING && (
+            <HighlightButton onClick={handleHighlightButtonClick} />
+          )}
           <ShareButton slug={slug} />
         </Box>
       </Box>
