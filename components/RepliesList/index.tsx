@@ -26,7 +26,6 @@ type PropTypes = {
 }
 
 const RepliesList = ({ loading = false, slug }: PropTypes) => {
-
   const {
     isLoading: repliesAreLoading,
     likePost,
@@ -46,6 +45,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
           <Divider />
           <Feed
             cellMeasurerCache={cellMeasurerCache}
+            isRepliesFeed
             moreToLoad={moreToLoad}
             onLikePost={likePost}
             onLoadMore={loadMore}

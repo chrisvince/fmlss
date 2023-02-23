@@ -5,10 +5,12 @@ import PostListItem from '../PostListItem'
 import ContentList from '../ContentList'
 import CenteredMessage from '../CenteredMessage'
 import PageSpinner from '../PageSpinner'
+import BlockMessage from '../BlockMessage'
 
 type PropTypes = {
   cellMeasurerCache: CellMeasurerCache
   isLoading?: boolean
+  isRepliesFeed?: boolean
   moreToLoad: boolean
   onLikePost: (slug: string) => Promise<void>
   onLoadMore: () => Promise<any>
@@ -18,6 +20,7 @@ type PropTypes = {
 const Feed = ({
   cellMeasurerCache,
   isLoading = false,
+  isRepliesFeed = false,
   moreToLoad,
   onLikePost,
   onLoadMore,
@@ -25,25 +28,19 @@ const Feed = ({
 }: PropTypes) =>
   isLoading ? (
     <PageSpinner />
-  ) :
-  posts.length ? (
+  ) : posts.length ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache}
       items={posts}
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
     >
-      {post => (
-        <PostListItem
-          onLikePost={onLikePost}
-          post={post}
-        />
-      )}
+      {post => <PostListItem onLikePost={onLikePost} post={post} />}
     </ContentList>
+  ) : isRepliesFeed ? (
+    <BlockMessage>No replies.</BlockMessage>
   ) : (
-    <CenteredMessage>
-      No posts.
-    </CenteredMessage>
+    <CenteredMessage>No posts.</CenteredMessage>
   )
 
 export default Feed
