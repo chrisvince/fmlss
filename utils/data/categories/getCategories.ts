@@ -58,7 +58,9 @@ const getCategories: GetCategories = async (
     categoryDocs = await pipe(
       () => db.collection(CATEGORIES_COLLECTION),
       query =>
-        sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
+        sortMode === 'popular'
+          ? query.orderBy('recentViewCount', 'desc')
+          : query,
       query => query.orderBy('createdAt', 'desc'),
       query => startAfter ? query.startAfter(startAfter) : query,
       query => query.limit(limit).get(),

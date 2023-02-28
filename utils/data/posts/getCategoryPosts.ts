@@ -61,7 +61,9 @@ const getCategoryPosts: GetCategoryPosts = async (
           .collectionGroup(POSTS_COLLECTION)
           .where('category.slug', '==', lowerCaseSlug),
       query =>
-        sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
+        sortMode === 'popular'
+          ? query.orderBy('recentViewCount', 'desc')
+          : query,
       query =>
         sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),

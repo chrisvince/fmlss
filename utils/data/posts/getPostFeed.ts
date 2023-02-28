@@ -48,7 +48,9 @@ const getPostFeed: GetPosts = async (
     postDocs = await pipe(
       () => db.collection(POSTS_COLLECTION),
       query =>
-        sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
+        sortMode === 'popular'
+          ? query.orderBy('recentViewCount', 'desc')
+          : query,
       query =>
         sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),

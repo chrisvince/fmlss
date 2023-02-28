@@ -9,6 +9,7 @@ const mapCategoryDocToData: MapCategoryDocToData = doc => {
     id: doc.id as string,
     name: data.name as string,
     postCount: data.postCount as number,
+    recentViewCount: data.recentViewCount as number,
     slug: data.slug as string,
     updatedAt: data.updatedAt.toMillis() as string,
     viewCount: data.viewCount as number,

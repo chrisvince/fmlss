@@ -66,7 +66,9 @@ const getHashtagPosts: GetHashtagPosts = async (
       query =>
         showType !== 'both' ? query.where('type', '==', showType) : query,
       query =>
-        sortMode === 'popular' ? query.orderBy('viewCount', 'desc') : query,
+        sortMode === 'popular'
+          ? query.orderBy('recentViewCount', 'desc')
+          : query,
       query =>
         sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
