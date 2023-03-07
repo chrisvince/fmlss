@@ -1,6 +1,9 @@
 import usePost from '../../utils/data/post/usePost'
 import Modal from '../Modal'
 import NewPostForm from '../NewPostForm'
+import constants from '../../constants'
+
+const { MESSAGING } = constants
 
 interface Props {
   open: boolean
@@ -20,9 +23,9 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
       title="Reply to Post"
     >
       <NewPostForm
-        slug={slug}
-        placeholder="Write a reply"
         isInModal
+        placeholder={MESSAGING.NEW_REPLY_PROMPT}
+        slug={slug}
       />
     </Modal>
   )

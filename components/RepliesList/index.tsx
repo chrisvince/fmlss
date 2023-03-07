@@ -38,7 +38,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
         <ContentSpinner />
       ) : (
         <>
-          <InlineCreatePost slug={slug} />
+          <InlineCreatePost slug={slug} variant="reply" />
           <Feed
             cellMeasurerCache={cellMeasurerCache}
             isRepliesFeed

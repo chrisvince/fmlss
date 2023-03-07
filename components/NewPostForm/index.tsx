@@ -1,5 +1,10 @@
 import { LoadingButton } from '@mui/lab'
-import { DialogActions, DialogContent, Divider, Tooltip, Typography } from '@mui/material'
+import {
+  DialogActions,
+  DialogContent,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { Box } from '@mui/system'
 import { useEffect, useId, useRef, useState } from 'react'
 
@@ -13,7 +18,7 @@ import PostBodyTextArea, {
 import PostItem from '../PostItem'
 import constants from '../../constants'
 
-const { CATEGORIES_ENABLED } = constants
+const { CATEGORIES_ENABLED, MESSAGING } = constants
 
 interface Props {
   isInModal?: boolean
@@ -23,7 +28,7 @@ interface Props {
 
 const NewPostForm = ({
   isInModal = false,
-  placeholder = `What's on your mind?`,
+  placeholder = MESSAGING.NEW_POST_PROMPT,
   slug,
 }: Props) => {
   const { post: replyingToPost } = usePost(slug)
@@ -81,11 +86,7 @@ const NewPostForm = ({
       }}
     >
       {replyingToPost && (
-        <PostItem
-          bodySize="large"
-          hideActionBar
-          post={replyingToPost}
-        />
+        <PostItem bodySize="large" hideActionBar post={replyingToPost} />
       )}
       <Box>
         <PostBodyTextArea
@@ -135,11 +136,7 @@ const NewPostForm = ({
 
   return (
     <>
-      {isInModal ? (
-        <DialogContent>
-          {form}
-        </DialogContent>
-      ) : form}
+      {isInModal ? <DialogContent>{form}</DialogContent> : form}
       {isInModal && (
         <DialogActions
           sx={{

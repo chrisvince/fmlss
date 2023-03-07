@@ -10,12 +10,31 @@ import PostBodyTextArea, {
   PostBodyTextAreaRef,
   postLengthStatusType,
 } from '../PostBodyTextArea'
+import constants from '../../constants'
 
-interface Props {
-  slug: string
+const { MESSAGING } = constants
+
+const POST_BODY_PADDING_TOP_MAP = {
+  feed: undefined,
+  reply: 2,
 }
 
-const InlineCreatePost = ({ slug }: Props) => {
+const PADDING_BOTTOM_MAP = {
+  feed: 1,
+  reply: undefined,
+}
+
+const BUTTON_CONTAINER_HEIGHT_MAP = {
+  feed: '50px',
+  reply: '72px',
+}
+
+interface Props {
+  variant: 'feed' | 'reply'
+  slug?: string
+}
+
+const InlineCreatePost = ({ variant, slug }: Props) => {
   const { user } = useUser()
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
 
@@ -24,11 +43,7 @@ const InlineCreatePost = ({ slug }: Props) => {
 
   const disableButton = postLengthStatus === postLengthStatusType.error
 
-  const {
-    createPost,
-    isLoading,
-    errorMessage,
-  } = useCreatePost(slug)
+  const { createPost, isLoading, errorMessage } = useCreatePost(slug)
 
   const submitPost = async () => {
     const body = postBodyTextAreaRef.current?.value
@@ -50,17 +65,22 @@ const InlineCreatePost = ({ slug }: Props) => {
           alignItems: 'start',
           gridTemplateColumns: '1fr min-content',
           gap: 3,
+          pb: PADDING_BOTTOM_MAP[variant],
         }}
       >
         <Box>
-          <PostBodyTextArea
-            disabled={isLoading}
-            onCommandEnter={submitPost}
-            onLengthStatusChange={setPostLengthStatus}
-            placeholder="Write a reply"
-            ref={postBodyTextAreaRef}
-            username={user?.data.username}
-          />
+          <Box sx={{ pt: POST_BODY_PADDING_TOP_MAP[variant] }}>
+            <PostBodyTextArea
+              disabled={isLoading}
+              onCommandEnter={submitPost}
+              onLengthStatusChange={setPostLengthStatus}
+              placeholder={
+                slug ? MESSAGING.NEW_REPLY_PROMPT : MESSAGING.NEW_POST_PROMPT
+              }
+              ref={postBodyTextAreaRef}
+              username={user?.data.username}
+            />
+          </Box>
           {errorMessage && (
             <Typography variant="caption" color="error">
               {errorMessage}
@@ -71,7 +91,7 @@ const InlineCreatePost = ({ slug }: Props) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            height: '72px',
+            height: BUTTON_CONTAINER_HEIGHT_MAP[variant],
           }}
         >
           <LoadingButton

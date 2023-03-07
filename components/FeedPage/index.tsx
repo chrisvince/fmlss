@@ -9,6 +9,7 @@ import type { FeedSortMode } from '../../types'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import constants from '../../constants'
+import InlineCreatePost from '../InlineCreatePost'
 
 const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } =
   constants
@@ -54,6 +55,7 @@ const FeedPage = () => {
         </>
       }
     >
+      <InlineCreatePost variant="feed" />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}

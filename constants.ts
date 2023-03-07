@@ -52,6 +52,10 @@ const constants = {
   HASHTAGS_COLLECTION: 'hashtags',
   INFINITY_LOADING_THRESHOLD: 10,
   LEFT_NAVIGATION_PADDING_BOTTOM: 1,
+  MESSAGING: {
+    NEW_POST_PROMPT: "What's on your mind?",
+    NEW_REPLY_PROMPT: 'Write a reply',
+  },
   MINI_LIST_CACHE_TIME: hoursToMs(12),
   MINI_LIST_COUNT: 6,
   PAGE_SORT_SELECTOR_HEIGHT: '45px',
@@ -83,7 +87,7 @@ const constants = {
   USER_POSTS_CACHE_TIME: secondsToMs(10),
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
-  USERNAME_REGEX_PATTERN: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]*$/ig,
+  USERNAME_REGEX_PATTERN: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]*$/gi,
   USERS_COLLECTION: 'users',
   VIRTUALIZED_OVERSCAN_ROW_COUNT: 15,
 }
