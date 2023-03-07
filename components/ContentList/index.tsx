@@ -72,7 +72,11 @@ const ContentList = ({
           rowIndex={index}
         >
           {({ registerChild }) => (
-            <div ref={registerChild as LegacyRef<HTMLDivElement>} style={style}>
+            <div
+              className="content-list-item"
+              ref={registerChild as LegacyRef<HTMLDivElement>}
+              style={style}
+            >
               {isRowLoaded({ index }) && items[index]
                 ? render(items[index], index)
                 : renderLoader(moreToLoad)}

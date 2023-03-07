@@ -1,4 +1,3 @@
-import { Divider, Typography } from '@mui/material'
 import { CellMeasurerCache } from 'react-virtualized'
 import { Box } from '@mui/system'
 
@@ -7,9 +6,7 @@ import ScrollLink from '../ScrollLink'
 import Feed from '../Feed'
 import constants from '../../constants'
 import InlineCreatePost from '../InlineCreatePost'
-import MobileContainer from '../MobileContainer'
 import ContentSpinner from '../ContentSpinner'
-import PostTypeSpacer from '../PostTypeSpacer'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -42,7 +39,6 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
       ) : (
         <>
           <InlineCreatePost slug={slug} />
-          <Divider />
           <Feed
             cellMeasurerCache={cellMeasurerCache}
             isRepliesFeed

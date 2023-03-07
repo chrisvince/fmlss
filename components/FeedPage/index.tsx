@@ -1,42 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { Button } from '@mui/material'
 import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import Feed from '../Feed'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
-import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { FeedSortMode } from '../../types'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MiniCategoriesSection from '../MiniCategoriesSection'
-import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
-import PageSpinner from '../PageSpinner'
 
-const {
-  CATEGORIES_ENABLED,
-  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-} = constants
-
-const SORT_MODE_OPTIONS = [
-  {
-    href: '/feed',
-    label: 'Latest',
-    sortMode: 'latest',
-  },
-  {
-    href: '/feed/popular',
-    label: 'Popular',
-    sortMode: 'popular',
-  },
-  // {
-  //   href: '/feed/most-likes',
-  //   label: 'Most Likes',
-  //   sortMode: 'mostLikes',
-  // }
-]
+const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } =
+  constants
 
 const SORT_MODE_MAP: {
   [key: string]: string
@@ -54,8 +29,9 @@ const cellMeasurerCache = new CellMeasurerCache({
 const FeedPage = () => {
   const { asPath: path } = useRouter()
 
-  const pathSortMode =
-    SORT_MODE_MAP[path?.split?.('/')?.[2] ?? 'latest'] as FeedSortMode
+  const pathSortMode = SORT_MODE_MAP[
+    path?.split?.('/')?.[2] ?? 'latest'
+  ] as FeedSortMode
 
   const [sortMode, setSortMode] = useState<FeedSortMode>(pathSortMode)
 
@@ -78,25 +54,6 @@ const FeedPage = () => {
         </>
       }
     >
-      <MobileContainer>
-        <ViewSelectorButtonGroup>
-          {SORT_MODE_OPTIONS.map(
-            ({ href, sortMode: sortModeOption, label }) => (
-              <Button
-                component={Link}
-                href={href}
-                key={href}
-                shallow
-                variant={
-                  sortModeOption === sortMode ? 'contained' : undefined
-                }
-              >
-                {label}
-              </Button>
-            )
-          )}
-        </ViewSelectorButtonGroup>
-      </MobileContainer>
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}

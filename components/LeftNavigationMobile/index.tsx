@@ -7,6 +7,8 @@ import {
   FavoriteRounded,
   PersonRounded,
   ReplyAllRounded,
+  StarOutlineRounded,
+  StarRounded,
   TagRounded,
   ViewStreamOutlined,
   ViewStreamRounded,
@@ -30,18 +32,29 @@ interface PropTypes {
 
 const NAVIGATION_ITEMS = [
   {
+    exact: true,
     href: '/feed',
     icon: ViewStreamOutlined,
     iconCurrent: ViewStreamRounded,
     label: 'Feed',
   },
-  ...(CATEGORIES_ENABLED ? [{
-    currentPaths: ['/categories', '/category'],
-    href: '/categories',
-    icon: WorkspacesOutlined,
-    iconCurrent: WorkspacesRounded,
-    label: 'Categories',
-  }] : []),
+  {
+    href: '/feed/popular',
+    icon: StarOutlineRounded,
+    iconCurrent: StarRounded,
+    label: 'Popular',
+  },
+  ...(CATEGORIES_ENABLED
+    ? [
+        {
+          currentPaths: ['/categories', '/category'],
+          href: '/categories',
+          icon: WorkspacesOutlined,
+          iconCurrent: WorkspacesRounded,
+          label: 'Categories',
+        },
+      ]
+    : []),
   {
     currentPaths: ['/hashtags', '/hashtag'],
     href: '/hashtags',
@@ -99,9 +112,17 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
           <nav>
             <List>
               {NAVIGATION_ITEMS.map(
-                ({ currentPaths, href, icon: Icon, label, iconCurrent }) => (
+                ({
+                  currentPaths,
+                  exact,
+                  href,
+                  icon: Icon,
+                  iconCurrent,
+                  label,
+                }) => (
                   <LeftNavigationListItem
                     currentPaths={currentPaths}
+                    exact={exact}
                     href={href}
                     icon={Icon}
                     iconCurrent={iconCurrent}

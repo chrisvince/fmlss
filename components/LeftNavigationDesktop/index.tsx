@@ -7,6 +7,8 @@ import {
   FavoriteRounded,
   PersonRounded,
   ReplyAllRounded,
+  StarOutlineRounded,
+  StarRounded,
   TagRounded,
   ViewStreamOutlined,
   ViewStreamRounded,
@@ -29,10 +31,17 @@ const {
 
 const NAVIGATION_ITEMS = [
   {
+    exact: true,
     href: '/feed',
     icon: ViewStreamOutlined,
     iconCurrent: ViewStreamRounded,
     label: 'Feed',
+  },
+  {
+    href: '/feed/popular',
+    icon: StarOutlineRounded,
+    iconCurrent: StarRounded,
+    label: 'Popular',
   },
   ...(CATEGORIES_ENABLED
     ? [
@@ -102,9 +111,17 @@ const LeftNavigationDesktop = () => {
           <nav>
             <List>
               {NAVIGATION_ITEMS.map(
-                ({ currentPaths, href, icon: Icon, iconCurrent, label }) => (
+                ({
+                  currentPaths,
+                  exact,
+                  href,
+                  icon: Icon,
+                  iconCurrent,
+                  label,
+                }) => (
                   <LeftNavigationListItem
                     currentPaths={currentPaths}
+                    exact={exact}
                     href={href}
                     icon={Icon}
                     iconCurrent={iconCurrent}

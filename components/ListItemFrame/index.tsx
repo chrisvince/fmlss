@@ -26,7 +26,7 @@ const ListItemFrame = ({
 
   const handleClick = (event: SyntheticEvent) => {
     const isClickableElement = (event.target as HTMLAnchorElement).closest(
-      'a, button, [role="presentation"]',
+      'a, button, [role="presentation"]'
     )
     if (isClickableElement) return
     if (window.getSelection()?.toString().length) return
@@ -50,11 +50,15 @@ const ListItemFrame = ({
       sx={{
         cursor: 'pointer',
         borderBottom: '1px solid',
-        borderColor: 'divider',
+        borderBottomColor: 'divider',
         padding: mini ? 1 : 2,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
         backgroundColor: highlight ? 'action.hover' : undefined,
+        '.content-list-item:first-of-type > &': {
+          borderTop: '1px solid',
+          borderTopColor: 'divider',
+        },
         '@media (hover: hover)': {
           '&:hover': {
             backgroundColor: highlight ? 'action.selected' : 'action.hover',
