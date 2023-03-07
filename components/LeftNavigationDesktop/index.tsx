@@ -5,7 +5,6 @@ import {
   ChatRounded,
   FavoriteBorderOutlined,
   FavoriteRounded,
-  PersonOutlineRounded,
   PersonRounded,
   ReplyAllRounded,
   TagRounded,
@@ -35,13 +34,17 @@ const NAVIGATION_ITEMS = [
     iconCurrent: ViewStreamRounded,
     label: 'Feed',
   },
-  ...(CATEGORIES_ENABLED ? [{
-    currentPaths: ['/categories', '/category'],
-    href: '/categories',
-    icon: WorkspacesOutlined,
-    iconCurrent: WorkspacesRounded,
-    label: 'Categories',
-  }] : []),
+  ...(CATEGORIES_ENABLED
+    ? [
+        {
+          currentPaths: ['/categories', '/category'],
+          href: '/categories',
+          icon: WorkspacesOutlined,
+          iconCurrent: WorkspacesRounded,
+          label: 'Categories',
+        },
+      ]
+    : []),
   {
     currentPaths: ['/hashtags', '/hashtag'],
     href: '/hashtags',
@@ -99,7 +102,7 @@ const LeftNavigationDesktop = () => {
           <nav>
             <List>
               {NAVIGATION_ITEMS.map(
-                ({ currentPaths, href, icon:Icon, iconCurrent, label }) => (
+                ({ currentPaths, href, icon: Icon, iconCurrent, label }) => (
                   <LeftNavigationListItem
                     currentPaths={currentPaths}
                     href={href}
