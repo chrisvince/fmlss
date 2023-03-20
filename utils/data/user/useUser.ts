@@ -1,8 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { useAuthUser } from 'next-firebase-auth'
-import useSWR, { KeyedMutator } from 'swr'
-import { FetcherResponse, PublicConfiguration } from 'swr/dist/types'
+import useSWR, { SWRConfiguration } from 'swr'
 import { User, UserData, UserDataInput } from '../../../types'
 import { createUserCacheKey } from '../../createCacheKeys'
 import getUser from './getUser'
@@ -11,19 +10,11 @@ import { useState } from 'react'
 
 const { USERS_COLLECTION } = constants
 
-type SWRConfig = Partial<
-  PublicConfiguration<
-    User | null,
-    any,
-    (args_0: string) => FetcherResponse<User | null>
-  >
->
-
-const DEFAULT_SWR_CONFIG: SWRConfig = {
+const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-type UseUser = (options?: { swrConfig?: SWRConfig }) => {
+type UseUser = (options?: { swrConfig?: SWRConfiguration }) => {
   error: any
   isLoading: boolean
   isValidating: boolean
@@ -53,10 +44,13 @@ const useUser: UseUser = ({ swrConfig = {} } = {}) => {
     const db = firebase.firestore()
     setUpdateIsLoading(true)
 
-    await db.collection(USERS_COLLECTION).doc(uid).update({
-      ...data,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    })
+    await db
+      .collection(USERS_COLLECTION)
+      .doc(uid)
+      .update({
+        ...data,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
 
     await mutate()
     setUpdateIsLoading(false)

@@ -1,34 +1,21 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { useCallback } from 'react'
-import useSWR from 'swr'
-import {
-  FetcherResponse,
-  MutatorCallback,
-  PublicConfiguration,
-} from 'swr/dist/types'
+import useSWR, { MutatorCallback, SWRConfiguration } from 'swr'
 import { Post } from '../../../types'
 import { createPostCacheKey } from '../../createCacheKeys'
 import { mutatePostLike } from '../utils/mutatePostLike'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import getPost from './getPost'
 
-type SWRConfig = Partial<
-  PublicConfiguration<
-    Post | null,
-    any,
-    (args_0: string) => FetcherResponse<Post | null>
-  >
->
-
-const DEFAULT_SWR_CONFIG: SWRConfig = {
+const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
 type UsePost = (
   slug?: string | null,
   options?: {
-    swrConfig?: SWRConfig,
-  },
+    swrConfig?: SWRConfiguration
+  }
 ) => {
   error: any
   isLoading: boolean

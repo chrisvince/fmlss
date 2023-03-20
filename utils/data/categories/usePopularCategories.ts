@@ -1,23 +1,14 @@
-import useSWR, { KeyedMutator } from 'swr'
+import useSWR, { SWRConfiguration } from 'swr'
 import { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { Category } from '../../../types'
 import { createMiniCategoriesCacheKey } from '../../createCacheKeys'
 import constants from '../../../constants'
-import { FetcherResponse, PublicConfiguration } from 'swr/dist/types'
 import getCategories from './getCategories'
 
 const { MINI_LIST_COUNT } = constants
 
-type SWRConfig = Partial<
-  PublicConfiguration<
-    Category | null,
-    any,
-    (args_0: string) => FetcherResponse<Category | null>
-  >
->
-
-const DEFAULT_SWR_CONFIG: SWRConfig = {
+const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
 }

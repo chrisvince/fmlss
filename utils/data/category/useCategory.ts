@@ -1,19 +1,10 @@
-import useSWR, { KeyedMutator } from 'swr'
-import { FetcherResponse, PublicConfiguration } from 'swr/dist/types'
+import useSWR, { SWRConfiguration } from 'swr'
 
 import { Category } from '../../../types'
 import { createCategoryCacheKey } from '../../createCacheKeys'
 import getCategory from './getCategory'
 
-type SWRConfig = Partial<
-  PublicConfiguration<
-    Category | null,
-    any,
-    (args_0: string) => FetcherResponse<Category | null>
-  >
->
-
-const DEFAULT_SWR_CONFIG: SWRConfig = {
+const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateIfStale: false,
   revalidateOnFocus: false,
   revalidateOnMount: false,
@@ -23,7 +14,7 @@ const DEFAULT_SWR_CONFIG: SWRConfig = {
 type UseCategory = (
   slug: string,
   options?: {
-    swrConfig?: SWRConfig
+    swrConfig?: SWRConfiguration
   }
 ) => {
   category: Category | null | undefined
