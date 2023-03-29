@@ -27,11 +27,11 @@ const Layout = ({ children, noNavigationMarginBottom }: PropTypes) => {
         sx={{
           paddingLeft: {
             xs: 0,
-            sm: theme.spacing(2),
+            sm: theme.spacing(3),
           },
           paddingRight: {
             xs: 0,
-            sm: theme.spacing(2),
+            sm: theme.spacing(3),
           },
         }}
       >
