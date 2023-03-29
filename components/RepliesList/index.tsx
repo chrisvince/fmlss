@@ -1,5 +1,4 @@
 import { CellMeasurerCache } from 'react-virtualized'
-import { Box } from '@mui/system'
 
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import ScrollLink from '../ScrollLink'
@@ -32,7 +31,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
   } = usePostReplies(slug)
 
   return (
-    <Box sx={{ paddingBottom: 3 }}>
+    <>
       <ScrollLink id="replies" />
       {loading || repliesAreLoading ? (
         <ContentSpinner />
@@ -49,7 +48,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
           />
         </>
       )}
-    </Box>
+    </>
   )
 }
 

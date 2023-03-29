@@ -89,46 +89,48 @@ const ContentList = ({
   )
 
   return (
-    // @ts-ignore
-    <InfiniteLoader
-      isRowLoaded={isRowLoaded}
-      loadMoreRows={handleLoadMoreRows}
-      rowCount={items.length}
-      threshold={INFINITY_LOADING_THRESHOLD}
-    >
-      {({ onRowsRendered, registerChild: infiniteLoaderRef = () => {} }) => (
-        // @ts-ignore
-        <WindowScroller>
-          {({
-            height,
-            scrollTop,
-            registerChild: windowScrollerRef = () => {},
-          }) => (
-            // @ts-ignore
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <div ref={windowScrollerRef as LegacyRef<HTMLDivElement>}>
-                  {/* @ts-ignore */}
-                  <List
-                    autoHeight
-                    deferredMeasurementCache={cellMeasurerCache}
-                    height={height}
-                    onRowsRendered={onRowsRendered}
-                    overscanRowCount={VIRTUALIZED_OVERSCAN_ROW_COUNT}
-                    ref={infiniteLoaderRef}
-                    rowCount={items.length}
-                    rowHeight={cellMeasurerCache.rowHeight}
-                    rowRenderer={rowRenderer}
-                    scrollTop={scrollTop}
-                    width={width}
-                  />
-                </div>
-              )}
-            </AutoSizer>
-          )}
-        </WindowScroller>
-      )}
-    </InfiniteLoader>
+    <Box sx={{ pb: 4 }}>
+      {/* @ts-ignore */}
+      <InfiniteLoader
+        isRowLoaded={isRowLoaded}
+        loadMoreRows={handleLoadMoreRows}
+        rowCount={items.length}
+        threshold={INFINITY_LOADING_THRESHOLD}
+      >
+        {({ onRowsRendered, registerChild: infiniteLoaderRef = () => {} }) => (
+          // @ts-ignore
+          <WindowScroller>
+            {({
+              height,
+              scrollTop,
+              registerChild: windowScrollerRef = () => {},
+            }) => (
+              // @ts-ignore
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <div ref={windowScrollerRef as LegacyRef<HTMLDivElement>}>
+                    {/* @ts-ignore */}
+                    <List
+                      autoHeight
+                      deferredMeasurementCache={cellMeasurerCache}
+                      height={height}
+                      onRowsRendered={onRowsRendered}
+                      overscanRowCount={VIRTUALIZED_OVERSCAN_ROW_COUNT}
+                      ref={infiniteLoaderRef}
+                      rowCount={items.length}
+                      rowHeight={cellMeasurerCache.rowHeight}
+                      rowRenderer={rowRenderer}
+                      scrollTop={scrollTop}
+                      width={width}
+                    />
+                  </div>
+                )}
+              </AutoSizer>
+            )}
+          </WindowScroller>
+        )}
+      </InfiniteLoader>
+    </Box>
   )
 }
 
