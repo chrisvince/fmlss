@@ -127,9 +127,9 @@ const PostActionBar = ({
               gap: 2,
             }}
           >
-            <CaptionLink href={`/post/${encodeURIComponent(slug)}`}>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               {formatLikesCount(likesCount)}
-            </CaptionLink>
+            </Typography>
             <CaptionLink href={`/post/${encodeURIComponent(slug)}#replies`}>
               {formatReplyCount(postsCount)}
             </CaptionLink>
