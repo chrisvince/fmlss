@@ -17,10 +17,10 @@ import useOnWindowResize from '../../utils/useOnWindowResize'
 const { INFINITY_LOADING_THRESHOLD, VIRTUALIZED_OVERSCAN_ROW_COUNT } = constants
 interface PropTypes {
   cellMeasurerCache: CellMeasurerCache
-  children: (item: any, index: number) => JSX.Element
-  items: any[]
+  children: (item: unknown, index: number) => JSX.Element
+  items: unknown[]
   moreToLoad: boolean
-  onLoadMore: () => Promise<any>
+  onLoadMore: () => Promise<unknown>
 }
 
 const ContentList = ({
@@ -63,6 +63,7 @@ const ContentList = ({
       )
 
       return (
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         <CellMeasurer
           cache={cellMeasurerCache}
@@ -90,6 +91,7 @@ const ContentList = ({
 
   return (
     <Box sx={{ pb: 4 }}>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
       {/* @ts-ignore */}
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
@@ -97,18 +99,17 @@ const ContentList = ({
         rowCount={items.length}
         threshold={INFINITY_LOADING_THRESHOLD}
       >
-        {({ onRowsRendered, registerChild: infiniteLoaderRef = () => {} }) => (
+        {({ onRowsRendered, registerChild: infiniteLoaderRef }) => (
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           <WindowScroller>
-            {({
-              height,
-              scrollTop,
-              registerChild: windowScrollerRef = () => {},
-            }) => (
+            {({ height, scrollTop, registerChild: windowScrollerRef }) => (
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               <AutoSizer disableHeight>
                 {({ width }) => (
                   <div ref={windowScrollerRef as LegacyRef<HTMLDivElement>}>
+                    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                     {/* @ts-ignore */}
                     <List
                       autoHeight

@@ -13,7 +13,7 @@ type PropTypes = {
   isRepliesFeed?: boolean
   moreToLoad: boolean
   onLikePost: (slug: string) => Promise<void>
-  onLoadMore: () => Promise<any>
+  onLoadMore: () => Promise<unknown>
   posts: Post[]
 }
 
@@ -35,7 +35,7 @@ const Feed = ({
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
     >
-      {post => <PostListItem onLikePost={onLikePost} post={post} />}
+      {post => <PostListItem onLikePost={onLikePost} post={post as Post} />}
     </ContentList>
   ) : isRepliesFeed ? (
     <BlockMessage>No replies.</BlockMessage>
