@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 import createHashtagPlugin, { HashtagProps } from '@draft-js-plugins/hashtag'
-import { EditorState } from 'draft-js'
+import { convertFromRaw, EditorState } from 'draft-js'
 import Editor from '@draft-js-plugins/editor'
 import 'draft-js/dist/Draft.css'
 import { Avatar, Typography, useTheme } from '@mui/material'
@@ -112,6 +112,20 @@ const linkifyPlugin = createLinkifyPlugin({
   component: LinkifyLink,
 })
 
+const emptyContentState = convertFromRaw({
+  entityMap: {},
+  blocks: [
+    {
+      depth: 0,
+      entityRanges: [],
+      inlineStyleRanges: [],
+      key: 'foo',
+      text: '',
+      type: 'unstyled',
+    },
+  ],
+})
+
 export interface PostBodyTextAreaRef {
   linkPreviews: PostPreviewType[]
   value: string
@@ -140,7 +154,7 @@ const PostBodyTextArea = (
   ref: React.Ref<PostBodyTextAreaRef>
 ) => {
   const [editorState, setEditorState] = useState<EditorState>(() =>
-    EditorState.createEmpty()
+    EditorState.createWithContent(emptyContentState)
   )
 
   const [postLengthStatus, setPostLengthStatus] =
