@@ -36,7 +36,6 @@ const NewPostForm = ({
   const handleTextChange = (text: string) => setHasContent(!!text)
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
-  const [showCategoryTooltip, setShowCategoryTooltip] = useState<boolean>(false)
   const categoryId = useId()
   const [category, setCategory] = useState<string>('')
   const handleCategoryChange = async (value: string) => setCategory(value)
@@ -49,16 +48,6 @@ const NewPostForm = ({
     const linkPreviews = postBodyTextAreaRef.current?.linkPreviews
     await createPost({ body, category, linkPreviews })
   }
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowCategoryTooltip(true)
-    }, 5000)
-
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [])
 
   const disableButton =
     !hasContent || postLengthStatus === postLengthStatusType.error
@@ -101,20 +90,7 @@ const NewPostForm = ({
         />
       </Box>
       {CATEGORIES_ENABLED && !slug && (
-        <Tooltip
-          placement="bottom"
-          title="Help people find your post by giving it a category"
-          open={showCategoryTooltip}
-          arrow
-        >
-          <Box>
-            <CategorySelect
-              id={categoryId}
-              onChange={handleCategoryChange}
-              onFocus={() => setShowCategoryTooltip(false)}
-            />
-          </Box>
-        </Tooltip>
+        <CategorySelect id={categoryId} onChange={handleCategoryChange} />
       )}
       {!isInModal && (
         <Box
