@@ -27,6 +27,7 @@ import PostPreview from '../PostPreview'
 const { POST_MAX_LENGTH } = constants
 
 const POST_WARNING_LENGTH = POST_MAX_LENGTH - 20
+const MAX_POST_PREVIEWS = 2
 
 interface TrackedLinkPreview {
   match: Match
@@ -112,6 +113,16 @@ const linkifyPlugin = createLinkifyPlugin({
   component: LinkifyLink,
 })
 
+const removeDuplicateTrackedLinkPreviewReducer = (
+  acc: TrackedLinkPreview[],
+  ye: TrackedLinkPreview
+) => {
+  const existingLink = acc.find(
+    ({ linkPreview }) => linkPreview.href === ye.linkPreview.href
+  )
+  return existingLink ? acc : [...acc, ye]
+}
+
 const emptyContentState = convertFromRaw({
   entityMap: {},
   blocks: [
@@ -165,7 +176,11 @@ const PostBodyTextArea = (
   >([])
 
   const displayedTrackedLinkPreviews = useMemo(
-    () => trackedLinkPreviews.filter(({ closed }) => !closed).slice(0, 2),
+    () =>
+      trackedLinkPreviews
+        .filter(({ closed }) => !closed)
+        .reduce(removeDuplicateTrackedLinkPreviewReducer, [])
+        .slice(0, MAX_POST_PREVIEWS),
     [trackedLinkPreviews]
   )
 
