@@ -320,15 +320,15 @@ const PostBodyTextArea = (
             }}
           >
             <Editor
+              editorState={editorState}
+              handleReturn={handleReturn}
+              onChange={onEditorStateChange}
+              placeholder={placeholder}
+              plugins={[linkifyPlugin, hashtagPlugin]}
+              preserveSelectionOnBlur={true}
+              readOnly={disabled}
               // @ts-ignore
               ref={editorRef}
-              preserveSelectionOnBlur={true}
-              editorState={editorState}
-              onChange={onEditorStateChange}
-              readOnly={disabled}
-              placeholder={placeholder}
-              handleReturn={handleReturn}
-              plugins={[linkifyPlugin, hashtagPlugin]}
             />
           </Typography>
           <Box
