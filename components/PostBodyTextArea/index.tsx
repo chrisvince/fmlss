@@ -329,6 +329,7 @@ const PostBodyTextArea = (
               readOnly={disabled}
               // @ts-ignore
               ref={editorRef}
+              stripPastedStyles
             />
           </Typography>
           <Box
