@@ -9,23 +9,23 @@ import { SWRConfig } from 'swr'
 import { NextApiRequest } from 'next'
 import Error from 'next/error'
 
-import getPost from '../../utils/data/post/getPost'
-import PostPage from '../../components/PostPage'
-import getPostReplies from '../../utils/data/postReplies/getPostReplies'
+import getPost from '../../../utils/data/post/getPost'
+import PostPage from '../../../components/PostPage'
+import getPostReplies from '../../../utils/data/postReplies/getPostReplies'
 import {
   createMiniCategoriesCacheKey,
   createMiniHashtagsCacheKey,
   createPostCacheKey,
   createPostRepliesCacheKey,
-} from '../../utils/createCacheKeys'
-import getHashtags from '../../utils/data/hashtags/getHashtags'
-import getCategories from '../../utils/data/categories/getCategories'
-import constants from '../../constants'
-import isInternalRequest from '../../utils/isInternalRequest'
-import usePost from '../../utils/data/post/usePost'
+} from '../../../utils/createCacheKeys'
+import getHashtags from '../../../utils/data/hashtags/getHashtags'
+import getCategories from '../../../utils/data/categories/getCategories'
+import constants from '../../../constants'
+import isInternalRequest from '../../../utils/isInternalRequest'
+import usePost from '../../../utils/data/post/usePost'
 import { ReactElement } from 'react'
-import Layout from '../../components/Layout'
-import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
+import Layout from '../../../components/Layout'
+import checkIfUserHasUsername from '../../../utils/data/user/checkIfUserHasUsername'
 
 const {
   CATEGORIES_ENABLED,
@@ -37,7 +37,7 @@ const {
 
 interface PropTypes {
   fallback: {
-    [key: string]: any
+    [key: string]: unknown
   }
 }
 
@@ -70,7 +70,7 @@ const getServerSidePropsFn = async ({
   params: {
     slug: string
   }
-  req: NextApiRequest,
+  req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const admin = getFirebaseAdmin()
@@ -89,7 +89,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const postCacheKey = createPostCacheKey(slug)!
+  const postCacheKey = createPostCacheKey(slug)
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
@@ -101,12 +101,14 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
-    cacheKey: miniCategoriesCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  }) : []
+  const miniCategories = CATEGORIES_ENABLED
+    ? await getCategories({
+        cacheKey: miniCategoriesCacheKey,
+        cacheTime: MINI_LIST_CACHE_TIME,
+        db: adminDb,
+        limit: MINI_LIST_COUNT,
+      })
+    : []
 
   if (isInternalRequest(req)) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -161,7 +163,8 @@ const getServerSidePropsFn = async ({
   }
 }
 
-export const getServerSideProps =
-  withAuthUserTokenSSR()(getServerSidePropsFn as any)
+export const getServerSideProps = withAuthUserTokenSSR()(
+  getServerSidePropsFn as any
+)
 
 export default withAuthUser()(Post as any)
