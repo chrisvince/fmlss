@@ -57,10 +57,6 @@ const Post = ({ fallback }: PropTypes) => {
   )
 }
 
-Post.getLayout = (page: ReactElement) => (
-  <Layout noNavigationMarginBottom>{page}</Layout>
-)
-
 const getServerSidePropsFn = async ({
   AuthUser,
   params: { slug: encodedSlug },
