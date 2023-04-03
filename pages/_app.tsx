@@ -22,7 +22,7 @@ initAuth()
 const clientSideEmotionCache = createEmotionCache()
 const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
-type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
 }
 
@@ -43,9 +43,7 @@ const App = ({
     }
   }, [])
 
-  const getLayout = Component.getLayout ?? (page => (
-    <Layout>{page}</Layout>
-  ))
+  const getLayout = Component.getLayout ?? (page => <Layout>{page}</Layout>)
 
   return (
     <CacheProvider value={emotionCache}>
