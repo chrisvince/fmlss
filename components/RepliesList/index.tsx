@@ -9,8 +9,6 @@ import ContentSpinner from '../ContentSpinner'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
-const SHOW_TOP_CREATE_POST_COUNT = 6
-
 const cellMeasurerCache = new CellMeasurerCache({
   fixedWidth: true,
   minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
