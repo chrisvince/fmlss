@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux'
 import { shouldCollapse } from '../../store/slices/navigationSlice'
 import usePost from '../../utils/data/post/usePost'
 import PostListItem from '../PostListItem'
-import PostTypeSpacer from '../PostTypeSpacer'
 
 interface Props {
   onLoad?: () => void
@@ -62,7 +61,7 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
     }
   }, [dispatch, height])
 
-  if (isLoading) return null
+  if (isLoading || !post) return null
 
   return (
     <Box
@@ -73,8 +72,7 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
     >
       {!isLoading && (
         <Box ref={innerRef}>
-          <PostListItem onLikePost={likePost} post={post!} />
-          <PostTypeSpacer type="reply-to" />
+          <PostListItem onLikePost={likePost} post={post} />
         </Box>
       )}
     </Box>
