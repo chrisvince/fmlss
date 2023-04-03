@@ -23,11 +23,15 @@ import constants from '../../constants'
 import { PostPreview as PostPreviewType } from '../../types'
 import getMetaFromUrl, { UrlMeta } from '../../utils/getMetaFromUrl'
 import PostPreview from '../PostPreview'
+import numeral from 'numeral'
 
 const { POST_MAX_LENGTH } = constants
 
-const POST_WARNING_LENGTH = POST_MAX_LENGTH - 20
+const POST_WARNING_LENGTH = POST_MAX_LENGTH - 80
 const MAX_POST_PREVIEWS = 2
+
+const formatPostLength = (length: number | undefined) =>
+  numeral(length ?? 0).format('0,0')
 
 interface TrackedLinkPreview {
   match: Match
@@ -356,6 +360,7 @@ const PostBodyTextArea = (
               plugins={[linkifyPlugin, hashtagPlugin]}
               preserveSelectionOnBlur={true}
               readOnly={disabled}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               ref={editorRef}
               stripPastedStyles
@@ -385,7 +390,8 @@ const PostBodyTextArea = (
                     : undefined,
               }}
             >
-              {value?.length ?? 0}/{POST_MAX_LENGTH}
+              {formatPostLength(value?.length ?? 0)}/
+              {formatPostLength(POST_MAX_LENGTH)}
             </Typography>
           </Box>
         </Box>
