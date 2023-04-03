@@ -87,9 +87,10 @@ const Page = ({
         {article.section && (
           <meta name="article:section" content={article.section} />
         )}
-        {article.tags?.length && article.tags.map((tag, index) => (
-          <meta key={`${tag}-${index}`} name="article:tag" content={tag} />
-        ))}
+        {article.tags?.length &&
+          article.tags.map((tag, index) => (
+            <meta key={`${tag}-${index}`} name="article:tag" content={tag} />
+          ))}
       </Head>
       {layout === 'rightPanel' ? (
         <NestedLayout
