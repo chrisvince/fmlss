@@ -42,11 +42,7 @@ const {
   TOP_NAVIGATION_MARGIN_BOTTOM_XS,
 } = constants
 
-interface Props {
-  noMarginBottom?: boolean
-}
-
-const TopNavigation = ({ noMarginBottom = false }: Props) => {
+const TopNavigation = () => {
   const { email, signOut } = useAuthUser()
   const { user } = useUser()
   const router = useRouter()
@@ -65,10 +61,10 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
   const handleSignOutClick = signOut
 
   const handleProfileMenuButtonClick = () =>
-    setProfileMenuOpen((current) => !current)
+    setProfileMenuOpen(current => !current)
 
   const handleMobileMenuButtonClick = () =>
-    setMobileNavigationOpen((current) => !current)
+    setMobileNavigationOpen(current => !current)
 
   useEffect(() => {
     if (!isAboveSm) return
@@ -105,10 +101,8 @@ const TopNavigation = ({ noMarginBottom = false }: Props) => {
           borderBottomColor: 'divider',
           height: TOP_NAVIGATION_HEIGHT,
           marginBottom: {
-            xs: !noMarginBottom
-              ? theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)
-              : undefined,
-            sm: TOP_NAVIGATION_MARGIN_BOTTOM_SM,
+            xs: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS),
+            sm: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM),
           },
           transform: {
             xs: showMobileNav ? 'translateY(0)' : 'translateY(-100%)',
