@@ -6,12 +6,9 @@ import useUserPosts from '../../utils/data/userPosts/useUserPosts'
 import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import constants from '../../constants'
-import PageSpinner from '../PageSpinner'
 
-const {
-  CATEGORIES_ENABLED,
-  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-} = constants
+const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } =
+  constants
 
 const cellMeasurerCache = new CellMeasurerCache({
   fixedWidth: true,

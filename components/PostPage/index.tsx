@@ -41,10 +41,9 @@ const PostPage = ({ slug }: PropTypes) => {
   const handleParentPostLoad = () => setParentPostLoaded(true)
   const mainContentWrapperRef = useRef<HTMLDivElement>(null)
 
-  const [
-    mainContentMinHeight,
-    setContentMinHeight
-  ] = useState<number | undefined>()
+  const [mainContentMinHeight, setContentMinHeight] = useState<
+    number | undefined
+  >()
 
   useEffect(() => {
     if (userIsLoading || !createdByUser || shownFirstPostMessage) return
@@ -55,10 +54,14 @@ const PostPage = ({ slug }: PropTypes) => {
   useEffect(() => {
     if (isLoading || (!isLoading && !post)) return
 
-    track('post', {
-      title: pageTitle,
-      slug,
-    }, { onceOnly: true })
+    track(
+      'post',
+      {
+        title: pageTitle,
+        slug,
+      },
+      { onceOnly: true }
+    )
   }, [isLoading, pageTitle, post, slug, track])
 
   useEffect(() => {
