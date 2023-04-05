@@ -56,9 +56,9 @@ const getUserLikes: GetUserLikes = async (
 
     if (postDocs.empty) return []
 
-    const originPostDocsPromise = postDocs.docs.map(doc => (
-      doc.data().originReference.get()
-    ))
+    const originPostDocsPromise = postDocs.docs.map(doc =>
+      doc.data().origin.ref.get()
+    )
     const originPostDocs = await Promise.all(originPostDocsPromise)
 
     postData = originPostDocs.map(doc => mapPostDocToData(doc))
@@ -80,7 +80,7 @@ const getUserLikes: GetUserLikes = async (
       user: {
         created: createdByUser,
         like: true,
-      }
+      },
     }
   })
   const posts = await Promise.all(postsPromise)

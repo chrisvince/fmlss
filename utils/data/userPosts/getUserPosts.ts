@@ -52,14 +52,14 @@ const getUserPosts: GetUserPosts = async (
           .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
           .where('type', '==', type)
           .orderBy('createdAt', 'desc'),
-      query => startAfter ? query.startAfter(startAfter) : query,
+      query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(PAGINATION_COUNT).get()
     )()
 
     if (postDocs.empty) return []
 
     const originPostDocsPromise = postDocs.docs.map(doc =>
-      doc.data().originReference.get()
+      doc.data().origin.ref.get()
     )
     const originPostDocs = await Promise.all(originPostDocsPromise)
 
@@ -82,7 +82,7 @@ const getUserPosts: GetUserPosts = async (
       user: {
         created: true,
         like: likedByUser,
-      }
+      },
     }
   })
   const posts = await Promise.all(postsPromise)
