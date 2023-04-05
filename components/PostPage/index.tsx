@@ -106,9 +106,9 @@ const PostPage = ({ slug }: PropTypes) => {
           <PageSpinner />
         ) : (
           <>
-            {post!.data.parentSlug && (
+            {post!.data.parent?.slug && (
               <PostPageParentPost
-                slug={post!.data.parentSlug}
+                slug={post!.data.parent.slug}
                 onLoad={handleParentPostLoad}
               />
             )}
@@ -135,7 +135,7 @@ const PostPage = ({ slug }: PropTypes) => {
               </Box>
               {post!.data.documentDepth < POST_MAX_DEPTH && (
                 <RepliesList
-                  loading={!!post!.data.parentSlug && !parentPostLoaded}
+                  loading={!!post!.data.parent && !parentPostLoaded}
                   slug={slug}
                 />
               )}

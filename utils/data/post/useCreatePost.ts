@@ -33,7 +33,7 @@ const useCreatePost = (parentSlug?: string) => {
         body,
         category,
         linkPreviews,
-        replyingToReference: post?.data.reference,
+        parentRef: post?.data.reference,
       })
       await navigate(`/post/${data.slug}`)
       setIsLoading(false)

@@ -8,7 +8,7 @@ interface Input {
   body: string
   category?: string | null
   linkPreviews?: PostPreview[]
-  replyingToReference?: string
+  parentRef?: string
 }
 
 type Response = {
