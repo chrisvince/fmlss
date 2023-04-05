@@ -43,6 +43,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
             onLikePost={likePost}
             onLoadMore={loadMore}
             posts={replies}
+            type="reply"
           />
         </>
       )}
