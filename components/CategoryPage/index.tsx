@@ -12,7 +12,6 @@ import MobileContainer from '../MobileContainer'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import unslugify from '../../utils/unslugify'
 import constants from '../../constants'
-import PageSpinner from '../PageSpinner'
 import useTracking from '../../utils/tracking/useTracking'
 import { useEffect, useState } from 'react'
 
@@ -54,14 +53,16 @@ const cellMeasurerCache = new CellMeasurerCache({
 })
 
 const CategoryPage = ({ slug }: PropTypes) => {
-  const { query: { sort } } = useRouter()
+  const {
+    query: { sort },
+  } = useRouter()
   const { track } = useTracking()
 
-  const pathSortMode =
-    (SORT_MODE_MAP[sort as string] ?? 'latest') as CategorySortMode
+  const pathSortMode = (SORT_MODE_MAP[sort as string] ??
+    'latest') as CategorySortMode
 
   const [sortMode, setSortMode] = useState<CategorySortMode>(pathSortMode)
-  
+
   const { isLoading, loadMore, moreToLoad, posts, likePost } = useCategoryPosts(
     slug,
     { sortMode }
@@ -77,10 +78,14 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   useEffect(() => {
     if (isLoading) return
-    track('category', {
-      category: categoryName,
-      slug,
-    }, { onceOnly: true })
+    track(
+      'category',
+      {
+        category: categoryName,
+        slug,
+      },
+      { onceOnly: true }
+    )
   }, [categoryName, isLoading, slug, track])
 
   return (

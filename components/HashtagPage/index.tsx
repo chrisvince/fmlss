@@ -14,13 +14,10 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
-import PageSpinner from '../PageSpinner'
 import useTracking from '../../utils/tracking/useTracking'
 
-const {
-  CATEGORIES_ENABLED,
-  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-} = constants
+const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } =
+  constants
 
 type PropTypes = {
   slug: string
@@ -58,13 +55,15 @@ const cellMeasurerCache = new CellMeasurerCache({
 })
 
 const HashtagPage = ({ slug }: PropTypes) => {
-  const { query: { sort } } = useRouter()
+  const {
+    query: { sort },
+  } = useRouter()
   const [showType, setShowType] = useState<'post' | 'both'>('post')
   const { track } = useTracking()
 
-  const pathSortMode =
-    (SORT_MODE_MAP[sort as string] ?? 'latest') as HashtagSortMode
-  
+  const pathSortMode = (SORT_MODE_MAP[sort as string] ??
+    'latest') as HashtagSortMode
+
   const [sortMode, setSortMode] = useState<HashtagSortMode>(pathSortMode)
 
   const { isLoading, likePost, loadMore, moreToLoad, posts } = useHashtagPosts(
@@ -90,10 +89,14 @@ const HashtagPage = ({ slug }: PropTypes) => {
 
   useEffect(() => {
     if (isLoading) return
-    track('hashtag', {
-      slug,
-      title,
-    }, { onceOnly: true })
+    track(
+      'hashtag',
+      {
+        slug,
+        title,
+      },
+      { onceOnly: true }
+    )
   }, [isLoading, slug, title, track])
 
   return (
