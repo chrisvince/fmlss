@@ -17,7 +17,7 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
       ? {
           parent: {
             id: postData.parent.id as string,
-            ref: postData.parent.ref as string,
+            ref: postData.parent.ref.path as string,
             slug: postData.parent.slug as string,
           },
         }
