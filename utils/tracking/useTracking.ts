@@ -2,7 +2,7 @@ import { useRef } from 'react'
 
 declare global {
   interface Window {
-    dataLayer: any[]
+    dataLayer: unknown[]
   }
 }
 
@@ -21,10 +21,10 @@ interface Options {
 type EventFunction = (
   resource: Resource,
   data: {
-    slug: string,
-    [key: string]: any,
+    slug: string
+    [key: string]: unknown
   },
-  options?: Options,
+  options?: Options
 ) => void
 
 type UseTracking = () => {

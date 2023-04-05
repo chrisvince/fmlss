@@ -92,9 +92,7 @@ const LeftNavigationDesktop = () => {
       sx={{
         position: 'sticky',
         top: `calc(${TOP_NAVIGATION_HEIGHT} + ${navMarginBottomSm})`,
-        height: `calc(100vh - ${
-          TOP_NAVIGATION_HEIGHT
-        } - ${navMarginBottomSm} - ${marginBottom})`,
+        height: `calc(100vh - ${TOP_NAVIGATION_HEIGHT} - ${navMarginBottomSm} - ${marginBottom})`,
       }}
     >
       <Box

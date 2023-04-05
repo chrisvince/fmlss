@@ -30,7 +30,7 @@ const {
 
 interface Props {
   fallback: {
-    [key: string]: any
+    [key: string]: unknown
   }
 }
 
@@ -73,7 +73,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const postCacheKey = createPostCacheKey(slug)!
+  const postCacheKey = createPostCacheKey(slug)
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
 
@@ -84,12 +84,14 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
-    cacheKey: miniCategoriesCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  }) : []
+  const miniCategories = CATEGORIES_ENABLED
+    ? await getCategories({
+        cacheKey: miniCategoriesCacheKey,
+        cacheTime: MINI_LIST_CACHE_TIME,
+        db: adminDb,
+        limit: MINI_LIST_COUNT,
+      })
+    : []
 
   if (isInternalRequest(req)) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
