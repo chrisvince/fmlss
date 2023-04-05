@@ -14,7 +14,7 @@ const getMetaFromUrl = async (url: string) => {
     const meta = (await response.json()) as UrlMeta
     return meta
   } catch (error) {
-    console.error(error) 
+    console.error(error)
   }
 }
 

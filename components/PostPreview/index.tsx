@@ -7,7 +7,7 @@ import { PostPreview as PostPreviewType } from '../../types'
 
 import truncateString from '../../utils/truncateString'
 
-const IMAGE_SMALL_SIZE: number = 80
+const IMAGE_SMALL_SIZE = 80
 const IMAGE_TRANSITION = 'ease-in 200ms'
 
 const getIsLandscape = (width: number, height: number) =>
@@ -15,7 +15,7 @@ const getIsLandscape = (width: number, height: number) =>
 
 const getLayoutFromImageDimensions = (
   width: number | undefined,
-  height: number | undefined,
+  height: number | undefined
 ) => {
   if (!height || !width) {
     return 'text'
@@ -59,15 +59,17 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
     imageNode.src = image.src
     imageNode.onload = ({ currentTarget }) => {
       setDynamicImage({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         width: currentTarget!.naturalWidth,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         height: currentTarget!.naturalHeight,
       })
     }
   }, [image])
 
-  if ((!image?.width && !image?.height) && !dynamicImage) {
+  if (!image?.width && !image?.height && !dynamicImage) {
     return null
   }
 
@@ -179,11 +181,7 @@ const PostPreview = ({ onClose, postPreview }: Props) => {
           <Box sx={{ gridArea: 'image' }}>
             {dynamicImage ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={image!.src}
-                alt={image!.alt}
-                style={imageStyle}
-              />
+              <img src={image!.src} alt={image!.alt} style={imageStyle} />
             ) : (
               <Box
                 sx={{
