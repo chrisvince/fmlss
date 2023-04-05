@@ -55,10 +55,6 @@ const ListItemFrame = ({
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
         backgroundColor: highlight ? 'action.hover' : undefined,
-        '.content-list-item:first-of-type > &': {
-          borderTop: '1px solid',
-          borderTopColor: 'divider',
-        },
         '@media (hover: hover)': {
           '&:hover': {
             backgroundColor: highlight ? 'action.selected' : 'action.hover',
