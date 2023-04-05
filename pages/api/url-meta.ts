@@ -7,7 +7,7 @@ const mapMeta = ({ images, meta, og }: Metadata) => ({
   image:
     meta.image ??
     og.image ??
-    (images?.at(-1) as unknown as { src: string }).src,
+    (images?.at(-1) as unknown as { src: string })?.src,
   url: meta.url ?? og.url,
   type: meta.type ?? og.type,
   siteName: meta.site_name ?? og.site_name,
