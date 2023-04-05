@@ -5,6 +5,14 @@ import { useDispatch } from 'react-redux'
 import { shouldCollapse } from '../../store/slices/navigationSlice'
 import usePost from '../../utils/data/post/usePost'
 import PostListItem from '../PostListItem'
+import constants from '../../constants'
+import MapLineSegment from '../MapLineSegment'
+
+const {
+  NESTED_POST_MARGIN_LEFT,
+  TOP_NAVIGATION_MARGIN_BOTTOM_SM,
+  TOP_NAVIGATION_MARGIN_BOTTOM_XS,
+} = constants
 
 interface Props {
   onLoad?: () => void
@@ -73,11 +81,28 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
         overflow: height === 0 ? 'hidden' : undefined,
       }}
     >
-      {!isLoading && (
-        <Box ref={innerRef}>
+      <Box
+        ref={innerRef}
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: `${theme.spacing(NESTED_POST_MARGIN_LEFT)} 1fr`,
+          gridTemplateRows: {
+            xs: `1fr ${theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)}`,
+            sm: `1fr ${theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)}`,
+          },
+          gridTemplateAreas: `
+            "line post"
+            "line ."
+          `,
+        }}
+      >
+        <Box sx={{ gridArea: 'line' }}>
+          <MapLineSegment lineType="start" dotPosition="top" />
+        </Box>
+        <Box sx={{ gridArea: 'post' }}>
           <PostListItem onLikePost={likePost} post={post} />
         </Box>
-      )}
+      </Box>
     </Box>
   )
 }
