@@ -20,10 +20,27 @@ import debounce from 'lodash.debounce'
 import { Match } from 'linkify-it'
 
 import constants from '../../constants'
-import { PostPreview as PostPreviewType } from '../../types'
+import {
+  PostPreview as PostPreviewType,
+  PostPreviewFacebook,
+  PostPreviewInstagram,
+  PostPreviewMeta,
+  PostPreviewPinterest,
+  PostPreviewTikTok,
+  PostPreviewTwitter,
+  PostPreviewYouTube,
+} from '../../types'
 import getMetaFromUrl, { UrlMeta } from '../../utils/getMetaFromUrl'
 import PostPreview from '../PostPreview'
 import numeral from 'numeral'
+import {
+  isFacebookPostUrl,
+  isInstagramPostUrl,
+  isPinterestPostUrl,
+  isTikTokPostUrl,
+  isTwitterPostUrl,
+  isYouTubePostUrl,
+} from '../../utils/socialPlatformUrls'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -34,10 +51,11 @@ const formatPostLength = (length: number | undefined) =>
   numeral(length ?? 0).format('0,0')
 
 interface TrackedLinkPreview {
-  match: Match
-  linkPreview: PostPreviewType
   closed: boolean
+  id: string
   inBody: boolean
+  linkPreview: PostPreviewType
+  match: Match
 }
 
 const preprocessTrackedLinkPreview = (
@@ -75,7 +93,7 @@ const checkTrackedLinkPreviewEquality = (
 const mapUrlMetaToPostPreview = (
   meta: UrlMeta | undefined,
   url: string
-): PostPreviewType => {
+): PostPreviewMeta => {
   const { href, host } = new URL(url)
   return {
     description: meta?.description,
@@ -88,6 +106,7 @@ const mapUrlMetaToPostPreview = (
       : undefined,
     subtitle: host,
     title: meta?.siteName,
+    type: 'url',
   }
 }
 
@@ -117,14 +136,12 @@ const linkifyPlugin = createLinkifyPlugin({
   component: LinkifyLink,
 })
 
-const removeDuplicateTrackedLinkPreviewReducer = (
+const removeDuplicateTrackedPostPreviewReducer = (
   acc: TrackedLinkPreview[],
-  ye: TrackedLinkPreview
+  linkPreview: TrackedLinkPreview
 ) => {
-  const existingLink = acc.find(
-    ({ linkPreview }) => linkPreview.href === ye.linkPreview.href
-  )
-  return existingLink ? acc : [...acc, ye]
+  const existingLink = acc.find(({ id }) => id === linkPreview.id)
+  return existingLink ? acc : [...acc, linkPreview]
 }
 
 const emptyContentState = convertFromRaw({
@@ -183,7 +200,7 @@ const PostBodyTextArea = (
     () =>
       trackedLinkPreviews
         .filter(({ closed }) => !closed)
-        .reduce(removeDuplicateTrackedLinkPreviewReducer, [])
+        .reduce(removeDuplicateTrackedPostPreviewReducer, [])
         .slice(0, MAX_POST_PREVIEWS),
     [trackedLinkPreviews]
   )
@@ -243,10 +260,10 @@ const PostBodyTextArea = (
   }, [onLengthStatusChange, value])
 
   const handleLinkPreviewClose = useCallback(
-    (url: string) => () => {
+    (id: string) => () => {
       setTrackedLinkPreviews(currentTrackedLinkPreviews =>
         currentTrackedLinkPreviews.reduce((acc, currentTrackedLinkPreview) => {
-          if (currentTrackedLinkPreview.match.url !== url) {
+          if (currentTrackedLinkPreview.id !== id) {
             return [...acc, currentTrackedLinkPreview]
           }
 
@@ -270,19 +287,56 @@ const PostBodyTextArea = (
     async (links: Match[]) => {
       const run = async () => {
         const newTrackedLinkPreviews = await links.reduce(async (acc, link) => {
-          const existingLink = trackedLinkPreviews.some(
-            ({ match }) => match.url === link.url
-          )
+          const { href } = new URL(link.url)
+          const existingLink = trackedLinkPreviews.some(({ id }) => id === href)
 
           if (existingLink) {
             return acc
           }
 
-          const meta = await getMetaFromUrl(link.url)
-          const postPreview = mapUrlMetaToPostPreview(meta, link.url)
+          let postPreview
+
+          if (isTwitterPostUrl(link.url)) {
+            postPreview = {
+              url: link.url,
+              type: 'twitter',
+            } as PostPreviewTwitter
+          } else if (isFacebookPostUrl(link.url)) {
+            postPreview = {
+              url: link.url,
+              type: 'facebook',
+            } as PostPreviewFacebook
+          } else if (isInstagramPostUrl(link.url)) {
+            postPreview = {
+              url: link.url,
+              type: 'instagram',
+            } as PostPreviewInstagram
+          } else if (isTikTokPostUrl(link.url)) {
+            postPreview = {
+              url: link.url,
+              type: 'tiktok',
+            } as PostPreviewTikTok
+          } else if (isYouTubePostUrl(link.url)) {
+            postPreview = {
+              url: link.url,
+              type: 'youtube',
+            } as PostPreviewYouTube
+          } else if (isPinterestPostUrl(link.url)) {
+            postPreview = {
+              url: link.url,
+              type: 'pinterest',
+            } as PostPreviewPinterest
+          } else {
+            const meta = await getMetaFromUrl(link.url)
+            postPreview = mapUrlMetaToPostPreview(
+              meta,
+              link.url
+            ) as PostPreviewMeta
+          }
 
           const newLink: TrackedLinkPreview = {
             closed: false,
+            id: href,
             linkPreview: postPreview,
             match: link,
             inBody: true,
@@ -396,13 +450,17 @@ const PostBodyTextArea = (
           </Box>
         </Box>
       </Box>
-      {displayedTrackedLinkPreviews.map(({ match, linkPreview }) => (
-        <PostPreview
-          key={linkPreview.href}
-          postPreview={linkPreview}
-          onClose={handleLinkPreviewClose(match.url)}
-        />
-      ))}
+      {displayedTrackedLinkPreviews.length > 0 && (
+        <Box sx={{ mt: 2 }}>
+          {displayedTrackedLinkPreviews.map(({ id, linkPreview }) => (
+            <PostPreview
+              key={id}
+              onClose={handleLinkPreviewClose(id)}
+              postPreview={linkPreview}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   )
 }
