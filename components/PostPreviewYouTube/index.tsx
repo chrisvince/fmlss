@@ -10,7 +10,7 @@ interface Props {
 
 const PostPreviewYouTube = ({ onClose, postPreview }: Props) => (
   <CloseButtonWrapper onClose={onClose}>
-    <YouTubeEmbed url={postPreview.url} />
+    <YouTubeEmbed url={postPreview.href} />
   </CloseButtonWrapper>
 )
 

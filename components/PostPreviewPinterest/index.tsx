@@ -10,7 +10,7 @@ interface Props {
 
 const PostPreviewPinterest = ({ onClose, postPreview }: Props) => (
   <CloseButtonWrapper onClose={onClose}>
-    <PinterestEmbed url={postPreview.url} />
+    <PinterestEmbed url={postPreview.href} />
   </CloseButtonWrapper>
 )
 

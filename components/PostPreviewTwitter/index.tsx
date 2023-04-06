@@ -11,7 +11,7 @@ interface Props {
 const PostPreviewTwitter = ({ onClose, postPreview }: Props) => (
   <CloseButtonWrapper onClose={onClose}>
     <TwitterEmbed
-      url={postPreview.url}
+      url={postPreview.href}
       twitterTweetEmbedProps={{ options: { conversation: 'none' } }}
     />
   </CloseButtonWrapper>

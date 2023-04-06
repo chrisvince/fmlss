@@ -13,32 +13,32 @@ export interface PostPreviewMeta {
 }
 
 export interface PostPreviewTwitter {
-  url: string
+  href: string
   type: 'twitter'
 }
 
 export interface PostPreviewFacebook {
-  url: string
+  href: string
   type: 'facebook'
 }
 
 export interface PostPreviewInstagram {
-  url: string
+  href: string
   type: 'instagram'
 }
 
 export interface PostPreviewTikTok {
-  url: string
+  href: string
   type: 'tiktok'
 }
 
 export interface PostPreviewYouTube {
-  url: string
+  href: string
   type: 'youtube'
 }
 
 export interface PostPreviewPinterest {
-  url: string
+  href: string
   type: 'pinterest'
 }
 

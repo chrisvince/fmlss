@@ -298,32 +298,32 @@ const PostBodyTextArea = (
 
           if (isTwitterPostUrl(link.url)) {
             postPreview = {
-              url: link.url,
+              href: link.url,
               type: 'twitter',
             } as PostPreviewTwitter
           } else if (isFacebookPostUrl(link.url)) {
             postPreview = {
-              url: link.url,
+              href: link.url,
               type: 'facebook',
             } as PostPreviewFacebook
           } else if (isInstagramPostUrl(link.url)) {
             postPreview = {
-              url: link.url,
+              href: link.url,
               type: 'instagram',
             } as PostPreviewInstagram
           } else if (isTikTokPostUrl(link.url)) {
             postPreview = {
-              url: link.url,
+              href: link.url,
               type: 'tiktok',
             } as PostPreviewTikTok
           } else if (isYouTubePostUrl(link.url)) {
             postPreview = {
-              url: link.url,
+              href: link.url,
               type: 'youtube',
             } as PostPreviewYouTube
           } else if (isPinterestPostUrl(link.url)) {
             postPreview = {
-              url: link.url,
+              href: link.url,
               type: 'pinterest',
             } as PostPreviewPinterest
           } else {
