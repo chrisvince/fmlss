@@ -47,6 +47,7 @@
     "react-hook-form": "^7.43.8",
     "react-intersection-observer": "^9.4.3",
     "react-redux": "^8.0.5",
+    "react-social-media-embed": "^2.3.5",
     "react-virtualized": "^9.22.3",
     "swr": "^2.1.1",
     "title-case": "^3.0.3"
