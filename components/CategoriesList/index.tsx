@@ -1,13 +1,16 @@
 import { CellMeasurerCache } from 'react-virtualized'
+import { useRef } from 'react'
 
 import { Category } from '../../types'
 import CategoryListItem from '../CategoryListItem'
 import CenteredMessage from '../CenteredMessage'
 import ContentList from '../ContentList'
 import ContentSpinner from '../ContentSpinner'
+import constants from '../../constants'
+
+const { CELL_CACHE_MEASURER_CATEGORY_ITEM_MIN_HEIGHT } = constants
 
 type PropTypes = {
-  cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   moreToLoad: boolean
   onLoadMore: () => Promise<unknown>
@@ -15,17 +18,23 @@ type PropTypes = {
 }
 
 const CategoriesList = ({
-  cellMeasurerCache,
   isLoading,
   moreToLoad,
   onLoadMore,
   categories,
 }: PropTypes) => {
+  const cellMeasurerCache = useRef(
+    new CellMeasurerCache({
+      fixedWidth: true,
+      minHeight: CELL_CACHE_MEASURER_CATEGORY_ITEM_MIN_HEIGHT,
+    })
+  )
+
   return isLoading ? (
     <ContentSpinner />
   ) : categories.length ? (
     <ContentList
-      cellMeasurerCache={cellMeasurerCache}
+      cellMeasurerCache={cellMeasurerCache.current}
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
       items={categories}

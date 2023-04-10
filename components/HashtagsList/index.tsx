@@ -1,13 +1,16 @@
 import { CellMeasurerCache } from 'react-virtualized'
+import { useRef } from 'react'
 
 import { Hashtag } from '../../types'
 import CenteredMessage from '../CenteredMessage'
 import ContentList from '../ContentList'
 import ContentSpinner from '../ContentSpinner'
 import HashtagListItem from '../HashtagListItem'
+import constants from '../../constants'
+
+const { CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT } = constants
 
 type Props = {
-  cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   moreToLoad: boolean
   onLoadMore: () => Promise<unknown>
@@ -15,17 +18,23 @@ type Props = {
 }
 
 const HashtagsList = ({
-  cellMeasurerCache,
   isLoading,
   moreToLoad,
   onLoadMore,
   hashtags,
-}: Props) =>
-  isLoading ? (
+}: Props) => {
+  const cellMeasurerCache = useRef(
+    new CellMeasurerCache({
+      fixedWidth: true,
+      minHeight: CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT,
+    })
+  )
+
+  return isLoading ? (
     <ContentSpinner />
   ) : hashtags.length ? (
     <ContentList
-      cellMeasurerCache={cellMeasurerCache}
+      cellMeasurerCache={cellMeasurerCache.current}
       items={hashtags}
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
@@ -35,5 +44,6 @@ const HashtagsList = ({
   ) : (
     <CenteredMessage>No hashtags.</CenteredMessage>
   )
+}
 
 export default HashtagsList
