@@ -40,13 +40,17 @@ const PostPreview = ({ isAboveFold = false, onClose, postPreview }: Props) => {
     return <PostPreviewPinterest onClose={onClose} postPreview={postPreview} />
   }
 
-  return (
-    <PostPreviewMeta
-      isAboveFold={isAboveFold}
-      onClose={onClose}
-      postPreview={postPreview}
-    />
-  )
+  if (postPreview.type === 'url') {
+    return (
+      <PostPreviewMeta
+        isAboveFold={isAboveFold}
+        onClose={onClose}
+        postPreview={postPreview}
+      />
+    )
+  }
+
+  return null
 }
 
 export default PostPreview
