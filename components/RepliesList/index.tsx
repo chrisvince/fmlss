@@ -1,19 +1,9 @@
-import { CellMeasurerCache } from 'react-virtualized'
-
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import ScrollLink from '../ScrollLink'
 import Feed from '../Feed'
-import constants from '../../constants'
 import InlineCreatePost from '../InlineCreatePost'
 import ContentSpinner from '../ContentSpinner'
 import { Box } from '@mui/system'
-
-const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
-
-const cellMeasurerCache = new CellMeasurerCache({
-  fixedWidth: true,
-  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-})
 
 type PropTypes = {
   loading?: boolean
@@ -39,7 +29,6 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
           <InlineCreatePost slug={slug} variant="reply" />
           <Box sx={{ borderTop: '1px solid', borderTopColor: 'divider' }}>
             <Feed
-              cellMeasurerCache={cellMeasurerCache}
               isRepliesFeed
               moreToLoad={moreToLoad}
               onLikePost={likePost}

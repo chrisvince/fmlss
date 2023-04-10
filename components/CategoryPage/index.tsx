@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
-import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import Feed from '../Feed'
@@ -11,11 +10,8 @@ import { CategorySortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import unslugify from '../../utils/unslugify'
-import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 import { useEffect, useState } from 'react'
-
-const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
 type PropTypes = {
   slug: string
@@ -47,11 +43,6 @@ const SORT_MODE_MAP: {
   'most-likes': 'mostLikes',
 }
 
-const cellMeasurerCache = new CellMeasurerCache({
-  fixedWidth: true,
-  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-})
-
 const CategoryPage = ({ slug }: PropTypes) => {
   const {
     query: { sort },
@@ -71,10 +62,6 @@ const CategoryPage = ({ slug }: PropTypes) => {
   useEffect(() => {
     setSortMode(pathSortMode)
   }, [pathSortMode])
-
-  useEffect(() => {
-    cellMeasurerCache.clearAll()
-  }, [sortMode])
 
   const categoryName = unslugify(slug)
   const sortOptions = generateSortOptions(slug)
@@ -113,8 +100,8 @@ const CategoryPage = ({ slug }: PropTypes) => {
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <Feed
-        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
+        key={sortMode}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}

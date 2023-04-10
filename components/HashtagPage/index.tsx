@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { Button, FormControlLabel, Switch } from '@mui/material'
 import { useRouter } from 'next/router'
 import { Box } from '@mui/system'
-import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import Feed from '../Feed'
@@ -16,8 +15,7 @@ import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 
-const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } =
-  constants
+const { CATEGORIES_ENABLED } = constants
 
 type PropTypes = {
   slug: string
@@ -49,11 +47,6 @@ const SORT_MODE_MAP: {
   'most-likes': 'mostLikes',
 }
 
-const cellMeasurerCache = new CellMeasurerCache({
-  fixedWidth: true,
-  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-})
-
 const HashtagPage = ({ slug }: PropTypes) => {
   const {
     query: { sort },
@@ -77,10 +70,6 @@ const HashtagPage = ({ slug }: PropTypes) => {
   useEffect(() => {
     setSortMode(pathSortMode)
   }, [pathSortMode])
-
-  useEffect(() => {
-    cellMeasurerCache.clearAll()
-  }, [sortMode])
 
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
     const { checked } = event.target as HTMLInputElement
@@ -143,8 +132,8 @@ const HashtagPage = ({ slug }: PropTypes) => {
         </Box>
       </MobileContainer>
       <Feed
-        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
+        key={sortMode}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}

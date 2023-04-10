@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import Feed from '../Feed'
@@ -11,8 +10,7 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import constants from '../../constants'
 import InlineCreatePost from '../InlineCreatePost'
 
-const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } =
-  constants
+const { CATEGORIES_ENABLED } = constants
 
 const SORT_MODE_MAP: {
   [key: string]: string
@@ -21,11 +19,6 @@ const SORT_MODE_MAP: {
   popular: 'popular',
   'most-likes': 'mostLikes',
 }
-
-const cellMeasurerCache = new CellMeasurerCache({
-  fixedWidth: true,
-  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-})
 
 const FeedPage = () => {
   const { asPath: path } = useRouter()
@@ -44,10 +37,6 @@ const FeedPage = () => {
     setSortMode(pathSortMode)
   }, [pathSortMode])
 
-  useEffect(() => {
-    cellMeasurerCache.clearAll()
-  }, [sortMode])
-
   return (
     <Page
       pageTitle="Feed"
@@ -60,8 +49,8 @@ const FeedPage = () => {
     >
       <InlineCreatePost variant="feed" />
       <Feed
-        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
+        key={sortMode}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}

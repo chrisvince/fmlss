@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Button } from '@mui/material'
-import { CellMeasurerCache } from 'react-virtualized'
 
 import Page from '../Page'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
@@ -13,8 +12,7 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 
-const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT } =
-  constants
+const { CATEGORIES_ENABLED } = constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -36,11 +34,6 @@ const SORT_MODE_MAP: {
   popular: 'popular',
 }
 
-const cellMeasurerCache = new CellMeasurerCache({
-  fixedWidth: true,
-  minHeight: CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT,
-})
-
 const HashtagsPage = () => {
   const { asPath: path } = useRouter()
 
@@ -57,10 +50,6 @@ const HashtagsPage = () => {
   useEffect(() => {
     setSortMode(pathSortMode)
   }, [pathSortMode])
-
-  useEffect(() => {
-    cellMeasurerCache.clearAll()
-  }, [sortMode])
 
   return (
     <Page
@@ -86,9 +75,9 @@ const HashtagsPage = () => {
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <HashtagsList
-        cellMeasurerCache={cellMeasurerCache}
         hashtags={hashtags}
         isLoading={isLoading}
+        key={sortMode}
         moreToLoad={moreToLoad}
         onLoadMore={loadMore}
       />

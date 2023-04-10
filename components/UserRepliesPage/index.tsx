@@ -1,5 +1,3 @@
-import { CellMeasurerCache } from 'react-virtualized'
-
 import Page from '../Page'
 import Feed from '../Feed'
 import useUserPosts from '../../utils/data/userPosts/useUserPosts'
@@ -7,13 +5,7 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import MiniHashtagsSection from '../MiniHashtagsSection'
 import constants from '../../constants'
 
-const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } =
-  constants
-
-const cellMeasurerCache = new CellMeasurerCache({
-  fixedWidth: true,
-  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-})
+const { CATEGORIES_ENABLED } = constants
 
 const UserRepliesPage = () => {
   const { isLoading, likePost, loadMore, moreToLoad, posts } = useUserPosts({
@@ -33,7 +25,6 @@ const UserRepliesPage = () => {
       }
     >
       <Feed
-        cellMeasurerCache={cellMeasurerCache}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}
