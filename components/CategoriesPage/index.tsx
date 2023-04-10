@@ -66,16 +66,19 @@ const CategoriesPage = () => {
     >
       <MobileContainer>
         <ViewSelectorButtonGroup>
-          {SORT_MODE_OPTIONS.map(({ href, sortMode: sortModeOption, label }) => (
-            <Button
-              component={Link}
-              href={href} key={href}
-              shallow
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
-            >
-              {label}
-            </Button>
-          ))}
+          {SORT_MODE_OPTIONS.map(
+            ({ href, sortMode: sortModeOption, label }) => (
+              <Button
+                component={Link}
+                href={href}
+                key={href}
+                shallow
+                variant={sortModeOption === sortMode ? 'contained' : undefined}
+              >
+                {label}
+              </Button>
+            )
+          )}
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <CategoriesList

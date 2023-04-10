@@ -13,10 +13,8 @@ import MiniCategoriesSection from '../MiniCategoriesSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 
-const {
-  CATEGORIES_ENABLED,
-  CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT,
-} = constants
+const { CATEGORIES_ENABLED, CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT } =
+  constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -76,9 +74,7 @@ const HashtagsPage = () => {
                 href={href}
                 key={href}
                 shallow
-                variant={
-                  sortModeOption === sortMode ? 'contained' : undefined
-                }
+                variant={sortModeOption === sortMode ? 'contained' : undefined}
               >
                 {label}
               </Button>
