@@ -10,7 +10,7 @@ type Props = {
   cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   moreToLoad: boolean
-  onLoadMore: () => any
+  onLoadMore: () => Promise<unknown>
   hashtags: Hashtag[]
 }
 
@@ -23,20 +23,17 @@ const HashtagsList = ({
 }: Props) =>
   isLoading ? (
     <ContentSpinner />
-  ) :
-  hashtags.length ? (
+  ) : hashtags.length ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache}
       items={hashtags}
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
     >
-      {hashtag => <HashtagListItem hashtag={hashtag} />}
+      {hashtag => <HashtagListItem hashtag={hashtag as Hashtag} />}
     </ContentList>
   ) : (
-    <CenteredMessage>
-      No hashtags.
-    </CenteredMessage>
+    <CenteredMessage>No hashtags.</CenteredMessage>
   )
 
 export default HashtagsList

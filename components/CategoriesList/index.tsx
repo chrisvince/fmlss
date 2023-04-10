@@ -10,7 +10,7 @@ type PropTypes = {
   cellMeasurerCache: CellMeasurerCache
   isLoading: boolean
   moreToLoad: boolean
-  onLoadMore: () => any
+  onLoadMore: () => Promise<unknown>
   categories: Category[]
 }
 
@@ -20,23 +20,21 @@ const CategoriesList = ({
   moreToLoad,
   onLoadMore,
   categories,
-}: PropTypes) =>
-  isLoading ? (
+}: PropTypes) => {
+  return isLoading ? (
     <ContentSpinner />
-  ) :
-  categories.length ? (
+  ) : categories.length ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache}
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
       items={categories}
     >
-      {category => <CategoryListItem category={category} />}
+      {category => <CategoryListItem category={category as Category} />}
     </ContentList>
   ) : (
-    <CenteredMessage>
-      No categories.
-    </CenteredMessage>
+    <CenteredMessage>No categories.</CenteredMessage>
   )
+}
 
 export default CategoriesList
