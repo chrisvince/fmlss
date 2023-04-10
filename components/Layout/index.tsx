@@ -38,9 +38,10 @@ const Layout = ({ children }: PropTypes) => {
           sx={{
             display: 'grid',
             gridTemplateColumns: {
-              sm: `${SIDEBAR_WIDTH_SM} 1fr`,
-              md: `${SIDEBAR_WIDTH_MD} 1fr`,
-              lg: `${SIDEBAR_WIDTH_LG} 1fr`,
+              xs: '100%',
+              sm: `${SIDEBAR_WIDTH_SM} minmax(0, 1fr)`,
+              md: `${SIDEBAR_WIDTH_MD} minmax(0, 1fr)`,
+              lg: `${SIDEBAR_WIDTH_LG} minmax(0, 1fr)`,
             },
             columnGap: {
               sm: SIDEBAR_GAP_SM,

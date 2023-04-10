@@ -1,4 +1,3 @@
-
 import { useMediaQuery } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
 
@@ -26,8 +25,8 @@ const NestedLayout = ({
       sx={{
         display: 'grid',
         gridTemplateColumns: {
-          sm: '1fr',
-          md: `1fr ${SIDEBAR_WIDTH_LG}`,
+          xs: '100%',
+          md: `minmax(0, 1fr) ${SIDEBAR_WIDTH_LG}`,
         },
         columnGap: {
           sm: SIDEBAR_GAP_SM,
