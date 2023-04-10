@@ -70,8 +70,11 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   useEffect(() => {
     setSortMode(pathSortMode)
-    cellMeasurerCache.clearAll()
   }, [pathSortMode])
+
+  useEffect(() => {
+    cellMeasurerCache.clearAll()
+  }, [sortMode])
 
   const categoryName = unslugify(slug)
   const sortOptions = generateSortOptions(slug)

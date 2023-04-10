@@ -42,8 +42,11 @@ const FeedPage = () => {
 
   useEffect(() => {
     setSortMode(pathSortMode)
-    cellMeasurerCache.clearAll()
   }, [pathSortMode])
+
+  useEffect(() => {
+    cellMeasurerCache.clearAll()
+  }, [sortMode])
 
   return (
     <Page

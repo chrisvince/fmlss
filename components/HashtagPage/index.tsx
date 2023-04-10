@@ -76,8 +76,11 @@ const HashtagPage = ({ slug }: PropTypes) => {
 
   useEffect(() => {
     setSortMode(pathSortMode)
-    cellMeasurerCache.clearAll()
   }, [pathSortMode])
+
+  useEffect(() => {
+    cellMeasurerCache.clearAll()
+  }, [sortMode])
 
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
     const { checked } = event.target as HTMLInputElement
