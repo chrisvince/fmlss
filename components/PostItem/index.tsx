@@ -79,16 +79,9 @@ const PostItem = ({
           )}
         </Box>
       )}
-      <PostBody
-        body={post.data.body}
-        id={bodyElementId}
-        size={bodySize}
-      />
+      <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
       {post.data.linkPreviews.map(linkPreview => (
-        <PostPreview
-          key={linkPreview.href}
-          postPreview={linkPreview}
-        />
+        <PostPreview key={linkPreview.href} postPreview={linkPreview} />
       ))}
       {!hideActionBar && (
         <PostActionBar
