@@ -1,6 +1,5 @@
 import { init } from 'next-firebase-auth'
 
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 const daysToMilliseconds = (days: number) => days * 60 * 60 * 24 * 1000
 
 const initAuth = () => {
@@ -9,15 +8,16 @@ const initAuth = () => {
     appPageURL: '/feed',
     loginAPIEndpoint: '/api/auth/signIn',
     logoutAPIEndpoint: '/api/auth/signOut',
-    onLoginRequestError: (err) => {
+    onLoginRequestError: err => {
       console.error(err)
     },
-    onLogoutRequestError: (err) => {
+    onLogoutRequestError: err => {
       console.error(err)
     },
     firebaseAuthEmulatorHost:
       process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST,
     firebaseAdminInitConfig: {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
       credential: {
@@ -49,10 +49,10 @@ const initAuth = () => {
       secure: true,
       signed: true,
     },
-    onVerifyTokenError: (err) => {
+    onVerifyTokenError: err => {
       console.error(err)
     },
-    onTokenRefreshError: (err) => {
+    onTokenRefreshError: err => {
       console.error(err)
     },
   })
