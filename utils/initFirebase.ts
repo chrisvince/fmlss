@@ -11,8 +11,14 @@ const firebaseConfig = {
 }
 
 const initFirebase = () => {
-  if (firebase.apps.length > 0) return
-  firebase.initializeApp(firebaseConfig)
+  if (firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig)
+  }
+
+  if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true') {
+    firebase.functions().useEmulator('127.0.0.1', 5001)
+    firebase.firestore().useEmulator('127.0.0.1', 8080)
+  }
 }
 
 export default initFirebase

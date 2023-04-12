@@ -14,8 +14,9 @@ const initAuth = () => {
     onLogoutRequestError: err => {
       console.error(err)
     },
-    firebaseAuthEmulatorHost:
-      process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST,
+    firebaseAuthEmulatorHost: process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR
+      ? '127.0.0.1:9099'
+      : undefined,
     firebaseAdminInitConfig: {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
