@@ -60,10 +60,11 @@ const usePostReplies: UsePostReplies = (
   const {
     data,
     error,
+    isLoading,
     isValidating: repliesAreValidating,
     mutate,
-    size,
     setSize,
+    size,
   } = useSWRInfinite(
     (index, previousPageData) => {
       if (
@@ -132,7 +133,6 @@ const usePostReplies: UsePostReplies = (
 
   const flattenedData = data?.flat() ?? []
   const replies = viewMode === 'end' ? reverse(flattenedData) : flattenedData
-  const isLoading = !error && !data
   const isValidating = repliesAreValidating || postIsValidating
 
   const moreToLoad =
