@@ -13,6 +13,15 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
     id: postDoc.id as string,
     likesCount: postData.likesCount as number,
     linkPreviews: (postData.linkPreviews as PostPreview[]) ?? [],
+    ...(postData.originalPost
+      ? {
+          originalPost: {
+            id: postData.originalPost.id as string,
+            ref: postData.originalPost.ref.path as string,
+            slug: postData.originalPost.slug as string,
+          },
+        }
+      : {}),
     ...(postData.parent
       ? {
           parent: {

@@ -12,6 +12,11 @@ export interface PostData {
   id: string
   likesCount: number
   linkPreviews: PostPreview[]
+  originalPost?: {
+    id: string
+    ref: string
+    slug: string
+  }
   parent?: {
     id: string
     ref: string
