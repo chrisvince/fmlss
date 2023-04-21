@@ -139,7 +139,7 @@ const MapLineSegment = ({ lineType, dotPosition }: Props) => {
         sx={{
           ...SX_CONSTANTS,
           gridTemplateRows: '1px 1fr 1fr 1fr 1px',
-          rowGap: '2px',
+          rowGap: '3px',
         }}
       >
         <Line rounded="bottom" />

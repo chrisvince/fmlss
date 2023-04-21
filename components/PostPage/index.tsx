@@ -15,7 +15,7 @@ import Error from 'next/error'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
-import PostPageParentPost from '../PostPageParentPost'
+import PostPageParentPostsReference from '../PostPageParentPostsReference'
 
 const { CATEGORIES_ENABLED, POST_MAX_DEPTH } = constants
 
@@ -107,9 +107,11 @@ const PostPage = ({ slug }: PropTypes) => {
         ) : (
           <>
             {post!.data.parent?.slug && (
-              <PostPageParentPost
-                slug={post!.data.parent.slug}
+              <PostPageParentPostsReference
+                documentDepth={post!.data.documentDepth}
                 onLoad={handleParentPostLoad}
+                originalPostSlug={post!.data.originalPost?.slug}
+                slug={post!.data.parent.slug}
               />
             )}
             <Box
