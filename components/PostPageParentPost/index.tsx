@@ -24,7 +24,11 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
   const hasDisplayedPost = useRef<boolean>(false)
   const hasAddedOffsetScroll = useRef<boolean>(false)
   const [height, setHeight] = useState<number | undefined>(0)
-  const { isLoading, likePost, post } = usePost(slug)
+  const {
+    isLoading: parentPostIsLoading,
+    likePost: likeParentPost,
+    post: parentPost,
+  } = usePost(slug)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const dispatch = useDispatch()
@@ -34,11 +38,12 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
   }, [dispatch])
 
   useLayoutEffect(() => {
-    if (hasDisplayedPost.current || isLoading || !innerRef.current) return
+    if (hasDisplayedPost.current || parentPostIsLoading || !innerRef.current)
+      return
     hasDisplayedPost.current = true
     const { height: innerHeight } = innerRef.current.getBoundingClientRect()
     setHeight(Math.ceil(innerHeight))
-  }, [isLoading])
+  }, [parentPostIsLoading])
 
   useLayoutEffect(() => {
     if (hasAddedOffsetScroll.current || height === 0 || height === undefined) {
@@ -72,7 +77,7 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
     }
   }, [dispatch, height])
 
-  if (isLoading || !post) return null
+  if (parentPostIsLoading || !parentPost) return null
 
   return (
     <Box
@@ -100,7 +105,7 @@ const PostPageParentPost = ({ onLoad, slug }: Props) => {
           <MapLineSegment lineType="start" dotPosition="top" />
         </Box>
         <Box sx={{ gridArea: 'post' }}>
-          <PostListItem onLikePost={likePost} post={post} />
+          <PostListItem onLikePost={likeParentPost} post={parentPost} />
         </Box>
       </Box>
     </Box>
