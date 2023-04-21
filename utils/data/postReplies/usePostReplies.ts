@@ -32,7 +32,7 @@ type UsePostReplies = (
   options?: {
     viewMode?: 'start' | 'end'
     swrConfig?: SWRInfiniteConfiguration
-  },
+  }
 ) => {
   error: any
   isLoading: boolean
@@ -46,10 +46,7 @@ type UsePostReplies = (
 
 const usePostReplies: UsePostReplies = (
   slug,
-  {
-    viewMode = 'start',
-    swrConfig = {},
-  } = {},
+  { viewMode = 'start', swrConfig = {} } = {}
 ) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
@@ -110,23 +107,28 @@ const usePostReplies: UsePostReplies = (
     return data?.flat() ?? []
   }
 
-  const likePost = useCallback(async (slug: string) => {
-    const handleMutation: MutatorCallback<InfiniteData> = async currentData => {
-      if (!currentData) return
-      const userLikesPost = checkUserLikesPost(slug, currentData)
-      await updatePostLikeInServer(userLikesPost, slug)
+  const likePost = useCallback(
+    async (slug: string) => {
+      const handleMutation: MutatorCallback<
+        InfiniteData
+      > = async currentData => {
+        if (!currentData) return
+        const userLikesPost = checkUserLikesPost(slug, currentData)
+        await updatePostLikeInServer(userLikesPost, slug)
 
-      const mutatedData = mutatePostLikeInfiniteData(
-        userLikesPost,
-        slug,
-        currentData
-      )
+        const mutatedData = mutatePostLikeInfiniteData(
+          userLikesPost,
+          slug,
+          currentData
+        )
 
-      return mutatedData
-    }
+        return mutatedData
+      }
 
-    await mutate(handleMutation, false)
-  }, [mutate])
+      await mutate(handleMutation, false)
+    },
+    [mutate]
+  )
 
   const flattenedData = data?.flat() ?? []
   const replies = viewMode === 'end' ? reverse(flattenedData) : flattenedData
