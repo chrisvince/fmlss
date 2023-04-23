@@ -5,7 +5,8 @@ export const isFacebookPostUrl = (url: string) =>
   ['facebook.com/', '/posts/'].every(condition => url.includes(condition))
 
 export const isInstagramPostUrl = (url: string) =>
-  ['instagram.com/', '/p/'].every(condition => url.includes(condition))
+  url.includes('instagram.com/') &&
+  ['/p/', '/reel/'].some(condition => url.includes(condition))
 
 export const isTikTokPostUrl = (url: string) =>
   ['tiktok.com/', '/video/'].every(condition => url.includes(condition))
