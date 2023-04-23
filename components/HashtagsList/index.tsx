@@ -39,7 +39,12 @@ const HashtagsList = ({
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
     >
-      {hashtag => <HashtagListItem hashtag={hashtag as Hashtag} />}
+      {hashtag => (
+        <HashtagListItem
+          hashtag={hashtag as Hashtag}
+          key={(hashtag as Hashtag).data.id}
+        />
+      )}
     </ContentList>
   ) : (
     <CenteredMessage>No hashtags.</CenteredMessage>

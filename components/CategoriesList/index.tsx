@@ -39,7 +39,12 @@ const CategoriesList = ({
       onLoadMore={onLoadMore}
       items={categories}
     >
-      {category => <CategoryListItem category={category as Category} />}
+      {category => (
+        <CategoryListItem
+          category={category as Category}
+          key={(category as Category).data.id}
+        />
+      )}
     </ContentList>
   ) : (
     <CenteredMessage>No categories.</CenteredMessage>
