@@ -15,7 +15,7 @@ const DEFAULT_SWR_CONFIG: SWRConfiguration = {
 }
 
 type UseUser = (options?: { swrConfig?: SWRConfiguration }) => {
-  error: any
+  error: unknown
   isLoading: boolean
   isValidating: boolean
   update: (data: UserDataInput) => Promise<void>
@@ -23,11 +23,10 @@ type UseUser = (options?: { swrConfig?: SWRConfiguration }) => {
 }
 
 const useUser: UseUser = ({ swrConfig = {} } = {}) => {
-  const [updateIsLoading, setUpdateIsLoading] = useState(false)
   const { id: uid } = useAuthUser()
   const userCacheKey = createUserCacheKey(uid)
 
-  const { data, error, isValidating, mutate } = useSWR(
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
     userCacheKey,
     () => getUser(uid),
     {
@@ -42,7 +41,6 @@ const useUser: UseUser = ({ swrConfig = {} } = {}) => {
     }
 
     const db = firebase.firestore()
-    setUpdateIsLoading(true)
 
     await db
       .collection(USERS_COLLECTION)
@@ -53,12 +51,11 @@ const useUser: UseUser = ({ swrConfig = {} } = {}) => {
       })
 
     await mutate()
-    setUpdateIsLoading(false)
   }
 
   return {
     error,
-    isLoading: (!error && !data) || updateIsLoading,
+    isLoading,
     isValidating,
     update,
     user: data,

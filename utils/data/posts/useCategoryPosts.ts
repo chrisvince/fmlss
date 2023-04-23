@@ -30,9 +30,9 @@ type UseCategoryPosts = (
   options?: {
     sortMode?: CategorySortMode
     swrConfig?: SWRInfiniteConfiguration
-  },
+  }
 ) => {
-  error: any
+  error: unknown
   isLoading: boolean
   isValidating: boolean
   likePost: (slug: string) => Promise<void>
@@ -43,10 +43,7 @@ type UseCategoryPosts = (
 
 const useCategoryPosts: UseCategoryPosts = (
   slug,
-  {
-    sortMode = 'latest',
-    swrConfig = {},
-  } = {},
+  { sortMode = 'latest', swrConfig = {} } = {}
 ) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
@@ -56,39 +53,33 @@ const useCategoryPosts: UseCategoryPosts = (
   const fallbackData = fallback[createCategoryPostsCacheKey(slug, sortMode)]
   const { id: uid } = useAuthUser()
 
-  const {
-    data,
-    error,
-    isValidating,
-    mutate,
-    size,
-    setSize,
-  } = useSWRInfinite(
-    (index, previousPageData) => {
-      if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
-        return null
+  const { data, error, isLoading, isValidating, mutate, setSize, size } =
+    useSWRInfinite(
+      (index, previousPageData) => {
+        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+          return null
+        }
+        return createCategoryPostsCacheKey(slug, sortMode, index)
+      },
+      key => {
+        const pageIndex = getPageIndexFromCacheKey(key)
+        return getCategoryPosts(slug, {
+          sortMode,
+          startAfter: pageStartAfterTrace[pageIndex],
+          uid,
+        })
+      },
+      {
+        fallbackData,
+        ...DEFAULT_SWR_CONFIG,
+        ...swrConfig,
       }
-      return createCategoryPostsCacheKey(slug, sortMode, index)
-    },
-    key => {
-      const pageIndex = getPageIndexFromCacheKey(key)
-      return getCategoryPosts(slug, {
-        sortMode,
-        startAfter: pageStartAfterTrace[pageIndex],
-        uid,
-      })
-    },
-    {
-      fallbackData,
-      ...DEFAULT_SWR_CONFIG,
-      ...swrConfig,
-    }
-  )
+    )
 
   const lastPageLastDoc = getLastDocOfLastPage(data)
   useEffect(() => {
     if (!lastPageLastDoc) return
-    setPageStartAfterTrace((currentState) => ({
+    setPageStartAfterTrace(currentState => ({
       ...currentState,
       [size]: lastPageLastDoc,
     }))
@@ -99,27 +90,31 @@ const useCategoryPosts: UseCategoryPosts = (
     return data?.flat() ?? []
   }
 
-  const likePost = useCallback(async (slug: string) => {
-    const handleMutation: MutatorCallback<InfiniteData> = async currentData => {
-      if (!currentData) return
-      const userLikesPost = checkUserLikesPost(slug, currentData)
-      await updatePostLikeInServer(userLikesPost, slug)
+  const likePost = useCallback(
+    async (slug: string) => {
+      const handleMutation: MutatorCallback<
+        InfiniteData
+      > = async currentData => {
+        if (!currentData) return
+        const userLikesPost = checkUserLikesPost(slug, currentData)
+        await updatePostLikeInServer(userLikesPost, slug)
 
-      const mutatedData = mutatePostLikeInfiniteData(
-        userLikesPost,
-        slug,
-        currentData
-      )
+        const mutatedData = mutatePostLikeInfiniteData(
+          userLikesPost,
+          slug,
+          currentData
+        )
 
-      return mutatedData
-    }
+        return mutatedData
+      }
 
-    await mutate(handleMutation, false)
-  }, [mutate])
+      await mutate(handleMutation, false)
+    },
+    [mutate]
+  )
 
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length ?? 0
-  const isLoading = !error && !data
 
   const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT

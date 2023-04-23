@@ -43,32 +43,27 @@ const useCategories: UseCategories = ({
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createCategoriesCacheKey(sortMode)]
 
-  const {
-    data,
-    error,
-    isValidating,
-    size,
-    setSize,
-  } = useSWRInfinite(
-    (index, previousPageData) => {
-      if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
-        return null
+  const { data, error, isLoading, isValidating, setSize, size } =
+    useSWRInfinite(
+      (index, previousPageData) => {
+        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+          return null
+        }
+        return createCategoriesCacheKey(sortMode, index)
+      },
+      key => {
+        const pageIndex = getPageIndexFromCacheKey(key)
+        return getCategories({
+          sortMode,
+          startAfter: pageStartAfterTrace[pageIndex],
+        })
+      },
+      {
+        fallbackData,
+        ...DEFAULT_SWR_CONFIG,
+        ...swrConfig,
       }
-      return createCategoriesCacheKey(sortMode, index)
-    },
-    key => {
-      const pageIndex = getPageIndexFromCacheKey(key)
-      return getCategories({
-        sortMode,
-        startAfter: pageStartAfterTrace[pageIndex],
-      })
-    },
-    {
-      fallbackData,
-      ...DEFAULT_SWR_CONFIG,
-      ...swrConfig,
-    }
-  )
+    )
 
   const lastPageLastDoc = getLastDocOfLastPage(data)
   useEffect(() => {
@@ -86,7 +81,6 @@ const useCategories: UseCategories = ({
 
   const categories = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length
-  const isLoading = !error && !data
 
   const moreToLoad =
     lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT

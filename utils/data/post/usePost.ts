@@ -17,7 +17,7 @@ type UsePost = (
     swrConfig?: SWRConfiguration
   }
 ) => {
-  error: any
+  error: unknown
   isLoading: boolean
   isValidating: boolean
   likePost: () => Promise<void>
@@ -28,7 +28,7 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
   const { id: uid } = useAuthUser()
   const postCacheKey = createPostCacheKey(slug)
 
-  const { data, error, isValidating, mutate } = useSWR(
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
     postCacheKey,
     () => getPost(slug, { uid }),
     {
@@ -51,7 +51,7 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
 
   return {
     error,
-    isLoading: !error && !data,
+    isLoading,
     isValidating,
     likePost,
     post: data,

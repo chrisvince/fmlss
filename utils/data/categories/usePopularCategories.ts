@@ -16,7 +16,7 @@ const DEFAULT_SWR_CONFIG: SWRConfiguration = {
 type UsePopularCategories = (options?: {
   swrConfig?: SWRInfiniteConfiguration
 }) => {
-  error: any
+  error: unknown
   isLoading: boolean
   isValidating: boolean
   categories: Category[]
@@ -27,7 +27,7 @@ const usePopularCategories: UsePopularCategories = ({
 } = {}) => {
   const cacheKey = createMiniCategoriesCacheKey()
 
-  const { data, error, isValidating } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWR(
     cacheKey,
     () =>
       getCategories({
@@ -41,9 +41,9 @@ const usePopularCategories: UsePopularCategories = ({
   )
 
   return {
-    categories: data,
+    categories: data ?? [],
     error,
-    isLoading: !error && !data,
+    isLoading,
     isValidating,
   }
 }

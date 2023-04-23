@@ -16,7 +16,7 @@ const DEFAULT_SWR_CONFIG: SWRConfiguration = {
 type UsePopularHashtags = (options?: {
   swrConfig?: SWRInfiniteConfiguration
 }) => {
-  error: any
+  error: unknown
   hashtags: Hashtag[]
   isLoading: boolean
   isValidating: boolean
@@ -25,7 +25,7 @@ type UsePopularHashtags = (options?: {
 const usePopularHashtags: UsePopularHashtags = ({ swrConfig = {} } = {}) => {
   const cacheKey = createMiniHashtagsCacheKey()
 
-  const { data, error, isValidating } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWR(
     cacheKey,
     () =>
       getHashtags({
@@ -40,8 +40,8 @@ const usePopularHashtags: UsePopularHashtags = ({ swrConfig = {} } = {}) => {
 
   return {
     error,
-    hashtags: data,
-    isLoading: !error && !data,
+    hashtags: data ?? [],
+    isLoading,
     isValidating,
   }
 }

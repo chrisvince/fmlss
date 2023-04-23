@@ -19,14 +19,14 @@ type UseCategory = (
 ) => {
   category: Category | null | undefined
   isLoading: boolean
-  error: any
+  error: unknown
   isValidating: boolean
 }
 
 const useCategory: UseCategory = (slug, { swrConfig = {} } = {}) => {
   const categoryCacheKey = createCategoryCacheKey(slug)
 
-  const { data, error, isValidating } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWR(
     categoryCacheKey,
     () => getCategory(slug),
     {
@@ -38,7 +38,7 @@ const useCategory: UseCategory = (slug, { swrConfig = {} } = {}) => {
   return {
     category: data,
     error,
-    isLoading: !error && !data,
+    isLoading,
     isValidating,
   }
 }
