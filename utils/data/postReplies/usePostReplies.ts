@@ -28,7 +28,7 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 }
 
 type UsePostReplies = (
-  slug: string,
+  slug?: string,
   options?: {
     viewMode?: 'start' | 'end'
     swrConfig?: SWRInfiniteConfiguration
@@ -53,7 +53,9 @@ const usePostReplies: UsePostReplies = (
   }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPostRepliesCacheKey(slug, 0, viewMode)]
+  const fallbackData = slug
+    ? fallback[createPostRepliesCacheKey(slug, 0, viewMode)]
+    : undefined
   const { id: uid } = useAuthUser()
   const { post, isValidating: postIsValidating } = usePost(slug)
 
@@ -69,7 +71,8 @@ const usePostReplies: UsePostReplies = (
     (index, previousPageData) => {
       if (
         (previousPageData && previousPageData.length < PAGINATION_COUNT) ||
-        !post
+        !post ||
+        !slug
       ) {
         return null
       }
@@ -77,7 +80,7 @@ const usePostReplies: UsePostReplies = (
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
-      return getPostReplies(post!.data.reference, slug, {
+      return getPostReplies(post!.data.reference, slug!, {
         uid,
         startAfter: pageStartAfterTrace[pageIndex],
         viewMode,
