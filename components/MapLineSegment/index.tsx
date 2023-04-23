@@ -1,6 +1,6 @@
 import { Box, SxProps } from '@mui/system'
 
-interface Props {
+export interface MapLineSegment {
   lineType: 'collapsed' | 'end' | 'middle' | 'start'
   dotPosition?: 'top' | 'center'
 }
@@ -59,7 +59,7 @@ const SX_CONSTANTS: SxProps = {
   justifyItems: 'center',
 }
 
-const MapLineSegment = ({ lineType, dotPosition }: Props) => {
+const MapLineSegment = ({ lineType, dotPosition }: MapLineSegment) => {
   if (lineType === 'start' && dotPosition === 'top') {
     return (
       <Box
@@ -115,6 +115,19 @@ const MapLineSegment = ({ lineType, dotPosition }: Props) => {
         <Line sx={{ gridRow: '1 / 3', gridColumn: '1 / 2' }} />
         <Dot sx={{ gridRow: '2 / 4', gridColumn: '1 / 2' }} />
         <Line sx={{ gridRow: '3 / 5', gridColumn: '1 / 2' }} />
+      </Box>
+    )
+  }
+
+  if (lineType === 'middle') {
+    return (
+      <Box
+        sx={{
+          ...SX_CONSTANTS,
+          gridTemplateRows: '1fr',
+        }}
+      >
+        <Line sx={{ gridRow: '1 / 2', gridColumn: '1 / 2' }} />
       </Box>
     )
   }
