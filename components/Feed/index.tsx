@@ -76,29 +76,13 @@ const Feed = ({
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
     >
-      {(post, index, measure) => {
-        const postListItem = (
-          <PostListItem
-            key={(post as Post).data.slug}
-            onLikePost={onLikePost}
-            onPostPreviewsLoaded={measure}
-            post={post as Post}
-          />
-        )
-
-        if (type === 'reply') {
-          return (
-            <ReplyLayout
-              isLast={index === posts.length - 1}
-              key={(post as Post).data.slug}
-            >
-              {postListItem}
-            </ReplyLayout>
-          )
-        }
-
-        return postListItem
-      }}
+      {post => (
+        <PostListItem
+          key={(post as Post).data.slug}
+          onLikePost={onLikePost}
+          post={post as Post}
+        />
+      )}
     </ContentList>
   ) : isRepliesFeed ? (
     <BlockMessage>No replies.</BlockMessage>
