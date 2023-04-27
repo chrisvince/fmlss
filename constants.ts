@@ -176,7 +176,7 @@ const constants: CONSTANTS = {
   USERNAME_MIN_LENGTH,
   USERNAME_REGEX_PATTERN: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]*$/gi,
   USERS_COLLECTION: 'users',
-  VIRTUALIZED_OVERSCAN_ROW_COUNT: 15,
+  VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
 }
 
 export default constants
