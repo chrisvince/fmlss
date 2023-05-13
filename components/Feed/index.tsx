@@ -18,7 +18,6 @@ type PropTypes = {
   onLikePost: (slug: string) => Promise<void>
   onLoadMore: () => Promise<unknown>
   posts: Post[]
-  type: 'reply' | 'post'
 }
 
 const Feed = ({
