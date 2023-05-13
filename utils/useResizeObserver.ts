@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 
 const useResizeObserver = (
   onResize: (entries: ResizeObserverEntry[]) => void,
-  dependencies: unknown[] = [],
   options: { disable?: boolean } = {}
 ) => {
   const ref = useRef(null)
@@ -19,7 +18,7 @@ const useResizeObserver = (
     return () => {
       resizeObserver.disconnect()
     }
-  }, [...dependencies, options.disable])
+  }, [onResize, options.disable])
 
   return ref
 }
