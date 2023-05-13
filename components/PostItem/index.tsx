@@ -7,7 +7,7 @@ import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
 import PostCaption from '../PostCaption'
 import constants from '../../constants'
-import PostPreview from '../PostPreview'
+import PostPreviews from '../PostPreviews'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -15,17 +15,21 @@ type PropTypes = {
   bodyElementId?: string
   bodySize?: 'small' | 'large'
   hideActionBar?: boolean
+  measure?: () => void
   noBottomBorder?: boolean
   onLikePost?: (slug: string) => Promise<void> | void
   post: Post
+  onPostPreviewsLoaded?: () => void
 }
 
 const PostItem = ({
   bodyElementId,
   bodySize = 'small',
   hideActionBar,
+  measure,
   noBottomBorder,
   onLikePost,
+  onPostPreviewsLoaded,
   post,
 }: PropTypes) => {
   const { toggleLike, likesCount, like } = useLikeState({ post })
@@ -80,9 +84,12 @@ const PostItem = ({
         </Box>
       )}
       <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
-      {post.data.linkPreviews.map(linkPreview => (
-        <PostPreview key={linkPreview.href} postPreview={linkPreview} />
-      ))}
+      <PostPreviews
+        measure={measure}
+        onPostPreviewLoaded={onPostPreviewsLoaded}
+        postId={post.data.id}
+        postPreviews={post.data.linkPreviews}
+      />
       {!hideActionBar && (
         <PostActionBar
           createdAt={post.data.createdAt}

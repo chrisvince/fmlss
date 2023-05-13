@@ -5,11 +5,18 @@ import ListItemFrame from '../ListItemFrame'
 import PostItem from '../PostItem'
 
 type PropTypes = {
-  post: Post
+  measure: () => void
   onLikePost: (slug: string) => Promise<void>
+  onPostPreviewsLoaded?: () => void
+  post: Post
 }
 
-const PostListItem = ({ onLikePost, post }: PropTypes) => {
+const PostListItem = ({
+  measure,
+  onLikePost,
+  onPostPreviewsLoaded,
+  post,
+}: PropTypes) => {
   const ariaLabelledById = useId()
 
   return (
@@ -20,9 +27,11 @@ const PostListItem = ({ onLikePost, post }: PropTypes) => {
     >
       <PostItem
         bodyElementId={ariaLabelledById}
-        onLikePost={onLikePost}
-        post={post}
+        measure={measure}
         noBottomBorder
+        onLikePost={onLikePost}
+        onPostPreviewsLoaded={onPostPreviewsLoaded}
+        post={post}
       />
     </ListItemFrame>
   )
