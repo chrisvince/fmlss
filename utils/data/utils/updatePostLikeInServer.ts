@@ -1,12 +1,6 @@
-import {
-  createPostLike,
-  removePostLike,
-} from '../../callableFirebaseFunctions'
+import { createPostLike, removePostLike } from '../../callableFirebaseFunctions'
 
-const updatePostLikeInServer = async (
-  userLikesPost: boolean,
-  slug: string,
-) => {
+const updatePostLikeInServer = async (userLikesPost: boolean, slug: string) => {
   if (userLikesPost) {
     await removePostLike({ slug })
     return

@@ -15,7 +15,7 @@ export const navigationSlice = createSlice({
   reducers: {
     shouldCollapse: (state, action: PayloadAction<boolean>) => {
       state.shouldCollapse = action.payload
-    }
+    },
   },
 })
 

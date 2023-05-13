@@ -11,4 +11,3 @@ export const checkUserHasPassword: CheckUserHasPassword = data => {
   const functions = firebase.functions()
   return functions.httpsCallable('auth-password-hasPassword')(data)
 }
-

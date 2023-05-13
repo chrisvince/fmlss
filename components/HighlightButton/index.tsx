@@ -1,9 +1,8 @@
 import { StarBorderRounded, StarRounded } from '@mui/icons-material'
-import { useAuthUser } from 'next-firebase-auth'
 import ActionButton from '../ActionButton'
 
 interface Props {
-  onClick?: () => any
+  onClick?: () => unknown
 }
 
 const HighlightButton = ({ onClick }: Props) => (

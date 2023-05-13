@@ -4,13 +4,10 @@ import ActionButton from '../ActionButton'
 
 interface PropTypes {
   like: boolean
-  onClick: () => any
+  onClick: () => unknown
 }
 
-const LikeButton = ({
-  like,
-  onClick: handleClick,
-}: PropTypes) => (
+const LikeButton = ({ like, onClick: handleClick }: PropTypes) => (
   <ActionButton
     active={like}
     activeIcon={FavoriteRounded}

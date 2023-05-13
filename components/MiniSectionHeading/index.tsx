@@ -12,9 +12,7 @@ const MiniSectionHeading = ({ children }: PropTypes) => {
         paddingBottom: 1,
       }}
     >
-      <Typography variant="h6">
-        {children}
-      </Typography>
+      <Typography variant="h6">{children}</Typography>
     </Box>
   )
 }

@@ -2,7 +2,13 @@ import React, { useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import Link from 'next/link'
-import { Divider, TextField, Typography, Link as MuiLink, Button } from '@mui/material'
+import {
+  Divider,
+  TextField,
+  Typography,
+  Link as MuiLink,
+  Button,
+} from '@mui/material'
 import { Box } from '@mui/system'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { LoadingButton } from '@mui/lab'
@@ -16,13 +22,6 @@ const {
   PASSWORD_MIN_LENGTH,
   PASSWORD_REGEX_PATTERN,
 } = constants
-
-const UI_STATES = {
-  NOT_SUBMITTED: 'not-submitted',
-  LOADING: 'loading',
-  CREDENTIAL_ERROR: 'credential-error',
-  ERROR: 'error',
-}
 
 const FORM_IDS = {
   EMAIL: 'email',

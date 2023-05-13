@@ -22,14 +22,14 @@ export enum RequestIdStatus {
 
 export type RequestIdStatuses = `${RequestIdStatus}`
 
-const ResetPassword = ({ requestId, requestIdStatus }: {
+const ResetPassword = ({
+  requestId,
+  requestIdStatus,
+}: {
   requestId: string
   requestIdStatus: RequestIdStatuses
 }) => (
-  <ResetPasswordPage
-    requestId={requestId}
-    requestIdStatus={requestIdStatus}
-  />
+  <ResetPasswordPage requestId={requestId} requestIdStatus={requestIdStatus} />
 )
 
 const getServerSidePropsFn = async ({
@@ -37,8 +37,12 @@ const getServerSidePropsFn = async ({
 }: GetServerSidePropsContext<{ passwordResetRequestId?: string }>) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
+  if (!encodedPasswordResetRequestId) {
+    return { notFound: true, props: {} }
+  }
+
   const passwordResetRequestId = decodeURIComponent(
-    encodedPasswordResetRequestId!
+    encodedPasswordResetRequestId
   )
 
   try {

@@ -89,11 +89,7 @@ const ChangeEmailForm = () => {
   }
 
   if (submitted) {
-    return (
-      <Typography variant="body2">
-        Your email has been changed.
-      </Typography>
-    )
+    return <Typography variant="body2">Your email has been changed.</Typography>
   }
 
   return (

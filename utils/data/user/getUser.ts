@@ -36,10 +36,7 @@ const getUser: GetUser = async (uid, { db: dbProp } = {}) => {
     data = cachedPostData
     doc = null
   } else {
-    const fetchedDoc = await db
-      .collection(USERS_COLLECTION)
-      .doc(uid)
-      .get()
+    const fetchedDoc = await db.collection(USERS_COLLECTION).doc(uid).get()
 
     if (!fetchedDoc.exists) return null
 

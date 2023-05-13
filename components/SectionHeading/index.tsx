@@ -35,10 +35,7 @@ const SectionHeading = ({ children }: PropTypes) => {
       }}
     >
       <MobileContainer>
-        <Typography
-          component="h1"
-          variant="h6"
-        >
+        <Typography component="h1" variant="h6">
           {children}
         </Typography>
       </MobileContainer>

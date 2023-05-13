@@ -12,7 +12,7 @@ type CheckIfUserHasUsername = (
   uid: string | undefined | null,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-  },
+  }
 ) => Promise<boolean>
 
 const checkIfUserHasUsername: CheckIfUserHasUsername = async (

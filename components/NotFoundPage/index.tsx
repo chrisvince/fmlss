@@ -20,15 +20,12 @@ const NotFoundPage = () => (
   >
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
         gap: 4,
       }}
     >
-      <Typography
-        component="h1"
-        variant="h4"
-      >
+      <Typography component="h1" variant="h4">
         We couldn&apos;t find that page. 🤔
       </Typography>
       <TextAndCta

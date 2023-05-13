@@ -16,21 +16,17 @@ interface LeftNavigationListItemPropTypes {
   currentPaths?: string[]
   exact?: boolean
   href: string
-  icon?: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
+  icon?: OverridableComponent<SvgIconTypeMap<object, 'svg'>> & {
     muiName: string
   }
-  iconCurrent?: OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
+  iconCurrent?: OverridableComponent<SvgIconTypeMap<object, 'svg'>> & {
     muiName: string
   }
   primary: string
   secondary?: string | null
 }
 
-const includesAny = (
-  href: string,
-  currentPaths: string[],
-  exact: boolean
-) =>
+const includesAny = (href: string, currentPaths: string[], exact: boolean) =>
   currentPaths.some(currentPath =>
     exact ? href === currentPath : href.startsWith(currentPath)
   )
@@ -47,24 +43,17 @@ const LeftNavigationListItem = ({
 }: LeftNavigationListItemPropTypes) => {
   const { asPath: actualPath } = useRouter()
 
-  const isCurrentLink = includesAny(
-    actualPath,
-    currentPaths ?? [href],
-    !!exact
-  )
+  const isCurrentLink = includesAny(actualPath, currentPaths ?? [href], !!exact)
 
   const textColor = isCurrentLink ? 'primary.main' : undefined
   const iconColor = isCurrentLink ? 'primary' : undefined
 
   return (
     <ListItem disablePadding>
-      <ListItemButton
-        component={Link}
-        href={href}
-      >
+      <ListItemButton component={Link} href={href}>
         {Icon && (
           <ListItemIcon>
-            {(IconCurrent && isCurrentLink) ? (
+            {IconCurrent && isCurrentLink ? (
               <IconCurrent color={iconColor} />
             ) : (
               <Icon color={iconColor} />
@@ -73,9 +62,7 @@ const LeftNavigationListItem = ({
         )}
         {avatarText && (
           <Box sx={{ minWidth: '56px' }}>
-            <Avatar>
-              {avatarText}
-            </Avatar>
+            <Avatar>{avatarText}</Avatar>
           </Box>
         )}
         <ListItemText

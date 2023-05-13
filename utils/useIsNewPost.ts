@@ -9,21 +9,24 @@ const db = firebase.firestore()
 
 const { POSTS_COLLECTION } = constants
 
-type HandleSnapshot = (snapshow: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => void
+type HandleSnapshot = (
+  snapshow: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
+) => void
 
 const useIsNewPost = (
   posts?: Post[],
   collectionPath: string = POSTS_COLLECTION,
-  { sortDirection }:
-    { sortDirection: 'desc' | 'asc' } = { sortDirection: 'desc' }
+  { sortDirection }: { sortDirection: 'desc' | 'asc' } = {
+    sortDirection: 'desc',
+  }
 ) => {
   const [isNewPost, setIsNewPost] = useState<boolean>(false)
 
   useEffect(() => {
     if (isNewPost || !posts) return
 
-    const handleSnapshot: HandleSnapshot = (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
+    const handleSnapshot: HandleSnapshot = snapshot => {
+      snapshot.docChanges().forEach(change => {
         const post = posts[{ desc: 0, asc: posts.length - 1 }[sortDirection]]
         if (change.type !== 'added') return
         if (!post?.data?.id && !change.doc.id) return

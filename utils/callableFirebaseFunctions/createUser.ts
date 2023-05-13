@@ -9,7 +9,7 @@ interface Input {
 
 type CreateUser = (data: Input) => Promise<{ data: UserRecord }>
 
-export const createUser: CreateUser = (data) => {
+export const createUser: CreateUser = data => {
   const functions = firebase.functions()
   return functions.httpsCallable('auth-create')(data)
 }

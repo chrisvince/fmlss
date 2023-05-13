@@ -47,7 +47,7 @@ const NewPostButton = () => {
     <Button
       component={isMobileDevice ? Link : 'button'}
       fullWidth
-      href={isMobileDevice ? "/post/new" : undefined}
+      href={isMobileDevice ? '/post/new' : undefined}
       onClick={!isMobileDevice ? handleButtonClick : undefined}
       size="large"
       sx={{ marginBottom: 2 }}

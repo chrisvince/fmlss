@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 
 import Modal from '../Modal'
@@ -16,10 +16,7 @@ const SignUpModal = ({ actionText, onClose, open }: Props) => {
   }
 
   return (
-    <Modal
-      onClose={onClose}
-      open={open}
-    >
+    <Modal onClose={onClose} open={open}>
       <Box
         sx={{
           display: 'flex',

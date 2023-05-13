@@ -2,11 +2,7 @@ import Page from '../Page'
 import ForgotPasswordForm from '../ForgotPasswordForm'
 
 const ForgotPasswordPage = () => (
-  <Page
-    layout="none"
-    pageTitle="Forgot Password"
-    thinContainer
-  >
+  <Page layout="none" pageTitle="Forgot Password" thinContainer>
     <ForgotPasswordForm />
   </Page>
 )

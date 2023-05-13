@@ -1,4 +1,9 @@
-import { AuthUser, getFirebaseAdmin, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
+import {
+  AuthUser,
+  getFirebaseAdmin,
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from 'next-firebase-auth'
 
 import NewPostPage from '../../components/NewPostPage'
 import {

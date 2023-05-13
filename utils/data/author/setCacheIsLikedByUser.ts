@@ -5,10 +5,7 @@ import isServer from '../../isServer'
 
 const { POST_LIKES_CACHE_TIME } = constants
 
-type SetCacheIsCreatedByUser = (
-  slug: string,
-  uid: string,
-) => void
+type SetCacheIsCreatedByUser = (slug: string, uid: string) => void
 
 const setCacheIsLikedByUser: SetCacheIsCreatedByUser = (slug, uid) => {
   if (!isServer) return

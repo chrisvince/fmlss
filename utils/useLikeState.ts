@@ -5,11 +5,11 @@ interface PropTypes {
   post: Post | null | undefined
 }
 
-const useLikeState = ({
-  post,
-}: PropTypes) => {
+const useLikeState = ({ post }: PropTypes) => {
   const [like, setLike] = useState<boolean>(!!post?.user?.like)
-  const [likesCount, setLikesCount] = useState<number>(post?.data.likesCount ?? 0)
+  const [likesCount, setLikesCount] = useState<number>(
+    post?.data.likesCount ?? 0
+  )
 
   const toggleLike = useCallback(() => {
     if (like) {

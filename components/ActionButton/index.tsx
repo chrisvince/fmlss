@@ -3,7 +3,7 @@ import { OverridableComponent } from '@mui/material/OverridableComponent'
 import Link from 'next/link'
 import { ForwardedRef, forwardRef, useId } from 'react'
 
-type Icon = OverridableComponent<SvgIconTypeMap<{}, 'svg'>> & {
+type Icon = OverridableComponent<SvgIconTypeMap<object, 'svg'>> & {
   muiName: string
 }
 
@@ -28,16 +28,19 @@ interface PropTypes {
     | undefined
 }
 
-const ActionButton = ({
-  active,
-  activeColor,
-  activeIcon: ActiveIcon,
-  href,
-  icon: Icon,
-  onClick,
-  text,
-  rotateIcon,
-}: PropTypes, ref: ForwardedRef<HTMLButtonElement>) => {
+const ActionButton = (
+  {
+    active,
+    activeColor,
+    activeIcon: ActiveIcon,
+    href,
+    icon: Icon,
+    onClick,
+    text,
+    rotateIcon,
+  }: PropTypes,
+  ref: ForwardedRef<HTMLButtonElement>
+) => {
   const labelledById = useId()
 
   return (

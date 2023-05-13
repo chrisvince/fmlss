@@ -33,7 +33,9 @@ const ReplyPage = ({ slug }: Props) => {
         </>
       }
     >
-      {isLoading ? <PageSpinner /> : (
+      {isLoading ? (
+        <PageSpinner />
+      ) : (
         <MobileContainer>
           <NewPostForm slug={slug} />
         </MobileContainer>

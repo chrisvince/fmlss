@@ -15,7 +15,7 @@ interface Props {
 }
 
 const RepliesListSubReplies = ({
-  measure,
+  measure, // need to measure on load
   parentSlug,
   postsCount,
   showMapLine,

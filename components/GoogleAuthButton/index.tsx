@@ -5,8 +5,8 @@ import 'firebase/auth'
 interface PropTypes {
   disabled?: boolean
   mode?: 'signIn' | 'signUp'
-  onAuthSuccess?: (userCredential?: firebase.auth.UserCredential) => any
-  onAuthError?: (error?: any) => any
+  onAuthSuccess?: (userCredential?: firebase.auth.UserCredential) => unknown
+  onAuthError?: (error?: unknown) => unknown
 }
 
 const GoogleAuthButton = ({
@@ -22,7 +22,7 @@ const GoogleAuthButton = ({
     try {
       const response = await auth.signInWithPopup(provider)
       onAuthSuccess?.(response)
-    } catch (error: any) {
+    } catch (error: unknown) {
       onAuthError?.(error)
     }
   }

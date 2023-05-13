@@ -61,10 +61,10 @@ const PostPreviewMeta = ({ isAboveFold, onClose, postPreview }: Props) => {
       setDynamicImage({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        width: currentTarget!.naturalWidth,
+        width: currentTarget.naturalWidth,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        height: currentTarget!.naturalHeight,
+        height: currentTarget.naturalHeight,
       })
     }
   }, [image])

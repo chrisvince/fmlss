@@ -7,10 +7,7 @@ type PropTypes = {
   isLoading?: boolean
   hashtags: Hashtag[]
 }
-const MiniHashtagsList = ({
-  isLoading,
-  hashtags,
-}: PropTypes) => {
+const MiniHashtagsList = ({ isLoading, hashtags }: PropTypes) => {
   if (isLoading) {
     return (
       <Box

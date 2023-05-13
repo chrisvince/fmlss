@@ -1,5 +1,8 @@
 import PageSpinner from '../../components/PageSpinner'
-import { RequestIdStatus, RequestIdStatuses } from '../../pages/reset-password/[passwordResetRequestId]'
+import {
+  RequestIdStatus,
+  RequestIdStatuses,
+} from '../../pages/reset-password/[passwordResetRequestId]'
 import Page from '../Page'
 import ResetPasswordForm from '../ResetPasswordForm'
 import TextAndCta from '../TextAndCta'
@@ -21,19 +24,16 @@ interface Props {
 
 const mapRequestIdStatusToInitialUiState = (
   requestIdStatus: RequestIdStatuses
-) => ({
-  [RequestIdStatus.INVALID]: UI_STATES.INVALID_CODE,
-  [RequestIdStatus.UNKNOWN_ERROR]: UI_STATES.UNKNOWN_ERROR,
-  [RequestIdStatus.USED]: UI_STATES.REQUEST_ID_USED,
-  [RequestIdStatus.VALID]: UI_STATES.FORM,
-}[requestIdStatus])
+) =>
+  ({
+    [RequestIdStatus.INVALID]: UI_STATES.INVALID_CODE,
+    [RequestIdStatus.UNKNOWN_ERROR]: UI_STATES.UNKNOWN_ERROR,
+    [RequestIdStatus.USED]: UI_STATES.REQUEST_ID_USED,
+    [RequestIdStatus.VALID]: UI_STATES.FORM,
+  }[requestIdStatus])
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
-  <Page
-    layout="none"
-    pageTitle="Forgot Password"
-    thinContainer
-  >
+  <Page layout="none" pageTitle="Forgot Password" thinContainer>
     {children}
   </Page>
 )
@@ -74,7 +74,7 @@ const ResetPasswordPage = ({ requestId, requestIdStatus }: Props) => {
     case UI_STATES.PASSWORD_MATCH_ERROR: {
       return (
         <Layout>
-          <ResetPasswordForm requestId={requestId!} />
+          <ResetPasswordForm requestId={requestId as string} />
         </Layout>
       )
     }

@@ -8,11 +8,8 @@ import { resetPassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
 import TextAndCta from '../TextAndCta'
 
-const {
-  FORM_MESSAGING,
-  PASSWORD_MIN_LENGTH,
-  PASSWORD_REGEX_PATTERN,
-} = constants
+const { FORM_MESSAGING, PASSWORD_MIN_LENGTH, PASSWORD_REGEX_PATTERN } =
+  constants
 
 const FORM_IDS = {
   NEW_PASSWORD: 'new-password',
@@ -44,7 +41,10 @@ const ResetPasswordForm = ({ requestId }: Props) => {
       setSubmitted(true)
       setIsLoading(false)
     } catch (error) {
-      setFormError({ message: "There was an error resetting your password. Please try again later." })
+      setFormError({
+        message:
+          'There was an error resetting your password. Please try again later.',
+      })
       setIsLoading(false)
       console.error(error)
     }

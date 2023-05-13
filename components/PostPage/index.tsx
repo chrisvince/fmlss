@@ -74,13 +74,11 @@ const PostPage = ({ slug }: PropTypes) => {
     return <Error statusCode={404} />
   }
 
-  const createdAt = !isLoading
-    ? new Date(post!.data.createdAt).toISOString()
-    : undefined
+  const createdAt =
+    !isLoading && post ? new Date(post.data.createdAt).toISOString() : undefined
 
-  const updatedAt = !isLoading
-    ? new Date(post!.data.updatedAt).toISOString()
-    : undefined
+  const updatedAt =
+    !isLoading && post ? new Date(post.data.updatedAt).toISOString() : undefined
 
   return (
     <>
@@ -104,14 +102,14 @@ const PostPage = ({ slug }: PropTypes) => {
       >
         {isLoading ? (
           <PageSpinner />
-        ) : (
+        ) : post ? (
           <>
-            {post!.data.parent?.slug && (
+            {post.data.parent?.slug && (
               <PostPageParentPostsReference
-                documentDepth={post!.data.documentDepth}
+                documentDepth={post.data.documentDepth}
                 onLoad={handleParentPostLoad}
-                originalPostSlug={post!.data.originalPost?.slug}
-                slug={post!.data.parent.slug}
+                originalPostSlug={post.data.originalPost?.slug}
+                slug={post.data.parent.slug}
               />
             )}
             <Box
@@ -131,19 +129,19 @@ const PostPage = ({ slug }: PropTypes) => {
                     bodySize="large"
                     noBottomBorder
                     onLikePost={likePost}
-                    post={post!}
+                    post={post}
                   />
                 </MobileContainer>
               </Box>
-              {post!.data.documentDepth < POST_MAX_DEPTH && (
+              {post.data.documentDepth < POST_MAX_DEPTH && (
                 <RepliesList
-                  loading={!!post!.data.parent && !parentPostLoaded}
+                  loading={!!post.data.parent && !parentPostLoaded}
                   slug={slug}
                 />
               )}
             </Box>
           </>
-        )}
+        ) : null}
       </Page>
       <FirstPostModal
         open={firstPostModalOpen}

@@ -37,20 +37,12 @@ const CategoryListItem = ({ category }: PropTypes) => {
           }}
         >
           {postCount && (
-            <Typography
-              variant="caption"
-              component="div"
-              align="right"
-            >
+            <Typography variant="caption" component="div" align="right">
               {postCount}
             </Typography>
           )}
           {viewCount && (
-            <Typography
-              variant="caption"
-              component="div"
-              align="right"
-            >
+            <Typography variant="caption" component="div" align="right">
               {viewCount}
             </Typography>
           )}

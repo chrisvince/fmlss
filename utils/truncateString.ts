@@ -1,6 +1,6 @@
 type TruncateString = (
   str: string | null | undefined,
-  maxLength?: number,
+  maxLength?: number
 ) => string
 
 const truncateString: TruncateString = (str, maxLength = 30) => {

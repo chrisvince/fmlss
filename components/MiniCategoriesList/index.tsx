@@ -7,10 +7,7 @@ type PropTypes = {
   isLoading?: boolean
   categories: Category[]
 }
-const MiniCategoriesList = ({
-  isLoading,
-  categories,
-}: PropTypes) => {
+const MiniCategoriesList = ({ isLoading, categories }: PropTypes) => {
   if (isLoading) {
     return (
       <Box

@@ -1,7 +1,4 @@
-import {
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
 
 import {
   withAuthUserConfig,
@@ -19,7 +16,8 @@ SignUp.getLayout = function getLayout(page: ReactElement) {
   return <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
 }
 
-export const getServerSideProps =
-  withAuthUserTokenSSR(withAuthUserTokenSSRConfig(ROUTE_MODE))()
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+)()
 
 export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(SignUp)

@@ -29,7 +29,7 @@ const ShareButton = ({ slug }: Props) => {
 
   const url = `https://${process.env.NEXT_PUBLIC_DOMAIN}/post/${slug}`
 
-  const handleClick = () => setMenuOpen((current) => !current)
+  const handleClick = () => setMenuOpen(current => !current)
   const handleMenuClose = () => setMenuOpen(false)
 
   const handleCopyUrlButton = () => {
@@ -72,7 +72,9 @@ const ShareButton = ({ slug }: Props) => {
         text: 'Check out this post on Fameless!',
         url,
       })
-    } catch (error) {}
+    } catch (error) {
+      // no handle
+    }
   }
 
   return (

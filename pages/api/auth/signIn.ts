@@ -5,10 +5,7 @@ import initAuth from '../../../utils/initAuth'
 
 initAuth()
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await setAuthCookies(req, res)
   } catch (error) {

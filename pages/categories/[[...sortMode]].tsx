@@ -18,7 +18,10 @@ import getHashtags from '../../utils/data/hashtags/getHashtags'
 import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 
 const {
   CATEGORIES_ENABLED,
@@ -55,7 +58,7 @@ const getServerSidePropsFn = async ({
 }: {
   AuthUser: AuthUser
   params: { sortMode: string }
-  req: NextApiRequest,
+  req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 

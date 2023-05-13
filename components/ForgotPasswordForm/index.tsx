@@ -77,11 +77,7 @@ const ForgotPasswordForm = () => {
   }
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-    >
+    <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
       <Box
         sx={{
           display: 'flex',
@@ -174,12 +170,7 @@ const ForgotPasswordForm = () => {
               <Typography variant="body1" component="h1">
                 Already know your password?
               </Typography>
-              <Button
-                component={Link}
-                fullWidth
-                href="/"
-                variant="outlined"
-              >
+              <Button component={Link} fullWidth href="/" variant="outlined">
                 Sign in
               </Button>
             </Box>

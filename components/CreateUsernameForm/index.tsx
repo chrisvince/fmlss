@@ -158,8 +158,8 @@ const SignUpForm = () => {
               loadingAvailability
                 ? 'Checking if username is available...'
                 : usernameAvailable
-                  ? 'Username is available'
-                  : fieldState.error?.message
+                ? 'Username is available'
+                : fieldState.error?.message
             }
             label="Username"
             type="text"

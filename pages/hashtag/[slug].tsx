@@ -8,7 +8,11 @@ import { SWRConfig } from 'swr'
 
 import HashtagPage from '../../components/HashtagPage'
 import type { HashtagSortMode } from '../../types'
-import { createHashtagPostsCacheKey, createMiniCategoriesCacheKey, createMiniHashtagsCacheKey } from '../../utils/createCacheKeys'
+import {
+  createHashtagPostsCacheKey,
+  createMiniCategoriesCacheKey,
+  createMiniHashtagsCacheKey,
+} from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
@@ -78,7 +82,7 @@ const getServerSidePropsFn = async ({
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
     slug,
     DEFAULT_POST_TYPE,
-    sortMode,
+    sortMode
   )
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
@@ -90,12 +94,14 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
-    cacheKey: miniCategoriesCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  }) : []
+  const miniCategories = CATEGORIES_ENABLED
+    ? await getCategories({
+        cacheKey: miniCategoriesCacheKey,
+        cacheTime: MINI_LIST_CACHE_TIME,
+        db: adminDb,
+        limit: MINI_LIST_COUNT,
+      })
+    : []
 
   if (isInternalRequest(req)) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -103,8 +109,8 @@ const getServerSidePropsFn = async ({
       props: {
         fallback: {
           ...(CATEGORIES_ENABLED
-          ? { [miniCategoriesCacheKey]: miniCategories }
-          : {}),
+            ? { [miniCategoriesCacheKey]: miniCategories }
+            : {}),
           [miniHashtagsCacheKey]: miniHashtags,
           [hashtagPostsCacheKey]: null,
         },

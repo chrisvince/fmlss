@@ -1,12 +1,7 @@
 import { LoadingButton } from '@mui/lab'
-import {
-  DialogActions,
-  DialogContent,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { DialogActions, DialogContent, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'

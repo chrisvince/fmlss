@@ -34,11 +34,7 @@ const PostCaption = ({ type }: PropTypes) => {
           justifyContent: 'flex-start',
         }}
       >
-        <CaptionLink
-          href={href}
-          tooltip={tooltip}
-          tooltipPlacement="right"
-        >
+        <CaptionLink href={href} tooltip={tooltip} tooltipPlacement="right">
           <Box
             sx={{
               display: 'flex',
@@ -61,10 +57,7 @@ const PostCaption = ({ type }: PropTypes) => {
   }
 
   return (
-    <Typography
-      variant="caption"
-      component="div"
-    >
+    <Typography variant="caption" component="div">
       {text}
     </Typography>
   )

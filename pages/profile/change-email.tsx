@@ -1,6 +1,14 @@
-import { AuthUser, getFirebaseAdmin, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
+import {
+  AuthUser,
+  getFirebaseAdmin,
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from 'next-firebase-auth'
 import ChangeEmailPage from '../../components/ChangeEmailPage'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 import constants from '../../constants'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 

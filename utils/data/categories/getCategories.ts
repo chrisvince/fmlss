@@ -14,33 +14,26 @@ import { createCategoriesCacheKey } from '../../createCacheKeys'
 import mapCategoryDocToData from '../../mapCategoryDocToData'
 import isServer from '../../isServer'
 
-const {
-  CATEGORIES_CACHE_TIME,
-  CATEGORIES_COLLECTION,
-  PAGINATION_COUNT,
-} = constants
+const { CATEGORIES_CACHE_TIME, CATEGORIES_COLLECTION, PAGINATION_COUNT } =
+  constants
 
-type GetCategories = (
-  options?: {
-    cacheKey?: string
-    cacheTime?: number
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-    limit?: number
-    sortMode?: CategoriesSortMode
-    startAfter?: FirebaseDoc
-  }
-) => Promise<Category[]>
+type GetCategories = (options?: {
+  cacheKey?: string
+  cacheTime?: number
+  db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+  limit?: number
+  sortMode?: CategoriesSortMode
+  startAfter?: FirebaseDoc
+}) => Promise<Category[]>
 
-const getCategories: GetCategories = async (
-  {
-    sortMode = 'popular',
-    cacheKey = createCategoriesCacheKey(sortMode),
-    cacheTime = CATEGORIES_CACHE_TIME,
-    db: dbProp,
-    limit = PAGINATION_COUNT,
-    startAfter,
-  } = {},
-) => {
+const getCategories: GetCategories = async ({
+  sortMode = 'popular',
+  cacheKey = createCategoriesCacheKey(sortMode),
+  cacheTime = CATEGORIES_CACHE_TIME,
+  db: dbProp,
+  limit = PAGINATION_COUNT,
+  startAfter,
+} = {}) => {
   const db = dbProp || firebase.firestore()
 
   let categoryDocs:
@@ -50,7 +43,7 @@ const getCategories: GetCategories = async (
   let categoryData: CategoryData[] = []
 
   const cachedData = get(cacheKey)
-  
+
   if (isServer && cachedData) {
     categoryData = cachedData
     categoryDocs = null
@@ -62,8 +55,8 @@ const getCategories: GetCategories = async (
           ? query.orderBy('recentViewCount', 'desc')
           : query,
       query => query.orderBy('createdAt', 'desc'),
-      query => startAfter ? query.startAfter(startAfter) : query,
-      query => query.limit(limit).get(),
+      query => (startAfter ? query.startAfter(startAfter) : query),
+      query => query.limit(limit).get()
     )()
 
     if (categoryDocs.empty) return []
@@ -74,7 +67,7 @@ const getCategories: GetCategories = async (
 
   const categories = categoryData.map((data, index) => ({
     data,
-    doc: !isServer ? (categoryDocs?.docs[index] ?? null) : null,
+    doc: !isServer ? categoryDocs?.docs[index] ?? null : null,
   }))
 
   return categories

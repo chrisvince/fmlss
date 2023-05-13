@@ -4,7 +4,10 @@ interface Options {
   disable?: boolean
 }
 
-const useOnWindowResize = (fn: () => any, { disable = false }: Options = {}) => {
+const useOnWindowResize = (
+  fn: () => unknown,
+  { disable = false }: Options = {}
+) => {
   useEffect(() => {
     if (disable) return
 

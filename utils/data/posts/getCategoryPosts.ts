@@ -11,11 +11,8 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 
-const {
-  CATEGORY_LIST_CACHE_TIME,
-  PAGINATION_COUNT,
-  POSTS_COLLECTION,
-} = constants
+const { CATEGORY_LIST_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } =
+  constants
 
 type GetCategoryPosts = (
   slug: string,
@@ -29,12 +26,7 @@ type GetCategoryPosts = (
 
 const getCategoryPosts: GetCategoryPosts = async (
   slug,
-  {
-    db: dbProp,
-    startAfter,
-    uid,
-    sortMode = 'latest',
-  } = {},
+  { db: dbProp, startAfter, uid, sortMode = 'latest' } = {}
 ) => {
   const db = dbProp || firebase.firestore()
 
@@ -67,7 +59,7 @@ const getCategoryPosts: GetCategoryPosts = async (
       query =>
         sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
-      query => startAfter ? query.startAfter(startAfter) : query,
+      query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(PAGINATION_COUNT).get()
     )()
 
@@ -102,7 +94,7 @@ const getCategoryPosts: GetCategoryPosts = async (
       user: {
         created: createdByUser,
         like: likedByUser,
-      }
+      },
     }
   })
   const posts = await Promise.all(postsPromise)

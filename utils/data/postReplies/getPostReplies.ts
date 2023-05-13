@@ -27,12 +27,7 @@ type GetPostReplies = (
 const getPostReplies: GetPostReplies = async (
   reference,
   slug,
-  {
-    db: dbProp,
-    startAfter,
-    uid,
-    viewMode = 'start',
-  } = {},
+  { db: dbProp, startAfter, uid, viewMode = 'start' } = {}
 ) => {
   const db = dbProp || firebase.firestore()
 
@@ -51,12 +46,12 @@ const getPostReplies: GetPostReplies = async (
     replyDocs = null
   } else {
     replyDocs = await pipe(
-      () => db.collection(collection).orderBy(
-        'createdAt',
-        viewMode === 'end' ? 'desc' : 'asc',
-      ),
-      query => startAfter ? query.startAfter(startAfter) : query,
-      query => query.limit(PAGINATION_COUNT).get(),
+      () =>
+        db
+          .collection(collection)
+          .orderBy('createdAt', viewMode === 'end' ? 'desc' : 'asc'),
+      query => (startAfter ? query.startAfter(startAfter) : query),
+      query => query.limit(PAGINATION_COUNT).get()
     )()
 
     if (replyDocs.empty) return []
@@ -94,7 +89,7 @@ const getPostReplies: GetPostReplies = async (
       user: {
         created: createdByUser,
         like: likedByUser,
-      }
+      },
     }
   })
   const replies = await Promise.all(repliesPromise)

@@ -60,14 +60,9 @@ const UserProfile = () => {
       >
         <ListItem
           disableGutters
-          secondaryAction={
-            !authUser.emailVerified && <EmailVerificationLink />
-          }
+          secondaryAction={!authUser.emailVerified && <EmailVerificationLink />}
         >
-          <ListItemButton
-            component={Link}
-            href="/profile/change-email"
-          >
+          <ListItemButton component={Link} href="/profile/change-email">
             <ListItemText primary="Change email" secondary={authUser.email} />
           </ListItemButton>
         </ListItem>
@@ -96,10 +91,7 @@ const UserProfile = () => {
         }
       >
         <ListItem disableGutters>
-          <ListItemButton
-            component={Link}
-            href="/profile/change-password"
-          >
+          <ListItemButton component={Link} href="/profile/change-password">
             <ListItemText primary="Change password" />
           </ListItemButton>
         </ListItem>

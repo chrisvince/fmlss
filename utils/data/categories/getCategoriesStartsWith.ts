@@ -50,7 +50,7 @@ const getCategoriesStartsWith = async (
 
     if (categoryDocs.empty) return []
 
-    categoryData = categoryDocs.docs.map((doc) => mapCategoryDocToData(doc))
+    categoryData = categoryDocs.docs.map(doc => mapCategoryDocToData(doc))
     put(cacheKey, categoryData, CATEGORY_STARTS_WITH_CACHE_TIME)
   }
 

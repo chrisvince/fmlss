@@ -19,10 +19,7 @@ const FooterBasic = () => (
           justifyContent: 'flex-start',
         }}
       >
-        <Typography
-          variant="caption"
-          sx={{ color: 'text.secondary' }}
-        >
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
           Copyright © {year} Fameless. All rights reserved.
         </Typography>
       </Box>

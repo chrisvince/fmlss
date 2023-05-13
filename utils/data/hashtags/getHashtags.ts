@@ -54,7 +54,7 @@ const getHashtags: GetHashtags = async ({
           ? query.orderBy('recentViewCount', 'desc')
           : query,
       query => query.orderBy('createdAt', 'desc'),
-      query => startAfter ? query.startAfter(startAfter) : query,
+      query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(limit).get()
     )()
 

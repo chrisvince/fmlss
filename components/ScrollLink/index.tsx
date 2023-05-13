@@ -14,7 +14,7 @@ interface PropTypes {
 
 const ScrollLink = ({ id }: PropTypes) => {
   const { spacing } = useTheme()
-  
+
   return (
     <Box
       component="a"

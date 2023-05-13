@@ -25,7 +25,7 @@ interface PropTypes {
   createdAt: string
   like: boolean
   likesCount: number
-  onLike: () => any
+  onLike: () => unknown
   postsCount: number
   showReplyButton: boolean
   slug: string
@@ -115,9 +115,7 @@ const PostActionBar = ({
             }}
           >
             <Typography variant="caption">
-              <time dateTime={isoCreatedAt}>
-                {formattedCreatedAt}
-              </time>
+              <time dateTime={isoCreatedAt}>{formattedCreatedAt}</time>
             </Typography>
           </Box>
           <Box

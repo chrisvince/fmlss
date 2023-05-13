@@ -18,12 +18,7 @@ type GetCategory = (
   }
 ) => Promise<Category | null>
 
-const getCategory: GetCategory = async (
-  slug,
-  {
-    db: dbProp,
-  } = {},
-) => {
+const getCategory: GetCategory = async (slug, { db: dbProp } = {}) => {
   const db = dbProp || firebase.firestore()
 
   let doc:

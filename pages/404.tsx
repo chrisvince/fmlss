@@ -37,12 +37,14 @@ export const getStaticProps = async () => {
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
-    cacheKey: miniCategoriesCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  }) : []
+  const miniCategories = CATEGORIES_ENABLED
+    ? await getCategories({
+        cacheKey: miniCategoriesCacheKey,
+        cacheTime: MINI_LIST_CACHE_TIME,
+        db: adminDb,
+        limit: MINI_LIST_COUNT,
+      })
+    : []
 
   return {
     props: {

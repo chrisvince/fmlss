@@ -7,12 +7,7 @@ interface Props {
 }
 
 const NewPostModal = ({ onClose, open }: Props) => (
-  <Modal
-    onClose={onClose}
-    open={open}
-    title="Post"
-    disableNestedComponents
-  >
+  <Modal onClose={onClose} open={open} title="Post" disableNestedComponents>
     <NewPostForm isInModal />
   </Modal>
 )

@@ -4,13 +4,10 @@ import { InfiniteData } from '../types'
 type MutatePostLikeInInfiniteData = (
   userLikesPost: boolean,
   slug: string,
-  currentData: InfiniteData,
+  currentData: InfiniteData
 ) => InfiniteData
 
-type MutatePostLikeInData = (
-  userLikesPost: boolean,
-  post: Post,
-) => Post
+type MutatePostLikeInData = (userLikesPost: boolean, post: Post) => Post
 
 const mutatePostLike: MutatePostLikeInData = (userLikesPost, post) => {
   if (userLikesPost) {
@@ -34,16 +31,16 @@ const mutatePostLike: MutatePostLikeInData = (userLikesPost, post) => {
   }
 }
 
-const mutatePostLikeInfiniteData: MutatePostLikeInInfiniteData =
-  (userLikesPost, slug, currentData = []) =>
-    currentData.map(posts =>
-      posts.map(post => {
-        if (post.data.slug !== slug) return post
-        return mutatePostLike(userLikesPost, post)
-      })
-    )
+const mutatePostLikeInfiniteData: MutatePostLikeInInfiniteData = (
+  userLikesPost,
+  slug,
+  currentData = []
+) =>
+  currentData.map(posts =>
+    posts.map(post => {
+      if (post.data.slug !== slug) return post
+      return mutatePostLike(userLikesPost, post)
+    })
+  )
 
-export {
-  mutatePostLike,
-  mutatePostLikeInfiniteData,
-}
+export { mutatePostLike, mutatePostLikeInfiniteData }

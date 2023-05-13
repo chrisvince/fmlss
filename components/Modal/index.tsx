@@ -42,7 +42,7 @@ const Modal = ({
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: !!title ? 'space-between' : 'flex-end',
+          justifyContent: title ? 'space-between' : 'flex-end',
           paddingRight: {
             xs: `calc(${spacing(2)} - 5px)`,
             sm: `calc(${spacing(3)} - 7px)`,
@@ -63,7 +63,11 @@ const Modal = ({
         </IconButton>
       </DialogTitle>
       {disableNestedComponents ? (
-        isLoading ? <ModalSpinner /> : children
+        isLoading ? (
+          <ModalSpinner />
+        ) : (
+          children
+        )
       ) : (
         <>
           <DialogContent>

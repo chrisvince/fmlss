@@ -5,7 +5,10 @@ import {
   getFirebaseAdmin,
 } from 'next-firebase-auth'
 
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 import { checkUserHasPassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
 import ChangePasswordPage from '../../components/ChangePasswordPage'
@@ -19,8 +22,9 @@ interface Props {
   userHasPassword: boolean
 }
 
-const ChangePassword = ({ userHasPassword }: Props) =>
-  <ChangePasswordPage userHasPassword ={userHasPassword} />
+const ChangePassword = ({ userHasPassword }: Props) => (
+  <ChangePasswordPage userHasPassword={userHasPassword} />
+)
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)

@@ -28,11 +28,7 @@ const FirstPostModal = ({ onClose, open }: Props) => {
         <Typography variant="h4" component="h2" align="center">
           Congrats on your first post!
         </Typography>
-        <Typography
-          align="center"
-          sx={{ mx: 10 }}
-          variant="body1"
-        >
+        <Typography align="center" sx={{ mx: 10 }} variant="body1">
           Other users will be able to see your post, but they will not be able
           to see that you are the one who posted it.
         </Typography>

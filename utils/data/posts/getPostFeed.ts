@@ -13,23 +13,19 @@ import isServer from '../../isServer'
 
 const { FEED_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } = constants
 
-type GetPosts = (
-  options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-    startAfter?: FirebaseDoc
-    uid?: string | null
-    sortMode?: FeedSortMode
-  }
-) => Promise<Post[]>
+type GetPosts = (options?: {
+  db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+  startAfter?: FirebaseDoc
+  uid?: string | null
+  sortMode?: FeedSortMode
+}) => Promise<Post[]>
 
-const getPostFeed: GetPosts = async (
-  {
-    db: dbProp,
-    startAfter,
-    uid,
-    sortMode = 'latest'
-  } = {},
-) => {
+const getPostFeed: GetPosts = async ({
+  db: dbProp,
+  startAfter,
+  uid,
+  sortMode = 'latest',
+} = {}) => {
   const db = dbProp || firebase.firestore()
 
   let postDocs:
@@ -54,8 +50,8 @@ const getPostFeed: GetPosts = async (
       query =>
         sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
-      query => startAfter ? query.startAfter(startAfter) : query,
-      query => query.limit(PAGINATION_COUNT).get(),
+      query => (startAfter ? query.startAfter(startAfter) : query),
+      query => query.limit(PAGINATION_COUNT).get()
     )()
 
     if (postDocs.empty) return []
@@ -89,7 +85,7 @@ const getPostFeed: GetPosts = async (
       user: {
         created: createdByUser,
         like: likedByUser,
-      }
+      },
     }
   })
   const posts = await Promise.all(postsPromise)

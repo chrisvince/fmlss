@@ -3,11 +3,11 @@ import { ReplyRounded } from '@mui/icons-material'
 import ActionButton from '../ActionButton'
 
 interface Props {
-  onClick?: () => any
+  onClick?: () => unknown
   href?: string
 }
 
-const ReplyButton = ({ onClick, href  }: Props) => (
+const ReplyButton = ({ onClick, href }: Props) => (
   <ActionButton
     onClick={onClick}
     href={href}

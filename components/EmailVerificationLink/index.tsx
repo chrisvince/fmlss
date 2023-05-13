@@ -27,10 +27,7 @@ const EmailVerificationLink = () => {
 
   if (uiState === UI_STATES.ERROR) {
     return (
-      <Typography
-        variant="caption"
-        color="error"
-      >
+      <Typography variant="caption" color="error">
         There was an error. Please try again.
       </Typography>
     )
@@ -50,9 +47,7 @@ const EmailVerificationLink = () => {
       variant="outlined"
       loading={uiState === UI_STATES.LOADING}
     >
-      <Typography variant="caption">
-        Verify email
-      </Typography>
+      <Typography variant="caption">Verify email</Typography>
     </LoadingButton>
   )
 }

@@ -1,7 +1,10 @@
 import { ReactElement } from 'react'
 import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
 
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../config/withAuthConfig'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../config/withAuthConfig'
 import ForgotPasswordPage from '../components/ForgotPasswordPage'
 import LayoutBasicSlimBranded from '../components/LayoutBasicSlimBranded'
 

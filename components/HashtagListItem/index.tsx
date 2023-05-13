@@ -24,10 +24,7 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
           gap: 2,
         }}
       >
-        <Typography
-          component="div"
-          variant="h5"
-        >
+        <Typography component="div" variant="h5">
           {hashtag.data.display}
         </Typography>
         <Box
@@ -40,20 +37,12 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
           }}
         >
           {postCount && (
-            <Typography
-              variant="caption"
-              component="div"
-              align="right"
-            >
+            <Typography variant="caption" component="div" align="right">
               {postCount}
             </Typography>
           )}
           {viewCount && (
-            <Typography
-              variant="caption"
-              component="div"
-              align="right"
-            >
+            <Typography variant="caption" component="div" align="right">
               {viewCount}
             </Typography>
           )}

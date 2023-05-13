@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from 'react'
+import { useState } from 'react'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { useAuthUser } from 'next-firebase-auth'
@@ -60,7 +60,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
         error.message === '`currentPassword` is incorrect.'
       ) {
         setError(FORM_IDS.CURRENT_PASSWORD, {
-          message: 'The current password you entered is incorrect.'
+          message: 'The current password you entered is incorrect.',
         })
         setIsLoading(false)
         return
@@ -74,9 +74,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
 
   if (submitted) {
     return (
-      <Typography variant="body2">
-        Your password has been changed.
-      </Typography>
+      <Typography variant="body2">Your password has been changed.</Typography>
     )
   }
 
@@ -126,11 +124,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
                 />
               )}
             />
-            <MuiLink
-              component={Link}
-              href="/forgot-password"
-              variant="caption"
-            >
+            <MuiLink component={Link} href="/forgot-password" variant="caption">
               Forgot password?
             </MuiLink>
           </Box>
@@ -197,12 +191,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
           )}
         />
         {formError && (
-          <Typography
-            variant="caption"
-            color="error"
-            component="div"
-            mb={1}
-          >
+          <Typography variant="caption" color="error" component="div" mb={1}>
             {formError.message}
           </Typography>
         )}

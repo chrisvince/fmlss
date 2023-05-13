@@ -27,7 +27,7 @@ const GENERIC_ERROR_MESSAGE =
   'There was an error signing you up. Please try again later.'
 
 interface Props {
-  onSuccess?: () => any
+  onSuccess?: () => unknown
 }
 
 const SignUpForm = ({ onSuccess }: Props) => {
@@ -196,12 +196,7 @@ const SignUpForm = ({ onSuccess }: Props) => {
               <Typography variant="body1" component="h2">
                 Already have an account?{' '}
               </Typography>
-              <Button
-                component={Link}
-                fullWidth
-                href="/"
-                variant="outlined"
-              >
+              <Button component={Link} fullWidth href="/" variant="outlined">
                 Sign in
               </Button>
             </Box>

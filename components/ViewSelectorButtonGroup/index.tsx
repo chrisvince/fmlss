@@ -2,7 +2,7 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import { ReactNode } from 'react'
 
 interface PropTypes {
-  children: ReactNode,
+  children: ReactNode
 }
 
 const ViewSelectorButtonGroup = ({ children }: PropTypes) => {

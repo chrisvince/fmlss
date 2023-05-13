@@ -212,7 +212,8 @@ const PostBodyTextArea = (
     if (!focusOnMount) return
 
     setTimeout(() => {
-      editorRef.current!.focus()
+      if (!editorRef.current) return
+      editorRef.current.focus()
     }, 0)
   }, [focusOnMount])
 

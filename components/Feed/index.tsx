@@ -1,5 +1,4 @@
 import { CellMeasurerCache } from 'react-virtualized'
-import { Box, useTheme } from '@mui/system'
 import { useRef } from 'react'
 
 import { Post } from '../../types'
@@ -9,37 +8,8 @@ import CenteredMessage from '../CenteredMessage'
 import PageSpinner from '../PageSpinner'
 import BlockMessage from '../BlockMessage'
 import constants from '../../constants'
-import MapLineSegment from '../MapLineSegment'
 
-const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, NESTED_POST_MARGIN_LEFT } =
-  constants
-
-const ReplyLayout = ({
-  children,
-  isLast = false,
-}: {
-  children: React.ReactNode
-  isLast?: boolean
-}) => {
-  const theme = useTheme()
-
-  return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: `${theme.spacing(NESTED_POST_MARGIN_LEFT)} 1fr`,
-      }}
-    >
-      <Box>
-        <MapLineSegment
-          dotPosition="top"
-          lineType={isLast ? 'end' : 'middle'}
-        />
-      </Box>
-      <Box>{children}</Box>
-    </Box>
-  )
-}
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
 type PropTypes = {
   isLoading?: boolean
@@ -58,7 +28,6 @@ const Feed = ({
   onLikePost,
   onLoadMore,
   posts,
-  type,
 }: PropTypes) => {
   const cellMeasurerCache = useRef(
     new CellMeasurerCache({

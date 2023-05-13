@@ -8,14 +8,20 @@ import { SWRConfig } from 'swr'
 
 import HashtagsPage from '../../components/HashtagsPage'
 import type { HashtagsSortMode } from '../../types'
-import { createHashtagsCacheKey, createMiniCategoriesCacheKey } from '../../utils/createCacheKeys'
+import {
+  createHashtagsCacheKey,
+  createMiniCategoriesCacheKey,
+} from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import constants from '../../constants'
 import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
-import { withAuthUserConfig, withAuthUserTokenSSRConfig } from '../../config/withAuthConfig'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
 
 const {
   CATEGORIES_ENABLED,
@@ -50,7 +56,7 @@ const getServerSidePropsFn = async ({
   params: { sortMode: sortModeArray },
   req,
 }: {
-  AuthUser: AuthUser,
+  AuthUser: AuthUser
   params: { sortMode: string }
   req: NextApiRequest
 }) => {
@@ -84,12 +90,14 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
-    cacheKey: miniCategoriesCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  }) : []
+  const miniCategories = CATEGORIES_ENABLED
+    ? await getCategories({
+        cacheKey: miniCategoriesCacheKey,
+        cacheTime: MINI_LIST_CACHE_TIME,
+        db: adminDb,
+        limit: MINI_LIST_COUNT,
+      })
+    : []
 
   if (isInternalRequest(req)) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)

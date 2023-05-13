@@ -9,7 +9,7 @@ const UI_STATES = {
   ERROR: 'error',
 }
 type StatusKeys = keyof typeof UI_STATES
-type StatusValues = typeof UI_STATES[StatusKeys]
+type StatusValues = (typeof UI_STATES)[StatusKeys]
 
 const createGetServerSidePropsPayload = (emailVerificationStatus: string) => ({
   props: {

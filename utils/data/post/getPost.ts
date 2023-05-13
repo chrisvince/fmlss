@@ -20,13 +20,7 @@ type GetPost = (
   }
 ) => Promise<Post | null>
 
-const getPost: GetPost = async (
-  slug,
-  {
-    db: dbProp,
-    uid,
-  } = {},
-) => {
+const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
   if (!slug) return null
 
   const db = dbProp || firebase.firestore()
@@ -79,7 +73,7 @@ const getPost: GetPost = async (
     user: {
       created: createdByUser,
       like: likedByUser,
-    }
+    },
   }
 }
 

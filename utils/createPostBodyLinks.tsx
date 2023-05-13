@@ -69,11 +69,7 @@ const createUrlLinks = (body: string) => {
     return [
       ...acc,
       before,
-      <InlineLink
-        href={match.url}
-        key={`${match.url}-${index}`}
-        newTab
-      >
+      <InlineLink href={match.url} key={`${match.url}-${index}`} newTab>
         {match.text}
       </InlineLink>,
       ...(isLast ? [body.slice(match.lastIndex, Infinity)] : []),
@@ -112,14 +108,14 @@ const createReactNodesStringTreater =
   (fn: (string: string) => ReactNode[]) => (reactNodes: ReactNode[]) =>
     reactNodes.reduce((acc, reactNode) => {
       if (typeof reactNode !== 'string') {
-        return [...acc as ReactNode[], reactNode]
+        return [...(acc as ReactNode[]), reactNode]
       }
-      return [...acc as ReactNode[], ...fn(reactNode)]
+      return [...(acc as ReactNode[]), ...fn(reactNode)]
     }, [] as ReactNode[])
 
 const createPostBodyLinks = pipe(
   createHashtagLinksNew,
-  createReactNodesStringTreater(createUrlLinks),
+  createReactNodesStringTreater(createUrlLinks)
 )
 
 export default createPostBodyLinks

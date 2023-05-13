@@ -10,7 +10,11 @@ const formatDate = (date: string) => {
     hour: 'numeric',
     minute: 'numeric',
   })
-  return <>{fomattedDate}&ensp;{formattedTime}</>
+  return (
+    <>
+      {fomattedDate}&ensp;{formattedTime}
+    </>
+  )
 }
 
 export default formatDate

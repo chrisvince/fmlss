@@ -18,9 +18,7 @@ const CenteredMessage = ({ children }: Props) => (
       width: '100vw',
     }}
   >
-    <Typography variant="body2">
-      {children}
-    </Typography>
+    <Typography variant="body2">{children}</Typography>
   </Box>
 )
 

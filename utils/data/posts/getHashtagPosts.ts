@@ -11,11 +11,8 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 
-const {
-  HASHTAG_LIST_CACHE_TIME,
-  PAGINATION_COUNT,
-  POSTS_COLLECTION,
-} = constants
+const { HASHTAG_LIST_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } =
+  constants
 
 type GetHashtagPosts = (
   slug: string,
@@ -30,13 +27,7 @@ type GetHashtagPosts = (
 
 const getHashtagPosts: GetHashtagPosts = async (
   slug,
-  {
-    db: dbProp,
-    startAfter,
-    uid,
-    showType = 'post',
-    sortMode = 'latest',
-  } = {},
+  { db: dbProp, startAfter, uid, showType = 'post', sortMode = 'latest' } = {}
 ) => {
   const db = dbProp || firebase.firestore()
 
@@ -72,7 +63,7 @@ const getHashtagPosts: GetHashtagPosts = async (
       query =>
         sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
-      query => startAfter ? query.startAfter(startAfter) : query,
+      query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(PAGINATION_COUNT).get()
     )()
 
@@ -107,7 +98,7 @@ const getHashtagPosts: GetHashtagPosts = async (
       user: {
         created: createdByUser,
         like: likedByUser,
-      }
+      },
     }
   })
   const posts = await Promise.all(postsPromise)

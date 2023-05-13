@@ -11,7 +11,11 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import { createMiniCategoriesCacheKey, createMiniHashtagsCacheKey, createUserLikesCacheKey } from '../../utils/createCacheKeys'
+import {
+  createMiniCategoriesCacheKey,
+  createMiniHashtagsCacheKey,
+  createUserLikesCacheKey,
+} from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getUserLikes from '../../utils/data/userLikes/getUserLikes'
@@ -31,7 +35,7 @@ const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface PropTypes {
   fallback: {
-    [key: string]: any
+    [key: string]: unknown
   }
 }
 
@@ -46,7 +50,7 @@ const getServerSidePropsFn = async ({
   req,
 }: {
   AuthUser: AuthUser
-  req: NextApiRequest,
+  req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const admin = getFirebaseAdmin()
@@ -81,12 +85,14 @@ const getServerSidePropsFn = async ({
     limit: MINI_LIST_COUNT,
   })
 
-  const miniCategories = CATEGORIES_ENABLED ? await getCategories({
-    cacheKey: miniCategoriesCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  }) : []
+  const miniCategories = CATEGORIES_ENABLED
+    ? await getCategories({
+        cacheKey: miniCategoriesCacheKey,
+        cacheTime: MINI_LIST_CACHE_TIME,
+        db: adminDb,
+        limit: MINI_LIST_COUNT,
+      })
+    : []
 
   if (isInternalRequest(req)) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
