@@ -1,4 +1,4 @@
-const formatDate = (date: string) => {
+const formatDate = (date: number) => {
   if (!date) return null
   const dateObj = new Date(date)
   const fomattedDate = dateObj.toLocaleDateString('en-US', {

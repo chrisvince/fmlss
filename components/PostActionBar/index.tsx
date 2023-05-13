@@ -22,7 +22,7 @@ const SignUpModal = dynamic(() => import('../SignUpModal'), { ssr: false })
 const { ENABLE_HIGHLIGHTING } = constants
 
 interface PropTypes {
-  createdAt: string
+  createdAt: number
   like: boolean
   likesCount: number
   onLike: () => unknown
