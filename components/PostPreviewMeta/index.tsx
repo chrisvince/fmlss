@@ -137,11 +137,11 @@ const PostPreviewMeta = ({ isAboveFold, onClose, postPreview }: Props) => {
               gap: 2,
             }}
           >
-            {isImageLayout && (
+            {isImageLayout && image && (
               <Box sx={{ gridArea: 'image' }}>
                 {dynamicImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={image!.src} alt={image!.alt} style={imageStyle} />
+                  <img src={image.src} alt={image.alt} style={imageStyle} />
                 ) : (
                   <Box
                     sx={{
@@ -156,7 +156,7 @@ const PostPreviewMeta = ({ isAboveFold, onClose, postPreview }: Props) => {
                       }}
                     >
                       <NextImage
-                        alt={image!.alt}
+                        alt={image.alt}
                         fill
                         onLoadingComplete={() => setImageLoaded(true)}
                         priority={isAboveFold}
@@ -166,7 +166,7 @@ const PostPreviewMeta = ({ isAboveFold, onClose, postPreview }: Props) => {
                           (min-width: 600px) 60vw,
                           90vw"
                         `}
-                        src={image!.src}
+                        src={image.src}
                         style={{
                           opacity: imageLoaded ? 1 : 0,
                           transition: `opacity ${IMAGE_TRANSITION}`,

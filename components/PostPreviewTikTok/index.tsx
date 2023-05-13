@@ -10,7 +10,7 @@ interface Props {
 
 const PostPreviewTikTok = ({ onClose, postPreview }: Props) => (
   <CloseButtonWrapper onClose={onClose}>
-    <TikTokEmbed url={postPreview.href} />
+    <TikTokEmbed url={postPreview.href} placeholderDisabled width="100%" />
   </CloseButtonWrapper>
 )
 

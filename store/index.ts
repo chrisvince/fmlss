@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import navigationReducer from './slices/navigationSlice'
+import postPreviewHeightCacheReducer from './slices/postPreviewHeightCacheSlice'
 
 export const store = configureStore({
   reducer: {
     navigation: navigationReducer,
+    postPreviewHeightCache: postPreviewHeightCacheReducer,
   },
 })
 

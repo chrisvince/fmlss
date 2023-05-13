@@ -10,7 +10,7 @@ interface Props {
 
 const PostPreviewFacebook = ({ onClose, postPreview }: Props) => (
   <CloseButtonWrapper onClose={onClose}>
-    <FacebookEmbed url={postPreview.href} />
+    <FacebookEmbed url={postPreview.href} placeholderDisabled width="100%" />
   </CloseButtonWrapper>
 )
 

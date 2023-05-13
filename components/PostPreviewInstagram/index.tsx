@@ -10,7 +10,7 @@ interface Props {
 
 const PostPreviewInstagram = ({ onClose, postPreview }: Props) => (
   <CloseButtonWrapper onClose={onClose}>
-    <InstagramEmbed url={postPreview.href} />
+    <InstagramEmbed placeholderDisabled url={postPreview.href} width="100%" />
   </CloseButtonWrapper>
 )
 

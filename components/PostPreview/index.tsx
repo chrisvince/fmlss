@@ -1,5 +1,14 @@
 import dynamic from 'next/dynamic'
-import { PostPreview as PostPreviewType } from '../../types'
+import {
+  PostPreview as PostPreviewType,
+  PostPreviewFacebook,
+  PostPreviewInstagram,
+  PostPreviewMeta,
+  PostPreviewPinterest,
+  PostPreviewTikTok,
+  PostPreviewTwitter,
+  PostPreviewYouTube,
+} from '../../types'
 
 const PostPreviewFacebook = dynamic(() => import('../PostPreviewFacebook'))
 const PostPreviewInstagram = dynamic(() => import('../PostPreviewInstagram'))
@@ -15,42 +24,51 @@ interface Props {
   postPreview: PostPreviewType
 }
 
-const PostPreview = ({ isAboveFold = false, onClose, postPreview }: Props) => {
-  if (postPreview.type === 'twitter') {
-    return <PostPreviewTwitter onClose={onClose} postPreview={postPreview} />
-  }
-
-  if (postPreview.type === 'facebook') {
-    return <PostPreviewFacebook onClose={onClose} postPreview={postPreview} />
-  }
-
-  if (postPreview.type === 'instagram') {
-    return <PostPreviewInstagram onClose={onClose} postPreview={postPreview} />
-  }
-
-  if (postPreview.type === 'tiktok') {
-    return <PostPreviewTikTok onClose={onClose} postPreview={postPreview} />
-  }
-
-  if (postPreview.type === 'youtube') {
-    return <PostPreviewYouTube onClose={onClose} postPreview={postPreview} />
-  }
-
-  if (postPreview.type === 'pinterest') {
-    return <PostPreviewPinterest onClose={onClose} postPreview={postPreview} />
-  }
-
-  if (postPreview.type === 'url') {
-    return (
+const PostPreview = ({ isAboveFold = false, onClose, postPreview }: Props) =>
+  ({
+    twitter: () => (
+      <PostPreviewTwitter
+        onClose={onClose}
+        postPreview={postPreview as PostPreviewTwitter}
+      />
+    ),
+    facebook: () => (
+      <PostPreviewFacebook
+        onClose={onClose}
+        postPreview={postPreview as PostPreviewFacebook}
+      />
+    ),
+    instagram: () => (
+      <PostPreviewInstagram
+        onClose={onClose}
+        postPreview={postPreview as PostPreviewInstagram}
+      />
+    ),
+    tiktok: () => (
+      <PostPreviewTikTok
+        onClose={onClose}
+        postPreview={postPreview as PostPreviewTikTok}
+      />
+    ),
+    youtube: () => (
+      <PostPreviewYouTube
+        onClose={onClose}
+        postPreview={postPreview as PostPreviewYouTube}
+      />
+    ),
+    pinterest: () => (
+      <PostPreviewPinterest
+        onClose={onClose}
+        postPreview={postPreview as PostPreviewPinterest}
+      />
+    ),
+    url: () => (
       <PostPreviewMeta
         isAboveFold={isAboveFold}
         onClose={onClose}
-        postPreview={postPreview}
+        postPreview={postPreview as PostPreviewMeta}
       />
-    )
-  }
-
-  return null
-}
+    ),
+  }[postPreview.type]())
 
 export default PostPreview
