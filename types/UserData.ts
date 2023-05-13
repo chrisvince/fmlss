@@ -1,7 +1,7 @@
 export interface UserData {
-  createdAt: string
+  createdAt: number
   id: string
   shownFirstPostMessage: boolean
-  updatedAt: string
+  updatedAt: number
   username?: string
 }

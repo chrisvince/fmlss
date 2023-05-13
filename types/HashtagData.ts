@@ -1,10 +1,10 @@
 export interface HashtagData {
-  createdAt: string
+  createdAt: number
   display: string
   id: string
   recentViewCount: number
   slug: string
-  updatedAt: string
+  updatedAt: number
   usageCount: number
   viewCount: number
 }

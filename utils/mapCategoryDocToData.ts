@@ -1,18 +1,18 @@
-import type { CategoryData, FirebaseDoc } from '../types'
+import type { CategoryData, CategoryDataRequest, FirebaseDoc } from '../types'
 
 type MapCategoryDocToData = (postDoc: FirebaseDoc) => CategoryData
 
 const mapCategoryDocToData: MapCategoryDocToData = doc => {
-  const data = doc.data()!
+  const data = doc.data() as CategoryDataRequest
   return {
-    createdAt: data.createdAt.toMillis() as string,
-    id: doc.id as string,
-    name: data.name as string,
-    postCount: data.postCount as number,
-    recentViewCount: data.recentViewCount as number,
-    slug: data.slug as string,
-    updatedAt: data.updatedAt.toMillis() as string,
-    viewCount: data.viewCount as number,
+    createdAt: data.createdAt.toMillis(),
+    id: doc.id,
+    name: data.name,
+    postCount: data.postCount,
+    recentViewCount: data.recentViewCount,
+    slug: data.slug,
+    updatedAt: data.updatedAt.toMillis(),
+    viewCount: data.viewCount,
   }
 }
 

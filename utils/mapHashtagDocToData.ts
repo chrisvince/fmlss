@@ -1,18 +1,18 @@
-import type { FirebaseDoc, HashtagData } from '../types'
+import type { FirebaseDoc, HashtagData, HashtagDataRequest } from '../types'
 
 type MapHashtagDocToData = (postDoc: FirebaseDoc) => HashtagData
 
 const mapHashtagDocToData: MapHashtagDocToData = doc => {
-  const data = doc.data()!
+  const data = doc.data() as HashtagDataRequest
   return {
-    createdAt: data.createdAt.toMillis() as string,
-    display: data.display as string,
-    id: doc.id as string,
-    recentViewCount: data.recentViewCount as number,
-    slug: data.slug as string,
-    updatedAt: data.updatedAt.toMillis() as string,
-    usageCount: data.usageCount as number,
-    viewCount: data.viewCount as number,
+    createdAt: data.createdAt.toMillis(),
+    display: data.display,
+    id: doc.id,
+    recentViewCount: data.recentViewCount,
+    slug: data.slug,
+    updatedAt: data.updatedAt.toMillis(),
+    usageCount: data.usageCount,
+    viewCount: data.viewCount,
   }
 }
 

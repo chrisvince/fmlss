@@ -1,10 +1,10 @@
 export interface CategoryData {
-  createdAt: string
+  createdAt: number
   id: string
   name: string
   postCount: number
   recentViewCount: number
   slug: string
-  updatedAt: string
+  updatedAt: number
   viewCount: number
 }

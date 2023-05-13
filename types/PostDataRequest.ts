@@ -1,29 +1,26 @@
-import { PostPreview } from '.'
+import { firestore } from 'firebase-admin'
+import { FirebaseDoc, PostPreview } from '.'
 
-export interface PostData {
+export interface PostDataRequest {
   body: string
   category?: {
     name: string
     slug: string
   }
-  createdAt: number
+  createdAt: firestore.Timestamp
   documentDepth: number
   hashtags: string[]
   id: string
   likesCount: number
   linkPreviews: PostPreview[]
-  originalPost?: {
-    id: string
-    ref: string
+  originalPost?: FirebaseDoc & {
     slug: string
   }
-  parent?: {
-    id: string
-    ref: string
+  parent?: FirebaseDoc & {
     slug: string
   }
   postsCount: number
   reference: string
   slug: string
-  updatedAt: number
+  updatedAt: firestore.Timestamp
 }

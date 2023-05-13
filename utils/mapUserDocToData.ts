@@ -1,15 +1,15 @@
-import type { FirebaseDoc, UserData } from '../types'
+import type { FirebaseDoc, UserData, UserDataRequest } from '../types'
 
 type MapUserDocToData = (userDoc: FirebaseDoc) => UserData
 
 const mapUserDocToData: MapUserDocToData = userDoc => {
-  const userData = userDoc.data()!
+  const userData = userDoc.data() as UserDataRequest
   return {
-    createdAt: userData.createdAt.toMillis() as string,
-    id: userDoc.id as string,
-    shownFirstPostMessage: !!userData.shownFirstPostMessage as boolean,
-    updatedAt: userData.updatedAt.toMillis() as string,
-    username: userData.username as string,
+    createdAt: userData.createdAt.toMillis(),
+    id: userDoc.id,
+    shownFirstPostMessage: !!userData.shownFirstPostMessage,
+    updatedAt: userData.updatedAt.toMillis(),
+    username: userData.username,
   }
 }
 

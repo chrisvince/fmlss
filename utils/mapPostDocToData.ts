@@ -1,45 +1,45 @@
-import type { FirebaseDoc, PostData, PostPreview } from '../types'
+import type { FirebaseDoc, PostData, PostDataRequest } from '../types'
 
 type MapPostDbToClient = (postDoc: FirebaseDoc) => PostData
 
 const mapPostDocToData: MapPostDbToClient = postDoc => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const postData = postDoc.data()!
+  const postData = postDoc.data() as PostDataRequest
+
   return {
-    body: postData.body as string,
-    createdAt: postData.createdAt.toMillis() as string,
-    documentDepth: postData.documentDepth as number,
-    hashtags: postData.hashtags as string[],
-    id: postDoc.id as string,
-    likesCount: postData.likesCount as number,
-    linkPreviews: (postData.linkPreviews as PostPreview[]) ?? [],
+    body: postData.body,
+    createdAt: postData.createdAt.toMillis(),
+    documentDepth: postData.documentDepth,
+    hashtags: postData.hashtags,
+    id: postDoc.id,
+    likesCount: postData.likesCount,
+    linkPreviews: postData.linkPreviews,
     ...(postData.originalPost
       ? {
           originalPost: {
-            id: postData.originalPost.id as string,
-            ref: postData.originalPost.ref.path as string,
-            slug: postData.originalPost.slug as string,
+            id: postData.originalPost.id,
+            ref: postData.originalPost.ref.path,
+            slug: postData.originalPost.slug,
           },
         }
       : {}),
     ...(postData.parent
       ? {
           parent: {
-            id: postData.parent.id as string,
-            ref: postData.parent.ref.path as string,
-            slug: postData.parent.slug as string,
+            id: postData.parent.id,
+            ref: postData.parent.ref.path,
+            slug: postData.parent.slug,
           },
         }
       : {}),
-    postsCount: postData.postsCount as number,
-    reference: postDoc.ref.path as string,
-    slug: postData.slug as string,
-    updatedAt: postData.updatedAt.toMillis() as string,
+    postsCount: postData.postsCount,
+    reference: postDoc.ref.path,
+    slug: postData.slug,
+    updatedAt: postData.updatedAt.toMillis(),
     ...(postData.category
       ? {
           category: {
-            name: postData.category.name as string,
-            slug: postData.category.slug as string,
+            name: postData.category.name,
+            slug: postData.category.slug,
           },
         }
       : {}),
