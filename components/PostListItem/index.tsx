@@ -5,7 +5,7 @@ import ListItemFrame from '../ListItemFrame'
 import PostItem from '../PostItem'
 
 type PropTypes = {
-  measure: () => void
+  measure?: () => void
   onLikePost: (slug: string) => Promise<void>
   onPostPreviewsLoaded?: () => void
   post: Post
