@@ -1,5 +1,4 @@
-import { CloseRounded } from '@mui/icons-material'
-import { ButtonBase, Link, Typography } from '@mui/material'
+import { Link, Typography } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
 import NextImage from 'next/image'
 import { SyntheticEvent, useEffect, useState } from 'react'

@@ -30,7 +30,7 @@ const {
 
 interface PropTypes {
   fallback: {
-    [key: string]: any
+    [key: string]: unknown
   }
   slug: string
 }
@@ -136,7 +136,9 @@ const getServerSidePropsFn = async ({
 }
 
 export const getServerSideProps = withAuthUserTokenSSR()(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getServerSidePropsFn as any
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default withAuthUser()(Category as any)

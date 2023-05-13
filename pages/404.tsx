@@ -14,7 +14,7 @@ const { CATEGORIES_ENABLED, MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
 
 interface Props {
   fallback: {
-    [key: string]: any
+    [key: string]: unknown
   }
 }
 

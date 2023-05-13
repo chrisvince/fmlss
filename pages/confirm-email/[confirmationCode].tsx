@@ -55,6 +55,7 @@ export const getServerSideProps = async ({
     await verifyEmail({ confirmationCode })
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return createGetServerSidePropsPayload(UI_STATES.VERIFIED)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.code === 'already-exists') {
       console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)

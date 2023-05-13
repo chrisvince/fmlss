@@ -27,6 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const meta = await getMetaData(url)
     const mappedMeta = mapMeta(meta)
     return res.status(200).json(mappedMeta)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.code === 'ENOTFOUND') {
       return res.status(404)

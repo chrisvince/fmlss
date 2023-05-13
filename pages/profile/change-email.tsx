@@ -38,6 +38,8 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
 
 export const getServerSideProps = withAuthUserTokenSSR(
   withAuthUserTokenSSRConfig(ROUTE_MODE)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 )(getServerSidePropsFn as any)
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(ChangeEmail as any)

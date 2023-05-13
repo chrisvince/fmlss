@@ -26,7 +26,7 @@ type UsePost = (
 
 const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
   const { id: uid } = useAuthUser()
-  const postCacheKey = createPostCacheKey(slug)
+  const postCacheKey = slug ? createPostCacheKey(slug) : undefined
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
     postCacheKey,

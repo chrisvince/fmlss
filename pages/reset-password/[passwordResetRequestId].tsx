@@ -47,6 +47,7 @@ const getServerSidePropsFn = async ({
 
   try {
     await checkPasswordResetRequestValid({ passwordResetRequestId })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     switch (error.code) {
       case 'not-found': {
@@ -99,5 +100,6 @@ export const getServerSideProps = withAuthUserTokenSSR(
 )(getServerSidePropsFn)
 
 export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ResetPassword as any
 )

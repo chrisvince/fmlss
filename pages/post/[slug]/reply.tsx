@@ -133,7 +133,9 @@ const getServerSidePropsFn = async ({
 }
 
 export const getServerSideProps = withAuthUserTokenSSR()(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getServerSidePropsFn as any
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default withAuthUser()(ReplyToPost as any)

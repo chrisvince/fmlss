@@ -23,8 +23,6 @@ import getCategories from '../../../utils/data/categories/getCategories'
 import constants from '../../../constants'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import usePost from '../../../utils/data/post/usePost'
-import { ReactElement } from 'react'
-import Layout from '../../../components/Layout'
 import checkIfUserHasUsername from '../../../utils/data/user/checkIfUserHasUsername'
 
 const {
@@ -160,7 +158,9 @@ const getServerSidePropsFn = async ({
 }
 
 export const getServerSideProps = withAuthUserTokenSSR()(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getServerSidePropsFn as any
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default withAuthUser()(Post as any)

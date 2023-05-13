@@ -47,6 +47,7 @@ const SignUpForm = ({ onSuccess }: Props) => {
       await createUser({ email, password })
       await auth.signInWithEmailAndPassword(email, password)
       onSuccess?.()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.code === 'already-exists') {
         setError(FORM_IDS.EMAIL, { message: 'This email is already in use.' })

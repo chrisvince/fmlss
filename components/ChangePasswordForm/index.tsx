@@ -54,6 +54,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
       )
       setSubmitted(true)
       setIsLoading(false)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (
         error.code === 'invalid-argument' &&

@@ -48,12 +48,17 @@ const Document = () => {
   )
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 let prefixer: any
 let cleanCSS: any
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 if (process.env.NODE_ENV === 'production') {
+  /* eslint-disable @typescript-eslint/no-var-requires */
   const postcss = require('postcss')
   const autoprefixer = require('autoprefixer')
   const CleanCSS = require('clean-css')
+  /* eslint-enable @typescript-eslint/no-var-requires */
   prefixer = postcss([autoprefixer])
   cleanCSS = new CleanCSS()
 }
@@ -66,6 +71,7 @@ Document.getInitialProps = async (ctx: DocumentContext) => {
 
   ctx.renderPage = () =>
     originalRenderPage({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       enhanceApp: (App: any) =>
         function EnhanceApp(props) {
           return jssSheets.collect(<App emotionCache={cache} {...props} />)

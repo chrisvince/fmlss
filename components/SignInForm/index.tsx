@@ -48,6 +48,7 @@ const SignInForm = () => {
     setIsLoading(true)
     try {
       await auth.signInWithEmailAndPassword(email as string, password as string)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (CREDENTIAL_ERRORS.includes(error.code)) {
         setFormError({

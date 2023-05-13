@@ -50,6 +50,7 @@ const ChangeEmailForm = () => {
       await auth.signInWithEmailAndPassword(email, password)
       setSubmitted(true)
       setIsLoading(false)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (
         error.code === 'invalid-argument' &&
