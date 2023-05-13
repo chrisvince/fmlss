@@ -47,7 +47,8 @@ const InlineCreatePost = ({ variant, slug }: Props) => {
 
   const submitPost = async () => {
     const body = postBodyTextAreaRef.current?.value
-    await createPost({ body })
+    const linkPreviews = postBodyTextAreaRef.current?.linkPreviews
+    await createPost({ body, linkPreviews })
   }
 
   const handleSubmit = (event: SyntheticEvent) => {
