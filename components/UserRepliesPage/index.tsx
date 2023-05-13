@@ -30,7 +30,6 @@ const UserRepliesPage = () => {
         onLoadMore={loadMore}
         posts={posts}
         isLoading={isLoading}
-        type="post"
       />
     </Page>
   )

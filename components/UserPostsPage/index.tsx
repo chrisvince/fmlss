@@ -30,7 +30,6 @@ const UserPostsPage = () => {
         onLikePost={likePost}
         onLoadMore={loadMore}
         posts={posts}
-        type="post"
       />
     </Page>
   )

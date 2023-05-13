@@ -106,7 +106,6 @@ const CategoryPage = ({ slug }: PropTypes) => {
         onLikePost={likePost}
         onLoadMore={loadMore}
         posts={posts}
-        type="post"
       />
     </Page>
   )
