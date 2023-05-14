@@ -30,7 +30,7 @@ type UseUserPosts = (options?: {
   type?: 'post' | 'reply'
   swrConfig?: SWRInfiniteConfiguration
 }) => {
-  error: any
+  error: unknown
   isLoading: boolean
   isValidating: boolean
   likePost: (slug: string) => Promise<void>
@@ -51,7 +51,7 @@ const useUserPosts: UseUserPosts = ({ type = 'post', swrConfig = {} } = {}) => {
     post: createUserPostsCacheKey,
     reply: createUserRepliesCacheKey,
   }[type]
-  const fallbackData = fallback[createCacheKey(uid!)]
+  const fallbackData = uid ? fallback[createCacheKey(uid)] : null
 
   if (!uid) {
     console.error('uid must be set.')
@@ -60,14 +60,21 @@ const useUserPosts: UseUserPosts = ({ type = 'post', swrConfig = {} } = {}) => {
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (index, previousPageData) => {
-        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+        if (
+          !uid ||
+          (previousPageData && previousPageData.length < PAGINATION_COUNT)
+        ) {
           return null
         }
-        return createCacheKey(uid!, { pageIndex: index })
+        return createCacheKey(uid, { pageIndex: index })
       },
       key => {
+        if (!uid) {
+          return null
+        }
+
         const pageIndex = getPageIndexFromCacheKey(key)
-        return getUserPosts(uid!, {
+        return getUserPosts(uid, {
           startAfter: pageStartAfterTrace[pageIndex],
           type,
         })
@@ -80,6 +87,7 @@ const useUserPosts: UseUserPosts = ({ type = 'post', swrConfig = {} } = {}) => {
     )
 
   const lastPageLastDoc = getLastDocOfLastPage(data)
+
   useEffect(() => {
     if (!lastPageLastDoc) return
     setPageStartAfterTrace(currentState => ({
