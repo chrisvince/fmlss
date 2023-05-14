@@ -24,8 +24,13 @@ const getPageIndexFromCacheKey = (cacheKey: string) =>
 
 const createPostRepliesCacheKey = (
   slug: string,
-  pageIndex: number | null = 0,
-  viewMode: 'start' | 'end' = 'start'
+  {
+    pageIndex = 0,
+    viewMode = 'start',
+  }: {
+    pageIndex?: number | null
+    viewMode?: 'start' | 'end'
+  } = {}
 ) =>
   `post/${slug}/replies${viewMode === 'end' ? '-reverse' : ''}${
     pageIndex === null ? '' : `-${pageIndex}`

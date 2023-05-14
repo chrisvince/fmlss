@@ -54,7 +54,7 @@ const usePostReplies: UsePostReplies = (
 
   const { fallback } = useSWRConfig()
   const fallbackData = slug
-    ? fallback[createPostRepliesCacheKey(slug, 0, viewMode)]
+    ? fallback[createPostRepliesCacheKey(slug, { pageIndex: 0, viewMode })]
     : undefined
   const { id: uid } = useAuthUser()
   const { post, isValidating: postIsValidating } = usePost(slug)
@@ -76,7 +76,7 @@ const usePostReplies: UsePostReplies = (
       ) {
         return null
       }
-      return createPostRepliesCacheKey(slug, index, viewMode)
+      return createPostRepliesCacheKey(slug, { pageIndex: index, viewMode })
     },
     key => {
       const pageIndex = getPageIndexFromCacheKey(key)
