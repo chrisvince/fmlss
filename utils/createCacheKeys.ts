@@ -39,8 +39,10 @@ const createPostRepliesCacheKey = (
 const createPostLikeCacheKey = (postId: string, uid: string) =>
   `post/${postId}/like/${uid}`
 
-const createUserLikesCacheKey = (uid: string, pageIndex: number | null = 0) =>
-  `post/likes/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
+const createUserLikesCacheKey = (
+  uid: string,
+  { pageIndex = 0 }: { pageIndex?: number | null } = {}
+) => `post/likes/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
 
 const createUserPostsCacheKey = (uid: string, pageIndex: number | null = 0) =>
   `post/authored/post/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`

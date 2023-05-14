@@ -54,7 +54,7 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
         if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
           return null
         }
-        return createUserLikesCacheKey(uid!, index)
+        return createUserLikesCacheKey(uid!, { pageIndex: index })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
