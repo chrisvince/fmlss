@@ -82,7 +82,7 @@ const getServerSidePropsFn = async ({
   const uid = AuthUser.id
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as CategorySortMode
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
-  const categoryPostsCacheKey = createCategoryPostsCacheKey(slug, sortMode)
+  const categoryPostsCacheKey = createCategoryPostsCacheKey(slug, { sortMode })
   const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
 
   if (uid && !userHasUsername) {

@@ -50,7 +50,7 @@ const useCategoryPosts: UseCategoryPosts = (
   }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createCategoryPostsCacheKey(slug, sortMode)]
+  const fallbackData = fallback[createCategoryPostsCacheKey(slug, { sortMode })]
   const { id: uid } = useAuthUser()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
@@ -59,7 +59,7 @@ const useCategoryPosts: UseCategoryPosts = (
         if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
           return null
         }
-        return createCategoryPostsCacheKey(slug, sortMode, index)
+        return createCategoryPostsCacheKey(slug, { pageIndex: index, sortMode })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)

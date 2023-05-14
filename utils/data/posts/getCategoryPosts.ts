@@ -37,10 +37,9 @@ const getCategoryPosts: GetCategoryPosts = async (
   let postData: PostData[] = []
 
   const lowerCaseSlug = slug.toLowerCase()
-  const categoryPostsCacheKey = createCategoryPostsCacheKey(
-    lowerCaseSlug,
-    sortMode
-  )
+  const categoryPostsCacheKey = createCategoryPostsCacheKey(lowerCaseSlug, {
+    sortMode,
+  })
   const cachedData = get(categoryPostsCacheKey)
 
   if (isServer && cachedData) {

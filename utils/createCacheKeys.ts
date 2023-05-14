@@ -66,8 +66,10 @@ const createCategoriesCacheKey = (
 
 const createCategoryPostsCacheKey = (
   slug: string,
-  sortMode: FeedSortMode = 'latest',
-  pageIndex: number | null = 0
+  {
+    sortMode = 'latest',
+    pageIndex = 0,
+  }: { sortMode?: FeedSortMode; pageIndex?: number | null } = {}
 ) =>
   `category/${slug}/posts/${sortMode}${
     pageIndex === null ? '' : `-${pageIndex}`
