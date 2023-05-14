@@ -16,7 +16,7 @@ const createPostCacheKey = (slug: string) => `post/${slug}`
 
 const createPostFeedCacheKey = (
   sortMode: FeedSortMode,
-  pageIndex: number | null = 0
+  { pageIndex = 0 }: { pageIndex?: number | null } = {}
 ) => `post/feed/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
 const getPageIndexFromCacheKey = (cacheKey: string) =>

@@ -56,7 +56,7 @@ const usePostFeed: UsePostFeed = ({
         if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
           return null
         }
-        return createPostFeedCacheKey(sortMode, index)
+        return createPostFeedCacheKey(sortMode, { pageIndex: index })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
