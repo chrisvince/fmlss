@@ -44,11 +44,15 @@ const createUserLikesCacheKey = (
   { pageIndex = 0 }: { pageIndex?: number | null } = {}
 ) => `post/likes/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
 
-const createUserPostsCacheKey = (uid: string, pageIndex: number | null = 0) =>
-  `post/authored/post/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
+const createUserPostsCacheKey = (
+  uid: string,
+  { pageIndex = 0 }: { pageIndex?: number | null } = {}
+) => `post/authored/post/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
 
-const createUserRepliesCacheKey = (uid: string, pageIndex: number | null = 0) =>
-  `post/authored/reply/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
+const createUserRepliesCacheKey = (
+  uid: string,
+  { pageIndex = 0 }: { pageIndex?: number | null } = {}
+) => `post/authored/reply/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
 
 const createHashtagsCacheKey = (
   sortMode: string,

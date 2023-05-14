@@ -63,7 +63,7 @@ const useUserPosts: UseUserPosts = ({ type = 'post', swrConfig = {} } = {}) => {
         if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
           return null
         }
-        return createCacheKey(uid!, index)
+        return createCacheKey(uid!, { pageIndex: index })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
