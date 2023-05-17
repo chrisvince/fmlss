@@ -1,5 +1,5 @@
 import { Box } from '@mui/system'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ButtonBase, CircularProgress, Typography } from '@mui/material'
 import { ArrowDropDown } from '@mui/icons-material'
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
@@ -25,6 +25,10 @@ const RepliesListSubReplies = ({
   const { replies, isLoading, likePost } = usePostReplies(
     expanded ? parentSlug : undefined
   )
+
+  useEffect(() => {
+    measure()
+  }, [expanded, isLoading, measure])
 
   const handleExpandClick = () => setExpanded(!expanded)
 
@@ -70,14 +74,18 @@ const RepliesListSubReplies = ({
   }
 
   return (
-    <MapLinePostItemLayout lineType="middle">
+    <MapLinePostItemLayout hideLine={!showMapLine} lineType="middle">
       {replies.map((reply, index) => (
         <MapLinePostItemLayout
           key={(reply as Post).data.slug}
           lineType={index === replies.length - 1 ? 'end' : 'middle'}
           dotPosition="top"
         >
-          <PostListItem onLikePost={likePost} post={reply as Post} />
+          <PostListItem
+            measure={measure}
+            onLikePost={likePost}
+            post={reply as Post}
+          />
         </MapLinePostItemLayout>
       ))}
     </MapLinePostItemLayout>
