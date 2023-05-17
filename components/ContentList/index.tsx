@@ -44,7 +44,6 @@ const ContentList = ({
 
   const handleLoadMoreRows = async () => {
     await onLoadMore()
-    cellMeasurerCache.clearAll()
   }
 
   useOnWindowResize(() => cellMeasurerCache.clearAll(), {
