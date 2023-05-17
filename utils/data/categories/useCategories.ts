@@ -25,7 +25,7 @@ type UseCategories = (options?: {
   swrConfig?: SWRInfiniteConfiguration
 }) => {
   categories: Category[]
-  error: any
+  error: unknown
   isLoading: boolean
   isValidating: boolean
   loadMore: () => Promise<Category[]>
