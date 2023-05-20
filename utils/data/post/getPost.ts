@@ -45,7 +45,7 @@ const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
       .get()
 
     if (postsRef.empty) {
-      throw new Error('Post not found')
+      return null
     }
 
     doc = postsRef.docs[0]
