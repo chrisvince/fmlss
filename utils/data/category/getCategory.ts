@@ -41,7 +41,7 @@ const getCategory: GetCategory = async (slug, { db: dbProp } = {}) => {
       .get()
 
     if (categoriesRef.empty) {
-      throw new Error('Category not found')
+      return null
     }
 
     doc = categoriesRef.docs[0]
@@ -50,7 +50,7 @@ const getCategory: GetCategory = async (slug, { db: dbProp } = {}) => {
   }
 
   return {
-    data: data,
+    data,
     doc: !isServer ? doc : null,
   }
 }
