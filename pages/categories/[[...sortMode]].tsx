@@ -100,15 +100,18 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const miniHashtags = await getHashtags({
-    cacheKey: miniHashtagsCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  })
+  const getMiniHashtags = () =>
+    getHashtags({
+      cacheKey: miniHashtagsCacheKey,
+      cacheTime: MINI_LIST_CACHE_TIME,
+      db: adminDb,
+      limit: MINI_LIST_COUNT,
+    })
 
   if (isInternalRequest(req)) {
+    const miniHashtags = await getMiniHashtags()
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
     return {
       props: {
         fallback: {
@@ -120,10 +123,10 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const categories = await getCategories({
-    db: adminDb,
-    sortMode,
-  })
+  const [categories, miniHashtags] = await Promise.all([
+    getCategories({ db: adminDb, sortMode }),
+    getMiniHashtags(),
+  ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {

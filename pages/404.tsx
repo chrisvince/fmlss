@@ -30,21 +30,26 @@ export const getStaticProps = async () => {
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
 
-  const miniHashtags = await getHashtags({
-    cacheKey: miniHashtagsCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  })
+  const getMiniHashtags = () =>
+    getHashtags({
+      cacheKey: miniHashtagsCacheKey,
+      cacheTime: MINI_LIST_CACHE_TIME,
+      db: adminDb,
+      limit: MINI_LIST_COUNT,
+    })
 
-  const miniCategories = CATEGORIES_ENABLED
-    ? await getCategories({
-        cacheKey: miniCategoriesCacheKey,
-        cacheTime: MINI_LIST_CACHE_TIME,
-        db: adminDb,
-        limit: MINI_LIST_COUNT,
-      })
-    : []
+  const getMiniCategories = () =>
+    getCategories({
+      cacheKey: miniCategoriesCacheKey,
+      cacheTime: MINI_LIST_CACHE_TIME,
+      db: adminDb,
+      limit: MINI_LIST_COUNT,
+    })
+
+  const [miniHashtags, miniCategories] = await Promise.all([
+    getMiniHashtags(),
+    CATEGORIES_ENABLED ? getMiniCategories() : [],
+  ])
 
   return {
     props: {

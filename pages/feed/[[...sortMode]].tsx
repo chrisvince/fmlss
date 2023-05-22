@@ -94,24 +94,30 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const miniHashtags = await getHashtags({
-    cacheKey: miniHashtagsCacheKey,
-    cacheTime: MINI_LIST_CACHE_TIME,
-    db: adminDb,
-    limit: MINI_LIST_COUNT,
-  })
+  const getMiniHashtags = () =>
+    getHashtags({
+      cacheKey: miniHashtagsCacheKey,
+      cacheTime: MINI_LIST_CACHE_TIME,
+      db: adminDb,
+      limit: MINI_LIST_COUNT,
+    })
 
-  const miniCategories = CATEGORIES_ENABLED
-    ? await getCategories({
-        cacheKey: miniCategoriesCacheKey,
-        cacheTime: MINI_LIST_CACHE_TIME,
-        db: adminDb,
-        limit: MINI_LIST_COUNT,
-      })
-    : []
+  const getMiniCategories = () =>
+    getCategories({
+      cacheKey: miniCategoriesCacheKey,
+      cacheTime: MINI_LIST_CACHE_TIME,
+      db: adminDb,
+      limit: MINI_LIST_COUNT,
+    })
 
   if (isInternalRequest(req)) {
+    const [miniHashtags, miniCategories] = await Promise.all([
+      getMiniHashtags(),
+      CATEGORIES_ENABLED ? getMiniCategories() : [],
+    ])
+
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
     return {
       props: {
         fallback: {
@@ -126,13 +132,18 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const posts = await getPostFeed({
-    db: adminDb,
-    sortMode,
-    uid,
-  })
+  const [posts, miniHashtags, miniCategories] = await Promise.all([
+    getPostFeed({
+      db: adminDb,
+      sortMode,
+      uid,
+    }),
+    getMiniHashtags(),
+    CATEGORIES_ENABLED ? getMiniCategories() : [],
+  ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
   return {
     props: {
       fallback: {
