@@ -9,9 +9,10 @@ import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { CategorySortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
 import MiniHashtagsSection from '../MiniHashtagsSection'
-import unslugify from '../../utils/unslugify'
 import useTracking from '../../utils/tracking/useTracking'
 import { useEffect, useState } from 'react'
+import useCategory from '../../utils/data/category/useCategory'
+import Error from 'next/error'
 
 type PropTypes = {
   slug: string
@@ -47,6 +48,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
   const {
     query: { sort },
   } = useRouter()
+  const { category, isLoading: categoryIsLoading } = useCategory(slug)
   const { track } = useTracking()
 
   const pathSortMode = (SORT_MODE_MAP[sort as string] ??
@@ -54,34 +56,43 @@ const CategoryPage = ({ slug }: PropTypes) => {
 
   const [sortMode, setSortMode] = useState<CategorySortMode>(pathSortMode)
 
-  const { isLoading, loadMore, moreToLoad, posts, likePost } = useCategoryPosts(
-    slug,
-    { sortMode }
-  )
+  const {
+    isLoading: postsAreLoading,
+    likePost,
+    loadMore,
+    moreToLoad,
+    posts,
+  } = useCategoryPosts(slug, { sortMode })
 
   useEffect(() => {
     setSortMode(pathSortMode)
   }, [pathSortMode])
 
-  const categoryName = unslugify(slug)
   const sortOptions = generateSortOptions(slug)
 
   useEffect(() => {
-    if (isLoading) return
+    if (categoryIsLoading) return
     track(
       'category',
       {
-        category: categoryName,
+        category: category?.data.name,
         slug,
       },
       { onceOnly: true }
     )
-  }, [categoryName, isLoading, slug, track])
+  }, [category?.data.name, categoryIsLoading, slug, track])
+
+  if (
+    (!categoryIsLoading && !category) ||
+    (!postsAreLoading && posts.length === 0)
+  ) {
+    return <Error statusCode={404} />
+  }
 
   return (
     <Page
-      description={`See posts in the ${categoryName} category`}
-      pageTitle={categoryName}
+      description={`See posts in the ${category?.data.name} category`}
+      pageTitle={category?.data.name}
       rightPanelChildren={<MiniHashtagsSection />}
     >
       <MobileContainer>
@@ -100,7 +111,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <Feed
-        isLoading={isLoading}
+        isLoading={categoryIsLoading}
         key={sortMode}
         moreToLoad={moreToLoad}
         onLikePost={likePost}

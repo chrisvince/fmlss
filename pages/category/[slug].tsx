@@ -9,6 +9,7 @@ import { SWRConfig } from 'swr'
 import CategoryPage from '../../components/CategoryPage'
 import type { CategorySortMode } from '../../types'
 import {
+  createCategoryCacheKey,
   createCategoryPostsCacheKey,
   createMiniHashtagsCacheKey,
 } from '../../utils/createCacheKeys'
@@ -17,9 +18,8 @@ import getCategoryPosts from '../../utils/data/posts/getCategoryPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
-import useCategory from '../../utils/data/category/useCategory'
-import Error from 'next/error'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
+import getCategory from '../../utils/data/category/getCategory'
 
 const {
   CATEGORIES_ENABLED,
@@ -35,19 +35,11 @@ interface PropTypes {
   slug: string
 }
 
-const Category = ({ fallback, slug }: PropTypes) => {
-  const { category, isLoading } = useCategory(slug)
-
-  if (!isLoading && !category) {
-    return <Error statusCode={404} />
-  }
-
-  return (
-    <SWRConfig value={{ fallback }}>
-      <CategoryPage slug={slug} />
-    </SWRConfig>
-  )
-}
+const Category = ({ fallback, slug }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <CategoryPage slug={slug} />
+  </SWRConfig>
+)
 
 const SORT_MODE_MAP: {
   [key: string]: string
@@ -83,6 +75,7 @@ const getServerSidePropsFn = async ({
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as CategorySortMode
   const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
   const categoryPostsCacheKey = createCategoryPostsCacheKey(slug, { sortMode })
+  const categoryCacheKey = createCategoryCacheKey(slug)
   const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
 
   if (uid && !userHasUsername) {
@@ -122,10 +115,20 @@ const getServerSidePropsFn = async ({
     sortMode,
   })
 
+  const category = await getCategory(slug, { db: adminDb })
+
+  if (!category || posts.length === 0) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      notFound: true,
+    }
+  }
+
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {
+        [categoryCacheKey]: category,
         [categoryPostsCacheKey]: posts,
         [miniHashtagsCacheKey]: miniHashtags,
       },
