@@ -8,7 +8,7 @@ import useCategoryPosts from '../../utils/data/posts/useCategoryPosts'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { CategorySortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
-import MiniHashtagsSection from '../MiniHashtagsSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import useTracking from '../../utils/tracking/useTracking'
 import { useEffect, useState } from 'react'
 import useCategory from '../../utils/data/category/useCategory'
@@ -93,7 +93,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
     <Page
       description={`See posts in the ${category?.data.name} category`}
       pageTitle={category?.data.name}
-      rightPanelChildren={<MiniHashtagsSection />}
+      rightPanelChildren={<SidebarHashtagsSection />}
     >
       <MobileContainer>
         <ViewSelectorButtonGroup>

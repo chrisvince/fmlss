@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import MiniCategoriesSection from '../MiniCategoriesSection'
-import MiniHashtagsSection from '../MiniHashtagsSection'
+import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import Page from '../Page'
 import TextAndCta from '../TextAndCta'
 import constants from '../../constants'
@@ -13,8 +13,8 @@ const NotFoundPage = () => (
     pageTitle="Not found"
     rightPanelChildren={
       <>
-        <MiniHashtagsSection />
-        {CATEGORIES_ENABLED && <MiniCategoriesSection />}
+        <SidebarHashtagsSection />
+        {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
       </>
     }
   >

@@ -9,8 +9,8 @@ import Feed from '../Feed'
 import useHashtagPosts from '../../utils/data/posts/useHashtagPosts'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { HashtagSortMode } from '../../types'
-import MiniCategoriesSection from '../MiniCategoriesSection'
-import MiniHashtagsSection from '../MiniHashtagsSection'
+import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
@@ -98,8 +98,8 @@ const HashtagPage = ({ slug }: PropTypes) => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <MiniHashtagsSection />
-          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
+          <SidebarHashtagsSection />
+          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
         </>
       }
     >

@@ -10,7 +10,7 @@ import HashtagsPage from '../../components/HashtagsPage'
 import type { HashtagsSortMode } from '../../types'
 import {
   createHashtagsCacheKey,
-  createMiniCategoriesCacheKey,
+  createSidebarCategoriesCacheKey,
 } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
@@ -26,8 +26,8 @@ import {
 const {
   CATEGORIES_ENABLED,
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  MINI_LIST_CACHE_TIME,
-  MINI_LIST_COUNT,
+  SIDEBAR_LIST_CACHE_TIME,
+  SIDEBAR_LIST_COUNT,
 } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
@@ -73,7 +73,7 @@ const getServerSidePropsFn = async ({
   }
 
   const hashtagsCacheKey = createHashtagsCacheKey(sortMode)
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
 
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
@@ -90,23 +90,25 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const getMiniCategories = () =>
+  const getsidebarCategories = () =>
     getCategories({
-      cacheKey: miniCategoriesCacheKey,
-      cacheTime: MINI_LIST_CACHE_TIME,
+      cacheKey: sidebarCategoriesCacheKey,
+      cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db: adminDb,
-      limit: MINI_LIST_COUNT,
+      limit: SIDEBAR_LIST_COUNT,
     })
 
   if (isInternalRequest(req)) {
-    const miniCategories = CATEGORIES_ENABLED ? await getMiniCategories() : []
+    const sidebarCategories = CATEGORIES_ENABLED
+      ? await getsidebarCategories()
+      : []
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
           ...(CATEGORIES_ENABLED
-            ? { [miniCategoriesCacheKey]: miniCategories }
+            ? { [sidebarCategoriesCacheKey]: sidebarCategories }
             : {}),
           [hashtagsCacheKey]: null,
         },
@@ -115,16 +117,16 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [hashtags, miniCategories] = await Promise.all([
+  const [hashtags, sidebarCategories] = await Promise.all([
     getHashtags({ db: adminDb, sortMode }),
-    CATEGORIES_ENABLED ? getMiniCategories() : [],
+    CATEGORIES_ENABLED ? getsidebarCategories() : [],
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {
-        [miniCategoriesCacheKey]: miniCategories,
+        [sidebarCategoriesCacheKey]: sidebarCategories,
         [hashtagsCacheKey]: hashtags,
       },
       key: hashtagsCacheKey,

@@ -77,8 +77,8 @@ const createCategoryPostsCacheKey = (
 
 const createCategoryCacheKey = (slug: string) => `category/${slug}`
 
-const createMiniHashtagsCacheKey = () => 'hashtags/mini'
-const createMiniCategoriesCacheKey = () => 'categories/mini'
+const createSidebarHashtagsCacheKey = () => 'sidebar/hashtags'
+const createSidebarCategoriesCacheKey = () => 'sidebar/categories'
 
 const createUserCacheKey = (uid: string | null) => (uid ? `user/${uid}` : null)
 
@@ -95,8 +95,8 @@ export {
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
   createHasUsernameCacheKey,
-  createMiniCategoriesCacheKey,
-  createMiniHashtagsCacheKey,
+  createSidebarCategoriesCacheKey,
+  createSidebarHashtagsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,

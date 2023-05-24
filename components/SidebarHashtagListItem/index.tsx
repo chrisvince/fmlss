@@ -1,22 +1,22 @@
 import { Hashtag } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
 import ListItemFrame from '../ListItemFrame'
-import MiniListItem from '../MiniListItem'
+import SidebarListItem from '../SidebarListItem'
 
 type PropTypes = {
   hashtag: Hashtag
 }
 
-const MiniHashtagListItem = ({ hashtag }: PropTypes) => (
+const SidebarHashtagListItem = ({ hashtag }: PropTypes) => (
   <ListItemFrame
     href={`/hashtag/${encodeURIComponent(hashtag.data.slug)}`}
-    mini
+    isSidebar
   >
-    <MiniListItem
+    <SidebarListItem
       leftText={hashtag.data.display}
       rightText={formatPostCount(hashtag.data.usageCount)}
     />
   </ListItemFrame>
 )
 
-export default MiniHashtagListItem
+export default SidebarHashtagListItem

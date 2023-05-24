@@ -1,8 +1,8 @@
 import Page from '../Page'
 import Feed from '../Feed'
 import useUserPosts from '../../utils/data/userPosts/useUserPosts'
-import MiniHashtagsSection from '../MiniHashtagsSection'
-import MiniCategoriesSection from '../MiniCategoriesSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
+import SidebarCategoriesSection from '../SidebarCategoriesSection'
 import constants from '../../constants'
 
 const { CATEGORIES_ENABLED } = constants
@@ -19,8 +19,8 @@ const UserPostsPage = () => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <MiniHashtagsSection />
-          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
+          <SidebarHashtagsSection />
+          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
         </>
       }
     >

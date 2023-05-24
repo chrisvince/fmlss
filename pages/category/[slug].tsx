@@ -11,7 +11,7 @@ import type { CategorySortMode } from '../../types'
 import {
   createCategoryCacheKey,
   createCategoryPostsCacheKey,
-  createMiniHashtagsCacheKey,
+  createSidebarHashtagsCacheKey,
 } from '../../utils/createCacheKeys'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getCategoryPosts from '../../utils/data/posts/getCategoryPosts'
@@ -24,8 +24,8 @@ import getCategory from '../../utils/data/category/getCategory'
 const {
   CATEGORIES_ENABLED,
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  MINI_LIST_CACHE_TIME,
-  MINI_LIST_COUNT,
+  SIDEBAR_LIST_CACHE_TIME,
+  SIDEBAR_LIST_COUNT,
 } = constants
 
 interface PropTypes {
@@ -73,7 +73,7 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const uid = AuthUser.id
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as CategorySortMode
-  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
+  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const categoryPostsCacheKey = createCategoryPostsCacheKey(slug, { sortMode })
   const categoryCacheKey = createCategoryCacheKey(slug)
   const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
@@ -88,23 +88,23 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const getMiniHashtags = () =>
+  const getSidebarHashtags = () =>
     getHashtags({
-      cacheKey: miniHashtagsCacheKey,
-      cacheTime: MINI_LIST_CACHE_TIME,
+      cacheKey: sidebarHashtagsCacheKey,
+      cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db: adminDb,
-      limit: MINI_LIST_COUNT,
+      limit: SIDEBAR_LIST_COUNT,
     })
 
   if (isInternalRequest(req)) {
-    const miniHashtags = await getMiniHashtags()
+    const sidebarHashtags = await getSidebarHashtags()
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
           [categoryPostsCacheKey]: null,
-          [miniHashtagsCacheKey]: miniHashtags,
+          [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
         slug,
         key: categoryPostsCacheKey,
@@ -112,14 +112,14 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, category, miniHashtags] = await Promise.all([
+  const [posts, category, sidebarHashtags] = await Promise.all([
     getCategoryPosts(slug, {
       db: adminDb,
       uid,
       sortMode,
     }),
     getCategory(slug, { db: adminDb }),
-    getMiniHashtags(),
+    getSidebarHashtags(),
   ])
 
   if (!category || posts.length === 0) {
@@ -135,7 +135,7 @@ const getServerSidePropsFn = async ({
       fallback: {
         [categoryCacheKey]: category,
         [categoryPostsCacheKey]: posts,
-        [miniHashtagsCacheKey]: miniHashtags,
+        [sidebarHashtagsCacheKey]: sidebarHashtags,
       },
       slug,
       key: categoryPostsCacheKey,

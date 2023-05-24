@@ -54,8 +54,8 @@ interface CONSTANTS {
     NEW_POST_PROMPT: string
     NEW_REPLY_PROMPT: string
   }
-  MINI_LIST_CACHE_TIME: number
-  MINI_LIST_COUNT: number
+  SIDEBAR_LIST_CACHE_TIME: number
+  SIDEBAR_LIST_COUNT: number
   NESTED_POST_MARGIN_LEFT: number
   PAGE_SORT_SELECTOR_HEIGHT: string
   PAGE_TITLE_HEIGHT: string
@@ -142,8 +142,8 @@ const constants: CONSTANTS = {
     NEW_POST_PROMPT: "What's on your mind?",
     NEW_REPLY_PROMPT: 'Write a reply',
   },
-  MINI_LIST_CACHE_TIME: hoursToMs(12),
-  MINI_LIST_COUNT: 6,
+  SIDEBAR_LIST_CACHE_TIME: hoursToMs(12),
+  SIDEBAR_LIST_COUNT: 6,
   NESTED_POST_MARGIN_LEFT: 4,
   PAGE_SORT_SELECTOR_HEIGHT: '45px',
   PAGE_TITLE_HEIGHT: '34.59px',

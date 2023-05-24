@@ -5,8 +5,8 @@ import Page from '../Page'
 import Feed from '../Feed'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
 import type { FeedSortMode } from '../../types'
-import MiniHashtagsSection from '../MiniHashtagsSection'
-import MiniCategoriesSection from '../MiniCategoriesSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
+import SidebarCategoriesSection from '../SidebarCategoriesSection'
 import constants from '../../constants'
 import InlineCreatePost from '../InlineCreatePost'
 
@@ -42,8 +42,8 @@ const FeedPage = () => {
       pageTitle="Feed"
       rightPanelChildren={
         <>
-          <MiniHashtagsSection />
-          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
+          <SidebarHashtagsSection />
+          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
         </>
       }
     >

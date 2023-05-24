@@ -8,7 +8,7 @@ import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { HashtagsSortMode } from '../../types'
 import useHashtags from '../../utils/data/hashtags/useHashtags'
 import HashtagsList from '../HashtagsList'
-import MiniCategoriesSection from '../MiniCategoriesSection'
+import SidebarCategoriesSection from '../SidebarCategoriesSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 
@@ -55,7 +55,7 @@ const HashtagsPage = () => {
     <Page
       description="See posts by hashtags posted on Fameless"
       pageTitle="Hashtags"
-      rightPanelChildren={CATEGORIES_ENABLED && <MiniCategoriesSection />}
+      rightPanelChildren={CATEGORIES_ENABLED && <SidebarCategoriesSection />}
     >
       <MobileContainer>
         <ViewSelectorButtonGroup>

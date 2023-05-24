@@ -9,7 +9,7 @@ interface PropTypes {
   children: React.ReactNode
   component?: React.ElementType
   href: string
-  mini?: boolean
+  isSidebar?: boolean
 }
 
 const ListItemFrame = ({
@@ -18,7 +18,7 @@ const ListItemFrame = ({
   children,
   component,
   href,
-  mini = false,
+  isSidebar = false,
 }: PropTypes) => {
   const [highlight, setHighlight] = useState(false)
   const { prefetch, push: navigate } = useRouter()
@@ -51,7 +51,7 @@ const ListItemFrame = ({
         cursor: 'pointer',
         borderBottom: '1px solid',
         borderBottomColor: 'divider',
-        padding: mini ? 1 : 2,
+        padding: isSidebar ? 1 : 2,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
         backgroundColor: highlight ? 'action.hover' : undefined,

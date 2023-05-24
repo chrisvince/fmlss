@@ -8,7 +8,7 @@ import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { CategoriesSortMode } from '../../types'
 import CategoriesList from '../CategoriesList'
 import useCategories from '../../utils/data/categories/useCategories'
-import MiniHashtagsSection from '../MiniHashtagsSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 
 const SORT_MODE_OPTIONS = [
@@ -52,7 +52,7 @@ const CategoriesPage = () => {
     <Page
       description="See categories of posts made on Fameless"
       pageTitle="Categories"
-      rightPanelChildren={<MiniHashtagsSection />}
+      rightPanelChildren={<SidebarHashtagsSection />}
     >
       <MobileContainer>
         <ViewSelectorButtonGroup>

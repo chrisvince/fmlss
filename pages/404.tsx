@@ -3,14 +3,15 @@ import { SWRConfig } from 'swr'
 import NotFoundPage from '../components/NotFoundPage'
 import constants from '../constants'
 import {
-  createMiniCategoriesCacheKey,
-  createMiniHashtagsCacheKey,
+  createSidebarCategoriesCacheKey,
+  createSidebarHashtagsCacheKey,
 } from '../utils/createCacheKeys'
 import getCategories from '../utils/data/categories/getCategories'
 import getHashtags from '../utils/data/hashtags/getHashtags'
 import msToSeconds from '../utils/msToSeconds'
 
-const { CATEGORIES_ENABLED, MINI_LIST_CACHE_TIME, MINI_LIST_COUNT } = constants
+const { CATEGORIES_ENABLED, SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } =
+  constants
 
 interface Props {
   fallback: {
@@ -27,40 +28,40 @@ const NotFound = ({ fallback }: Props) => (
 export const getStaticProps = async () => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
+  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
 
-  const getMiniHashtags = () =>
+  const getSidebarHashtags = () =>
     getHashtags({
-      cacheKey: miniHashtagsCacheKey,
-      cacheTime: MINI_LIST_CACHE_TIME,
+      cacheKey: sidebarHashtagsCacheKey,
+      cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db: adminDb,
-      limit: MINI_LIST_COUNT,
+      limit: SIDEBAR_LIST_COUNT,
     })
 
-  const getMiniCategories = () =>
+  const getsidebarCategories = () =>
     getCategories({
-      cacheKey: miniCategoriesCacheKey,
-      cacheTime: MINI_LIST_CACHE_TIME,
+      cacheKey: sidebarCategoriesCacheKey,
+      cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db: adminDb,
-      limit: MINI_LIST_COUNT,
+      limit: SIDEBAR_LIST_COUNT,
     })
 
-  const [miniHashtags, miniCategories] = await Promise.all([
-    getMiniHashtags(),
-    CATEGORIES_ENABLED ? getMiniCategories() : [],
+  const [sidebarHashtags, sidebarCategories] = await Promise.all([
+    getSidebarHashtags(),
+    CATEGORIES_ENABLED ? getsidebarCategories() : [],
   ])
 
   return {
     props: {
       fallback: {
         ...(CATEGORIES_ENABLED
-          ? { [miniCategoriesCacheKey]: miniCategories }
+          ? { [sidebarCategoriesCacheKey]: sidebarCategories }
           : {}),
-        [miniHashtagsCacheKey]: miniHashtags,
+        [sidebarHashtagsCacheKey]: sidebarHashtags,
       },
     },
-    revalidate: msToSeconds(MINI_LIST_CACHE_TIME),
+    revalidate: msToSeconds(SIDEBAR_LIST_CACHE_TIME),
   }
 }
 

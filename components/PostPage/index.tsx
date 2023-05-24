@@ -7,8 +7,8 @@ import RepliesList from '../RepliesList'
 import Page from '../Page'
 import truncateString from '../../utils/truncateString'
 import usePost from '../../utils/data/post/usePost'
-import MiniHashtagsSection from '../MiniHashtagsSection'
-import MiniCategoriesSection from '../MiniCategoriesSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
+import SidebarCategoriesSection from '../SidebarCategoriesSection'
 import PageSpinner from '../PageSpinner'
 import useUser from '../../utils/data/user/useUser'
 import Error from 'next/error'
@@ -95,8 +95,8 @@ const PostPage = ({ slug }: PropTypes) => {
         description={post?.data.body}
         rightPanelChildren={
           <>
-            <MiniHashtagsSection />
-            {CATEGORIES_ENABLED && <MiniCategoriesSection />}
+            <SidebarHashtagsSection />
+            {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
           </>
         }
       >

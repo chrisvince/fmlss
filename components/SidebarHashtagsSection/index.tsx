@@ -1,10 +1,10 @@
 import { Box } from '@mui/system'
 
 import usePopularHashtags from '../../utils/data/hashtags/usePopularHashtags'
-import MiniHashtagsList from '../MiniHashtagsList'
-import MiniSectionHeading from '../MiniSectionHeading'
+import SidebarHashtagsList from '../SidebarHashtagsList'
+import SidebarSectionHeading from '../SidebarSectionHeading'
 
-const MiniHashtagsSection = () => {
+const SidebarHashtagsSection = () => {
   const { isLoading, hashtags } = usePopularHashtags({
     swrConfig: {
       revalidateIfStale: false,
@@ -18,10 +18,10 @@ const MiniHashtagsSection = () => {
 
   return (
     <Box>
-      <MiniSectionHeading>Popular Hashtags</MiniSectionHeading>
-      <MiniHashtagsList hashtags={hashtags} isLoading={isLoading} />
+      <SidebarSectionHeading>Popular Hashtags</SidebarSectionHeading>
+      <SidebarHashtagsList hashtags={hashtags} isLoading={isLoading} />
     </Box>
   )
 }
 
-export default MiniHashtagsSection
+export default SidebarHashtagsSection

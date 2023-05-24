@@ -1,8 +1,8 @@
 import Error from 'next/error'
 
 import usePost from '../../utils/data/post/usePost'
-import MiniCategoriesSection from '../MiniCategoriesSection'
-import MiniHashtagsSection from '../MiniHashtagsSection'
+import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import NewPostForm from '../NewPostForm'
 import Page from '../Page'
@@ -28,8 +28,8 @@ const ReplyPage = ({ slug }: Props) => {
       pageTitle="Reply to Post"
       rightPanelChildren={
         <>
-          <MiniHashtagsSection />
-          {CATEGORIES_ENABLED && <MiniCategoriesSection />}
+          <SidebarHashtagsSection />
+          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
         </>
       }
     >

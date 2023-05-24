@@ -6,7 +6,7 @@ interface PropTypes {
   rightText: string
 }
 
-const MiniListItem = ({ leftText, rightText }: PropTypes) => {
+const SidebarListItem = ({ leftText, rightText }: PropTypes) => {
   return (
     <Box
       sx={{
@@ -23,4 +23,4 @@ const MiniListItem = ({ leftText, rightText }: PropTypes) => {
   )
 }
 
-export default MiniListItem
+export default SidebarListItem

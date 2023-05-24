@@ -2,11 +2,11 @@ import useSWR, { SWRConfiguration } from 'swr'
 import { SWRInfiniteConfiguration } from 'swr/infinite'
 
 import { Hashtag } from '../../../types'
-import { createMiniHashtagsCacheKey } from '../../createCacheKeys'
+import { createSidebarHashtagsCacheKey } from '../../createCacheKeys'
 import getHashtags from './getHashtags'
 import constants from '../../../constants'
 
-const { MINI_LIST_COUNT } = constants
+const { SIDEBAR_LIST_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnMount: true,
@@ -23,14 +23,14 @@ type UsePopularHashtags = (options?: {
 }
 
 const usePopularHashtags: UsePopularHashtags = ({ swrConfig = {} } = {}) => {
-  const cacheKey = createMiniHashtagsCacheKey()
+  const cacheKey = createSidebarHashtagsCacheKey()
 
   const { data, error, isLoading, isValidating } = useSWR(
     cacheKey,
     () =>
       getHashtags({
         sortMode: 'popular',
-        limit: MINI_LIST_COUNT,
+        limit: SIDEBAR_LIST_COUNT,
       }),
     {
       ...DEFAULT_SWR_CONFIG,

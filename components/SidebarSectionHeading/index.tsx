@@ -5,7 +5,7 @@ interface PropTypes {
   children: React.ReactNode
 }
 
-const MiniSectionHeading = ({ children }: PropTypes) => {
+const SidebarSectionHeading = ({ children }: PropTypes) => {
   return (
     <Box
       sx={{
@@ -17,4 +17,4 @@ const MiniSectionHeading = ({ children }: PropTypes) => {
   )
 }
 
-export default MiniSectionHeading
+export default SidebarSectionHeading

@@ -1,13 +1,13 @@
 import { Box, CircularProgress } from '@mui/material'
 import { Category } from '../../types'
-import MiniCategoryListItem from '../MiniCategoryListItem'
+import SidebarCategoryListItem from '../SidebarCategoryListItem'
 import PostList from '../PostList'
 
 type PropTypes = {
   isLoading?: boolean
   categories: Category[]
 }
-const MiniCategoriesList = ({ isLoading, categories }: PropTypes) => {
+const SidebarCategoriesList = ({ isLoading, categories }: PropTypes) => {
   if (isLoading) {
     return (
       <Box
@@ -29,7 +29,7 @@ const MiniCategoriesList = ({ isLoading, categories }: PropTypes) => {
       <PostList>
         {categories.map(category => (
           <li key={category.data.id}>
-            <MiniCategoryListItem category={category} />
+            <SidebarCategoryListItem category={category} />
           </li>
         ))}
       </PostList>
@@ -37,4 +37,4 @@ const MiniCategoriesList = ({ isLoading, categories }: PropTypes) => {
   )
 }
 
-export default MiniCategoriesList
+export default SidebarCategoriesList

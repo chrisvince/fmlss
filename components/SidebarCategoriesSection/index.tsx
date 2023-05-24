@@ -1,10 +1,10 @@
 import { Box } from '@mui/system'
 
 import usePopularCategories from '../../utils/data/categories/usePopularCategories'
-import MiniCategoriesList from '../MiniCategoriesList'
-import MiniSectionHeading from '../MiniSectionHeading'
+import SidebarCategoriesList from '../SidebarCategoriesList'
+import SidebarSectionHeading from '../SidebarSectionHeading'
 
-const MiniCategoriesSection = () => {
+const SidebarCategoriesSection = () => {
   const { isLoading, categories } = usePopularCategories({
     swrConfig: {
       revalidateIfStale: false,
@@ -18,10 +18,10 @@ const MiniCategoriesSection = () => {
 
   return (
     <Box>
-      <MiniSectionHeading>Popular Categories</MiniSectionHeading>
-      <MiniCategoriesList categories={categories} isLoading={isLoading} />
+      <SidebarSectionHeading>Popular Categories</SidebarSectionHeading>
+      <SidebarCategoriesList categories={categories} isLoading={isLoading} />
     </Box>
   )
 }
 
-export default MiniCategoriesSection
+export default SidebarCategoriesSection

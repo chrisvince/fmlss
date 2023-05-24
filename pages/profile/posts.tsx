@@ -11,8 +11,8 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import {
-  createMiniCategoriesCacheKey,
-  createMiniHashtagsCacheKey,
+  createSidebarCategoriesCacheKey,
+  createSidebarHashtagsCacheKey,
   createUserPostsCacheKey,
 } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
@@ -26,8 +26,8 @@ import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername
 const {
   CATEGORIES_ENABLED,
   GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  MINI_LIST_CACHE_TIME,
-  MINI_LIST_COUNT,
+  SIDEBAR_LIST_CACHE_TIME,
+  SIDEBAR_LIST_COUNT,
 } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
@@ -74,29 +74,29 @@ const getServerSidePropsFn = async ({
   }
 
   const userPostsCacheKey = createUserPostsCacheKey(uid)
-  const miniHashtagsCacheKey = createMiniHashtagsCacheKey()
-  const miniCategoriesCacheKey = createMiniCategoriesCacheKey()
+  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
+  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
 
-  const getMiniHashtags = () =>
+  const getSidebarHashtags = () =>
     getHashtags({
-      cacheKey: miniHashtagsCacheKey,
-      cacheTime: MINI_LIST_CACHE_TIME,
+      cacheKey: sidebarHashtagsCacheKey,
+      cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db: adminDb,
-      limit: MINI_LIST_COUNT,
+      limit: SIDEBAR_LIST_COUNT,
     })
 
-  const getMiniCategories = () =>
+  const getsidebarCategories = () =>
     getCategories({
-      cacheKey: miniCategoriesCacheKey,
-      cacheTime: MINI_LIST_CACHE_TIME,
+      cacheKey: sidebarCategoriesCacheKey,
+      cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db: adminDb,
-      limit: MINI_LIST_COUNT,
+      limit: SIDEBAR_LIST_COUNT,
     })
 
   if (isInternalRequest(req)) {
-    const [miniHashtags, miniCategories] = await Promise.all([
-      getMiniHashtags(),
-      CATEGORIES_ENABLED ? getMiniCategories() : [],
+    const [sidebarHashtags, sidebarCategories] = await Promise.all([
+      getSidebarHashtags(),
+      CATEGORIES_ENABLED ? getsidebarCategories() : [],
     ])
 
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -105,9 +105,9 @@ const getServerSidePropsFn = async ({
       props: {
         fallback: {
           ...(CATEGORIES_ENABLED
-            ? { [miniCategoriesCacheKey]: miniCategories }
+            ? { [sidebarCategoriesCacheKey]: sidebarCategories }
             : {}),
-          [miniHashtagsCacheKey]: miniHashtags,
+          [sidebarHashtagsCacheKey]: sidebarHashtags,
           [userPostsCacheKey]: null,
         },
         key: userPostsCacheKey,
@@ -115,10 +115,10 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, miniHashtags, miniCategories] = await Promise.all([
+  const [posts, sidebarHashtags, sidebarCategories] = await Promise.all([
     getUserPosts(uid, { db: adminDb, type: 'post' }),
-    getMiniHashtags(),
-    CATEGORIES_ENABLED ? getMiniCategories() : [],
+    getSidebarHashtags(),
+    CATEGORIES_ENABLED ? getsidebarCategories() : [],
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -126,8 +126,8 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [miniCategoriesCacheKey]: miniCategories,
-        [miniHashtagsCacheKey]: miniHashtags,
+        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarHashtagsCacheKey]: sidebarHashtags,
         [userPostsCacheKey]: posts,
       },
       key: userPostsCacheKey,
