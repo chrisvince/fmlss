@@ -24,11 +24,7 @@ import usePost from '../../../utils/data/post/usePost'
 import checkIfUserHasUsername from '../../../utils/data/user/checkIfUserHasUsername'
 import fetchSidebarData from '../../../utils/data/sidebar/fetchSidebarData'
 
-const {
-  CATEGORIES_ENABLED,
-  GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  POST_REPLIES_SSR,
-} = constants
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL, POST_REPLIES_SSR } = constants
 
 interface PropTypes {
   fallback: {
@@ -93,12 +89,8 @@ const getServerSidePropsFn = async ({
     return {
       props: {
         fallback: {
-          ...(CATEGORIES_ENABLED
-            ? { [sidebarCategoriesCacheKey]: sidebarCategories }
-            : {}),
+          [sidebarCategoriesCacheKey]: sidebarCategories,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
-          [postCacheKey]: null,
-          [postRepliesCacheKey]: null,
         },
         key: postCacheKey,
       },

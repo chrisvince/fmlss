@@ -92,11 +92,10 @@ const getServerSidePropsFn = async ({
     return {
       props: {
         fallback: {
-          [categoryPostsCacheKey]: null,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
         slug,
-        key: categoryPostsCacheKey,
+        key: categoryCacheKey,
       },
     }
   }
@@ -127,7 +126,7 @@ const getServerSidePropsFn = async ({
         [sidebarHashtagsCacheKey]: sidebarHashtags,
       },
       slug,
-      key: categoryPostsCacheKey,
+      key: categoryCacheKey,
     },
   }
 }

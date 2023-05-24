@@ -20,7 +20,7 @@ import { NextApiRequest } from 'next'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 
-const { CATEGORIES_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const DEFAULT_POST_TYPE = 'post'
 
@@ -89,11 +89,8 @@ const getServerSidePropsFn = async ({
     return {
       props: {
         fallback: {
-          ...(CATEGORIES_ENABLED
-            ? { [sidebarCategoriesCacheKey]: sidebarCategories }
-            : {}),
+          [sidebarCategoriesCacheKey]: sidebarCategories,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
-          [hashtagPostsCacheKey]: null,
         },
         slug,
         key: hashtagPostsCacheKey,

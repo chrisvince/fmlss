@@ -109,7 +109,6 @@ const getServerSidePropsFn = async ({
       props: {
         fallback: {
           [sidebarHashtagsCacheKey]: sidebarHashtags,
-          [categoriesCacheKey]: null,
         },
         key: categoriesCacheKey,
       },
