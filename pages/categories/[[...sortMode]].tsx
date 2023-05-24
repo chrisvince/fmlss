@@ -14,7 +14,6 @@ import {
 } from '../../utils/createCacheKeys'
 import getCategories from '../../utils/data/categories/getCategories'
 import constants from '../../constants'
-import getHashtags from '../../utils/data/hashtags/getHashtags'
 import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
@@ -22,13 +21,10 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
+import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import { SidebarResourceKey } from '../../utils/data/sidebar/fetchSidebarData'
 
-const {
-  CATEGORIES_ENABLED,
-  GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  SIDEBAR_LIST_CACHE_TIME,
-  SIDEBAR_LIST_COUNT,
-} = constants
+const { CATEGORIES_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -100,16 +96,13 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const getSidebarHashtags = () =>
-    getHashtags({
-      cacheKey: sidebarHashtagsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
+  const sidebarDataPromise = fetchSidebarData({
+    db: adminDb,
+    exclude: [SidebarResourceKey.CATEGORIES],
+  })
 
   if (isInternalRequest(req)) {
-    const sidebarHashtags = await getSidebarHashtags()
+    const { sidebarHashtags } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
@@ -123,9 +116,9 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [categories, sidebarHashtags] = await Promise.all([
+  const [categories, { sidebarHashtags }] = await Promise.all([
     getCategories({ db: adminDb, sortMode }),
-    getSidebarHashtags(),
+    sidebarDataPromise,
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)

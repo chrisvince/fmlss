@@ -13,20 +13,14 @@ import {
   createSidebarCategoriesCacheKey,
   createSidebarHashtagsCacheKey,
 } from '../../utils/createCacheKeys'
-import getCategories from '../../utils/data/categories/getCategories'
-import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
+import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 
-const {
-  CATEGORIES_ENABLED,
-  GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  SIDEBAR_LIST_CACHE_TIME,
-  SIDEBAR_LIST_COUNT,
-} = constants
+const { CATEGORIES_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const DEFAULT_POST_TYPE = 'post'
 
@@ -86,29 +80,10 @@ const getServerSidePropsFn = async ({
   )
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
-
-  const getSidebarHashtags = () =>
-    getHashtags({
-      cacheKey: sidebarHashtagsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
-
-  const getsidebarCategories = () =>
-    getCategories({
-      cacheKey: sidebarCategoriesCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
+  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const [sidebarHashtags, sidebarCategories] = await Promise.all([
-      getSidebarHashtags(),
-      CATEGORIES_ENABLED ? getsidebarCategories() : [],
-    ])
-
+    const { sidebarHashtags, sidebarCategories } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
@@ -126,15 +101,14 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, sidebarHashtags, sidebarCategories] = await Promise.all([
+  const [posts, { sidebarHashtags, sidebarCategories }] = await Promise.all([
     getHashtagPosts(slug, {
       db: adminDb,
       uid,
       showType: DEFAULT_POST_TYPE,
       sortMode,
     }),
-    getSidebarHashtags(),
-    CATEGORIES_ENABLED ? getsidebarCategories() : [],
+    sidebarDataPromise,
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)

@@ -14,8 +14,6 @@ import {
   createSidebarHashtagsCacheKey,
   createPostFeedCacheKey,
 } from '../../utils/createCacheKeys'
-import getCategories from '../../utils/data/categories/getCategories'
-import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getPostFeed from '../../utils/data/posts/getPostFeed'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
@@ -24,13 +22,9 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
+import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 
-const {
-  CATEGORIES_ENABLED,
-  GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  SIDEBAR_LIST_CACHE_TIME,
-  SIDEBAR_LIST_COUNT,
-} = constants
+const { CATEGORIES_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -94,28 +88,10 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const getSidebarHashtags = () =>
-    getHashtags({
-      cacheKey: sidebarHashtagsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
-
-  const getsidebarCategories = () =>
-    getCategories({
-      cacheKey: sidebarCategoriesCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
+  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const [sidebarHashtags, sidebarCategories] = await Promise.all([
-      getSidebarHashtags(),
-      CATEGORIES_ENABLED ? getsidebarCategories() : [],
-    ])
-
+    const { sidebarCategories, sidebarHashtags } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
@@ -132,14 +108,13 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, sidebarHashtags, sidebarCategories] = await Promise.all([
+  const [posts, { sidebarHashtags, sidebarCategories }] = await Promise.all([
     getPostFeed({
       db: adminDb,
       sortMode,
       uid,
     }),
-    getSidebarHashtags(),
-    CATEGORIES_ENABLED ? getsidebarCategories() : [],
+    sidebarDataPromise,
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)

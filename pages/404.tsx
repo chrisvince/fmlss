@@ -6,12 +6,10 @@ import {
   createSidebarCategoriesCacheKey,
   createSidebarHashtagsCacheKey,
 } from '../utils/createCacheKeys'
-import getCategories from '../utils/data/categories/getCategories'
-import getHashtags from '../utils/data/hashtags/getHashtags'
 import msToSeconds from '../utils/msToSeconds'
+import fetchSidebarData from '../utils/data/sidebar/fetchSidebarData'
 
-const { CATEGORIES_ENABLED, SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } =
-  constants
+const { SIDEBAR_LIST_CACHE_TIME } = constants
 
 interface Props {
   fallback: {
@@ -31,33 +29,14 @@ export const getStaticProps = async () => {
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
 
-  const getSidebarHashtags = () =>
-    getHashtags({
-      cacheKey: sidebarHashtagsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
-
-  const getsidebarCategories = () =>
-    getCategories({
-      cacheKey: sidebarCategoriesCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
-
-  const [sidebarHashtags, sidebarCategories] = await Promise.all([
-    getSidebarHashtags(),
-    CATEGORIES_ENABLED ? getsidebarCategories() : [],
-  ])
+  const { sidebarHashtags, sidebarCategories } = await fetchSidebarData({
+    db: adminDb,
+  })
 
   return {
     props: {
       fallback: {
-        ...(CATEGORIES_ENABLED
-          ? { [sidebarCategoriesCacheKey]: sidebarCategories }
-          : {}),
+        [sidebarCategoriesCacheKey]: sidebarCategories,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
       },
     },

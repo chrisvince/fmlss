@@ -13,20 +13,15 @@ import {
   createCategoryPostsCacheKey,
   createSidebarHashtagsCacheKey,
 } from '../../utils/createCacheKeys'
-import getHashtags from '../../utils/data/hashtags/getHashtags'
 import getCategoryPosts from '../../utils/data/posts/getCategoryPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 import getCategory from '../../utils/data/category/getCategory'
+import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 
-const {
-  CATEGORIES_ENABLED,
-  GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  SIDEBAR_LIST_CACHE_TIME,
-  SIDEBAR_LIST_COUNT,
-} = constants
+const { CATEGORIES_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 interface PropTypes {
   fallback: {
@@ -88,16 +83,10 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const getSidebarHashtags = () =>
-    getHashtags({
-      cacheKey: sidebarHashtagsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
+  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const sidebarHashtags = await getSidebarHashtags()
+    const { sidebarHashtags } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
@@ -112,14 +101,14 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, category, sidebarHashtags] = await Promise.all([
+  const [posts, category, { sidebarHashtags }] = await Promise.all([
     getCategoryPosts(slug, {
       db: adminDb,
       uid,
       sortMode,
     }),
     getCategory(slug, { db: adminDb }),
-    getSidebarHashtags(),
+    sidebarDataPromise,
   ])
 
   if (!category || posts.length === 0) {

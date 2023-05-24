@@ -14,19 +14,13 @@ import {
   createSidebarHashtagsCacheKey,
   createPostCacheKey,
 } from '../../../utils/createCacheKeys'
-import getCategories from '../../../utils/data/categories/getCategories'
-import getHashtags from '../../../utils/data/hashtags/getHashtags'
 import getPost from '../../../utils/data/post/getPost'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import constants from '../../../constants'
 import checkIfUserHasUsername from '../../../utils/data/user/checkIfUserHasUsername'
+import fetchSidebarData from '../../../utils/data/sidebar/fetchSidebarData'
 
-const {
-  CATEGORIES_ENABLED,
-  GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  SIDEBAR_LIST_CACHE_TIME,
-  SIDEBAR_LIST_COUNT,
-} = constants
+const { CATEGORIES_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 interface Props {
   fallback: {
@@ -76,29 +70,10 @@ const getServerSidePropsFn = async ({
   const postCacheKey = createPostCacheKey(slug)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
-
-  const getSidebarHashtags = () =>
-    getHashtags({
-      cacheKey: sidebarHashtagsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
-
-  const getsidebarCategories = () =>
-    getCategories({
-      cacheKey: sidebarCategoriesCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db: adminDb,
-      limit: SIDEBAR_LIST_COUNT,
-    })
+  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const [sidebarHashtags, sidebarCategories] = await Promise.all([
-      getSidebarHashtags(),
-      CATEGORIES_ENABLED ? getsidebarCategories() : [],
-    ])
-
+    const { sidebarHashtags, sidebarCategories } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
@@ -115,13 +90,12 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [post, sidebarHashtags, sidebarCategories] = await Promise.all([
+  const [post, { sidebarHashtags, sidebarCategories }] = await Promise.all([
     getPost(slug, {
       uid,
       db: adminDb,
     }),
-    getSidebarHashtags(),
-    CATEGORIES_ENABLED ? getsidebarCategories() : [],
+    sidebarDataPromise,
   ])
 
   if (!post) {
