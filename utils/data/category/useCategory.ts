@@ -5,10 +5,7 @@ import { createCategoryCacheKey } from '../../createCacheKeys'
 import getCategory from './getCategory'
 
 const DEFAULT_SWR_CONFIG: SWRConfiguration = {
-  revalidateIfStale: false,
   revalidateOnFocus: false,
-  revalidateOnMount: false,
-  revalidateOnReconnect: false,
 }
 
 type UseCategory = (

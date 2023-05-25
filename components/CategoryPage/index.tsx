@@ -111,7 +111,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
         </ViewSelectorButtonGroup>
       </MobileContainer>
       <Feed
-        isLoading={categoryIsLoading}
+        isLoading={categoryIsLoading || postsAreLoading}
         key={sortMode}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
