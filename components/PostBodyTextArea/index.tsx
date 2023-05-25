@@ -31,7 +31,6 @@ import {
   PostPreviewYouTube,
 } from '../../types'
 import getMetaFromUrl, { UrlMeta } from '../../utils/getMetaFromUrl'
-import PostPreview from '../PostPreview'
 import numeral from 'numeral'
 import {
   isFacebookPostUrl,
@@ -41,6 +40,8 @@ import {
   isTwitterPostUrl,
   isYouTubePostUrl,
 } from '../../utils/socialPlatformUrls'
+import { TrackedLinkPreview } from '../../types/TrackedLinkPreview'
+import PostBodyPreviews from '../PostBodyPreviews'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -49,14 +50,6 @@ const MAX_POST_PREVIEWS = 2
 
 const formatPostLength = (length: number | undefined) =>
   numeral(length ?? 0).format('0,0')
-
-interface TrackedLinkPreview {
-  closed: boolean
-  id: string
-  inBody: boolean
-  linkPreview: PostPreviewType
-  match: Match
-}
 
 const preprocessTrackedLinkPreview = (
   trackedLinkPreview: TrackedLinkPreview[],
@@ -260,29 +253,26 @@ const PostBodyTextArea = (
     onLengthStatusChange?.(postLengthStatusType.none)
   }, [onLengthStatusChange, value])
 
-  const handleLinkPreviewClose = useCallback(
-    (id: string) => () => {
-      setTrackedLinkPreviews(currentTrackedLinkPreviews =>
-        currentTrackedLinkPreviews.reduce((acc, currentTrackedLinkPreview) => {
-          if (currentTrackedLinkPreview.id !== id) {
-            return [...acc, currentTrackedLinkPreview]
-          }
+  const handleLinkPreviewClose = useCallback((id: string) => {
+    setTrackedLinkPreviews(currentTrackedLinkPreviews =>
+      currentTrackedLinkPreviews.reduce((acc, currentTrackedLinkPreview) => {
+        if (currentTrackedLinkPreview.id !== id) {
+          return [...acc, currentTrackedLinkPreview]
+        }
 
-          if (!currentTrackedLinkPreview.inBody) {
-            return acc
-          }
+        if (!currentTrackedLinkPreview.inBody) {
+          return acc
+        }
 
-          const newPayload: TrackedLinkPreview = {
-            ...currentTrackedLinkPreview,
-            closed: true,
-          }
+        const newPayload: TrackedLinkPreview = {
+          ...currentTrackedLinkPreview,
+          closed: true,
+        }
 
-          return [...acc, newPayload]
-        }, [] as TrackedLinkPreview[])
-      )
-    },
-    []
-  )
+        return [...acc, newPayload]
+      }, [] as TrackedLinkPreview[])
+    )
+  }, [])
 
   const updateTrackedLinkPreviews = useCallback(
     async (links: Match[]) => {
@@ -453,13 +443,10 @@ const PostBodyTextArea = (
       </Box>
       {displayedTrackedLinkPreviews.length > 0 && (
         <Box sx={{ mt: 2 }}>
-          {displayedTrackedLinkPreviews.map(({ id, linkPreview }) => (
-            <PostPreview
-              key={id}
-              onClose={handleLinkPreviewClose(id)}
-              postPreview={linkPreview}
-            />
-          ))}
+          <PostBodyPreviews
+            onClose={id => handleLinkPreviewClose(id)}
+            trackedLinkPreviews={displayedTrackedLinkPreviews}
+          />
         </Box>
       )}
     </Box>
