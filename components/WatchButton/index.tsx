@@ -4,7 +4,26 @@ import {
 } from '@mui/icons-material'
 
 import { ButtonBase, Tooltip } from '@mui/material'
-import { useTheme } from '@mui/system'
+import { useTheme, keyframes } from '@mui/system'
+
+const ringKeyframe = keyframes`
+  0%,
+  30% {
+    transform: rotate(20deg);
+  }
+  10% {
+    transform: rotate(-20deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  70% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+`
 
 interface PropTypes {
   onClick: () => unknown
@@ -35,6 +54,10 @@ const WatchButton = ({ onClick: handleClick, watching }: PropTypes) => {
           <NotificationsActiveRounded
             fontSize="inherit"
             htmlColor={theme.palette.warning.main}
+            sx={{
+              transformOrigin: 'center 2.5px',
+              animation: `${ringKeyframe} 0.8s 1`,
+            }}
           />
         ) : (
           <NotificationsNoneRounded fontSize="inherit" color="action" />
