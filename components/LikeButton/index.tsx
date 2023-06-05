@@ -10,8 +10,9 @@ interface PropTypes {
 const LikeButton = ({ like, onClick: handleClick }: PropTypes) => (
   <ActionButton
     active={like}
-    activeIcon={FavoriteRounded}
     activeColor="error"
+    activeIcon={FavoriteRounded}
+    aria-label={`Like post. ${like ? 'Liked' : 'Not liked'}.`}
     icon={FavoriteBorderOutlined}
     onClick={handleClick}
     text="Like"
