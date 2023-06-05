@@ -13,9 +13,14 @@ import useWatchingState from '../../utils/useWatchingState'
 
 const { POST_MAX_DEPTH } = constants
 
+export enum BodySize {
+  Small = 'small',
+  Large = 'large',
+}
+
 type PropTypes = {
   bodyElementId?: string
-  bodySize?: 'small' | 'large'
+  bodySize?: BodySize
   hideActionBar?: boolean
   measure?: () => void
   noBottomBorder?: boolean
@@ -27,7 +32,7 @@ type PropTypes = {
 
 const PostItem = ({
   bodyElementId,
-  bodySize = 'small',
+  bodySize = BodySize.Small,
   hideActionBar,
   measure,
   noBottomBorder,

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Box, useTheme } from '@mui/system'
 
-import PostItem from '../PostItem'
+import PostItem, { BodySize } from '../PostItem'
 import RepliesList from '../RepliesList'
 import Page from '../Page'
 import truncateString from '../../utils/truncateString'
@@ -126,7 +126,7 @@ const PostPage = ({ slug }: PropTypes) => {
               >
                 <MobileContainer>
                   <PostItem
-                    bodySize="large"
+                    bodySize={BodySize.Large}
                     noBottomBorder
                     onLikePost={likePost}
                     onWatchPost={watchPost}

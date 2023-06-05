@@ -10,7 +10,7 @@ import PostBodyTextArea, {
   PostBodyTextAreaRef,
   postLengthStatusType,
 } from '../PostBodyTextArea'
-import PostItem from '../PostItem'
+import PostItem, { BodySize } from '../PostItem'
 import constants from '../../constants'
 
 const { CATEGORIES_ENABLED, MESSAGING } = constants
@@ -70,7 +70,11 @@ const NewPostForm = ({
       }}
     >
       {replyingToPost && (
-        <PostItem bodySize="large" hideActionBar post={replyingToPost} />
+        <PostItem
+          bodySize={BodySize.Large}
+          hideActionBar
+          post={replyingToPost}
+        />
       )}
       <Box>
         <PostBodyTextArea
