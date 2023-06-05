@@ -17,7 +17,10 @@ const CategoryChip = ({ name, slug }: Props) => {
       label={truncateString(name)}
       size="small"
       variant="outlined"
-      sx={{ cursor: CATEGORIES_ENABLED ? 'pointer' : 'inherit' }}
+      sx={{
+        cursor: CATEGORIES_ENABLED ? 'pointer' : 'inherit',
+        height: '20px',
+      }}
       clickable={CATEGORIES_ENABLED}
     />
   )

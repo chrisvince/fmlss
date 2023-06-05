@@ -27,7 +27,7 @@ const theme = createTheme({
       main: '#4caf50',
     },
     warning: {
-      main: '#e0bb00',
+      main: '#fcba03',
     },
     divider: '#eeeeee',
   },

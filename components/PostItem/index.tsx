@@ -5,9 +5,11 @@ import useLikeState from '../../utils/useLikeState'
 import CategoryChip from '../CategoryChip'
 import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
-import PostCaption from '../PostCaption'
+import UserAuthoredIcon from '../UserAuthoredIcon'
 import constants from '../../constants'
 import PostPreviews from '../PostPreviews'
+import WatchButton from '../WatchButton'
+import useWatchingState from '../../utils/useWatchingState'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -18,8 +20,9 @@ type PropTypes = {
   measure?: () => void
   noBottomBorder?: boolean
   onLikePost?: (slug: string) => Promise<void> | void
-  post: Post
   onPostPreviewsLoaded?: () => void
+  onWatchPost?: (documentPath: string) => Promise<void> | void
+  post: Post
 }
 
 const PostItem = ({
@@ -30,16 +33,22 @@ const PostItem = ({
   noBottomBorder,
   onLikePost,
   onPostPreviewsLoaded,
+  onWatchPost,
   post,
 }: PropTypes) => {
   const { toggleLike, likesCount, like } = useLikeState({ post })
-  const byUser = !!post.user?.created
-  const postCaptionType = byUser ? 'byUser' : null
+  const { toggleWatching, watching } = useWatchingState(!!post.user?.watching)
   const allowReplying = post.data.documentDepth < POST_MAX_DEPTH
+  const byUser = !!post.user?.created
 
   const handleLikeButtonClick = () => {
     toggleLike()
     onLikePost?.(post.data.slug)
+  }
+
+  const handleWatchButtonClick = () => {
+    toggleWatching()
+    onWatchPost?.(post.data.reference)
   }
 
   return (
@@ -55,34 +64,39 @@ const PostItem = ({
         gap: 2,
       }}
     >
-      {(postCaptionType || post.data.category) && (
+      <Box
+        sx={{
+          alignItems: 'center',
+          display: 'grid',
+          gridTemplateAreas: `"statusIcon category watchStatus"`,
+          gridTemplateColumns: 'min-content auto 1fr',
+        }}
+      >
+        {byUser && (
+          <Box sx={{ display: 'flex', gridArea: 'statusIcon' }}>
+            <UserAuthoredIcon />
+          </Box>
+        )}
+        {post.data.category && (
+          <Box sx={{ display: 'flex', gridArea: 'category' }}>
+            <CategoryChip
+              name={post.data.category.name}
+              slug={post.data.category.slug}
+            />
+          </Box>
+        )}
         <Box
           sx={{
-            display: 'grid',
-            gridTemplateColumns: 'auto 1fr',
-            gap: 2,
-            gridTemplateAreas: `"caption category"`,
-            height: '18px',
+            display: 'flex',
+            gridArea: 'watchStatus',
+            justifySelf: 'end',
           }}
         >
-          <Box sx={{ gridArea: 'caption' }}>
-            <PostCaption type={postCaptionType} />
-          </Box>
-          {post.data.category && (
-            <Box
-              sx={{
-                gridArea: 'category',
-                justifySelf: 'end',
-              }}
-            >
-              <CategoryChip
-                name={post.data.category.name}
-                slug={post.data.category.slug}
-              />
-            </Box>
+          {post.user && (
+            <WatchButton watching={watching} onClick={handleWatchButtonClick} />
           )}
         </Box>
-      )}
+      </Box>
       <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
       <PostPreviews
         measure={measure}
