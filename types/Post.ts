@@ -7,5 +7,6 @@ export interface Post {
   user?: {
     like: boolean
     created: boolean
+    watching: boolean
   }
 }

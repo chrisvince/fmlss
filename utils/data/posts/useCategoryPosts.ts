@@ -15,6 +15,9 @@ import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import { InfiniteData } from '../types'
+import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
+import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
+import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 
 const { PAGINATION_COUNT } = constants
 
@@ -39,6 +42,7 @@ type UseCategoryPosts = (
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
   posts: Post[]
+  watchPost: (documentPath: string) => Promise<void>
 }
 
 const useCategoryPosts: UseCategoryPosts = (
@@ -113,6 +117,34 @@ const useCategoryPosts: UseCategoryPosts = (
     [mutate]
   )
 
+  const watchPost = useCallback(
+    async (documentPath: string) => {
+      const handleMutation: MutatorCallback<
+        InfiniteData
+      > = async currentData => {
+        if (!currentData) return
+
+        const userIsWatchingPost = checkUserWatchingPost(
+          documentPath,
+          currentData
+        )
+
+        await updateWatchingPostInServer(userIsWatchingPost, documentPath)
+
+        const mutatedData = mutateWatchingPostInfiniteData(
+          userIsWatchingPost,
+          documentPath,
+          currentData
+        )
+
+        return mutatedData
+      }
+
+      await mutate(handleMutation, false)
+    },
+    [mutate]
+  )
+
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length ?? 0
 
@@ -127,6 +159,7 @@ const useCategoryPosts: UseCategoryPosts = (
     loadMore,
     moreToLoad,
     posts,
+    watchPost,
   }
 }
 

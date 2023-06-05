@@ -8,6 +8,7 @@ type PropTypes = {
   measure?: () => void
   onLikePost: (slug: string) => Promise<void>
   onPostPreviewsLoaded?: () => void
+  onWatchPost: (documentPath: string) => Promise<void>
   post: Post
 }
 
@@ -15,6 +16,7 @@ const PostListItem = ({
   measure,
   onLikePost,
   onPostPreviewsLoaded,
+  onWatchPost,
   post,
 }: PropTypes) => {
   const ariaLabelledById = useId()
@@ -31,6 +33,7 @@ const PostListItem = ({
         noBottomBorder
         onLikePost={onLikePost}
         onPostPreviewsLoaded={onPostPreviewsLoaded}
+        onWatchPost={onWatchPost}
         post={post}
       />
     </ListItemFrame>

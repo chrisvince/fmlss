@@ -17,6 +17,7 @@ type PropTypes = {
   moreToLoad: boolean
   onLikePost: (slug: string) => Promise<void>
   onLoadMore: () => Promise<unknown>
+  onWatchPost: (documentPath: string) => Promise<void>
   posts: Post[]
 }
 
@@ -26,6 +27,7 @@ const Feed = ({
   moreToLoad,
   onLikePost,
   onLoadMore,
+  onWatchPost,
   posts,
 }: PropTypes) => {
   const cellMeasurerCache = useRef(
@@ -49,6 +51,7 @@ const Feed = ({
           key={(post as Post).data.slug}
           measure={measure}
           onLikePost={onLikePost}
+          onWatchPost={onWatchPost}
           post={post as Post}
         />
       )}

@@ -59,13 +59,11 @@ const HashtagPage = ({ slug }: PropTypes) => {
 
   const [sortMode, setSortMode] = useState<HashtagSortMode>(pathSortMode)
 
-  const { isLoading, likePost, loadMore, moreToLoad, posts } = useHashtagPosts(
-    slug,
-    {
+  const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
+    useHashtagPosts(slug, {
       showType: showType,
       sortMode,
-    }
-  )
+    })
 
   useEffect(() => {
     setSortMode(pathSortMode)
@@ -137,6 +135,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}
+        onWatchPost={watchPost}
         posts={posts}
       />
     </Page>

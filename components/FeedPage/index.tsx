@@ -29,9 +29,10 @@ const FeedPage = () => {
 
   const [sortMode, setSortMode] = useState<FeedSortMode>(pathSortMode)
 
-  const { isLoading, loadMore, moreToLoad, posts, likePost } = usePostFeed({
-    sortMode,
-  })
+  const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
+    usePostFeed({
+      sortMode,
+    })
 
   useEffect(() => {
     setSortMode(pathSortMode)
@@ -54,6 +55,7 @@ const FeedPage = () => {
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}
+        onWatchPost={watchPost}
         posts={posts}
       />
     </Page>

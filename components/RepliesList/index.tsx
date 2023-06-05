@@ -36,6 +36,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
     loadMore,
     moreToLoad,
     replies,
+    watchPost,
   } = usePostReplies(slug)
 
   return (
@@ -76,6 +77,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
                         key={(post as Post).data.slug}
                         measure={measure}
                         onLikePost={likePost}
+                        onWatchPost={watchPost}
                         post={post as Post}
                       />
                     </Box>

@@ -62,6 +62,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
     loadMore,
     moreToLoad,
     posts,
+    watchPost,
   } = useCategoryPosts(slug, { sortMode })
 
   useEffect(() => {
@@ -116,6 +117,7 @@ const CategoryPage = ({ slug }: PropTypes) => {
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}
+        onWatchPost={watchPost}
         posts={posts}
       />
     </Page>

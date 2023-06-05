@@ -15,6 +15,9 @@ import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import { InfiniteData } from '../types'
+import checkUserWatchingPost from '../utils/checkUserWatchingPost'
+import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
+import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
 
 const { PAGINATION_COUNT } = constants
 
@@ -33,6 +36,7 @@ type UseUserLikes = (options?: { swrConfig?: SWRInfiniteConfiguration }) => {
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
   posts: Post[]
+  watchPost: (documentPath: string) => Promise<void>
 }
 
 const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
@@ -106,6 +110,34 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
     [mutate]
   )
 
+  const watchPost = useCallback(
+    async (documentPath: string) => {
+      const handleMutation: MutatorCallback<
+        InfiniteData
+      > = async currentData => {
+        if (!currentData) return
+
+        const userIsWatchingPost = checkUserWatchingPost(
+          documentPath,
+          currentData
+        )
+
+        await updateWatchingPostInServer(userIsWatchingPost, documentPath)
+
+        const mutatedData = mutateWatchingPostInfiniteData(
+          userIsWatchingPost,
+          documentPath,
+          currentData
+        )
+
+        return mutatedData
+      }
+
+      await mutate(handleMutation, false)
+    },
+    [mutate]
+  )
+
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length
 
@@ -120,6 +152,7 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
     loadMore,
     moreToLoad,
     posts,
+    watchPost,
   }
 }
 

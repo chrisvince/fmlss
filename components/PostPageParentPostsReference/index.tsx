@@ -37,6 +37,7 @@ const PostPageParentPostsReference = ({
     isLoading: parentPostIsLoading,
     likePost: likeParentPost,
     post: parentPost,
+    watchPost: watchParentPost,
   } = usePost(slug)
 
   const { isLoading: originalPostIsLoading, post: originalPost } = usePost(
@@ -192,7 +193,11 @@ const PostPageParentPostsReference = ({
             />
           </Box>
           <Box sx={{ gridArea: 'post' }}>
-            <PostListItem onLikePost={likeParentPost} post={parentPost} />
+            <PostListItem
+              onLikePost={likeParentPost}
+              onWatchPost={watchParentPost}
+              post={parentPost}
+            />
           </Box>
         </Box>
       </Box>

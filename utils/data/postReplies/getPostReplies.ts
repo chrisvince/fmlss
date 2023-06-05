@@ -10,6 +10,7 @@ import { createPostRepliesCacheKey } from '../../createCacheKeys'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
+import checkUserIsWatching from '../author/checkUserIsWatching'
 
 const { PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
@@ -74,14 +75,13 @@ const getPostReplies: GetPostReplies = async (
       }
     }
 
-    const supportingDataPromises = [
+    const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
       checkIsCreatedByUser(replyDataItem.slug, uid, { db }),
       checkIsLikedByUser(replyDataItem.slug, uid, { db }),
-    ]
-
-    const [createdByUser, likedByUser] = await Promise.all(
-      supportingDataPromises
-    )
+      checkUserIsWatching(replyDataItem.slug, replyDataItem.reference, uid, {
+        db,
+      }),
+    ])
 
     return {
       data: replyDataItem,
@@ -89,6 +89,7 @@ const getPostReplies: GetPostReplies = async (
       user: {
         created: createdByUser,
         like: likedByUser,
+        watching: userIsWatching,
       },
     }
   })

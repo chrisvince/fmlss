@@ -9,6 +9,7 @@ import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
+import checkUserIsWatching from '../author/checkUserIsWatching'
 
 const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
 
@@ -60,12 +61,11 @@ const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
     }
   }
 
-  const supportingDataPromises = [
+  const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
     checkIsCreatedByUser(data.slug, uid, { db }),
     checkIsLikedByUser(data.slug, uid, { db }),
-  ]
-
-  const [createdByUser, likedByUser] = await Promise.all(supportingDataPromises)
+    checkUserIsWatching(data.slug, data.reference, uid, { db }),
+  ])
 
   return {
     data,
@@ -73,6 +73,7 @@ const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
     user: {
       created: createdByUser,
       like: likedByUser,
+      watching: userIsWatching,
     },
   }
 }

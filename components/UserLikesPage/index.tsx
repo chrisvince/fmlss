@@ -8,7 +8,8 @@ import constants from '../../constants'
 const { CATEGORIES_ENABLED } = constants
 
 const UserLikesPage = () => {
-  const { isLoading, likePost, loadMore, moreToLoad, posts } = useUserLikes()
+  const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
+    useUserLikes()
 
   return (
     <Page
@@ -27,6 +28,7 @@ const UserLikesPage = () => {
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}
+        onWatchPost={watchPost}
         posts={posts}
       />
     </Page>

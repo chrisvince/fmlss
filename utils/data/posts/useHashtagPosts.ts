@@ -15,6 +15,9 @@ import { InfiniteData } from '../types'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import checkUserLikesPost from '../utils/checkUserLikesPost'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
+import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
+import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
+import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 
 const { PAGINATION_COUNT } = constants
 
@@ -40,6 +43,7 @@ type UsePostFeed = (
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
   posts: Post[]
+  watchPost: (documentPath: string) => Promise<void>
 }
 
 const useHashtagPosts: UsePostFeed = (
@@ -118,6 +122,34 @@ const useHashtagPosts: UsePostFeed = (
     [mutate]
   )
 
+  const watchPost = useCallback(
+    async (documentPath: string) => {
+      const handleMutation: MutatorCallback<
+        InfiniteData
+      > = async currentData => {
+        if (!currentData) return
+
+        const userIsWatchingPost = checkUserWatchingPost(
+          documentPath,
+          currentData
+        )
+
+        await updateWatchingPostInServer(userIsWatchingPost, documentPath)
+
+        const mutatedData = mutateWatchingPostInfiniteData(
+          userIsWatchingPost,
+          documentPath,
+          currentData
+        )
+
+        return mutatedData
+      }
+
+      await mutate(handleMutation, false)
+    },
+    [mutate]
+  )
+
   const posts = data?.flat() ?? []
   const lastPageLength = data?.at?.(-1)?.length ?? 0
 
@@ -132,6 +164,7 @@ const useHashtagPosts: UsePostFeed = (
     loadMore,
     moreToLoad,
     posts,
+    watchPost,
   }
 }
 

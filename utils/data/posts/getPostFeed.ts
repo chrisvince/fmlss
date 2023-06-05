@@ -10,6 +10,7 @@ import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
+import checkUserIsWatching from '../author/checkUserIsWatching'
 
 const { FEED_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } = constants
 
@@ -70,14 +71,13 @@ const getPostFeed: GetPosts = async ({
       }
     }
 
-    const supportingDataPromises = [
+    const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
       checkIsCreatedByUser(postDataItem.slug, uid, { db }),
       checkIsLikedByUser(postDataItem.slug, uid, { db }),
-    ]
-
-    const [createdByUser, likedByUser] = await Promise.all(
-      supportingDataPromises
-    )
+      checkUserIsWatching(postDataItem.slug, postDataItem.reference, uid, {
+        db,
+      }),
+    ])
 
     return {
       data: postDataItem,
@@ -85,6 +85,7 @@ const getPostFeed: GetPosts = async ({
       user: {
         created: createdByUser,
         like: likedByUser,
+        watching: userIsWatching,
       },
     }
   })

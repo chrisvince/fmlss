@@ -6,6 +6,8 @@ import { createPostCacheKey } from '../../createCacheKeys'
 import { mutatePostLike } from '../utils/mutatePostLike'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import getPost from './getPost'
+import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
+import { mutateWatchingPost } from '../utils/mutateWatchingPost'
 
 const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
@@ -22,6 +24,7 @@ type UsePost = (
   isValidating: boolean
   likePost: () => Promise<void>
   post: Post | null | undefined
+  watchPost: () => Promise<void>
 }
 
 const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
@@ -49,12 +52,25 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
     await mutate(handleMutation, false)
   }, [mutate])
 
+  const watchPost = useCallback(async () => {
+    const handleMutation: MutatorCallback<Post | null> = async post => {
+      if (!post) return
+      const userIsWatchingPost = !!post.user?.watching
+      await updateWatchingPostInServer(userIsWatchingPost, post.data.reference)
+      const mutatedData = mutateWatchingPost(userIsWatchingPost, post)
+      return mutatedData
+    }
+
+    await mutate(handleMutation, false)
+  }, [mutate])
+
   return {
     error,
     isLoading,
     isValidating,
     likePost,
     post: data,
+    watchPost,
   }
 }
 

@@ -17,6 +17,9 @@ import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import { InfiniteData } from '../types'
+import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
+import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
+import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 
 const { PAGINATION_COUNT } = constants
 
@@ -34,14 +37,15 @@ type UsePostReplies = (
     swrConfig?: SWRInfiniteConfiguration
   }
 ) => {
-  error: any
+  error: unknown
   isLoading: boolean
   isValidating: boolean
-  likePost: (slug: string) => Promise<void>
+  likePost: (documentPath: string) => Promise<void>
   loadMore: () => Promise<Post[]>
   moreToLoad: boolean
-  replies: Post[]
   refresh: () => Promise<void>
+  replies: Post[]
+  watchPost: (slug: string) => Promise<void>
 }
 
 const usePostReplies: UsePostReplies = (
@@ -134,6 +138,34 @@ const usePostReplies: UsePostReplies = (
     [mutate]
   )
 
+  const watchPost = useCallback(
+    async (documentPath: string) => {
+      const handleMutation: MutatorCallback<
+        InfiniteData
+      > = async currentData => {
+        if (!currentData) return
+
+        const userIsWatchingPost = checkUserWatchingPost(
+          documentPath,
+          currentData
+        )
+
+        await updateWatchingPostInServer(userIsWatchingPost, documentPath)
+
+        const mutatedData = mutateWatchingPostInfiniteData(
+          userIsWatchingPost,
+          documentPath,
+          currentData
+        )
+
+        return mutatedData
+      }
+
+      await mutate(handleMutation, false)
+    },
+    [mutate]
+  )
+
   const flattenedData = data?.flat() ?? []
   const replies = viewMode === 'end' ? reverse(flattenedData) : flattenedData
   const isValidating = repliesAreValidating || postIsValidating
@@ -154,6 +186,7 @@ const usePostReplies: UsePostReplies = (
     moreToLoad,
     refresh,
     replies,
+    watchPost,
   }
 }
 

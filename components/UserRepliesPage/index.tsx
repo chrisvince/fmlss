@@ -8,9 +8,10 @@ import constants from '../../constants'
 const { CATEGORIES_ENABLED } = constants
 
 const UserRepliesPage = () => {
-  const { isLoading, likePost, loadMore, moreToLoad, posts } = useUserPosts({
-    type: 'reply',
-  })
+  const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
+    useUserPosts({
+      type: 'reply',
+    })
 
   return (
     <Page
@@ -25,11 +26,12 @@ const UserRepliesPage = () => {
       }
     >
       <Feed
+        isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}
+        onWatchPost={watchPost}
         posts={posts}
-        isLoading={isLoading}
       />
     </Page>
   )

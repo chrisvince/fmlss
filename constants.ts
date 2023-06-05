@@ -54,8 +54,6 @@ interface CONSTANTS {
     NEW_POST_PROMPT: string
     NEW_REPLY_PROMPT: string
   }
-  SIDEBAR_LIST_CACHE_TIME: number
-  SIDEBAR_LIST_COUNT: number
   NESTED_POST_MARGIN_LEFT: number
   PAGE_SORT_SELECTOR_HEIGHT: string
   PAGE_TITLE_HEIGHT: string
@@ -73,6 +71,8 @@ interface CONSTANTS {
   REPLIES_CACHE_TIME: number
   SIDEBAR_GAP_MD: number
   SIDEBAR_GAP_SM: number
+  SIDEBAR_LIST_CACHE_TIME: number
+  SIDEBAR_LIST_COUNT: number
   SIDEBAR_WIDTH_LG: string
   SIDEBAR_WIDTH_MD: string
   SIDEBAR_WIDTH_SM: string
@@ -82,6 +82,7 @@ interface CONSTANTS {
   TOP_NAVIGATION_MARGIN_BOTTOM_XS: number
   TWITTER_USERNAME: string
   USER_CACHE_TIME: number
+  USER_IS_WATCHING_CACHE_TIME: number
   USER_LIKES_CACHE_TIME: number
   USER_POSTS_CACHE_TIME: number
   USERNAME_MAX_LENGTH: number
@@ -89,6 +90,7 @@ interface CONSTANTS {
   USERNAME_REGEX_PATTERN: RegExp
   USERS_COLLECTION: string
   VIRTUALIZED_OVERSCAN_ROW_COUNT: number
+  WATCHERS_COLLECTION: string
 }
 
 const constants: CONSTANTS = {
@@ -142,8 +144,6 @@ const constants: CONSTANTS = {
     NEW_POST_PROMPT: "What's on your mind?",
     NEW_REPLY_PROMPT: 'Write a reply',
   },
-  SIDEBAR_LIST_CACHE_TIME: hoursToMs(12),
-  SIDEBAR_LIST_COUNT: 6,
   NESTED_POST_MARGIN_LEFT: 4,
   PAGE_SORT_SELECTOR_HEIGHT: '45px',
   PAGE_TITLE_HEIGHT: '34.59px',
@@ -161,6 +161,8 @@ const constants: CONSTANTS = {
   REPLIES_CACHE_TIME: secondsToMs(10),
   SIDEBAR_GAP_MD: 8,
   SIDEBAR_GAP_SM: 6,
+  SIDEBAR_LIST_CACHE_TIME: hoursToMs(12),
+  SIDEBAR_LIST_COUNT: 6,
   SIDEBAR_WIDTH_LG: '280px',
   SIDEBAR_WIDTH_MD: '180px',
   SIDEBAR_WIDTH_SM: '180px',
@@ -170,6 +172,7 @@ const constants: CONSTANTS = {
   TOP_NAVIGATION_MARGIN_BOTTOM_XS: 1,
   TWITTER_USERNAME: '@famelessnetwork',
   USER_CACHE_TIME: secondsToMs(60),
+  USER_IS_WATCHING_CACHE_TIME: secondsToMs(10),
   USER_LIKES_CACHE_TIME: secondsToMs(10),
   USER_POSTS_CACHE_TIME: secondsToMs(10),
   USERNAME_MAX_LENGTH,
@@ -177,6 +180,7 @@ const constants: CONSTANTS = {
   USERNAME_REGEX_PATTERN: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]*$/gi,
   USERS_COLLECTION: 'users',
   VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
+  WATCHERS_COLLECTION: 'watchers',
 }
 
 export default constants

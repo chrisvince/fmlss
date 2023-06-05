@@ -28,7 +28,7 @@ type PropTypes = {
 }
 
 const PostPage = ({ slug }: PropTypes) => {
-  const { isLoading, likePost, post } = usePost(slug)
+  const { isLoading, likePost, post, watchPost } = usePost(slug)
   const { user, update: updateUser, isLoading: userIsLoading } = useUser()
   const [firstPostModalOpen, setFirstPostModalOpen] = useState(false)
   const [parentPostLoaded, setParentPostLoaded] = useState(false)
@@ -129,6 +129,7 @@ const PostPage = ({ slug }: PropTypes) => {
                     bodySize="large"
                     noBottomBorder
                     onLikePost={likePost}
+                    onWatchPost={watchPost}
                     post={post}
                   />
                 </MobileContainer>

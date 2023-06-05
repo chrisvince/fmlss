@@ -39,6 +39,9 @@ const createPostRepliesCacheKey = (
 const createPostLikeCacheKey = (postId: string, uid: string) =>
   `post/${postId}/like/${uid}`
 
+const createUserIsWatchingCacheKey = (postId: string, uid: string) =>
+  `post/${postId}/watching/${uid}`
+
 const createUserLikesCacheKey = (
   uid: string,
   { pageIndex = 0 }: { pageIndex?: number | null } = {}
@@ -95,13 +98,14 @@ export {
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
   createHasUsernameCacheKey,
-  createSidebarCategoriesCacheKey,
-  createSidebarHashtagsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,
   createPostLikeCacheKey,
   createPostRepliesCacheKey,
+  createUserIsWatchingCacheKey,
+  createSidebarCategoriesCacheKey,
+  createSidebarHashtagsCacheKey,
   createUserCacheKey,
   createUserLikesCacheKey,
   createUserPostsCacheKey,

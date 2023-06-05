@@ -22,7 +22,7 @@ const RepliesListSubReplies = ({
 }: Props) => {
   const [expanded, setExpanded] = useState(false)
 
-  const { replies, isLoading, likePost } = usePostReplies(
+  const { isLoading, likePost, replies, watchPost } = usePostReplies(
     expanded ? parentSlug : undefined
   )
 
@@ -84,6 +84,7 @@ const RepliesListSubReplies = ({
           <PostListItem
             measure={measure}
             onLikePost={likePost}
+            onWatchPost={watchPost}
             post={reply as Post}
           />
         </MapLinePostItemLayout>
