@@ -5,11 +5,12 @@ export interface MapLineSegment {
   dotPosition?: 'top' | 'center'
 }
 
-const COLOR = 'grey.200'
+const LINE_COLOR = 'grey.200'
+const DOT_COLOR = 'grey.300'
 const TOP_PADDING = '21px'
 const LINE_WIDTH = '2px'
 
-const DOT_SIZE_PX = 10
+const DOT_SIZE_PX = 8
 const DOT_SIZE = `${DOT_SIZE_PX}px`
 const DOT_SIZE_HALF = `${DOT_SIZE_PX / 2}px`
 
@@ -21,10 +22,11 @@ interface DotProps {
 const Dot = ({ sx = {} }: DotProps) => (
   <Box
     sx={{
-      backgroundColor: COLOR,
+      backgroundColor: DOT_COLOR,
       borderRadius: '50%',
       height: DOT_SIZE,
       width: DOT_SIZE,
+      zIndex: 1,
       ...sx,
     }}
   />
@@ -38,7 +40,7 @@ interface LineProps {
 const Line = ({ rounded, sx = {} }: LineProps) => (
   <Box
     sx={{
-      backgroundColor: COLOR,
+      backgroundColor: LINE_COLOR,
       borderRadius: rounded
         ? {
             both: '50px',
