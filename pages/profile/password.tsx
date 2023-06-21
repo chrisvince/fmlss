@@ -1,22 +1,30 @@
 import {
-  AuthUser,
-  getFirebaseAdmin,
   withAuthUser,
   withAuthUserTokenSSR,
+  AuthUser,
+  getFirebaseAdmin,
 } from 'next-firebase-auth'
-import ChangeEmailPage from '../../components/ChangeEmailPage'
+
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
+import { checkUserHasPassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
+import PasswordPage from '../../components/PasswordPage'
 import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
-const ChangeEmail = () => <ChangeEmailPage />
+interface Props {
+  userHasPassword: boolean
+}
+
+const Password = ({ userHasPassword }: Props) => (
+  <PasswordPage userHasPassword={userHasPassword} />
+)
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -34,6 +42,17 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
       },
     }
   }
+
+  const { data: userHasPassword } = await checkUserHasPassword({
+    uid: AuthUser.id as string,
+  })
+
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+  return {
+    props: {
+      userHasPassword,
+    },
+  }
 }
 
 export const getServerSideProps = withAuthUserTokenSSR(
@@ -41,5 +60,7 @@ export const getServerSideProps = withAuthUserTokenSSR(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 )(getServerSidePropsFn as any)
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(ChangeEmail as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Password as any
+)

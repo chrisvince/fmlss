@@ -47,7 +47,7 @@ const EmailVerificationLink = () => {
       variant="outlined"
       loading={uiState === UI_STATES.LOADING}
     >
-      <Typography variant="caption">Verify email</Typography>
+      <Typography variant="caption">Send verification email</Typography>
     </LoadingButton>
   )
 }
