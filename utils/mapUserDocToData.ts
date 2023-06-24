@@ -6,7 +6,9 @@ const mapUserDocToData: MapUserDocToData = userDoc => {
   const userData = userDoc.data() as UserDataRequest
   return {
     createdAt: userData.createdAt.toMillis(),
+    firstName: userData.firstName,
     id: userDoc.id,
+    lastName: userData.lastName,
     shownFirstPostMessage: !!userData.shownFirstPostMessage,
     updatedAt: userData.updatedAt.toMillis(),
     username: userData.username,

@@ -26,6 +26,7 @@ interface CONSTANTS {
   ENABLE_HIGHLIGHTING: boolean
   FEED_CACHE_TIME: number
   FOOTER_BASIC_HEIGHT: string
+  FIRST_NAME_MAX_LENGTH: number
   FORM_MESSAGING: {
     EMAIL: {
       VALID: string
@@ -49,6 +50,7 @@ interface CONSTANTS {
   HASHTAGS_CACHE_TIME: number
   HASHTAGS_COLLECTION: string
   INFINITY_LOADING_THRESHOLD: number
+  LAST_NAME_MAX_LENGTH: number
   LEFT_NAVIGATION_PADDING_BOTTOM: number
   MESSAGING: {
     NEW_POST_PROMPT: string
@@ -115,6 +117,7 @@ const constants: CONSTANTS = {
   ENABLE_HIGHLIGHTING: false,
   FEED_CACHE_TIME: secondsToMs(30),
   FOOTER_BASIC_HEIGHT: '56px',
+  FIRST_NAME_MAX_LENGTH: 80,
   FORM_MESSAGING: {
     EMAIL: {
       VALID: 'Must be a valid email address',
@@ -139,6 +142,7 @@ const constants: CONSTANTS = {
   HASHTAGS_CACHE_TIME: secondsToMs(60),
   HASHTAGS_COLLECTION: 'hashtags',
   INFINITY_LOADING_THRESHOLD: 10,
+  LAST_NAME_MAX_LENGTH: 80,
   LEFT_NAVIGATION_PADDING_BOTTOM: 1,
   MESSAGING: {
     NEW_POST_PROMPT: "What's on your mind?",
