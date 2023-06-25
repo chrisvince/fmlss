@@ -42,6 +42,9 @@ import {
 } from '../../utils/socialPlatformUrls'
 import { TrackedLinkPreview } from '../../types/TrackedLinkPreview'
 import PostBodyPreviews from '../PostBodyPreviews'
+import usePostBodyTextAreaPlaceholder, {
+  PostType,
+} from '../../utils/usePostBodyTextAreaPlaceholder'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -162,7 +165,7 @@ type Props = {
   onChange?: (text: string) => void
   onCommandEnter?: () => void
   onLengthStatusChange?: (status: postLengthStatusType) => void
-  placeholder?: string
+  postType?: PostType
   username?: string
 }
 
@@ -173,7 +176,7 @@ const PostBodyTextArea = (
     onChange,
     onCommandEnter,
     onLengthStatusChange,
-    placeholder,
+    postType = PostType.New,
     username,
   }: Props,
   ref: React.Ref<PostBodyTextAreaRef>
@@ -371,6 +374,8 @@ const PostBodyTextArea = (
 
     debouncedUpdateTrackedLinkPreviews(links || [])
   }, [debouncedUpdateTrackedLinkPreviews, links])
+
+  const placeholder = usePostBodyTextAreaPlaceholder({ postType })
 
   return (
     <Box>

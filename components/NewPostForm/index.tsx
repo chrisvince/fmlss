@@ -12,18 +12,19 @@ import PostBodyTextArea, {
 } from '../PostBodyTextArea'
 import PostItem, { BodySize } from '../PostItem'
 import constants from '../../constants'
+import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
-const { CATEGORIES_ENABLED, MESSAGING } = constants
+const { CATEGORIES_ENABLED } = constants
 
 interface Props {
   isInModal?: boolean
-  placeholder?: string
+  postType?: PostType
   slug?: string
 }
 
 const NewPostForm = ({
   isInModal = false,
-  placeholder = MESSAGING.NEW_POST_PROMPT,
+  postType = PostType.New,
   slug,
 }: Props) => {
   const { post: replyingToPost } = usePost(slug)
@@ -83,7 +84,7 @@ const NewPostForm = ({
           onChange={handleTextChange}
           onCommandEnter={submitPost}
           onLengthStatusChange={setPostLengthStatus}
-          placeholder={placeholder}
+          postType={postType}
           ref={postBodyTextAreaRef}
           username="chrisvince"
         />

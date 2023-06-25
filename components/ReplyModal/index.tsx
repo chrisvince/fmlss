@@ -1,9 +1,7 @@
 import usePost from '../../utils/data/post/usePost'
+import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 import Modal from '../Modal'
 import NewPostForm from '../NewPostForm'
-import constants from '../../constants'
-
-const { MESSAGING } = constants
 
 interface Props {
   open: boolean
@@ -22,11 +20,7 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
       open={open}
       title="Reply to Post"
     >
-      <NewPostForm
-        isInModal
-        placeholder={MESSAGING.NEW_REPLY_PROMPT}
-        slug={slug}
-      />
+      <NewPostForm isInModal postType={PostType.Reply} slug={slug} />
     </Modal>
   )
 }

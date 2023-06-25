@@ -10,9 +10,7 @@ import PostBodyTextArea, {
   PostBodyTextAreaRef,
   postLengthStatusType,
 } from '../PostBodyTextArea'
-import constants from '../../constants'
-
-const { MESSAGING } = constants
+import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
 const POST_BODY_PADDING_TOP_MAP = {
   feed: undefined,
@@ -75,9 +73,7 @@ const InlineCreatePost = ({ variant, slug }: Props) => {
               disabled={isLoading}
               onCommandEnter={submitPost}
               onLengthStatusChange={setPostLengthStatus}
-              placeholder={
-                slug ? MESSAGING.NEW_REPLY_PROMPT : MESSAGING.NEW_POST_PROMPT
-              }
+              postType={slug ? PostType.Reply : PostType.New}
               ref={postBodyTextAreaRef}
               username={user?.data.username}
             />

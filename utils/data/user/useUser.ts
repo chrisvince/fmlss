@@ -14,7 +14,7 @@ const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-type UseUser = (options?: { swrConfig?: SWRConfiguration }) => {
+type UseUser = (options?: { swrConfig?: SWRConfiguration; skip?: boolean }) => {
   error: unknown
   isLoading: boolean
   isValidating: boolean
@@ -22,12 +22,12 @@ type UseUser = (options?: { swrConfig?: SWRConfiguration }) => {
   user: User | null | undefined
 }
 
-const useUser: UseUser = ({ swrConfig = {} } = {}) => {
+const useUser: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
   const { id: uid } = useAuthUser()
   const userCacheKey = createUserCacheKey(uid)
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
-    userCacheKey,
+    !skip ? userCacheKey : undefined,
     () => getUser(uid),
     {
       ...DEFAULT_SWR_CONFIG,
