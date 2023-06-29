@@ -1,5 +1,4 @@
 import {
-  Avatar,
   ListItem,
   ListItemButton,
   ListItemIcon,
@@ -7,7 +6,6 @@ import {
   SvgIconTypeMap,
 } from '@mui/material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
-import { Box } from '@mui/system'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -32,7 +30,6 @@ const includesAny = (href: string, currentPaths: string[], exact: boolean) =>
   )
 
 const LeftNavigationListItem = ({
-  avatarText,
   currentPaths,
   exact,
   href,
@@ -60,11 +57,6 @@ const LeftNavigationListItem = ({
             )}
           </ListItemIcon>
         )}
-        {avatarText && (
-          <Box sx={{ minWidth: '56px' }}>
-            <Avatar>{avatarText}</Avatar>
-          </Box>
-        )}
         <ListItemText
           sx={{
             '& .MuiListItemText-primary': {
@@ -73,6 +65,9 @@ const LeftNavigationListItem = ({
             },
             '& .MuiListItemText-secondary': {
               color: textColor,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             },
           }}
           primary={primary}

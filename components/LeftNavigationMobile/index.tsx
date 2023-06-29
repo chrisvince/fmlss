@@ -12,11 +12,9 @@ import {
   TagRounded,
   ViewStreamOutlined,
   ViewStreamRounded,
-  WorkspacesOutlined,
-  WorkspacesRounded,
+  AlternateEmailRounded,
 } from '@mui/icons-material'
 import { useTheme } from '@mui/system'
-import useUser from '../../utils/data/user/useUser'
 
 import constants from '../../constants'
 import LeftNavigationListItem from '../LeftNavigaionListItem'
@@ -81,10 +79,8 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
-  const { email, id: uid } = useAuthUser()
+  const { displayName, email, id: uid } = useAuthUser()
   const theme = useTheme()
-  const { user } = useUser()
-  const avatarLetter = user?.data.username?.charAt(0).toUpperCase()
   const navMarginBottomXs = theme.spacing(4)
 
   return (
@@ -138,12 +134,12 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
           <nav>
             <List>
               <LeftNavigationListItem
-                avatarText={avatarLetter}
                 exact
                 href={uid ? '/profile' : '/'}
+                icon={PersonRounded}
                 iconCurrent={PersonRounded}
                 primary={uid ? 'Profile' : 'Login'}
-                secondary={user?.data.username ?? email}
+                secondary={displayName ?? email}
               />
             </List>
           </nav>
