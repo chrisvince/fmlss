@@ -7,6 +7,8 @@ interface Props {
 
 const PasswordPage = ({ userHasPassword }: Props) => (
   <Page
+    backButtonHref="/profile"
+    backButtonText="Profile"
     pageTitle={userHasPassword ? 'Password' : 'Create password'}
     renderPageTitle
     thinContainer

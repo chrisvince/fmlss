@@ -2,7 +2,13 @@ import ChangeEmailForm from '../ChangeEmailForm'
 import Page from '../Page'
 
 const EmailPage = () => (
-  <Page pageTitle="Email" thinContainer renderPageTitle>
+  <Page
+    backButtonHref="/profile"
+    backButtonText="Profile"
+    pageTitle="Email"
+    renderPageTitle
+    thinContainer
+  >
     <ChangeEmailForm />
   </Page>
 )
