@@ -5,6 +5,7 @@ import PageTitle from '../SectionHeading'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
+import PageBackButton from '../PageBackButton'
 
 const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
 const URL = process.env.VERCEL_URL ?? APP_URL
@@ -28,6 +29,8 @@ interface Props {
     section?: string
     tags?: string[]
   }
+  backButtonHref?: string
+  backButtonText?: string
   children: ReactNode
   description?: string
   layout?: 'rightPanel' | 'none'
@@ -43,6 +46,8 @@ interface Props {
 
 const Page = ({
   article = {},
+  backButtonHref,
+  backButtonText = 'Back',
   children,
   description = DEFAULT_DESCRIPTION,
   layout = 'rightPanel',
@@ -97,6 +102,11 @@ const Page = ({
           thinContainer={thinContainer}
           main={
             <>
+              {backButtonHref && (
+                <PageBackButton href={backButtonHref}>
+                  {backButtonText}
+                </PageBackButton>
+              )}
               {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
               {children}
             </>
@@ -105,6 +115,11 @@ const Page = ({
         />
       ) : (
         <>
+          {backButtonHref && (
+            <PageBackButton href={backButtonHref}>
+              {backButtonText}
+            </PageBackButton>
+          )}
           {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
           {children}
         </>
