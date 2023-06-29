@@ -20,7 +20,6 @@ import {
   Menu as MenuIcon,
   PersonRounded,
 } from '@mui/icons-material'
-import useUser from '../../utils/data/user/useUser'
 
 import constants from '../../constants'
 import CenterSectionContainer from '../CenterSectionContainer'
@@ -45,8 +44,7 @@ interface Props {
   disableBottomPaddingXs?: boolean
 }
 const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
-  const { email, id: uid, signOut } = useAuthUser()
-  const { user } = useUser()
+  const { displayName, email, id: uid, signOut } = useAuthUser()
   const router = useRouter()
   const profileMenuButtonRef = useRef<HTMLButtonElement>(null)
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)
@@ -210,7 +208,7 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
                       </ListItemIcon>
                       <ListItemText
                         primary="Profile"
-                        secondary={user?.data.username ?? email}
+                        secondary={displayName ?? email}
                       />
                     </MenuItem>
                   )}
