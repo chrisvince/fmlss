@@ -1,4 +1,6 @@
 import firebase from 'firebase/app'
+import 'firebase/firestore'
+import 'firebase/functions'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
