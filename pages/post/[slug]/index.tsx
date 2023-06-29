@@ -23,6 +23,8 @@ import isInternalRequest from '../../../utils/isInternalRequest'
 import usePost from '../../../utils/data/post/usePost'
 import checkIfUserHasUsername from '../../../utils/data/user/checkIfUserHasUsername'
 import fetchSidebarData from '../../../utils/data/sidebar/fetchSidebarData'
+import Layout from '../../../components/Layout'
+import { ReactElement } from 'react'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, POST_REPLIES_SSR } = constants
 
@@ -46,6 +48,10 @@ const Post = ({ fallback }: PropTypes) => {
       <PostPage slug={slug} />
     </SWRConfig>
   )
+}
+
+Post.getLayout = function getLayout(page: ReactElement) {
+  return <Layout disableNavBottomPaddingXs>{page}</Layout>
 }
 
 const getServerSidePropsFn = async ({

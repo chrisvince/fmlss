@@ -9,11 +9,7 @@ import constants from '../../constants'
 import MapLineSegment from '../MapLineSegment'
 import Link from 'next/link'
 
-const {
-  NESTED_POST_MARGIN_LEFT,
-  TOP_NAVIGATION_MARGIN_BOTTOM_SM,
-  TOP_NAVIGATION_MARGIN_BOTTOM_XS,
-} = constants
+const { NESTED_POST_MARGIN_LEFT, TOP_NAVIGATION_MARGIN_BOTTOM_SM } = constants
 
 interface Props {
   documentDepth: number
@@ -177,13 +173,15 @@ const PostPageParentPostsReference = ({
               NESTED_POST_MARGIN_LEFT
             )} 1fr`,
             gridTemplateRows: {
-              xs: `1fr ${theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS)}`,
               sm: `1fr ${theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)}`,
             },
-            gridTemplateAreas: `
-              "line post"
-              "line ."
-            `,
+            gridTemplateAreas: {
+              xs: '"line post"',
+              sm: `
+                "line post"
+                "line ."
+              `,
+            },
           }}
         >
           <Box sx={{ gridArea: 'line' }}>

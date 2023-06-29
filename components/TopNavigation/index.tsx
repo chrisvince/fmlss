@@ -42,7 +42,10 @@ const {
   TOP_NAVIGATION_MARGIN_BOTTOM_XS,
 } = constants
 
-const TopNavigation = () => {
+interface Props {
+  disableBottomPaddingXs?: boolean
+}
+const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
   const { email, signOut } = useAuthUser()
   const { user } = useUser()
   const router = useRouter()
@@ -101,7 +104,9 @@ const TopNavigation = () => {
           borderBottomColor: 'divider',
           height: TOP_NAVIGATION_HEIGHT,
           marginBottom: {
-            xs: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_XS),
+            xs: theme.spacing(
+              disableBottomPaddingXs ? 0 : TOP_NAVIGATION_MARGIN_BOTTOM_XS
+            ),
             sm: theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM),
           },
           transform: {

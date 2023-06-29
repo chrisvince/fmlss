@@ -14,14 +14,15 @@ const {
 
 interface PropTypes {
   children: React.ReactNode
+  disableNavBottomPaddingXs?: boolean
 }
 
-const Layout = ({ children }: PropTypes) => {
+const Layout = ({ children, disableNavBottomPaddingXs = false }: PropTypes) => {
   const theme = useTheme()
 
   return (
     <>
-      <TopNavigation />
+      <TopNavigation disableBottomPaddingXs={disableNavBottomPaddingXs} />
       <Container
         sx={{
           paddingLeft: {
