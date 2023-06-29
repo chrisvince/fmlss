@@ -3,14 +3,12 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useAuthUser } from 'next-firebase-auth'
 import {
-  Avatar,
   Box,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
-  Typography,
   useMediaQuery,
   useScrollTrigger,
   useTheme,
@@ -89,8 +87,6 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
   const showMobileNav = !useScrollTrigger({
     threshold: shouldCollapse ? parseInt(TOP_NAVIGATION_HEIGHT) : Infinity,
   })
-
-  const avatarLetter = user?.data.username?.charAt(0).toUpperCase()
 
   return (
     <>
@@ -197,14 +193,7 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
                   onClick={handleProfileMenuButtonClick}
                   sx={{ padding: 0.7 }}
                 >
-                  <Avatar
-                    sx={{
-                      height: '34px',
-                      width: '34px',
-                    }}
-                  >
-                    <Typography variant="body1">{avatarLetter}</Typography>
-                  </Avatar>
+                  <PersonRounded />
                 </IconButton>
                 <Menu
                   anchorEl={profileMenuButtonRef.current}
