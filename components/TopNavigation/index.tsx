@@ -17,6 +17,7 @@ import {
 } from '@mui/material'
 import { Container } from '@mui/system'
 import {
+  LoginRounded,
   LogoutRounded,
   Menu as MenuIcon,
   PersonRounded,
@@ -46,7 +47,7 @@ interface Props {
   disableBottomPaddingXs?: boolean
 }
 const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
-  const { email, signOut } = useAuthUser()
+  const { email, id: uid, signOut } = useAuthUser()
   const { user } = useUser()
   const router = useRouter()
   const profileMenuButtonRef = useRef<HTMLButtonElement>(null)
@@ -213,20 +214,26 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
                     'aria-labelledby': 'profile-menu-button',
                   }}
                 >
-                  <MenuItem component={Link} href="/profile">
+                  {uid && (
+                    <MenuItem component={Link} href="/profile">
+                      <ListItemIcon>
+                        <PersonRounded />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary="Profile"
+                        secondary={user?.data.username ?? email}
+                      />
+                    </MenuItem>
+                  )}
+                  <MenuItem
+                    component={uid ? 'button' : Link}
+                    href={uid ? undefined : '/'}
+                    onClick={uid ? handleSignOutClick : undefined}
+                  >
                     <ListItemIcon>
-                      <PersonRounded />
+                      {uid ? <LogoutRounded /> : <LoginRounded />}
                     </ListItemIcon>
-                    <ListItemText
-                      primary="Profile"
-                      secondary={user?.data.username ?? email}
-                    />
-                  </MenuItem>
-                  <MenuItem onClick={handleSignOutClick}>
-                    <ListItemIcon>
-                      <LogoutRounded />
-                    </ListItemIcon>
-                    <ListItemText>Sign out</ListItemText>
+                    <ListItemText>{uid ? 'Sign out' : 'Sign in'}</ListItemText>
                   </MenuItem>
                 </Menu>
               </Box>

@@ -138,7 +138,7 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
                 href={uid ? '/profile' : '/'}
                 icon={PersonRounded}
                 iconCurrent={PersonRounded}
-                primary={uid ? 'Profile' : 'Login'}
+                primary={uid ? 'Profile' : 'Sign in'}
                 secondary={displayName ?? email}
               />
             </List>
