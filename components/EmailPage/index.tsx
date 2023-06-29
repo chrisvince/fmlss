@@ -1,4 +1,5 @@
 import ChangeEmailForm from '../ChangeEmailForm'
+import MobileContainer from '../MobileContainer'
 import Page from '../Page'
 
 const EmailPage = () => (
@@ -9,7 +10,9 @@ const EmailPage = () => (
     renderPageTitle
     thinContainer
   >
-    <ChangeEmailForm />
+    <MobileContainer>
+      <ChangeEmailForm />
+    </MobileContainer>
   </Page>
 )
 

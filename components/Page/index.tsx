@@ -6,6 +6,7 @@ import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
 import PageBackButton from '../PageBackButton'
+import MobileContainer from '../MobileContainer'
 
 const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
 const URL = process.env.VERCEL_URL ?? APP_URL
@@ -103,9 +104,11 @@ const Page = ({
           main={
             <>
               {backButtonHref && (
-                <PageBackButton href={backButtonHref}>
-                  {backButtonText}
-                </PageBackButton>
+                <MobileContainer>
+                  <PageBackButton href={backButtonHref}>
+                    {backButtonText}
+                  </PageBackButton>
+                </MobileContainer>
               )}
               {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
               {children}
@@ -116,9 +119,11 @@ const Page = ({
       ) : (
         <>
           {backButtonHref && (
-            <PageBackButton href={backButtonHref}>
-              {backButtonText}
-            </PageBackButton>
+            <MobileContainer>
+              <PageBackButton href={backButtonHref}>
+                {backButtonText}
+              </PageBackButton>
+            </MobileContainer>
           )}
           {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
           {children}

@@ -13,7 +13,7 @@ const PageBackButton = ({ children, href }: Props) => (
     href={href}
     component={Link}
     startIcon={<ArrowBackIosRounded />}
-    sx={{ mb: 2, mx: -0.8 }}
+    sx={{ mb: { xs: 1, sm: 2 }, mx: -0.8 }}
     variant="text"
   >
     {children}

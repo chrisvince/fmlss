@@ -1,4 +1,5 @@
 import ChangeNameForm from '../ChangeNameForm'
+import MobileContainer from '../MobileContainer'
 import Page from '../Page'
 
 const NamePage = () => (
@@ -9,7 +10,9 @@ const NamePage = () => (
     renderPageTitle
     thinContainer
   >
-    <ChangeNameForm />
+    <MobileContainer>
+      <ChangeNameForm />
+    </MobileContainer>
   </Page>
 )
 

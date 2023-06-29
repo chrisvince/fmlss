@@ -1,4 +1,5 @@
 import ChangePasswordForm from '../ChangePasswordForm'
+import MobileContainer from '../MobileContainer'
 import Page from '../Page'
 
 interface Props {
@@ -13,7 +14,9 @@ const PasswordPage = ({ userHasPassword }: Props) => (
     renderPageTitle
     thinContainer
   >
-    <ChangePasswordForm userHasPassword={userHasPassword} />
+    <MobileContainer>
+      <ChangePasswordForm userHasPassword={userHasPassword} />
+    </MobileContainer>
   </Page>
 )
 
