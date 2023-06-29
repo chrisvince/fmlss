@@ -46,10 +46,13 @@ const PostPage = ({ slug }: PropTypes) => {
   >()
 
   useEffect(() => {
-    if (userIsLoading || !createdByUser || shownFirstPostMessage) return
+    if (!user || userIsLoading || !createdByUser || shownFirstPostMessage) {
+      return
+    }
+
     setFirstPostModalOpen(true)
     updateUser({ shownFirstPostMessage: true })
-  }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser])
+  }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser, user])
 
   useEffect(() => {
     if (isLoading || (!isLoading && !post)) return
