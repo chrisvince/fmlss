@@ -1,12 +1,12 @@
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarTopicsSection from '../SidebarTopicsSection'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import Page from '../Page'
 import TextAndCta from '../TextAndCta'
 import constants from '../../constants'
 
-const { CATEGORIES_ENABLED } = constants
+const { TOPICS_ENABLED } = constants
 
 const NotFoundPage = () => (
   <Page
@@ -14,7 +14,7 @@ const NotFoundPage = () => (
     rightPanelChildren={
       <>
         <SidebarHashtagsSection />
-        {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
+        {TOPICS_ENABLED && <SidebarTopicsSection />}
       </>
     }
   >

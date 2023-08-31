@@ -10,7 +10,7 @@ import HashtagPage from '../../components/HashtagPage'
 import type { HashtagSortMode } from '../../types'
 import {
   createHashtagPostsCacheKey,
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
 } from '../../utils/createCacheKeys'
 import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
@@ -79,17 +79,17 @@ const getServerSidePropsFn = async ({
     sortMode
   )
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarCategories } = await sidebarDataPromise
+    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
-          [sidebarCategoriesCacheKey]: sidebarCategories,
+          [sidebarTopicsCacheKey]: sidebarTopics,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
         slug,
@@ -98,7 +98,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, { sidebarHashtags, sidebarCategories }] = await Promise.all([
+  const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
     getHashtagPosts(slug, {
       db: adminDb,
       uid,
@@ -112,7 +112,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarTopicsCacheKey]: sidebarTopics,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
         [hashtagPostsCacheKey]: posts,
       },

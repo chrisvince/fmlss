@@ -1,18 +1,18 @@
 import constants from '../../../constants'
 import {
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
 } from '../../createCacheKeys'
-import getCategories from '../categories/getCategories'
+import getTopics from '../topics/getTopics'
 import getHashtags from '../hashtags/getHashtags'
 import firebase from 'firebase/app'
 
-const { CATEGORIES_ENABLED, SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } =
+const { TOPICS_ENABLED, SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } =
   constants
 
 export enum SidebarResourceKey {
   HASHTAGS = 'hashtags',
-  CATEGORIES = 'categories',
+  TOPICS = 'topics',
 }
 
 const fetchSidebarData = async ({
@@ -20,10 +20,10 @@ const fetchSidebarData = async ({
   exclude = [],
 }: {
   db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-  exclude?: (SidebarResourceKey.HASHTAGS | SidebarResourceKey.CATEGORIES)[]
+  exclude?: (SidebarResourceKey.HASHTAGS | SidebarResourceKey.TOPICS)[]
 }) => {
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
 
   const getSidebarHashtags = () =>
     getHashtags({
@@ -33,24 +33,24 @@ const fetchSidebarData = async ({
       limit: SIDEBAR_LIST_COUNT,
     })
 
-  const getSidebarCategories = () =>
-    getCategories({
-      cacheKey: sidebarCategoriesCacheKey,
+  const getSidebarTopics = () =>
+    getTopics({
+      cacheKey: sidebarTopicsCacheKey,
       cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db,
       limit: SIDEBAR_LIST_COUNT,
     })
 
-  const [sidebarHashtags, sidebarCategories] = await Promise.all([
+  const [sidebarHashtags, sidebarTopics] = await Promise.all([
     exclude.includes(SidebarResourceKey.HASHTAGS) ? [] : getSidebarHashtags(),
-    exclude.includes(SidebarResourceKey.CATEGORIES) || !CATEGORIES_ENABLED
+    exclude.includes(SidebarResourceKey.TOPICS) || !TOPICS_ENABLED
       ? []
-      : getSidebarCategories(),
+      : getSidebarTopics(),
   ])
 
   return {
     sidebarHashtags,
-    sidebarCategories,
+    sidebarTopics,
   }
 }
 

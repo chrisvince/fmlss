@@ -2,10 +2,10 @@ import Page from '../Page'
 import Feed from '../Feed'
 import useUserPosts from '../../utils/data/userPosts/useUserPosts'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
-import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
 
-const { CATEGORIES_ENABLED } = constants
+const { TOPICS_ENABLED } = constants
 
 const UserPostsPage = () => {
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
@@ -21,7 +21,7 @@ const UserPostsPage = () => {
       rightPanelChildren={
         <>
           <SidebarHashtagsSection />
-          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
+          {TOPICS_ENABLED && <SidebarTopicsSection />}
         </>
       }
     >

@@ -8,7 +8,7 @@ import Page from '../Page'
 import truncateString from '../../utils/truncateString'
 import usePost from '../../utils/data/post/usePost'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
-import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarTopicsSection from '../SidebarTopicsSection'
 import PageSpinner from '../PageSpinner'
 import useUser from '../../utils/data/user/useUser'
 import Error from 'next/error'
@@ -17,7 +17,7 @@ import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 import PostPageParentPostsReference from '../PostPageParentPostsReference'
 
-const { CATEGORIES_ENABLED, POST_MAX_DEPTH } = constants
+const { TOPICS_ENABLED, POST_MAX_DEPTH } = constants
 
 const FirstPostModal = dynamic(() => import('../FirstPostModal'), {
   ssr: false,
@@ -92,14 +92,14 @@ const PostPage = ({ slug }: PropTypes) => {
         article={{
           publishedTime: createdAt,
           modifiedTime: updatedAt,
-          section: post?.data.category?.name,
+          section: post?.data.topic?.name,
           tags: post?.data.hashtags,
         }}
         description={post?.data.body}
         rightPanelChildren={
           <>
             <SidebarHashtagsSection />
-            {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
+            {TOPICS_ENABLED && <SidebarTopicsSection />}
           </>
         }
       >

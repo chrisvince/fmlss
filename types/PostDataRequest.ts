@@ -3,7 +3,7 @@ import { FirebaseDoc, PostPreview } from '.'
 
 export interface PostDataRequest {
   body: string
-  category?: {
+  topic?: {
     name: string
     slug: string
   }

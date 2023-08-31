@@ -2,7 +2,7 @@ import { Box } from '@mui/system'
 
 import { Post } from '../../types'
 import useLikeState from '../../utils/useLikeState'
-import CategoryChip from '../CategoryChip'
+import TopicChip from '../TopicChip'
 import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
 import UserAuthoredIcon from '../UserAuthoredIcon'
@@ -73,7 +73,7 @@ const PostItem = ({
         sx={{
           alignItems: 'center',
           display: 'grid',
-          gridTemplateAreas: `"statusIcon category watchStatus"`,
+          gridTemplateAreas: `"statusIcon topic watchStatus"`,
           gridTemplateColumns: 'min-content auto 1fr',
         }}
       >
@@ -82,11 +82,11 @@ const PostItem = ({
             <UserAuthoredIcon />
           </Box>
         )}
-        {post.data.category && (
-          <Box sx={{ display: 'flex', gridArea: 'category' }}>
-            <CategoryChip
-              name={post.data.category.name}
-              slug={post.data.category.slug}
+        {post.data.topic && (
+          <Box sx={{ display: 'flex', gridArea: 'topic' }}>
+            <TopicChip
+              name={post.data.topic.name}
+              slug={post.data.topic.slug}
             />
           </Box>
         )}

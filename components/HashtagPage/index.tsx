@@ -9,13 +9,13 @@ import Feed from '../Feed'
 import useHashtagPosts from '../../utils/data/posts/useHashtagPosts'
 import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { HashtagSortMode } from '../../types'
-import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarTopicsSection from '../SidebarTopicsSection'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 
-const { CATEGORIES_ENABLED } = constants
+const { TOPICS_ENABLED } = constants
 
 type PropTypes = {
   slug: string
@@ -97,7 +97,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
       rightPanelChildren={
         <>
           <SidebarHashtagsSection />
-          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
+          {TOPICS_ENABLED && <SidebarTopicsSection />}
         </>
       }
     >

@@ -5,7 +5,7 @@ import { useId, useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
-import CategorySelect from '../CategorySelect'
+import TopicSelect from '../TopicSelect'
 import PostBodyTextArea, {
   PostBodyTextAreaRef,
   postLengthStatusType,
@@ -14,7 +14,7 @@ import PostItem, { BodySize } from '../PostItem'
 import constants from '../../constants'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
-const { CATEGORIES_ENABLED } = constants
+const { TOPICS_ENABLED } = constants
 
 interface Props {
   isInModal?: boolean
@@ -32,9 +32,9 @@ const NewPostForm = ({
   const handleTextChange = (text: string) => setHasContent(!!text)
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
-  const categoryId = useId()
-  const [category, setCategory] = useState<string>('')
-  const handleCategoryChange = async (value: string) => setCategory(value)
+  const topicId = useId()
+  const [topic, setTopic] = useState<string>('')
+  const handleTopicChange = async (value: string) => setTopic(value)
 
   const [postLengthStatus, setPostLengthStatus] =
     useState<postLengthStatusType>()
@@ -42,7 +42,7 @@ const NewPostForm = ({
   const submitPost = async () => {
     const body = postBodyTextAreaRef.current?.value
     const linkPreviews = postBodyTextAreaRef.current?.linkPreviews
-    await createPost({ body, category, linkPreviews })
+    await createPost({ body, topic, linkPreviews })
   }
 
   const disableButton =
@@ -89,8 +89,8 @@ const NewPostForm = ({
           username="chrisvince"
         />
       </Box>
-      {CATEGORIES_ENABLED && !slug && (
-        <CategorySelect id={categoryId} onChange={handleCategoryChange} />
+      {TOPICS_ENABLED && !slug && (
+        <TopicSelect id={topicId} onChange={handleTopicChange} />
       )}
       {!isInModal && (
         <Box

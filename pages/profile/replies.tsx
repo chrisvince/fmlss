@@ -11,7 +11,7 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import {
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
   createUserRepliesCacheKey,
 } from '../../utils/createCacheKeys'
@@ -69,17 +69,17 @@ const getServerSidePropsFn = async ({
 
   const userRepliesCacheKey = createUserRepliesCacheKey(uid)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarCategories } = await sidebarDataPromise
+    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
-          [sidebarCategoriesCacheKey]: sidebarCategories,
+          [sidebarTopicsCacheKey]: sidebarTopics,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
         key: userRepliesCacheKey,
@@ -87,7 +87,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, { sidebarHashtags, sidebarCategories }] = await Promise.all([
+  const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
     getUserPosts(uid, { db: adminDb, type: 'reply' }),
     sidebarDataPromise,
   ])
@@ -96,7 +96,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarTopicsCacheKey]: sidebarTopics,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
         [userRepliesCacheKey]: posts,
       },

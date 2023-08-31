@@ -6,11 +6,11 @@ import Feed from '../Feed'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
 import type { FeedSortMode } from '../../types'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
-import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
 import InlineCreatePost from '../InlineCreatePost'
 
-const { CATEGORIES_ENABLED } = constants
+const { TOPICS_ENABLED } = constants
 
 const SORT_MODE_MAP: {
   [key: string]: string
@@ -44,7 +44,7 @@ const FeedPage = () => {
       rightPanelChildren={
         <>
           <SidebarHashtagsSection />
-          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
+          {TOPICS_ENABLED && <SidebarTopicsSection />}
         </>
       }
     >

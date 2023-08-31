@@ -10,7 +10,7 @@ import { NextApiRequest } from 'next'
 import FeedPage from '../../components/FeedPage'
 import type { FeedSortMode } from '../../types'
 import {
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
   createPostFeedCacheKey,
 } from '../../utils/createCacheKeys'
@@ -71,7 +71,7 @@ const getServerSidePropsFn = async ({
 
   const postFeedCacheKey = createPostFeedCacheKey(sortMode)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
 
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
@@ -91,13 +91,13 @@ const getServerSidePropsFn = async ({
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarCategories, sidebarHashtags } = await sidebarDataPromise
+    const { sidebarTopics, sidebarHashtags } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
-          [sidebarCategoriesCacheKey]: sidebarCategories,
+          [sidebarTopicsCacheKey]: sidebarTopics,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
         key: postFeedCacheKey,
@@ -105,7 +105,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, { sidebarHashtags, sidebarCategories }] = await Promise.all([
+  const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
     getPostFeed({
       db: adminDb,
       sortMode,
@@ -119,7 +119,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarTopicsCacheKey]: sidebarTopics,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
         [postFeedCacheKey]: posts,
       },

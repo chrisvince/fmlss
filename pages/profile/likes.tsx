@@ -12,7 +12,7 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import {
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
   createUserLikesCacheKey,
 } from '../../utils/createCacheKeys'
@@ -70,25 +70,25 @@ const getServerSidePropsFn = async ({
 
   const userLikesCacheKey = createUserLikesCacheKey(uid)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarCategories } = await sidebarDataPromise
+    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         key: userLikesCacheKey,
         fallback: {
-          [sidebarCategoriesCacheKey]: sidebarCategories,
+          [sidebarTopicsCacheKey]: sidebarTopics,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
       },
     }
   }
 
-  const [posts, { sidebarHashtags, sidebarCategories }] = await Promise.all([
+  const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
     getUserLikes(uid, { db: adminDb }),
     sidebarDataPromise,
   ])
@@ -98,7 +98,7 @@ const getServerSidePropsFn = async ({
     props: {
       key: userLikesCacheKey,
       fallback: {
-        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarTopicsCacheKey]: sidebarTopics,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
         [userLikesCacheKey]: posts,
       },

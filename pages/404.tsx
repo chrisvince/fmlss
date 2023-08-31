@@ -3,7 +3,7 @@ import { SWRConfig } from 'swr'
 import NotFoundPage from '../components/NotFoundPage'
 import constants from '../constants'
 import {
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
 } from '../utils/createCacheKeys'
 import msToSeconds from '../utils/msToSeconds'
@@ -27,16 +27,16 @@ export const getStaticProps = async () => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
 
-  const { sidebarHashtags, sidebarCategories } = await fetchSidebarData({
+  const { sidebarHashtags, sidebarTopics } = await fetchSidebarData({
     db: adminDb,
   })
 
   return {
     props: {
       fallback: {
-        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarTopicsCacheKey]: sidebarTopics,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
       },
     },

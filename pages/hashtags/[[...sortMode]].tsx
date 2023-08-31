@@ -10,7 +10,7 @@ import HashtagsPage from '../../components/HashtagsPage'
 import type { HashtagsSortMode } from '../../types'
 import {
   createHashtagsCacheKey,
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
 } from '../../utils/createCacheKeys'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import constants from '../../constants'
@@ -70,7 +70,7 @@ const getServerSidePropsFn = async ({
   }
 
   const hashtagsCacheKey = createHashtagsCacheKey(sortMode)
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
 
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
@@ -93,20 +93,20 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
-    const { sidebarCategories } = await sidebarDataPromise
+    const { sidebarTopics } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
-          [sidebarCategoriesCacheKey]: sidebarCategories,
+          [sidebarTopicsCacheKey]: sidebarTopics,
         },
         key: hashtagsCacheKey,
       },
     }
   }
 
-  const [hashtags, { sidebarCategories }] = await Promise.all([
+  const [hashtags, { sidebarTopics }] = await Promise.all([
     getHashtags({ db: adminDb, sortMode }),
     sidebarDataPromise,
   ])
@@ -115,7 +115,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarTopicsCacheKey]: sidebarTopics,
         [hashtagsCacheKey]: hashtags,
       },
       key: hashtagsCacheKey,

@@ -2,7 +2,7 @@ import { PostPreview } from '.'
 
 export interface PostData {
   body: string
-  category?: {
+  topic?: {
     name: string
     slug: string
   }

@@ -62,39 +62,35 @@ const createHashtagsCacheKey = (
   pageIndex: number | null = 0
 ) => `hashtags/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
-const createCategoriesCacheKey = (
-  sortMode: string,
-  pageIndex: number | null = 0
-) => `categories/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
+const createTopicsCacheKey = (sortMode: string, pageIndex: number | null = 0) =>
+  `topics/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
-const createCategoryPostsCacheKey = (
+const createTopicPostsCacheKey = (
   slug: string,
   {
     sortMode = 'latest',
     pageIndex = 0,
   }: { sortMode?: FeedSortMode; pageIndex?: number | null } = {}
 ) =>
-  `category/${slug}/posts/${sortMode}${
-    pageIndex === null ? '' : `-${pageIndex}`
-  }`
+  `topic/${slug}/posts/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
-const createCategoryCacheKey = (slug: string) => `category/${slug}`
+const createTopicCacheKey = (slug: string) => `topic/${slug}`
 
 const createSidebarHashtagsCacheKey = () => 'sidebar/hashtags'
-const createSidebarCategoriesCacheKey = () => 'sidebar/categories'
+const createSidebarTopicsCacheKey = () => 'sidebar/topics'
 
 const createUserCacheKey = (uid: string | null) => (uid ? `user/${uid}` : null)
 
-const createCategoriesStartsWithCacheKey = (searchString: string) =>
-  `categories/search/${searchString}`
+const createTopicsStartsWithCacheKey = (searchString: string) =>
+  `topics/search/${searchString}`
 
 const createHasUsernameCacheKey = (uid: string) => `user/${uid}/has-username`
 
 export {
-  createCategoriesCacheKey,
-  createCategoriesStartsWithCacheKey,
-  createCategoryCacheKey,
-  createCategoryPostsCacheKey,
+  createTopicsCacheKey,
+  createTopicsStartsWithCacheKey,
+  createTopicCacheKey,
+  createTopicPostsCacheKey,
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
   createHasUsernameCacheKey,
@@ -104,7 +100,7 @@ export {
   createPostLikeCacheKey,
   createPostRepliesCacheKey,
   createUserIsWatchingCacheKey,
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
   createUserCacheKey,
   createUserLikesCacheKey,

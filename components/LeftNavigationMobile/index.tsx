@@ -20,7 +20,7 @@ import constants from '../../constants'
 import LeftNavigationListItem from '../LeftNavigaionListItem'
 import NewPostButton from '../NewPostButton'
 
-const { CATEGORIES_ENABLED, TOP_NAVIGATION_HEIGHT } = constants
+const { TOPICS_ENABLED, TOP_NAVIGATION_HEIGHT } = constants
 
 interface PropTypes {
   open: boolean
@@ -42,14 +42,14 @@ const NAVIGATION_ITEMS = [
     iconCurrent: StarRounded,
     label: 'Popular',
   },
-  ...(CATEGORIES_ENABLED
+  ...(TOPICS_ENABLED
     ? [
         {
-          currentPaths: ['/categories', '/category'],
-          href: '/categories',
-          icon: WorkspacesOutlined,
-          iconCurrent: WorkspacesRounded,
-          label: 'Categories',
+          currentPaths: ['/topics', '/topic'],
+          href: '/topics',
+          icon: AlternateEmailRounded,
+          iconCurrent: AlternateEmailRounded,
+          label: 'Topics',
         },
       ]
     : []),

@@ -6,7 +6,7 @@ import usePost from './usePost'
 
 interface HandleCreatePost {
   body?: string
-  category?: string
+  topic?: string
   linkPreviews?: PostPreview[]
 }
 
@@ -18,7 +18,7 @@ const useCreatePost = (parentSlug?: string) => {
 
   const handleCreatePost = async ({
     body,
-    category,
+    topic,
     linkPreviews,
   }: HandleCreatePost) => {
     if (!body) {
@@ -31,7 +31,7 @@ const useCreatePost = (parentSlug?: string) => {
     try {
       const { data } = await createPost({
         body,
-        category,
+        topic,
         linkPreviews,
         parentRef: post?.data.reference,
       })

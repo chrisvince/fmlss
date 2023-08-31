@@ -1,7 +1,7 @@
 import Error from 'next/error'
 
 import usePost from '../../utils/data/post/usePost'
-import SidebarCategoriesSection from '../SidebarCategoriesSection'
+import SidebarTopicsSection from '../SidebarTopicsSection'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import NewPostForm from '../NewPostForm'
@@ -9,7 +9,7 @@ import Page from '../Page'
 import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
 
-const { CATEGORIES_ENABLED } = constants
+const { TOPICS_ENABLED } = constants
 
 interface Props {
   slug: string
@@ -29,7 +29,7 @@ const ReplyPage = ({ slug }: Props) => {
       rightPanelChildren={
         <>
           <SidebarHashtagsSection />
-          {CATEGORIES_ENABLED && <SidebarCategoriesSection />}
+          {TOPICS_ENABLED && <SidebarTopicsSection />}
         </>
       }
     >

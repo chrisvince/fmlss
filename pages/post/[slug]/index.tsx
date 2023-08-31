@@ -13,7 +13,7 @@ import getPost from '../../../utils/data/post/getPost'
 import PostPage from '../../../components/PostPage'
 import getPostReplies from '../../../utils/data/postReplies/getPostReplies'
 import {
-  createSidebarCategoriesCacheKey,
+  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
   createPostCacheKey,
   createPostRepliesCacheKey,
@@ -85,17 +85,17 @@ const getServerSidePropsFn = async ({
   const postCacheKey = createPostCacheKey(slug)
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarCategoriesCacheKey = createSidebarCategoriesCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarCategories } = await sidebarDataPromise
+    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
-          [sidebarCategoriesCacheKey]: sidebarCategories,
+          [sidebarTopicsCacheKey]: sidebarTopics,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
         key: postCacheKey,
@@ -113,7 +113,7 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
-  const [replies, { sidebarHashtags, sidebarCategories }] = await Promise.all([
+  const [replies, { sidebarHashtags, sidebarTopics }] = await Promise.all([
     POST_REPLIES_SSR
       ? getPostReplies(post.data.reference, slug, {
           uid,
@@ -127,7 +127,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarCategoriesCacheKey]: sidebarCategories,
+        [sidebarTopicsCacheKey]: sidebarTopics,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
         [postCacheKey]: post,
         [postRepliesCacheKey]: replies,

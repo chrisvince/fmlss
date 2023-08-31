@@ -6,11 +6,11 @@ declare global {
   }
 }
 
-type Resource = 'post' | 'category' | 'hashtag'
+type Resource = 'post' | 'topic' | 'hashtag'
 
 const resourceEventMap = {
   post: 'Post View',
-  category: 'Category View',
+  topic: 'Topic View',
   hashtag: 'Hashtag View',
 }
 
