@@ -12,23 +12,28 @@ import PostBodyTextArea, {
 } from '../PostBodyTextArea'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
+export enum InlineCreatePostVariant {
+  Feed = 'feed',
+  Reply = 'reply',
+}
+
 const POST_BODY_PADDING_TOP_MAP = {
-  feed: undefined,
-  reply: 2,
+  [InlineCreatePostVariant.Feed]: undefined,
+  [InlineCreatePostVariant.Reply]: 2,
 }
 
 const PADDING_BOTTOM_MAP = {
-  feed: 1,
-  reply: undefined,
+  [InlineCreatePostVariant.Feed]: 1,
+  [InlineCreatePostVariant.Reply]: undefined,
 }
 
 const BUTTON_CONTAINER_HEIGHT_MAP = {
-  feed: '50px',
-  reply: '72px',
+  [InlineCreatePostVariant.Feed]: '50px',
+  [InlineCreatePostVariant.Reply]: '72px',
 }
 
 interface Props {
-  variant: 'feed' | 'reply'
+  variant: InlineCreatePostVariant
   slug?: string
 }
 

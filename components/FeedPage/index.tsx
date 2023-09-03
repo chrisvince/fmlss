@@ -8,7 +8,7 @@ import type { FeedSortMode } from '../../types'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
-import InlineCreatePost from '../InlineCreatePost'
+import InlineCreatePost, { InlineCreatePostVariant } from '../InlineCreatePost'
 
 const { TOPICS_ENABLED } = constants
 
@@ -48,7 +48,7 @@ const FeedPage = () => {
         </>
       }
     >
-      <InlineCreatePost variant="feed" />
+      <InlineCreatePost variant={InlineCreatePostVariant.Feed} />
       <Feed
         isLoading={isLoading}
         key={sortMode}
