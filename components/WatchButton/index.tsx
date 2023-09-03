@@ -5,6 +5,7 @@ import {
 
 import { ButtonBase, Tooltip } from '@mui/material'
 import { useTheme, keyframes } from '@mui/system'
+import { useRef } from 'react'
 
 const ringKeyframe = keyframes`
   0%,
@@ -30,8 +31,18 @@ interface PropTypes {
   watching: boolean
 }
 
-const WatchButton = ({ onClick: handleClick, watching }: PropTypes) => {
+const WatchButton = ({ onClick: handleClick, watching = false }: PropTypes) => {
   const theme = useTheme()
+  const watchingChangedFromInitial = useRef(false)
+  const initialWatching = useRef(watching)
+  const enableAnimation = useRef(false)
+
+  if (
+    !watchingChangedFromInitial.current &&
+    initialWatching.current !== watching
+  ) {
+    enableAnimation.current = true
+  }
 
   return (
     <Tooltip placement="left" title="Get activity notifications">
@@ -55,8 +66,10 @@ const WatchButton = ({ onClick: handleClick, watching }: PropTypes) => {
             fontSize="inherit"
             htmlColor={theme.palette.warning.main}
             sx={{
+              animation: enableAnimation.current
+                ? `${ringKeyframe} 0.8s 1`
+                : undefined,
               transformOrigin: 'center 2.5px',
-              animation: `${ringKeyframe} 0.8s 1`,
             }}
           />
         ) : (
