@@ -1,6 +1,6 @@
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import ScrollLink from '../ScrollLink'
-import InlineCreatePost from '../InlineCreatePost'
+import InlineReplyToPost from '../InlineReplyToPost'
 import ContentSpinner from '../ContentSpinner'
 import { Box, useTheme } from '@mui/system'
 import { useRef } from 'react'
@@ -46,7 +46,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
         <ContentSpinner />
       ) : (
         <>
-          <InlineCreatePost slug={slug} />
+          <InlineReplyToPost slug={slug} />
           <Box sx={{ borderTop: '1px solid', borderTopColor: 'divider' }}>
             <ContentList
               cellMeasurerCache={cellMeasurerCache.current}

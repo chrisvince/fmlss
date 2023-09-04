@@ -15,7 +15,7 @@ interface Props {
   slug?: string
 }
 
-const InlineCreatePost = ({ slug }: Props) => {
+const InlineReplyToPost = ({ slug }: Props) => {
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
 
   const [postLengthStatus, setPostLengthStatus] =
@@ -85,4 +85,4 @@ const InlineCreatePost = ({ slug }: Props) => {
   )
 }
 
-export default InlineCreatePost
+export default InlineReplyToPost
