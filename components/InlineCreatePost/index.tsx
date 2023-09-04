@@ -4,7 +4,6 @@ import { Box } from '@mui/system'
 import { SyntheticEvent, useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
-import useUser from '../../utils/data/user/useUser'
 import MobileContainer from '../MobileContainer'
 import PostBodyTextArea, {
   PostBodyTextAreaRef,
@@ -12,33 +11,11 @@ import PostBodyTextArea, {
 } from '../PostBodyTextArea'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
-export enum InlineCreatePostVariant {
-  Feed = 'feed',
-  Reply = 'reply',
-}
-
-const POST_BODY_PADDING_TOP_MAP = {
-  [InlineCreatePostVariant.Feed]: undefined,
-  [InlineCreatePostVariant.Reply]: 2,
-}
-
-const PADDING_BOTTOM_MAP = {
-  [InlineCreatePostVariant.Feed]: 1,
-  [InlineCreatePostVariant.Reply]: undefined,
-}
-
-const BUTTON_CONTAINER_HEIGHT_MAP = {
-  [InlineCreatePostVariant.Feed]: '50px',
-  [InlineCreatePostVariant.Reply]: '72px',
-}
-
 interface Props {
-  variant: InlineCreatePostVariant
   slug?: string
 }
 
-const InlineCreatePost = ({ variant, slug }: Props) => {
-  const { user } = useUser()
+const InlineCreatePost = ({ slug }: Props) => {
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
 
   const [postLengthStatus, setPostLengthStatus] =
@@ -69,11 +46,10 @@ const InlineCreatePost = ({ variant, slug }: Props) => {
           alignItems: 'start',
           gridTemplateColumns: '1fr min-content',
           gap: 3,
-          pb: PADDING_BOTTOM_MAP[variant],
         }}
       >
         <Box>
-          <Box sx={{ pt: POST_BODY_PADDING_TOP_MAP[variant] }}>
+          <Box sx={{ pt: 2 }}>
             <PostBodyTextArea
               disabled={isLoading}
               onCommandEnter={submitPost}
@@ -92,7 +68,7 @@ const InlineCreatePost = ({ variant, slug }: Props) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            height: BUTTON_CONTAINER_HEIGHT_MAP[variant],
+            height: '72px',
           }}
         >
           <LoadingButton

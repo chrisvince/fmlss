@@ -373,6 +373,7 @@ const PostBodyTextArea = (
   }, [debouncedUpdateTrackedLinkPreviews, links])
 
   const placeholder = usePostBodyTextAreaPlaceholder({ postType })
+  const shouldRenderPostLength = value?.length > POST_WARNING_LENGTH
 
   return (
     <Box>
@@ -394,7 +395,7 @@ const PostBodyTextArea = (
         >
           <PersonRounded color="action" />
         </Box>
-        <Box sx={{ paddingTop: 1 }}>
+        <Box sx={{ pt: 1, pb: 3 }}>
           <Typography
             component="div"
             variant="body1"
@@ -420,34 +421,35 @@ const PostBodyTextArea = (
               stripPastedStyles
             />
           </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              visibility:
-                value?.length > POST_WARNING_LENGTH ? 'visible' : 'hidden',
-            }}
-          >
-            <Typography
-              variant="caption"
+          {shouldRenderPostLength && (
+            <Box
               sx={{
-                fontWeight:
-                  postLengthStatus === postLengthStatusType.warning ||
-                  postLengthStatus === postLengthStatusType.error
-                    ? 'bold'
-                    : undefined,
-                color:
-                  postLengthStatus === postLengthStatusType.error
-                    ? 'error.main'
-                    : postLengthStatus === postLengthStatusType.warning
-                    ? 'warning.main'
-                    : undefined,
+                display: 'flex',
+                justifyContent: 'flex-end',
+                pt: 1,
               }}
             >
-              {formatPostLength(value?.length ?? 0)}/
-              {formatPostLength(POST_MAX_LENGTH)}
-            </Typography>
-          </Box>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight:
+                    postLengthStatus === postLengthStatusType.warning ||
+                    postLengthStatus === postLengthStatusType.error
+                      ? 'bold'
+                      : undefined,
+                  color:
+                    postLengthStatus === postLengthStatusType.error
+                      ? 'error.main'
+                      : postLengthStatus === postLengthStatusType.warning
+                      ? 'warning.main'
+                      : undefined,
+                }}
+              >
+                {formatPostLength(value?.length ?? 0)}/
+                {formatPostLength(POST_MAX_LENGTH)}
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
       {displayedTrackedLinkPreviews.length > 0 && (
