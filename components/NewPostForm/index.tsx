@@ -86,7 +86,6 @@ const NewPostForm = ({
           onLengthStatusChange={setPostLengthStatus}
           postType={postType}
           ref={postBodyTextAreaRef}
-          username="chrisvince"
         />
       </Box>
       {TOPICS_ENABLED && !slug && (

@@ -1,4 +1,4 @@
-import { Avatar, ButtonBase, Typography } from '@mui/material'
+import { ButtonBase, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useState } from 'react'
 
@@ -7,6 +7,7 @@ import MobileContainer from '../MobileContainer'
 import usePostBodyTextAreaPlaceholder from '../../utils/usePostBodyTextAreaPlaceholder'
 import SignUpModal from '../SignUpModal'
 import NewPostModal from '../NewPostModal'
+import { PersonRounded } from '@mui/icons-material'
 
 const FakeInlineCreatePost = () => {
   const { user } = useUser()
@@ -18,7 +19,6 @@ const FakeInlineCreatePost = () => {
   const handleSignInModalClose = () => setShowSignInModal(false)
   const handleNewPostModalClose = () => setNewPostModalOpen(false)
   const placeholder = usePostBodyTextAreaPlaceholder()
-  const avatarLetter = user?.data.username?.charAt(0).toUpperCase()
 
   const handleButtonClick = () => {
     if (!isLoggedIn) {
@@ -57,8 +57,15 @@ const FakeInlineCreatePost = () => {
                   gap: 2,
                 }}
               >
-                <Box>
-                  <Avatar>{avatarLetter}</Avatar>
+                <Box
+                  sx={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    height: '40px',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <PersonRounded color="action" />
                 </Box>
                 <Box sx={{ paddingTop: 1 }}>
                   <Typography

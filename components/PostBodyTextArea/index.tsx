@@ -12,7 +12,7 @@ import createHashtagPlugin, { HashtagProps } from '@draft-js-plugins/hashtag'
 import { convertFromRaw, EditorState } from 'draft-js'
 import Editor from '@draft-js-plugins/editor'
 import 'draft-js/dist/Draft.css'
-import { Avatar, Typography, useTheme } from '@mui/material'
+import { Typography } from '@mui/material'
 import createLinkifyPlugin, { extractLinks } from '@draft-js-plugins/linkify'
 import { Box } from '@mui/system'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
@@ -45,6 +45,7 @@ import PostBodyPreviews from '../PostBodyPreviews'
 import usePostBodyTextAreaPlaceholder, {
   PostType,
 } from '../../utils/usePostBodyTextAreaPlaceholder'
+import { PersonRounded } from '@mui/icons-material'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -166,7 +167,6 @@ type Props = {
   onCommandEnter?: () => void
   onLengthStatusChange?: (status: postLengthStatusType) => void
   postType?: PostType
-  username?: string
 }
 
 const PostBodyTextArea = (
@@ -177,7 +177,6 @@ const PostBodyTextArea = (
     onCommandEnter,
     onLengthStatusChange,
     postType = PostType.New,
-    username,
   }: Props,
   ref: React.Ref<PostBodyTextAreaRef>
 ) => {
@@ -202,7 +201,6 @@ const PostBodyTextArea = (
   )
 
   const editorRef = useRef<Editor>()
-  const { palette } = useTheme()
 
   useEffect(() => {
     if (!focusOnMount) return
@@ -226,7 +224,6 @@ const PostBodyTextArea = (
     return 'handled'
   }
 
-  const avatarLetter = username?.charAt(0).toUpperCase()
   const value = editorState?.getCurrentContent().getPlainText()
   const links = extractLinks(value)
 
@@ -387,8 +384,15 @@ const PostBodyTextArea = (
           gap: 2,
         }}
       >
-        <Box>
-          <Avatar>{avatarLetter}</Avatar>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            height: '40px',
+            justifyContent: 'center',
+          }}
+        >
+          <PersonRounded color="action" />
         </Box>
         <Box sx={{ paddingTop: 1 }}>
           <Typography

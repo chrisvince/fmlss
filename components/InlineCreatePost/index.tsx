@@ -80,7 +80,6 @@ const InlineCreatePost = ({ variant, slug }: Props) => {
               onLengthStatusChange={setPostLengthStatus}
               postType={slug ? PostType.Reply : PostType.New}
               ref={postBodyTextAreaRef}
-              username={user?.data.username}
             />
           </Box>
           {errorMessage && (
