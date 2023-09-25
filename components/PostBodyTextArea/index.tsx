@@ -45,7 +45,7 @@ import PostBodyPreviews from '../PostBodyPreviews'
 import usePostBodyTextAreaPlaceholder, {
   PostType,
 } from '../../utils/usePostBodyTextAreaPlaceholder'
-import { PersonRounded } from '@mui/icons-material'
+import { NotesRounded } from '@mui/icons-material'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -393,7 +393,7 @@ const PostBodyTextArea = (
             justifyContent: 'center',
           }}
         >
-          <PersonRounded color="action" />
+          <NotesRounded color="action" />
         </Box>
         <Box sx={{ pt: 1, pb: 3 }}>
           <Typography

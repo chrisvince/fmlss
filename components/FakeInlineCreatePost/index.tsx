@@ -7,7 +7,7 @@ import MobileContainer from '../MobileContainer'
 import usePostBodyTextAreaPlaceholder from '../../utils/usePostBodyTextAreaPlaceholder'
 import SignUpModal from '../SignUpModal'
 import NewPostModal from '../NewPostModal'
-import { PersonRounded } from '@mui/icons-material'
+import { NotesRounded } from '@mui/icons-material'
 
 const FakeInlineCreatePost = () => {
   const { user } = useUser()
@@ -65,7 +65,7 @@ const FakeInlineCreatePost = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  <PersonRounded color="action" />
+                  <NotesRounded color="action" />
                 </Box>
                 <Box sx={{ paddingTop: 1 }}>
                   <Typography
