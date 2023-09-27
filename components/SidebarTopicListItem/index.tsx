@@ -13,7 +13,7 @@ const SidebarTopicListItem = ({ topic }: PropTypes) => (
     isSidebar
   >
     <SidebarListItem
-      leftText={topic.data.name}
+      leftText={topic.data.title}
       rightText={formatPostCount(topic.data.postCount)}
     />
   </ListItemFrame>

@@ -7,14 +7,14 @@ import constants from '../../constants'
 const { TOPICS_ENABLED } = constants
 
 interface Props {
-  name: string
   slug: string
+  title: string
 }
 
-const TopicChip = ({ name, slug }: Props) => {
+const TopicChip = ({ slug, title }: Props) => {
   const chipElement = (
     <Chip
-      label={truncateString(name)}
+      label={truncateString(title)}
       size="small"
       variant="outlined"
       sx={{

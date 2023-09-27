@@ -76,12 +76,12 @@ const TopicPage = ({ slug }: PropTypes) => {
     track(
       'topic',
       {
-        topic: topic?.data.name,
+        topic: topic?.data.title,
         slug,
       },
       { onceOnly: true }
     )
-  }, [topic?.data.name, topicIsLoading, slug, track])
+  }, [topic?.data.title, topicIsLoading, slug, track])
 
   if ((!topicIsLoading && !topic) || (!postsAreLoading && posts.length === 0)) {
     return <Error statusCode={404} />
@@ -89,8 +89,8 @@ const TopicPage = ({ slug }: PropTypes) => {
 
   return (
     <Page
-      description={`See ${topic?.data.name} posts`}
-      pageTitle={topic?.data.name}
+      description={`See ${topic?.data.title} posts`}
+      pageTitle={topic?.data.title}
       rightPanelChildren={<SidebarHashtagsSection />}
     >
       <MobileContainer>

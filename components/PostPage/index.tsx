@@ -92,7 +92,7 @@ const PostPage = ({ slug }: PropTypes) => {
         article={{
           publishedTime: createdAt,
           modifiedTime: updatedAt,
-          section: post?.data.topic?.name,
+          section: post?.data.topic?.title,
           tags: post?.data.hashtags,
         }}
         description={post?.data.body}

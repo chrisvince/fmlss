@@ -4,8 +4,8 @@ import { FirebaseDoc, PostPreview } from '.'
 export interface PostDataRequest {
   body: string
   topic?: {
-    name: string
     slug: string
+    title: string
   }
   createdAt: firestore.Timestamp
   documentDepth: number

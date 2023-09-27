@@ -40,9 +40,9 @@ const getTopicsStartsWith = async (
     topicDocs = null
   } else {
     topicDocs = await db
-      .collection(TOPICS_COLLECTION)
-      .where('name', '>=', searchStringQuery)
-      .where('name', '<=', searchStringQuery + '\uf8ff')
+      .collectionGroup(TOPICS_COLLECTION)
+      .where('title', '>=', searchStringQuery)
+      .where('title', '<=', searchStringQuery + '\uf8ff')
       .limit(AUTOCOMPLETE_LENGTH)
       .get()
 

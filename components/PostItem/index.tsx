@@ -85,7 +85,7 @@ const PostItem = ({
         {post.data.topic && (
           <Box sx={{ display: 'flex', gridArea: 'topic' }}>
             <TopicChip
-              name={post.data.topic.name}
+              title={post.data.topic.title}
               slug={post.data.topic.slug}
             />
           </Box>

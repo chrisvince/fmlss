@@ -3,8 +3,8 @@ import { PostPreview } from '.'
 export interface PostData {
   body: string
   topic?: {
-    name: string
     slug: string
+    title: string
   }
   createdAt: number
   documentDepth: number

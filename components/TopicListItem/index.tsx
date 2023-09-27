@@ -25,7 +25,7 @@ const TopicListItem = ({ topic }: PropTypes) => {
         }}
       >
         <Typography component="div" variant="h5">
-          {topic.data.name}
+          {topic.data.title}
         </Typography>
         <Box
           sx={{

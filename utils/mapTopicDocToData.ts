@@ -7,10 +7,10 @@ const mapTopicDocToData: MapTopicDocToData = doc => {
   return {
     createdAt: data.createdAt.toMillis(),
     id: doc.id,
-    name: data.name,
     postCount: data.postCount,
     recentViewCount: data.recentViewCount,
     slug: data.slug,
+    title: data.title,
     updatedAt: data.updatedAt.toMillis(),
     viewCount: data.viewCount,
   }
