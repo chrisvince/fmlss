@@ -1,6 +1,7 @@
 import {
   forwardRef,
   KeyboardEvent,
+  LegacyRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -46,6 +47,7 @@ import usePostBodyTextAreaPlaceholder, {
   PostType,
 } from '../../utils/usePostBodyTextAreaPlaceholder'
 import { NotesRounded } from '@mui/icons-material'
+import PluginEditor from '@draft-js-plugins/editor/lib/Editor'
 
 const { POST_MAX_LENGTH } = constants
 
@@ -148,7 +150,7 @@ const emptyContentState = convertFromRaw({
       depth: 0,
       entityRanges: [],
       inlineStyleRanges: [],
-      key: 'foo',
+      key: '',
       text: '',
       type: 'unstyled',
     },
@@ -400,10 +402,10 @@ const PostBodyTextArea = (
             component="div"
             variant="body1"
             sx={{
-              opacity: disabled ? palette.action.disabledOpacity : 1,
+              opacity: disabled ? 'action.disabledOpacity' : 1,
               '.public-DraftEditorPlaceholder-root, .public-DraftEditorPlaceholder-hasFocus':
                 {
-                  color: palette.text.disabled,
+                  color: 'text.disabled',
                 },
             }}
           >
@@ -413,11 +415,9 @@ const PostBodyTextArea = (
               onChange={onEditorStateChange}
               placeholder={placeholder}
               plugins={[linkifyPlugin, hashtagPlugin]}
-              preserveSelectionOnBlur={true}
+              preserveSelectionOnBlur
               readOnly={disabled}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              ref={editorRef}
+              ref={editorRef as LegacyRef<PluginEditor>}
               stripPastedStyles
             />
           </Typography>
