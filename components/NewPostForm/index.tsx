@@ -32,7 +32,6 @@ const NewPostForm = ({
   const handleTextChange = (text: string) => setHasContent(!!text)
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
-  const topicId = useId()
   const [topic, setTopic] = useState<string>('')
   const handleTopicChange = async (value: string) => setTopic(value)
 
@@ -88,9 +87,7 @@ const NewPostForm = ({
           ref={postBodyTextAreaRef}
         />
       </Box>
-      {TOPICS_ENABLED && !slug && (
-        <TopicSelect id={topicId} onChange={handleTopicChange} />
-      )}
+      {TOPICS_ENABLED && !slug && <TopicSelect onChange={handleTopicChange} />}
       {!isInModal && (
         <Box
           sx={{

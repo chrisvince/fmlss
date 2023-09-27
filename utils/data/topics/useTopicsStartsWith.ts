@@ -19,7 +19,12 @@ const useTopicsStartsWith = () => {
     return topics
   }, [])
 
+  const clear = useCallback(() => {
+    setTopics([])
+  }, [])
+
   return {
+    clear,
     search,
     isLoading,
     topics,
