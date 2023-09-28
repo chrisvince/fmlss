@@ -162,6 +162,11 @@ export interface PostBodyTextAreaRef {
   value: string
 }
 
+export enum PostBodyTextAreaSize {
+  Small = 'small',
+  Large = 'large',
+}
+
 type Props = {
   disabled?: boolean
   focusOnMount?: boolean
@@ -169,6 +174,7 @@ type Props = {
   onCommandEnter?: () => void
   onLengthStatusChange?: (status: postLengthStatusType) => void
   postType?: PostType
+  size?: PostBodyTextAreaSize
 }
 
 const PostBodyTextArea = (
@@ -179,6 +185,7 @@ const PostBodyTextArea = (
     onCommandEnter,
     onLengthStatusChange,
     postType = PostType.New,
+    size = PostBodyTextAreaSize.Small,
   }: Props,
   ref: React.Ref<PostBodyTextAreaRef>
 ) => {
@@ -376,6 +383,7 @@ const PostBodyTextArea = (
 
   const placeholder = usePostBodyTextAreaPlaceholder({ postType })
   const shouldRenderPostLength = value?.length > POST_WARNING_LENGTH
+  const large = size === PostBodyTextAreaSize.Large
 
   return (
     <Box>
@@ -397,7 +405,15 @@ const PostBodyTextArea = (
         >
           <NotesRounded color="action" />
         </Box>
-        <Box sx={{ pt: 1, pb: 3 }}>
+        <Box
+          sx={{
+            borderBottomColor: large ? 'action.disabled' : undefined,
+            borderBottomStyle: large ? 'solid' : undefined,
+            borderBottomWidth: large ? '1px' : undefined,
+            pb: 3,
+            pt: 1,
+          }}
+        >
           <Typography
             component="div"
             variant="body1"
@@ -407,6 +423,13 @@ const PostBodyTextArea = (
                 {
                   color: 'text.disabled',
                 },
+              ...(large
+                ? {
+                    '.public-DraftEditor-content': {
+                      minHeight: '80px',
+                    },
+                  }
+                : {}),
             }}
           >
             <Editor

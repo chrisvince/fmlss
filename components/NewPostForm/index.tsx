@@ -1,13 +1,14 @@
 import { LoadingButton } from '@mui/lab'
 import { DialogActions, DialogContent, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useId, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
 import TopicSelect from '../TopicSelect'
 import PostBodyTextArea, {
   PostBodyTextAreaRef,
+  PostBodyTextAreaSize,
   postLengthStatusType,
 } from '../PostBodyTextArea'
 import PostItem, { BodySize } from '../PostItem'
@@ -80,6 +81,11 @@ const NewPostForm = ({
         <PostBodyTextArea
           disabled={isLoading}
           focusOnMount
+          size={
+            replyingToPost
+              ? PostBodyTextAreaSize.Small
+              : PostBodyTextAreaSize.Large
+          }
           onChange={handleTextChange}
           onCommandEnter={submitPost}
           onLengthStatusChange={setPostLengthStatus}
@@ -108,7 +114,7 @@ const NewPostForm = ({
 
   return (
     <>
-      {isInModal ? <DialogContent>{form}</DialogContent> : form}
+      {isInModal ? <DialogContent sx={{ pb: 0 }}>{form}</DialogContent> : form}
       {isInModal && (
         <DialogActions
           sx={{
