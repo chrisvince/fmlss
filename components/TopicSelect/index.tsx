@@ -249,8 +249,7 @@ const TopicSelect = ({ onChange }: Props) => {
   const handleBeforeInput = useCallback(
     (command: string, editorState: EditorState): DraftHandleValue => {
       const text = editorState.getCurrentContent().getPlainText()
-
-      if (!/[A-Za-z" "/]/.test(command)) {
+      if (!/[A-Za-z0-9" "/]/.test(command)) {
         return 'handled'
       }
 
