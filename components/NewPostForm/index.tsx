@@ -33,8 +33,8 @@ const NewPostForm = ({
   const handleTextChange = (text: string) => setHasContent(!!text)
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
-  const [topic, setTopic] = useState<string>('')
-  const handleTopicChange = async (value: string) => setTopic(value)
+  const [subtopics, setSubtopics] = useState<string[]>([])
+  const handleTopicChange = async (subtopic: string[]) => setSubtopics(subtopic)
 
   const [postLengthStatus, setPostLengthStatus] =
     useState<postLengthStatusType>()
@@ -42,7 +42,7 @@ const NewPostForm = ({
   const submitPost = async () => {
     const body = postBodyTextAreaRef.current?.value
     const linkPreviews = postBodyTextAreaRef.current?.linkPreviews
-    await createPost({ body, topic, linkPreviews })
+    await createPost({ body, subtopics, linkPreviews })
   }
 
   const disableButton =

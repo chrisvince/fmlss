@@ -6,7 +6,6 @@ const UserAuthoredIcon = () => (
     <PersonRounded
       sx={{
         fontSize: '1em',
-        marginRight: 0.8,
       }}
       color="secondary"
     />

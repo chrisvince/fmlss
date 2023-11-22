@@ -4,9 +4,9 @@ import { PostPreview } from '../../../types'
 import { createPost } from '../../callableFirebaseFunctions'
 import usePost from './usePost'
 
-interface HandleCreatePost {
+interface HandleCreatePostProps {
   body?: string
-  topic?: string
+  subtopics?: string[]
   linkPreviews?: PostPreview[]
 }
 
@@ -18,9 +18,9 @@ const useCreatePost = (parentSlug?: string) => {
 
   const handleCreatePost = async ({
     body,
-    topic,
+    subtopics,
     linkPreviews,
-  }: HandleCreatePost) => {
+  }: HandleCreatePostProps) => {
     if (!body) {
       setErrorMessage('Post is required!')
       return
@@ -31,7 +31,7 @@ const useCreatePost = (parentSlug?: string) => {
     try {
       const { data } = await createPost({
         body,
-        topic,
+        subtopics,
         linkPreviews,
         parentRef: post?.data.reference,
       })

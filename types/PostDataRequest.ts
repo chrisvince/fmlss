@@ -1,12 +1,10 @@
 import { firestore } from 'firebase-admin'
 import { FirebaseDoc, PostPreview } from '.'
+import { Topic } from '../components/TopicSelect'
 
 export interface PostDataRequest {
   body: string
-  topic?: {
-    slug: string
-    title: string
-  }
+  topic?: Topic
   createdAt: firestore.Timestamp
   documentDepth: number
   hashtags: string[]

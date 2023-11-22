@@ -2,7 +2,7 @@ import { Box } from '@mui/system'
 
 import { Post } from '../../types'
 import useLikeState from '../../utils/useLikeState'
-import TopicChip from '../TopicChip'
+import TopicBadge from '../TopicBadge'
 import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
 import UserAuthoredIcon from '../UserAuthoredIcon'
@@ -59,22 +59,25 @@ const PostItem = ({
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
         alignItems: 'stretch',
-        justifyContent: 'flex-start',
         borderBottom: !noBottomBorder ? '1px solid' : undefined,
         borderColor: !noBottomBorder ? 'divider' : undefined,
-        pb: !noBottomBorder ? 2 : undefined,
+        containerName: 'postItem',
+        containerType: 'inline-size',
+        display: 'flex',
+        flexDirection: 'column',
         gap: 2,
+        justifyContent: 'flex-start',
+        pb: !noBottomBorder ? 2 : undefined,
       }}
     >
       <Box
         sx={{
           alignItems: 'center',
+          columnGap: 0.8,
           display: 'grid',
           gridTemplateAreas: `"statusIcon topic watchStatus"`,
-          gridTemplateColumns: 'min-content auto 1fr',
+          gridTemplateColumns: 'min-content minmax(0, 1fr) min-content',
         }}
       >
         {byUser && (
@@ -84,9 +87,10 @@ const PostItem = ({
         )}
         {post.data.topic && (
           <Box sx={{ display: 'flex', gridArea: 'topic' }}>
-            <TopicChip
-              title={post.data.topic.title}
-              slug={post.data.topic.slug}
+            <TopicBadge
+              pathTitle={post.data.topic.pathTitle}
+              pathTitleSegments={post.data.topic.pathTitleSegments}
+              slug={post.data.topic.path}
             />
           </Box>
         )}

@@ -38,7 +38,11 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
     ...(postData.topic
       ? {
           topic: {
+            path: postData.topic.path,
+            pathTitle: postData.topic.pathTitle,
+            pathTitleSegments: postData.topic.pathTitleSegments,
             slug: postData.topic.slug,
+            slugSegments: postData.topic.slugSegments,
             title: postData.topic.title,
           },
         }

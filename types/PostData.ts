@@ -1,11 +1,9 @@
 import { PostPreview } from '.'
+import { Topic } from '../components/TopicSelect'
 
 export interface PostData {
   body: string
-  topic?: {
-    slug: string
-    title: string
-  }
+  topic?: Topic
   createdAt: number
   documentDepth: number
   hashtags: string[]

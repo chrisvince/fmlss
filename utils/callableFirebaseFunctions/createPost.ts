@@ -6,7 +6,7 @@ import { PostPreview } from '../../types'
 
 interface Input {
   body: string
-  topic?: string | null
+  subtopics?: string[]
   linkPreviews?: PostPreview[]
   parentRef?: string
 }

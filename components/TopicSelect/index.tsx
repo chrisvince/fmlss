@@ -16,7 +16,6 @@ import { Box } from '@mui/system'
 import { AlternateEmailRounded } from '@mui/icons-material'
 import slugify from '../../utils/slugify'
 import { dropLast, last, remove, splitAt } from 'ramda'
-import titlify from '../../utils/titleify'
 
 const { TOPIC_MAX_LENGTH, TOPIC_MAX_SUBTOPICS, TOPIC_MIN_LENGTH } = constants
 
@@ -60,17 +59,23 @@ const insertText = (
   return before + pastedText + after
 }
 
-interface TopicSegment {
+export interface Topic {
   path: string
+  pathTitle: string
+  pathTitleSegments: string[]
   slug: string
+  slugSegments: string[]
   title: string
 }
 
-const isMaximumSegments = (segments: TopicSegment[]) =>
-  segments.length >= TOPIC_MAX_SUBTOPICS - 1
+const isMaximumSubtopics = (subtopics: string[]) =>
+  subtopics.length >= TOPIC_MAX_SUBTOPICS - 1
+
+const createTopicPath = (subtopics: string[]) =>
+  subtopics.map(slugify).join('/')
 
 interface Props {
-  onChange?: (value: string) => void
+  onChange?: (subtopic: string[]) => void
 }
 
 const TopicSelect = ({ onChange }: Props) => {
@@ -95,49 +100,30 @@ const TopicSelect = ({ onChange }: Props) => {
   const [displaySubTopicInstruction, setDisplaySubTopicInstruction] =
     useState(false)
 
-  const [segments, setSegments] = useState<TopicSegment[]>([])
-
-  const addSegments = useCallback((text: string[]) => {
-    setSegments(currentSegments =>
-      [...currentSegments, ...text].reduce<TopicSegment[]>(
-        (acc, segment, index) => {
-          if (typeof segment === 'string') {
-            const lastItem = acc[index - 1]
-            const slug = slugify(segment)
-            return [
-              ...acc,
-              {
-                path: `${lastItem ? `${lastItem.path}/` : ''}${slug}`,
-                slug,
-                title: titlify(segment),
-              },
-            ]
-          }
-          return [...acc, segment]
-        },
-        []
-      )
-    )
-  }, [])
+  const [subtopics, setSubtopics] = useState<string[]>([])
 
   const onEditorStateChange = useCallback(
     (editorState: EditorState) => {
-      const plainText = editorState.getCurrentContent().getPlainText()
+      const text = editorState.getCurrentContent().getPlainText()
       setEditorState(editorState)
       onChange?.(plainText)
 
-      if (plainText) {
+      if (text) {
         setDisplaySubTopicInstruction(true)
       }
 
-      if (plainText.length < 2) {
+      if (subtopics.length === 0 && text.length < 2) {
         clear()
         return
       }
 
-      debouncedSearch(plainText)
+      if (!lastSubtopic) {
+        return
+      }
+
+      debouncedSearch(createTopicPath(filteredSubtopics))
     },
-    [clear, debouncedSearch, onChange]
+    [clearSearch, debouncedSearch, onChange, subtopics]
   )
 
   const handleKeyCommand = useCallback(
@@ -155,18 +141,18 @@ const TopicSelect = ({ onChange }: Props) => {
         return 'not-handled'
       }
 
-      const lastSegment = last(segments)
+      const lastSubtopic = last(subtopics)
 
-      if (!lastSegment) {
+      if (!lastSubtopic) {
         return 'handled'
       }
 
-      const newSegments = dropLast(1, segments)
-      setSegments(newSegments)
-      const nextOffSet = anchorOffset + lastSegment.title.length
+      const newSubtopics = dropLast(1, subtopics)
+      setSubtopics(newSubtopics)
+      const nextOffSet = anchorOffset + lastSubtopic.length
 
       const content = EditorState.createWithContent(
-        createStateFromText(lastSegment.title + text)
+        createStateFromText(lastSubtopic + text)
       )
 
       const newSelection = currentSelection.merge({
@@ -179,40 +165,40 @@ const TopicSelect = ({ onChange }: Props) => {
 
       return 'handled'
     },
-    [segments]
+    [subtopics]
   )
 
-  const divideIntoSegmentsAtSelection = useCallback(
+  const divideIntoSubtopicsAtSelection = useCallback(
     (editorState: EditorState) => {
       const text = editorState.getCurrentContent().getPlainText()
       const currentSelection = editorState.getSelection()
       const start = currentSelection.getAnchorOffset()
       const end = currentSelection.getFocusOffset()
-      const isMaximumSubtopicsReached = isMaximumSegments(segments)
+      const isMaximumSubtopicsReached = isMaximumSubtopics(subtopics)
 
       if (isMaximumSubtopicsReached) {
         console.log('max reached!')
         return
       }
 
-      const [segment, leftoverText] = insertText('/', text, {
+      const [subtopicText, leftoverText] = insertText('/', text, {
         start,
         end,
       }).split('/')
 
-      const trimmedSegment = segment.trim()
+      const trimmedSubtopicText = subtopicText.trim()
 
-      if (trimmedSegment.length > TOPIC_MAX_LENGTH) {
+      if (trimmedSubtopicText.length > TOPIC_MAX_LENGTH) {
         console.log('too long!')
         return
       }
 
-      if (trimmedSegment.length < TOPIC_MIN_LENGTH) {
+      if (trimmedSubtopicText.length < TOPIC_MIN_LENGTH) {
         console.log('too short!')
         return
       }
 
-      addSegments([trimmedSegment])
+      setSubtopics([...subtopics, trimmedSubtopicText])
 
       const content = EditorState.createWithContent(
         createStateFromText(leftoverText)
@@ -226,7 +212,7 @@ const TopicSelect = ({ onChange }: Props) => {
       const newEditorState = EditorState.forceSelection(content, newSelection)
       setEditorState(newEditorState)
     },
-    [addSegments, segments]
+    [subtopics]
   )
 
   const handleReturn = useCallback(
@@ -240,10 +226,10 @@ const TopicSelect = ({ onChange }: Props) => {
         return 'handled'
       }
 
-      divideIntoSegmentsAtSelection(editorState)
+      divideIntoSubtopicsAtSelection(editorState)
       return 'handled'
     },
-    [divideIntoSegmentsAtSelection]
+    [divideIntoSubtopicsAtSelection]
   )
 
   const handleBeforeInput = useCallback(
@@ -261,22 +247,15 @@ const TopicSelect = ({ onChange }: Props) => {
         return 'handled'
       }
 
-      divideIntoSegmentsAtSelection(editorState)
+      divideIntoSubtopicsAtSelection(editorState)
       return 'handled'
     },
-    [divideIntoSegmentsAtSelection]
+    [divideIntoSubtopicsAtSelection]
   )
 
-  const handleSegmentDelete = useCallback(
-    (slug: string) => () => {
-      const deletableSegmentIndex = segments.findIndex(
-        segment => segment.slug === slug
-      )
-
-      setSegments(remove(deletableSegmentIndex, 1, segments))
-    },
-    [segments]
-  )
+  const handleSubtopicDelete = (index: number) => () => {
+    setSubtopics(remove(index, 1, subtopics))
+  }
 
   const handlePastedText = useCallback(
     (text: string, _: string, editorState: EditorState): DraftHandleValue => {
@@ -286,35 +265,35 @@ const TopicSelect = ({ onChange }: Props) => {
       const anchorOffset = currentSelection.getAnchorOffset()
       const focusOffset = currentSelection.getFocusOffset()
 
-      const segments = insertText(removedSpecialChars, plainText, {
+      const textSubtopics = insertText(removedSpecialChars, plainText, {
         start: anchorOffset,
         end: focusOffset,
       }).split('/')
 
-      const lastSegmentPastedText = last(removedSpecialChars.split('/'))
-      const completeSegments = dropLast(1, segments)
+      const lastSubtopicPastedText = last(removedSpecialChars.split('/'))
+      const completeSubtopics = dropLast(1, textSubtopics)
 
-      const trimmedCompleteSegments = completeSegments.map(segment =>
-        segment.trim()
+      const trimmedCompleteSubtopics = completeSubtopics.map(subtopic =>
+        subtopic.trim()
       )
 
-      const incompleteSegment = last(segments)
+      const incompleteSubtopic = last(textSubtopics)
 
-      const completeSegmentsLengthRemoved = trimmedCompleteSegments.filter(
+      const completeSubtopicsLengthRemoved = trimmedCompleteSubtopics.filter(
         ({ length }) => length >= TOPIC_MIN_LENGTH && length <= TOPIC_MAX_LENGTH
       )
 
-      addSegments(completeSegmentsLengthRemoved)
+      setSubtopics([...subtopics, ...completeSubtopicsLengthRemoved])
 
-      if (!incompleteSegment) {
+      if (!incompleteSubtopic) {
         return 'handled'
       }
 
       const content = EditorState.createWithContent(
-        createStateFromText(incompleteSegment)
+        createStateFromText(incompleteSubtopic)
       )
 
-      const newSelectionIndex = lastSegmentPastedText?.length ?? 0
+      const newSelectionIndex = lastSubtopicPastedText?.length ?? 0
 
       const newSelection = currentSelection.merge({
         anchorOffset: newSelectionIndex,
@@ -325,11 +304,11 @@ const TopicSelect = ({ onChange }: Props) => {
       setEditorState(newEditorState)
       return 'handled'
     },
-    [addSegments]
+    [subtopics]
   )
 
   const placeholder =
-    segments.length > 0 ? 'Add a subtopic.' : 'Give your post a topic.'
+    subtopics.length > 0 ? 'Add a subtopic.' : 'Give your post a topic.'
 
   return (
     <Box>
@@ -360,11 +339,11 @@ const TopicSelect = ({ onChange }: Props) => {
               whiteSpace: 'nowrap',
             }}
           >
-            {segments.map(({ slug, title: name }, index) => (
-              <Fragment key={`${slug}}-${index}`}>
+            {subtopics.map((subtopic, index) => (
+              <Fragment key={`${subtopic}}-${index}`}>
                 <Chip
-                  label={name}
-                  onDelete={handleSegmentDelete(slug)}
+                  label={subtopic}
+                  onDelete={handleSubtopicDelete(index)}
                   sx={{
                     height: '25px',
                     '.MuiSvgIcon-root': {
