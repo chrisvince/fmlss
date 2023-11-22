@@ -31,7 +31,6 @@ const ListItemFrame = ({
     if (isClickableElement) return
     if (window.getSelection()?.toString().length) return
     setHighlight(true)
-    if (!href) return
     navigate(href)
   }
 
