@@ -78,9 +78,7 @@ const getPostReplies: GetPostReplies = async (
     const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
       checkIsCreatedByUser(replyDataItem.slug, uid, { db }),
       checkIsLikedByUser(replyDataItem.slug, uid, { db }),
-      checkUserIsWatching(replyDataItem.slug, replyDataItem.reference, uid, {
-        db,
-      }),
+      checkUserIsWatching(replyDataItem.slug, uid, { db }),
     ])
 
     return {

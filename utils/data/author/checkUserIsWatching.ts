@@ -5,11 +5,14 @@ import constants from '../../../constants'
 import { createUserIsWatchingCacheKey } from '../../createCacheKeys'
 import isServer from '../../isServer'
 
-const { USER_IS_WATCHING_CACHE_TIME, WATCHERS_COLLECTION } = constants
+const {
+  USERS_COLLECTION,
+  USER_IS_WATCHING_CACHE_TIME,
+  WATCHED_POSTS_COLLECTION,
+} = constants
 
 const checkUserIsWatching = async (
   slug: string,
-  documentPath: string,
   uid: string,
   {
     db: dbProp,
@@ -26,8 +29,8 @@ const checkUserIsWatching = async (
     userIsWatching = cachedUserIsWatching
   } else {
     const postWatchersSnapshot = await db
-      .collection(`${documentPath}/${WATCHERS_COLLECTION}`)
-      .where('uid', '==', uid)
+      .collection(`${USERS_COLLECTION}/${uid}/${WATCHED_POSTS_COLLECTION}`)
+      .where('slug', '==', slug)
       .limit(1)
       .get()
 

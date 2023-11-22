@@ -75,9 +75,7 @@ const getUserPosts: GetUserPosts = async (
 
     const [likedByUser, userIsWatching] = await Promise.all([
       checkIsLikedByUser(postDataItem.slug, uid, { db }),
-      checkUserIsWatching(postDataItem.slug, postDataItem.reference, uid, {
-        db,
-      }),
+      checkUserIsWatching(postDataItem.slug, uid, { db }),
     ])
 
     return {

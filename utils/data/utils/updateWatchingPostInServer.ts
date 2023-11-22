@@ -5,13 +5,13 @@ import {
 
 const updateWatchingPostInServer = async (
   userIsWatchingPost: boolean,
-  postPath: string
+  slug: string
 ) => {
   if (userIsWatchingPost) {
-    await removeWatchingPost({ postPath })
+    await removeWatchingPost({ slug })
     return
   }
-  await createWatchingPost({ postPath })
+  await createWatchingPost({ slug })
 }
 
 export default updateWatchingPostInServer

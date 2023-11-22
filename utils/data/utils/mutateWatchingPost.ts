@@ -25,12 +25,12 @@ const mutateWatchingPost: MutateWatchingPost = (userWatchingPost, post) => {
 
 const mutateWatchingPostInfiniteData: MutateWatchingPostInfiniteData = (
   userWatchingPost,
-  documentPath,
+  slug,
   currentData = []
 ) =>
   currentData.map(posts =>
     posts.map(post => {
-      if (post.data.reference !== documentPath) return post
+      if (post.data.slug !== slug) return post
       return mutateWatchingPost(userWatchingPost, post)
     })
   )

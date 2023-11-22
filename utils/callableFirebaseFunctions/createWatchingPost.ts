@@ -2,7 +2,7 @@ import firebase from 'firebase/app'
 import 'firebase/functions'
 
 interface Input {
-  postPath: string
+  slug: string
 }
 
 type CreateWatchingPost = (data: Input) => Promise<{ data: void }>

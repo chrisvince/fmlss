@@ -87,9 +87,7 @@ const getHashtagPosts: GetHashtagPosts = async (
     const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
       checkIsCreatedByUser(postDataItem.slug, uid, { db }),
       checkIsLikedByUser(postDataItem.slug, uid, { db }),
-      checkUserIsWatching(postDataItem.slug, postDataItem.reference, uid, {
-        db,
-      }),
+      checkUserIsWatching(postDataItem.slug, uid, { db }),
     ])
 
     return {

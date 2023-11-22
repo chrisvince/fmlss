@@ -90,7 +90,7 @@ interface CONSTANTS {
   USERNAME_REGEX_PATTERN: RegExp
   USERS_COLLECTION: string
   VIRTUALIZED_OVERSCAN_ROW_COUNT: number
-  WATCHERS_COLLECTION: string
+  WATCHED_POSTS_COLLECTION: string
 }
 
 const constants: CONSTANTS = {
@@ -180,7 +180,7 @@ const constants: CONSTANTS = {
   USERNAME_REGEX_PATTERN: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]*$/gi,
   USERS_COLLECTION: 'users',
   VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
-  WATCHERS_COLLECTION: 'watchers',
+  WATCHED_POSTS_COLLECTION: 'watchedPosts',
 }
 
 export default constants

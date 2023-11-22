@@ -71,9 +71,7 @@ const getUserLikes: GetUserLikes = async (
 
     const [createdByUser, userIsWatching] = await Promise.all([
       checkIsCreatedByUser(postDataItem.slug, uid, { db }),
-      checkUserIsWatching(postDataItem.slug, postDataItem.reference, uid, {
-        db,
-      }),
+      checkUserIsWatching(postDataItem.slug, uid, { db }),
     ])
 
     setCacheIsLikedByUser(postDataItem.slug, uid)

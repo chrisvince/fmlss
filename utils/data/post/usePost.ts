@@ -56,7 +56,7 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
     const handleMutation: MutatorCallback<Post | null> = async post => {
       if (!post) return
       const userIsWatchingPost = !!post.user?.watching
-      await updateWatchingPostInServer(userIsWatchingPost, post.data.reference)
+      await updateWatchingPostInServer(userIsWatchingPost, post.data.slug)
       const mutatedData = mutateWatchingPost(userIsWatchingPost, post)
       return mutatedData
     }

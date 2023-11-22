@@ -53,7 +53,7 @@ const PostItem = ({
 
   const handleWatchButtonClick = () => {
     toggleWatching()
-    onWatchPost?.(post.data.reference)
+    onWatchPost?.(post.data.slug)
   }
 
   return (

@@ -121,22 +121,18 @@ const usePostFeed: UsePostFeed = ({
   )
 
   const watchPost = useCallback(
-    async (documentPath: string) => {
+    async (slug: string) => {
       const handleMutation: MutatorCallback<
         InfiniteData
       > = async currentData => {
         if (!currentData) return
 
-        const userIsWatchingPost = checkUserWatchingPost(
-          documentPath,
-          currentData
-        )
-
-        await updateWatchingPostInServer(userIsWatchingPost, documentPath)
+        const userIsWatchingPost = checkUserWatchingPost(slug, currentData)
+        await updateWatchingPostInServer(userIsWatchingPost, slug)
 
         const mutatedData = mutateWatchingPostInfiniteData(
           userIsWatchingPost,
-          documentPath,
+          slug,
           currentData
         )
 

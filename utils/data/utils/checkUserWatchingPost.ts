@@ -6,12 +6,9 @@ type CheckUserWatchingPost = (
   data: InfiniteData | undefined
 ) => boolean
 
-const checkUserWatchingPost: CheckUserWatchingPost = (documentPath, data) =>
+const checkUserWatchingPost: CheckUserWatchingPost = (slug, data) =>
   !!data?.some((posts: Post[]) =>
-    posts.some(
-      (post: Post) =>
-        post.data.reference === documentPath && post.user?.watching
-    )
+    posts.some((post: Post) => post.data.slug === slug && post.user?.watching)
   )
 
 export default checkUserWatchingPost
