@@ -16,7 +16,7 @@ interface CONSTANTS {
   CENTER_SECTION_CONTAINER_MAX_WIDTH: string
   CENTER_SECTION_CONTAINER_THIN_MAX_WIDTH: string
   EMAIL_REGEX_PATTERN: RegExp
-  ENABLE_HIGHLIGHTING: boolean
+  ENABLE_SAVING: boolean
   FEED_CACHE_TIME: number
   FOOTER_BASIC_HEIGHT: string
   FIRST_NAME_MAX_LENGTH: number
@@ -105,7 +105,7 @@ const constants: CONSTANTS = {
   CENTER_SECTION_CONTAINER_THIN_MAX_WIDTH: '420px',
   EMAIL_REGEX_PATTERN:
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
-  ENABLE_HIGHLIGHTING: false,
+  ENABLE_SAVING: false,
   FEED_CACHE_TIME: secondsToMs(30),
   FOOTER_BASIC_HEIGHT: '56px',
   FIRST_NAME_MAX_LENGTH: 80,

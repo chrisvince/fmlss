@@ -13,13 +13,11 @@ import ReplyButton from '../ReplyButton'
 import ShareButton from '../ShareButton'
 import constants from '../../constants'
 
-const HighlightButton = dynamic(() => import('../HighlightButton'), {
-  ssr: false,
-})
+const SaveButton = dynamic(() => import('../SaveButton'))
 const ReplyModal = dynamic(() => import('../ReplyModal'), { ssr: false })
 const SignUpModal = dynamic(() => import('../SignUpModal'), { ssr: false })
 
-const { ENABLE_HIGHLIGHTING } = constants
+const { ENABLE_SAVING } = constants
 
 interface PropTypes {
   createdAt: number
@@ -77,14 +75,14 @@ const PostActionBar = ({
     setReplyModalOpen(true)
   }
 
-  const handleHighlightButtonClick = () => {
+  const handleSaveButtonClick = () => {
     if (!isLoggedIn) {
-      setModalActionText('Sign up to highlight this post.')
+      setModalActionText('Sign up to save this post.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
       return
     }
-    console.log('highlight post')
+    console.log('save post')
   }
 
   return (
@@ -150,9 +148,7 @@ const PostActionBar = ({
               href={isMobileDevice ? `/post/${slug}/reply` : undefined}
             />
           )}
-          {ENABLE_HIGHLIGHTING && (
-            <HighlightButton onClick={handleHighlightButtonClick} />
-          )}
+          {ENABLE_SAVING && <SaveButton onClick={handleSaveButtonClick} />}
           <ShareButton slug={slug} />
         </Box>
       </Box>
