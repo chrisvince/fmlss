@@ -16,7 +16,14 @@ const SectionHeading = ({ children }: PropTypes) => {
         <Typography
           component="h1"
           variant="h4"
-          sx={{ fontWeight: 'bold', mb: 1 }}
+          sx={{
+            fontWeight: 'bold',
+            lineHeight: [undefined, '0.8em'],
+            mb: [
+              undefined,
+              2.35, // matches the position of the feed to the feed page
+            ],
+          }}
         >
           {children}
         </Typography>
