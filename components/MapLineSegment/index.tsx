@@ -153,11 +153,12 @@ const MapLineSegment = ({ lineType, dotPosition }: MapLineSegment) => {
       <Box
         sx={{
           ...SX_CONSTANTS,
-          gridTemplateRows: '1px 1fr 1fr 1fr 1px',
+          gridTemplateRows: '1px repeat(4, 1fr) 1px',
           rowGap: '3px',
         }}
       >
         <Line rounded="bottom" />
+        <Line rounded="both" />
         <Line rounded="both" />
         <Line rounded="both" />
         <Line rounded="both" />

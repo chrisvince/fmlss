@@ -150,7 +150,7 @@ const PostPageParentPostsReference = ({
                 <Box>
                   <MapLineSegment lineType="collapsed" />
                 </Box>
-                <Box sx={{ px: 2, pb: 1 }}>
+                <Box sx={{ px: 2, py: 1 }}>
                   <Typography
                     sx={{
                       color: 'text.secondary',
