@@ -212,8 +212,10 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
                       />
                     </MenuItem>
                   )}
+                  {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/* @ts-ignore */}
                   <MenuItem
-                    component={uid ? 'button' : Link}
+                    component={uid ? undefined : Link}
                     href={uid ? undefined : '/'}
                     onClick={uid ? handleSignOutClick : undefined}
                   >
