@@ -95,7 +95,7 @@ const ContentList = ({
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
         loadMoreRows={handleLoadMoreRows}
-        rowCount={items.length}
+        rowCount={moreToLoad ? items.length + 1 : items.length}
         threshold={INFINITY_LOADING_THRESHOLD}
       >
         {({ onRowsRendered, registerChild: infiniteLoaderRef }) => (
