@@ -5,8 +5,8 @@ import { Topic } from '../../types'
 import TopicListItem from '../TopicListItem'
 import CenteredMessage from '../CenteredMessage'
 import ContentList from '../ContentList'
-import ContentSpinner from '../ContentSpinner'
 import constants from '../../constants'
+import PageSpinner from '../PageSpinner'
 
 const { CELL_CACHE_MEASURER_TOPIC_ITEM_MIN_HEIGHT } = constants
 
@@ -31,7 +31,7 @@ const TopicsList = ({
   )
 
   return isLoading ? (
-    <ContentSpinner />
+    <PageSpinner />
   ) : topics.length ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache.current}

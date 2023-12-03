@@ -4,9 +4,9 @@ import { useRef } from 'react'
 import { Hashtag } from '../../types'
 import CenteredMessage from '../CenteredMessage'
 import ContentList from '../ContentList'
-import ContentSpinner from '../ContentSpinner'
 import HashtagListItem from '../HashtagListItem'
 import constants from '../../constants'
+import PageSpinner from '../PageSpinner'
 
 const { CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT } = constants
 
@@ -31,7 +31,7 @@ const HashtagsList = ({
   )
 
   return isLoading ? (
-    <ContentSpinner />
+    <PageSpinner />
   ) : hashtags.length ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache.current}
