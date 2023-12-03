@@ -32,7 +32,6 @@ const NotificationsNavigationItem = () => {
     limit: 10,
     skip: !shouldLoadNotificationsRef.current,
   })
-  console.log('notifications', notifications)
 
   return (
     <>
