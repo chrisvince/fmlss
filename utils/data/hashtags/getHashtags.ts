@@ -14,7 +14,8 @@ import { createHashtagsCacheKey } from '../../createCacheKeys'
 import mapHashtagDocToData from '../../mapHashtagDocToData'
 import isServer from '../../isServer'
 
-const { HASHTAGS_CACHE_TIME, PAGINATION_COUNT, HASHTAGS_COLLECTION } = constants
+const { HASHTAGS_CACHE_TIME, POST_PAGINATION_COUNT, HASHTAGS_COLLECTION } =
+  constants
 
 type GetHashtags = (options?: {
   cacheKey?: string
@@ -30,7 +31,7 @@ const getHashtags: GetHashtags = async ({
   cacheKey = createHashtagsCacheKey(sortMode),
   cacheTime = HASHTAGS_CACHE_TIME,
   db: dbProp,
-  limit = PAGINATION_COUNT,
+  limit = POST_PAGINATION_COUNT,
   startAfter,
 } = {}) => {
   const db = dbProp || firebase.firestore()

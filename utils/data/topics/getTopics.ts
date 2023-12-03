@@ -9,7 +9,8 @@ import { createTopicsCacheKey } from '../../createCacheKeys'
 import mapTopicDocToData from '../../mapTopicDocToData'
 import isServer from '../../isServer'
 
-const { TOPICS_CACHE_TIME, TOPICS_COLLECTION, PAGINATION_COUNT } = constants
+const { TOPICS_CACHE_TIME, TOPICS_COLLECTION, POST_PAGINATION_COUNT } =
+  constants
 
 type GetTopics = (options?: {
   cacheKey?: string
@@ -25,7 +26,7 @@ const getTopics: GetTopics = async ({
   cacheKey = createTopicsCacheKey(sortMode),
   cacheTime = TOPICS_CACHE_TIME,
   db: dbProp,
-  limit = PAGINATION_COUNT,
+  limit = POST_PAGINATION_COUNT,
   startAfter,
 } = {}) => {
   const db = dbProp || firebase.firestore()

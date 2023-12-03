@@ -12,7 +12,7 @@ import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 
-const { HASHTAG_LIST_CACHE_TIME, PAGINATION_COUNT, POSTS_COLLECTION } =
+const { HASHTAG_LIST_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
   constants
 
 type GetHashtagPosts = (
@@ -65,7 +65,7 @@ const getHashtagPosts: GetHashtagPosts = async (
         sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(PAGINATION_COUNT).get()
+      query => query.limit(POST_PAGINATION_COUNT).get()
     )()
 
     if (postDocs.empty) return []

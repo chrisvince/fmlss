@@ -19,7 +19,7 @@ import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
 import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
 
-const { PAGINATION_COUNT } = constants
+const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
@@ -55,7 +55,10 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
   const { data, error, isLoading, isValidating, mutate, size, setSize } =
     useSWRInfinite(
       (index, previousPageData) => {
-        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+        if (
+          previousPageData &&
+          previousPageData.length < POST_PAGINATION_COUNT
+        ) {
           return null
         }
         return createUserLikesCacheKey(uid!, { pageIndex: index })
@@ -138,7 +141,7 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
   const lastPageLength = data?.at?.(-1)?.length
 
   const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
+    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
 
   return {
     error,

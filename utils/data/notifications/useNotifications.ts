@@ -10,7 +10,7 @@ import { FirebaseDoc, Notification } from '../../../types'
 import { useEffect, useMemo, useState } from 'react'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 
-const { PAGINATION_COUNT } = constants
+const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   initialSize: 1,
@@ -46,14 +46,17 @@ const useNotifications: UseNotifications = ({
   }>({})
 
   const { id: uid } = useAuthUser()
-  const resolvedLimit = limit ?? PAGINATION_COUNT
+  const resolvedLimit = limit ?? POST_PAGINATION_COUNT
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (pageIndex, previousPageData) => {
         if (skip) return null
 
-        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+        if (
+          previousPageData &&
+          previousPageData.length < POST_PAGINATION_COUNT
+        ) {
           return null
         }
 
@@ -95,7 +98,7 @@ const useNotifications: UseNotifications = ({
   const lastPageLength = data?.at?.(-1)?.length
 
   const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
+    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
 
   useEffect(() => {
     if (!markRead) return

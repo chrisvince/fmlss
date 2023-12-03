@@ -11,7 +11,7 @@ import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import getTopics from './getTopics'
 import constants from '../../../constants'
 
-const { PAGINATION_COUNT } = constants
+const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
@@ -43,7 +43,10 @@ const useTopics: UseTopics = ({ sortMode = 'latest', swrConfig = {} } = {}) => {
   const { data, error, isLoading, isValidating, setSize, size } =
     useSWRInfinite(
       (index, previousPageData) => {
-        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+        if (
+          previousPageData &&
+          previousPageData.length < POST_PAGINATION_COUNT
+        ) {
           return null
         }
         return createTopicsCacheKey(sortMode, index)
@@ -80,7 +83,7 @@ const useTopics: UseTopics = ({ sortMode = 'latest', swrConfig = {} } = {}) => {
   const lastPageLength = data?.at?.(-1)?.length
 
   const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
+    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
 
   return {
     topics,

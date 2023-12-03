@@ -13,7 +13,7 @@ import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 
 const {
-  PAGINATION_COUNT,
+  POST_PAGINATION_COUNT,
   POST_LIKES_COLLECTION,
   USER_LIKES_CACHE_TIME,
   USERS_COLLECTION,
@@ -52,7 +52,7 @@ const getUserLikes: GetUserLikes = async (
           .collection(`${USERS_COLLECTION}/${uid}/${POST_LIKES_COLLECTION}`)
           .orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(PAGINATION_COUNT).get()
+      query => query.limit(POST_PAGINATION_COUNT).get()
     )()
 
     if (postDocs.empty) return []

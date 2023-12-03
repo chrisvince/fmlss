@@ -21,7 +21,7 @@ import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
 import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 
-const { PAGINATION_COUNT } = constants
+const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
@@ -74,7 +74,7 @@ const usePostReplies: UsePostReplies = (
   } = useSWRInfinite(
     (index, previousPageData) => {
       if (
-        (previousPageData && previousPageData.length < PAGINATION_COUNT) ||
+        (previousPageData && previousPageData.length < POST_PAGINATION_COUNT) ||
         !post ||
         !slug
       ) {

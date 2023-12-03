@@ -19,7 +19,7 @@ import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
 import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 
-const { PAGINATION_COUNT } = constants
+const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
@@ -60,7 +60,10 @@ const useTopicPosts: UseTopicPosts = (
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (index, previousPageData) => {
-        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+        if (
+          previousPageData &&
+          previousPageData.length < POST_PAGINATION_COUNT
+        ) {
           return null
         }
         return createTopicPostsCacheKey(slug, { pageIndex: index, sortMode })
@@ -145,7 +148,7 @@ const useTopicPosts: UseTopicPosts = (
   const lastPageLength = data?.at?.(-1)?.length ?? 0
 
   const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
+    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
 
   return {
     error,

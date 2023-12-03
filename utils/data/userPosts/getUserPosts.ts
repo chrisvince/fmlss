@@ -14,7 +14,7 @@ import checkUserIsWatching from '../author/checkUserIsWatching'
 
 const {
   AUTHORED_POSTS_COLLECTION,
-  PAGINATION_COUNT,
+  POST_PAGINATION_COUNT,
   USER_POSTS_CACHE_TIME,
   USERS_COLLECTION,
 } = constants
@@ -54,7 +54,7 @@ const getUserPosts: GetUserPosts = async (
           .where('type', '==', type)
           .orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(PAGINATION_COUNT).get()
+      query => query.limit(POST_PAGINATION_COUNT).get()
     )()
 
     if (postDocs.empty) return []

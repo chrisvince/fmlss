@@ -11,7 +11,7 @@ import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import getHashtags from './getHashtags'
 import constants from '../../../constants'
 
-const { PAGINATION_COUNT } = constants
+const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
@@ -46,7 +46,10 @@ const useHashtags: UseHashtags = ({
   const { data, error, isLoading, isValidating, setSize, size } =
     useSWRInfinite(
       (index, previousPageData) => {
-        if (previousPageData && previousPageData.length < PAGINATION_COUNT) {
+        if (
+          previousPageData &&
+          previousPageData.length < POST_PAGINATION_COUNT
+        ) {
           return null
         }
         return createHashtagsCacheKey(sortMode, index)
@@ -83,7 +86,7 @@ const useHashtags: UseHashtags = ({
   const lastPageLength = data?.at?.(-1)?.length
 
   const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= PAGINATION_COUNT
+    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
 
   return {
     error,

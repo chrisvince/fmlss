@@ -49,7 +49,6 @@ interface CONSTANTS {
   NOTIFICATIONS_COLLECTION: string
   PAGE_SORT_SELECTOR_HEIGHT: string
   PAGE_TITLE_HEIGHT: string
-  PAGINATION_COUNT: number
   PASSWORD_MIN_LENGTH: number
   PASSWORD_REGEX_PATTERN: RegExp
   POST_AUTHOR_CACHE_TIME: number | undefined
@@ -58,6 +57,7 @@ interface CONSTANTS {
   POST_LIKES_COLLECTION: string
   POST_MAX_DEPTH: number
   POST_MAX_LENGTH: number
+  POST_PAGINATION_COUNT: number
   POST_REPLIES_SSR: boolean
   POSTS_COLLECTION: string
   REPLIES_CACHE_TIME: number
@@ -140,7 +140,6 @@ const constants: CONSTANTS = {
   NOTIFICATIONS_COLLECTION: 'notifications',
   PAGE_SORT_SELECTOR_HEIGHT: '45px',
   PAGE_TITLE_HEIGHT: '34.59px',
-  PAGINATION_COUNT: 25,
   PASSWORD_MIN_LENGTH,
   PASSWORD_REGEX_PATTERN: /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/g,
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever
@@ -149,6 +148,7 @@ const constants: CONSTANTS = {
   POST_LIKES_COLLECTION: 'postLikes',
   POST_MAX_DEPTH: 80,
   POST_MAX_LENGTH: 10_000,
+  POST_PAGINATION_COUNT: 25,
   POST_REPLIES_SSR: true,
   POSTS_COLLECTION: 'posts',
   REPLIES_CACHE_TIME: secondsToMs(10),

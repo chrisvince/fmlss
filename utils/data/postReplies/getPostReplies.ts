@@ -12,7 +12,7 @@ import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 
-const { PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
+const { POST_PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
 type GetPostReplies = (
   reference: string,
@@ -52,7 +52,7 @@ const getPostReplies: GetPostReplies = async (
           .collection(collection)
           .orderBy('createdAt', viewMode === 'end' ? 'desc' : 'asc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(PAGINATION_COUNT).get()
+      query => query.limit(POST_PAGINATION_COUNT).get()
     )()
 
     if (replyDocs.empty) return []
@@ -60,7 +60,7 @@ const getPostReplies: GetPostReplies = async (
     replyData = replyDocs.docs.map(doc => mapPostDocToData(doc))
 
     const cacheTime =
-      replyData.length < PAGINATION_COUNT ? REPLIES_CACHE_TIME : undefined
+      replyData.length < POST_PAGINATION_COUNT ? REPLIES_CACHE_TIME : undefined
 
     put(postRepliesCacheKey, replyData, cacheTime)
   }

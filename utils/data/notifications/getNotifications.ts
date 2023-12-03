@@ -7,7 +7,7 @@ import { FirebaseDoc } from '../../../types'
 import { Notification } from '../../../types/Notification'
 import isServer from '../../isServer'
 
-const { NOTIFICATIONS_COLLECTION, USERS_COLLECTION, PAGINATION_COUNT } =
+const { NOTIFICATIONS_COLLECTION, USERS_COLLECTION, POST_PAGINATION_COUNT } =
   constants
 
 type GetNotifications = (
@@ -22,7 +22,12 @@ type GetNotifications = (
 
 const getNotifications: GetNotifications = async (
   uid: string,
-  { db: dbProp, startAfter, limit = PAGINATION_COUNT, unreadOnly = false } = {}
+  {
+    db: dbProp,
+    startAfter,
+    limit = POST_PAGINATION_COUNT,
+    unreadOnly = false,
+  } = {}
 ) => {
   const db = dbProp ?? firebase.firestore()
 
