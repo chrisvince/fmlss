@@ -66,8 +66,6 @@ const ContentList = ({
       )
 
       return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         <CellMeasurer
           cache={cellMeasurerCache}
           columnIndex={0}
@@ -94,8 +92,6 @@ const ContentList = ({
 
   return (
     <Box sx={{ pb: 4 }}>
-      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-      {/* @ts-ignore */}
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
         loadMoreRows={handleLoadMoreRows}
@@ -103,17 +99,11 @@ const ContentList = ({
         threshold={INFINITY_LOADING_THRESHOLD}
       >
         {({ onRowsRendered, registerChild: infiniteLoaderRef }) => (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           <WindowScroller>
             {({ height, scrollTop, registerChild: windowScrollerRef }) => (
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
               <AutoSizer disableHeight>
                 {({ width }) => (
                   <div ref={windowScrollerRef as LegacyRef<HTMLDivElement>}>
-                    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                    {/* @ts-ignore */}
                     <List
                       autoHeight
                       deferredMeasurementCache={cellMeasurerCache}
