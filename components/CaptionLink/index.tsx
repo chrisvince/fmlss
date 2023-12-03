@@ -3,6 +3,7 @@ import { Link as MuiLink, Tooltip, TooltipProps } from '@mui/material'
 
 interface PropTypes {
   children: React.ReactNode
+  color?: string
   href: string
   tooltip?: string
   tooltipPlacement?: TooltipProps['placement']
@@ -10,6 +11,7 @@ interface PropTypes {
 
 const CaptionLink = ({
   children,
+  color = 'text.secondary',
   href,
   tooltip,
   tooltipPlacement,
@@ -21,7 +23,7 @@ const CaptionLink = ({
       variant="caption"
       sx={{
         textDecoration: 'none',
-        color: 'text.secondary',
+        color,
         '&:hover': {
           textDecoration: 'underline',
         },
