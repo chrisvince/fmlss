@@ -27,6 +27,7 @@ import LeftNavigationMobile from '../LeftNavigationMobile'
 import Brand from '../Brand'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import NotificationsNavigationItem from '../NotificationsNavigationItem'
 
 const {
   SIDEBAR_GAP_MD,
@@ -179,11 +180,11 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
             >
               <Box
                 sx={{
-                  display: {
-                    marginRight: theme.spacing(-0.7),
-                  },
+                  display: 'flex',
+                  marginRight: theme.spacing(-0.7),
                 }}
               >
+                <NotificationsNavigationItem />
                 <IconButton
                   id="profile-menu-button"
                   aria-label="Profile menu"
