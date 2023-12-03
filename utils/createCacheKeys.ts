@@ -86,6 +86,15 @@ const createTopicsStartsWithCacheKey = (searchString: string) =>
 
 const createHasUsernameCacheKey = (uid: string) => `user/${uid}/has-username`
 
+const createNotificationCacheKey = (
+  uid: string,
+  { pageIndex = 0, limit }: { pageIndex: number; limit?: number }
+) =>
+  `notifications/${uid}?pageIndex=${pageIndex}${limit ? `&limit=${limit}` : ''}`
+
+const createHasUnreadNotificationsCacheKey = (uid: string) =>
+  `has-unread-notifications/${uid}`
+
 export {
   createTopicsCacheKey,
   createTopicsStartsWithCacheKey,
@@ -107,4 +116,6 @@ export {
   createUserPostsCacheKey,
   createUserRepliesCacheKey,
   getPageIndexFromCacheKey,
+  createNotificationCacheKey,
+  createHasUnreadNotificationsCacheKey,
 }
