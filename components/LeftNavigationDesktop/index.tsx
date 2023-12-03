@@ -6,6 +6,8 @@ import {
   ChatRounded,
   FavoriteBorderOutlined,
   FavoriteRounded,
+  NotificationsOutlined,
+  NotificationsRounded,
   PersonRounded,
   ReplyAllRounded,
   StarOutlineRounded,
@@ -74,6 +76,12 @@ const NAVIGATION_ITEMS = [
     href: '/profile/replies',
     icon: ReplyAllRounded,
     label: 'Replies',
+  },
+  {
+    href: '/notifications',
+    icon: NotificationsOutlined,
+    iconCurrent: NotificationsRounded,
+    label: 'Notifications',
   },
 ]
 

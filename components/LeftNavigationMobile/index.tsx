@@ -13,6 +13,8 @@ import {
   ViewStreamOutlined,
   ViewStreamRounded,
   AlternateEmailRounded,
+  NotificationsOutlined,
+  NotificationsRounded,
 } from '@mui/icons-material'
 import { useTheme } from '@mui/system'
 
@@ -75,6 +77,12 @@ const NAVIGATION_ITEMS = [
     href: '/profile/replies',
     icon: ReplyAllRounded,
     label: 'Replies',
+  },
+  {
+    href: '/notifications',
+    icon: NotificationsOutlined,
+    iconCurrent: NotificationsRounded,
+    label: 'Notifications',
   },
 ]
 
