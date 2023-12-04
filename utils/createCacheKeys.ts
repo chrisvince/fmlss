@@ -89,8 +89,7 @@ const createHasUsernameCacheKey = (uid: string) => `user/${uid}/has-username`
 const createNotificationCacheKey = (
   uid: string,
   { pageIndex = 0, limit }: { pageIndex: number; limit?: number }
-) =>
-  `notifications/${uid}?pageIndex=${pageIndex}${limit ? `&limit=${limit}` : ''}`
+) => `notifications/${uid}?${limit ? `&limit=${limit}` : ''}-${pageIndex}`
 
 const createHasUnreadNotificationsCacheKey = (uid: string) =>
   `has-unread-notifications/${uid}`

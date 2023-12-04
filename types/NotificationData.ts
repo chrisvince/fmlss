@@ -1,11 +1,10 @@
 import { NotificationType } from './NotificationDataRequest'
 import { PostRelation } from './PostRelation'
 
-export interface NotificationData {
+interface NotificationDataBase {
   createdAt: number
   eventCount: number
   id: string
-  multiLevelActivity: boolean
   readAt: number | null
   rootPost: PostRelation
   targetPost: PostRelation
@@ -14,3 +13,14 @@ export interface NotificationData {
   uid: string
   updatedAt: number
 }
+
+export interface NotificationReplyData extends NotificationDataBase {
+  multiLevelActivity: boolean
+  type: NotificationType.Reply
+}
+
+export interface NotificationLikeData extends NotificationDataBase {
+  type: NotificationType.Like
+}
+
+export type NotificationData = NotificationReplyData | NotificationLikeData

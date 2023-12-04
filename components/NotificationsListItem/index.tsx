@@ -87,7 +87,6 @@ const NotificationsListItem = ({
   slug,
   unread = false,
 }: Props) => {
-  console.log('multiLevelActivity', multiLevelActivity)
   const [time, setTime] = useState(calculateTime(createdAt))
   const timerRef = useRef<NodeJS.Timer>()
 

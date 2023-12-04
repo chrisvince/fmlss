@@ -4,20 +4,12 @@ import useNotifications from '../../utils/data/notifications/useNotifications'
 import Page from '../Page'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
-import NotificationsListItem, {
-  NotificationListItemSize,
-} from '../NotificationsListItem'
-import { useMemo } from 'react'
+import NotificationsList from '../NotificationsList'
 
 const { TOPICS_ENABLED } = constants
 
 const NotificationsPage = () => {
-  const { notifications } = useNotifications()
-
-  const hasUnreadNotifications = useMemo(
-    () => notifications.some(notification => !notification.data.readAt),
-    [notifications]
-  )
+  const { notifications, isLoading, moreToLoad, loadMore } = useNotifications()
 
   return (
     <Page
@@ -31,20 +23,12 @@ const NotificationsPage = () => {
       renderPageTitle
     >
       <MenuList>
-        {notifications.map(notification => (
-          <NotificationsListItem
-            createdAt={notification.data.createdAt}
-            eventCount={notification.data.eventCount}
-            key={notification.data.id}
-            listHasUnreadNotifications={hasUnreadNotifications}
-            multiLevelActivity={notification.data.multiLevelActivity}
-            notificationType={notification.data.type}
-            postBody={notification.data.targetPostBody}
-            size={NotificationListItemSize.Large}
-            slug={notification.data.targetPost.slug}
-            unread={!notification.data.readAt}
-          />
-        ))}
+        <NotificationsList
+          isLoading={isLoading}
+          moreToLoad={moreToLoad}
+          onLoadMore={loadMore}
+          notifications={notifications}
+        />
       </MenuList>
     </Page>
   )

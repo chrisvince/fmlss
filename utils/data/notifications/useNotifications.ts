@@ -7,10 +7,11 @@ import {
 import constants from '../../../constants'
 import getNotifications from './getNotifications'
 import { FirebaseDoc, Notification } from '../../../types'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
+import checkPossibleMoreToLoad from '../../checkPossibleMoreToLoad'
 
-const { POST_PAGINATION_COUNT } = constants
+const { NOTIFICATION_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   initialSize: 1,
@@ -36,40 +37,31 @@ type UseNotifications = (options?: {
 }
 
 const useNotifications: UseNotifications = ({
-  limit,
+  limit = NOTIFICATION_PAGINATION_COUNT,
   markRead = true,
   skip,
   swrConfig,
 } = {}) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
+  const pageStartAfterTraceRef = useRef<{ [key: string]: FirebaseDoc }>({})
   const { id: uid } = useAuthUser()
-  const resolvedLimit = limit ?? POST_PAGINATION_COUNT
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (pageIndex, previousPageData) => {
-        if (skip) return null
-
-        if (
-          previousPageData &&
-          previousPageData.length < POST_PAGINATION_COUNT
-        ) {
+        if ((previousPageData && previousPageData.length < limit) || skip) {
           return null
         }
 
         return createNotificationCacheKey(uid!, {
           pageIndex,
-          limit: resolvedLimit,
+          limit,
         })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
         return getNotifications(uid!, {
-          startAfter: pageStartAfterTrace[pageIndex],
-          limit: resolvedLimit,
+          startAfter: pageStartAfterTraceRef.current[pageIndex],
+          limit,
         })
       },
       {
@@ -79,26 +71,14 @@ const useNotifications: UseNotifications = ({
     )
 
   const lastPageLastDoc = getLastDocOfLastPage(data)
-
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
-
-  const loadMore = async () => {
-    const data = await setSize(size + 1)
-    return data?.flat() ?? []
-  }
-
+  const moreToLoad = checkPossibleMoreToLoad(data, limit)
   const notifications = useMemo(() => data?.flat() ?? [], [data])
 
-  const lastPageLength = data?.at?.(-1)?.length
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const loadMore = async () => {
+    if (!moreToLoad) return data?.flat() ?? []
+    const newData = await setSize(size + 1)
+    return newData?.flat() ?? []
+  }
 
   useEffect(() => {
     if (!markRead) return
@@ -109,6 +89,15 @@ const useNotifications: UseNotifications = ({
       doc.ref.update({ readAt: new Date() })
     })
   }, [markRead, notifications])
+
+  useEffect(() => {
+    if (!lastPageLastDoc) return
+
+    pageStartAfterTraceRef.current = {
+      ...pageStartAfterTraceRef.current,
+      [size]: lastPageLastDoc,
+    }
+  }, [lastPageLastDoc, size])
 
   return {
     error,

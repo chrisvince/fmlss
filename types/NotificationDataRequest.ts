@@ -6,10 +6,9 @@ export enum NotificationType {
   Like = 'like',
 }
 
-export interface NotificationDataRequest {
+interface NotificationDataRequestBase {
   createdAt: firestore.Timestamp
   eventCount: number
-  multiLevelActivity: boolean
   readAt: firestore.Timestamp
   rootPost: PostRelationRequest
   targetPost: PostRelationRequest
@@ -18,3 +17,18 @@ export interface NotificationDataRequest {
   uid: string
   updatedAt: firestore.Timestamp
 }
+
+export interface NotificationDataReplyRequest
+  extends NotificationDataRequestBase {
+  multiLevelActivity: boolean
+  type: NotificationType.Reply
+}
+
+export interface NotificationDataLikeRequest
+  extends NotificationDataRequestBase {
+  type: NotificationType.Like
+}
+
+export type NotificationDataRequest =
+  | NotificationDataReplyRequest
+  | NotificationDataLikeRequest

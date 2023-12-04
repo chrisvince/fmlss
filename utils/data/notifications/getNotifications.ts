@@ -7,8 +7,11 @@ import { FirebaseDoc } from '../../../types'
 import { Notification } from '../../../types/Notification'
 import isServer from '../../isServer'
 
-const { NOTIFICATIONS_COLLECTION, USERS_COLLECTION, POST_PAGINATION_COUNT } =
-  constants
+const {
+  NOTIFICATIONS_COLLECTION,
+  USERS_COLLECTION,
+  NOTIFICATION_PAGINATION_COUNT,
+} = constants
 
 type GetNotifications = (
   uid: string,
@@ -25,7 +28,7 @@ const getNotifications: GetNotifications = async (
   {
     db: dbProp,
     startAfter,
-    limit = POST_PAGINATION_COUNT,
+    limit = NOTIFICATION_PAGINATION_COUNT,
     unreadOnly = false,
   } = {}
 ) => {
