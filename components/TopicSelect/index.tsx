@@ -130,8 +130,8 @@ const TopicSelect = ({ onChange }: Props) => {
     (editorState: EditorState) => {
       const text = editorState.getCurrentContent().getPlainText()
       setEditorState(editorState)
-      const allSubtopics = [...subtopics, text]
-      onChange?.(allSubtopics)
+      const completeSubtopics = [...subtopics, ...(text ? [text] : [])]
+      onChange?.(completeSubtopics)
 
       if (text) {
         setDisplaySubTopicInstruction(true)
@@ -142,7 +142,7 @@ const TopicSelect = ({ onChange }: Props) => {
         return
       }
 
-      debouncedSearch(allSubtopics)
+      debouncedSearch(completeSubtopics)
     },
     [clearSearch, debouncedSearch, onChange, subtopics]
   )
