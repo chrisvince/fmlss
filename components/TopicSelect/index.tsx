@@ -113,16 +113,18 @@ const TopicSelect = ({ onChange }: Props) => {
 
   const createAutofillClickHandler = (pathTitleSegments: string[]) => () => {
     const currentSelection = editorState.getSelection()
+    const newSubtopics = dropLast(1, pathTitleSegments)
+    const newText = last(pathTitleSegments)
 
     const newSelection = currentSelection.merge({
-      focusOffset: 0,
-      anchorOffset: 0,
+      focusOffset: newText?.length,
+      anchorOffset: newText?.length,
     })
 
-    const content = EditorState.createWithContent(createStateFromText(''))
+    const content = EditorState.createWithContent(createStateFromText(newText))
     const newEditorState = EditorState.forceSelection(content, newSelection)
     setEditorState(newEditorState)
-    setSubtopics(pathTitleSegments)
+    setSubtopics(newSubtopics)
     setAutoCompleteOpen(false)
   }
 
