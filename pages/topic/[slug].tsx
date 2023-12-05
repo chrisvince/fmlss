@@ -17,7 +17,6 @@ import getTopicPosts from '../../utils/data/posts/getTopicPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
-import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 import getTopic from '../../utils/data/topic/getTopic'
 import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 
@@ -71,18 +70,6 @@ const getServerSidePropsFn = async ({
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const topicPostsCacheKey = createTopicPostsCacheKey(slug, { sortMode })
   const topicCacheKey = createTopicCacheKey(slug)
-  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
-
-  if (uid && !userHasUsername) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return {
-      redirect: {
-        destination: '/sign-up/username',
-        permanent: false,
-      },
-    }
-  }
-
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {

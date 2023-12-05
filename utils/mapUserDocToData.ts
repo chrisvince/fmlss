@@ -11,7 +11,6 @@ const mapUserDocToData: MapUserDocToData = userDoc => {
     lastName: userData.lastName,
     shownFirstPostMessage: !!userData.shownFirstPostMessage,
     updatedAt: userData.updatedAt.toMillis(),
-    username: userData.username,
   }
 }
 

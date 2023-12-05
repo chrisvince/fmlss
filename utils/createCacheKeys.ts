@@ -84,8 +84,6 @@ const createUserCacheKey = (uid: string | null) => (uid ? `user/${uid}` : null)
 const createTopicsStartsWithCacheKey = (searchString: string) =>
   `topics/search/${searchString}`
 
-const createHasUsernameCacheKey = (uid: string) => `user/${uid}/has-username`
-
 const createNotificationCacheKey = (
   uid: string,
   { pageIndex = 0, limit }: { pageIndex: number; limit?: number }
@@ -101,7 +99,6 @@ export {
   createTopicPostsCacheKey,
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
-  createHasUsernameCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,

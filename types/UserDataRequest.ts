@@ -7,5 +7,4 @@ export interface UserDataRequest {
   lastName: string
   shownFirstPostMessage: boolean
   updatedAt: firestore.Timestamp
-  username?: string
 }

@@ -56,7 +56,7 @@ const getServerSidePropsFn = async ({
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       redirect: {
-        destination: '/login',
+        destination: '/',
         permanent: false,
       },
     }

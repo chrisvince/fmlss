@@ -17,7 +17,6 @@ import {
 import getPostFeed from '../../utils/data/posts/getPostFeed'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
-import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
@@ -76,18 +75,6 @@ const getServerSidePropsFn = async ({
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
-
-  if (uid && !userHasUsername) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return {
-      redirect: {
-        destination: '/sign-up/username',
-        permanent: false,
-      },
-    }
-  }
-
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {

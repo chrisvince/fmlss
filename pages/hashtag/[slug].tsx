@@ -17,7 +17,6 @@ import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
-import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
@@ -61,17 +60,6 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const uid = AuthUser.id
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as HashtagSortMode
-  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
-
-  if (uid && !userHasUsername) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return {
-      redirect: {
-        destination: '/sign-up/username',
-        permanent: false,
-      },
-    }
-  }
 
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
     slug,

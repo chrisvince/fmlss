@@ -2,8 +2,6 @@ const hoursToMs = (hours: number) => hours * 60 * 60 * 1000
 const secondsToMs = (seconds: number) => seconds * 1000
 
 const PASSWORD_MIN_LENGTH = 8
-const USERNAME_MAX_LENGTH = 30
-const USERNAME_MIN_LENGTH = 5
 
 interface CONSTANTS {
   APP_URL: string
@@ -31,15 +29,8 @@ interface CONSTANTS {
       PATTERN: string
     }
     REQUIRED: string
-    USERNAME: {
-      MAX_LENGTH: string
-      MIN_LENGTH: string
-      PATTERN: string
-      TAKEN: string
-    }
   }
   GET_SERVER_SIDE_PROPS_TIME_LABEL: string
-  HAS_USERNAME_CACHE_TIME: number | undefined
   HASHTAG_LIST_CACHE_TIME: number
   HASHTAGS_CACHE_TIME: number
   HASHTAGS_COLLECTION: string
@@ -88,9 +79,6 @@ interface CONSTANTS {
   USER_IS_WATCHING_CACHE_TIME: number
   USER_LIKES_CACHE_TIME: number
   USER_POSTS_CACHE_TIME: number
-  USERNAME_MAX_LENGTH: number
-  USERNAME_MIN_LENGTH: number
-  USERNAME_REGEX_PATTERN: RegExp
   USERS_COLLECTION: string
   VIRTUALIZED_OVERSCAN_ROW_COUNT: number
   WATCHED_POSTS_COLLECTION: string
@@ -124,15 +112,8 @@ const constants: CONSTANTS = {
         'Must contain at least an uppercase letter, a lowercase letter, a number, and a special character',
     },
     REQUIRED: 'This field is required',
-    USERNAME: {
-      MAX_LENGTH: `Must be no more than ${USERNAME_MAX_LENGTH} characters long`,
-      MIN_LENGTH: `Must be at least ${USERNAME_MIN_LENGTH} characters long`,
-      PATTERN: 'Must contain only letters, numbers, and underscores',
-      TAKEN: 'This username is already taken',
-    },
   },
   GET_SERVER_SIDE_PROPS_TIME_LABEL: 'getServerSideProps processed in',
-  HAS_USERNAME_CACHE_TIME: undefined, // undefined means forever
   HASHTAG_LIST_CACHE_TIME: secondsToMs(30),
   HASHTAGS_CACHE_TIME: secondsToMs(60),
   HASHTAGS_COLLECTION: 'hashtags',
@@ -181,9 +162,6 @@ const constants: CONSTANTS = {
   USER_IS_WATCHING_CACHE_TIME: secondsToMs(10),
   USER_LIKES_CACHE_TIME: secondsToMs(10),
   USER_POSTS_CACHE_TIME: secondsToMs(10),
-  USERNAME_MAX_LENGTH,
-  USERNAME_MIN_LENGTH,
-  USERNAME_REGEX_PATTERN: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]*$/gi,
   USERS_COLLECTION: 'users',
   VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
   WATCHED_POSTS_COLLECTION: 'watchedPosts',

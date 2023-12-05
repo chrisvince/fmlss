@@ -2,7 +2,6 @@ import {
   withAuthUser,
   withAuthUserTokenSSR,
   AuthUser,
-  getFirebaseAdmin,
 } from 'next-firebase-auth'
 
 import {
@@ -12,7 +11,6 @@ import {
 import { checkUserHasPassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
 import PasswordPage from '../../components/PasswordPage'
-import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -28,26 +26,25 @@ const Password = ({ userHasPassword }: Props) => (
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
 
-  if (uid && !userHasUsername) {
+  if (!uid) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
     return {
       redirect: {
-        destination: '/sign-up/username',
+        destination: '/',
         permanent: false,
       },
     }
   }
 
   const { data: userHasPassword } = await checkUserHasPassword({
-    uid: AuthUser.id as string,
+    uid,
   })
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
   return {
     props: {
       userHasPassword,

@@ -5,5 +5,4 @@ export interface UserData {
   lastName: string
   shownFirstPostMessage: boolean
   updatedAt: number
-  username?: string
 }

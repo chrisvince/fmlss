@@ -17,7 +17,6 @@ import {
 import getPost from '../../../utils/data/post/getPost'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import constants from '../../../constants'
-import checkIfUserHasUsername from '../../../utils/data/user/checkIfUserHasUsername'
 import fetchSidebarData from '../../../utils/data/sidebar/fetchSidebarData'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
@@ -55,18 +54,6 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const slug = decodeURIComponent(encodedSlug)
   const uid = AuthUser.id
-  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
-
-  if (uid && !userHasUsername) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return {
-      redirect: {
-        destination: '/sign-up/username',
-        permanent: false,
-      },
-    }
-  }
-
   const postCacheKey = createPostCacheKey(slug)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()

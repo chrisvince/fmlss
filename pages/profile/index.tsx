@@ -1,6 +1,5 @@
 import {
   AuthUser,
-  getFirebaseAdmin,
   useAuthUser,
   withAuthUser,
   withAuthUserTokenSSR,
@@ -13,7 +12,6 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import checkIfUserHasUsername from '../../utils/data/user/checkIfUserHasUsername'
 import constants from '../../constants'
 import ProfileList from '../../components/ProfileList'
 import ProfileListItem from '../../components/ProfileListItem'
@@ -51,20 +49,20 @@ const UserProfile = () => {
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const userHasUsername = await checkIfUserHasUsername(uid, { db: adminDb })
 
-  if (uid && !userHasUsername) {
+  if (uid) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
     return {
       redirect: {
-        destination: '/sign-up/username',
+        destination: '/',
         permanent: false,
       },
     }
   }
+
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 }
 
 export const getServerSideProps = withAuthUserTokenSSR(
