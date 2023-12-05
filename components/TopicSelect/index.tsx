@@ -1,20 +1,27 @@
-import { Chip, Typography } from '@mui/material'
+import {
+  Chip,
+  ClickAwayListener,
+  MenuItem,
+  MenuList,
+  Popper,
+  Typography,
+} from '@mui/material'
 import {
   Fragment,
   KeyboardEvent,
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import debounce from 'lodash.debounce'
 
-import useTopicsStartsWith from '../../utils/data/topics/useTopicsStartsWith'
+import useTopicSearch from '../../utils/data/topics/useTopicSearch'
 import constants from '../../constants'
 import { DraftHandleValue, Editor, EditorState, convertFromRaw } from 'draft-js'
 import { Box } from '@mui/system'
 import { AlternateEmailRounded } from '@mui/icons-material'
-import slugify from '../../utils/slugify'
 import { dropLast, last, remove, splitAt } from 'ramda'
 
 const { TOPIC_MAX_LENGTH, TOPIC_MAX_SUBTOPICS, TOPIC_MIN_LENGTH } = constants
@@ -71,19 +78,21 @@ export interface Topic {
 const isMaximumSubtopics = (subtopics: string[]) =>
   subtopics.length >= TOPIC_MAX_SUBTOPICS - 1
 
-const createTopicPath = (subtopics: string[]) =>
-  subtopics.map(slugify).join('/')
-
 interface Props {
   onChange?: (subtopic: string[]) => void
 }
 
 const TopicSelect = ({ onChange }: Props) => {
-  const { topics, search, clear } = useTopicsStartsWith()
-  console.log('topics', topics)
+  const { topics, search, clear: clearSearch } = useTopicSearch()
+  const [autoCompleteOpen, setAutoCompleteOpen] = useState(false)
+  const wrapperRef = useRef()
 
   const debouncedSearch = useMemo(
-    () => debounce((searchString: string) => search(searchString), 1000),
+    () =>
+      debounce(async (segmentTitles: string[]) => {
+        await search(segmentTitles)
+        setAutoCompleteOpen(true)
+      }, 1000),
     [search]
   )
 
@@ -102,26 +111,38 @@ const TopicSelect = ({ onChange }: Props) => {
 
   const [subtopics, setSubtopics] = useState<string[]>([])
 
+  const createAutofillClickHandler = (pathTitleSegments: string[]) => () => {
+    const currentSelection = editorState.getSelection()
+
+    const newSelection = currentSelection.merge({
+      focusOffset: 0,
+      anchorOffset: 0,
+    })
+
+    const content = EditorState.createWithContent(createStateFromText(''))
+    const newEditorState = EditorState.forceSelection(content, newSelection)
+    setEditorState(newEditorState)
+    setSubtopics(pathTitleSegments)
+    setAutoCompleteOpen(false)
+  }
+
   const onEditorStateChange = useCallback(
     (editorState: EditorState) => {
       const text = editorState.getCurrentContent().getPlainText()
       setEditorState(editorState)
-      onChange?.(plainText)
+      const allSubtopics = [...subtopics, text]
+      onChange?.(allSubtopics)
 
       if (text) {
         setDisplaySubTopicInstruction(true)
       }
 
-      if (subtopics.length === 0 && text.length < 2) {
-        clear()
+      if (subtopics.length === 0 && text.length < 3) {
+        clearSearch()
         return
       }
 
-      if (!lastSubtopic) {
-        return
-      }
-
-      debouncedSearch(createTopicPath(filteredSubtopics))
+      debouncedSearch(allSubtopics)
     },
     [clearSearch, debouncedSearch, onChange, subtopics]
   )
@@ -330,7 +351,7 @@ const TopicSelect = ({ onChange }: Props) => {
         >
           <AlternateEmailRounded color="action" />
         </Box>
-        <Box sx={{ pt: 1 }}>
+        <Box ref={wrapperRef} sx={{ pt: 1 }}>
           <Box
             sx={{
               '&::-webkit-scrollbar': { width: 0, height: 0 },
@@ -385,6 +406,27 @@ const TopicSelect = ({ onChange }: Props) => {
               />
             </Typography>
           </Box>
+          <ClickAwayListener onClickAway={() => setAutoCompleteOpen(false)}>
+            <Popper
+              open={autoCompleteOpen}
+              anchorEl={wrapperRef.current}
+              sx={{ zIndex: 'modal', backgroundColor: 'white', boxShadow: 3 }}
+              placement="bottom-start"
+            >
+              <MenuList>
+                {topics.map(topic => (
+                  <MenuItem
+                    key={topic.data.id}
+                    onClick={createAutofillClickHandler(
+                      topic.data.pathTitleSegments
+                    )}
+                  >
+                    {topic.data.pathTitle}
+                  </MenuItem>
+                ))}
+              </MenuList>
+            </Popper>
+          </ClickAwayListener>
           <Box
             sx={{
               opacity: displaySubTopicInstruction ? 1 : 0,

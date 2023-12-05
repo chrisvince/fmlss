@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getFirebaseAdmin } from 'next-firebase-auth'
 
-import getTopicsStartsWith from '../../../utils/data/topics/getTopicsStartsWith'
+import getTopicsSearch from '../../../utils/data/topics/getTopicsSearch'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req
@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
 
-  const topics = await getTopicsStartsWith(startsWith, {
+  const topics = await getTopicsSearch(startsWith, {
     db: adminDb,
   })
 

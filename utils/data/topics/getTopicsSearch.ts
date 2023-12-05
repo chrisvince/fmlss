@@ -7,8 +7,6 @@ import { createTopicsStartsWithCacheKey } from '../../createCacheKeys'
 import constants from '../../../constants'
 import isServer from '../../isServer'
 import mapTopicDocToData from '../../mapTopicDocToData'
-import slugify from '../../slugify'
-import unslugify from '../../unslugify'
 
 const { AUTOCOMPLETE_LENGTH, TOPICS_COLLECTION, TOPIC_STARTS_WITH_CACHE_TIME } =
   constants
@@ -17,14 +15,12 @@ interface Options {
   db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
 }
 
-const getTopicsStartsWith = async (
+const getTopicsSearch = async (
   searchString: string,
   { db: dbProp }: Options = {}
 ) => {
   const db = dbProp || firebase.firestore()
-  const searchStringSlug = slugify(searchString)
-  const searchStringQuery = unslugify(searchStringSlug)
-  const cacheKey = createTopicsStartsWithCacheKey(searchStringSlug)
+  const cacheKey = createTopicsStartsWithCacheKey(searchString)
 
   let topicDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
@@ -41,8 +37,8 @@ const getTopicsStartsWith = async (
   } else {
     topicDocs = await db
       .collectionGroup(TOPICS_COLLECTION)
-      .where('title', '>=', searchStringQuery)
-      .where('title', '<=', searchStringQuery + '\uf8ff')
+      .where('searchString', '>=', searchString)
+      .where('searchString', '<=', searchString + '\uf8ff')
       .limit(AUTOCOMPLETE_LENGTH)
       .get()
 
@@ -60,4 +56,4 @@ const getTopicsStartsWith = async (
   return topics
 }
 
-export default getTopicsStartsWith
+export default getTopicsSearch
