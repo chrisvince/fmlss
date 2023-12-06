@@ -15,22 +15,22 @@ import useTopic from '../../utils/data/topic/useTopic'
 import Error from 'next/error'
 
 type PropTypes = {
-  slug: string
+  path: string
 }
 
-const generateSortOptions = (slug: string) => [
+const generateSortOptions = (path: string) => [
   {
-    href: `/topic/${slug}`,
+    href: `/topic/${path}`,
     label: 'Latest',
     sortMode: 'latest',
   },
   {
-    href: `/topic/${slug}?sort=popular`,
+    href: `/topic/${path}?sort=popular`,
     label: 'Popular',
     sortMode: 'popular',
   },
   // {
-  //   href: `/topic/${slug}?sort=most-likes`,
+  //   href: `/topic/${path}?sort=most-likes`,
   //   label: 'Most Likes',
   //   sortMode: 'mostLikes',
   // },
@@ -44,11 +44,11 @@ const SORT_MODE_MAP: {
   'most-likes': 'mostLikes',
 }
 
-const TopicPage = ({ slug }: PropTypes) => {
+const TopicPage = ({ path }: PropTypes) => {
   const {
     query: { sort },
   } = useRouter()
-  const { topic, isLoading: topicIsLoading } = useTopic(slug)
+  const { topic, isLoading: topicIsLoading } = useTopic(path)
   const { track } = useTracking()
 
   const pathSortMode = (SORT_MODE_MAP[sort as string] ??
@@ -63,13 +63,13 @@ const TopicPage = ({ slug }: PropTypes) => {
     moreToLoad,
     posts,
     watchPost,
-  } = useTopicPosts(slug, { sortMode })
+  } = useTopicPosts(path, { sortMode })
 
   useEffect(() => {
     setSortMode(pathSortMode)
   }, [pathSortMode])
 
-  const sortOptions = generateSortOptions(slug)
+  const sortOptions = generateSortOptions(path)
 
   useEffect(() => {
     if (topicIsLoading) return
@@ -77,13 +77,13 @@ const TopicPage = ({ slug }: PropTypes) => {
       'topic',
       {
         topic: topic?.data.title,
-        slug,
+        path,
       },
       { onceOnly: true }
     )
-  }, [topic?.data.title, topicIsLoading, slug, track])
+  }, [topic?.data.title, topicIsLoading, path, track])
 
-  if ((!topicIsLoading && !topic) || (!postsAreLoading && posts.length === 0)) {
+  if (!topicIsLoading && !topic) {
     return <Error statusCode={404} />
   }
 

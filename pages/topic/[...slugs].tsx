@@ -19,6 +19,7 @@ import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
 import getTopic from '../../utils/data/topic/getTopic'
 import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import slugify from '../../utils/slugify'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, TOPICS_ENABLED } = constants
 
@@ -26,12 +27,12 @@ interface PropTypes {
   fallback: {
     [key: string]: unknown
   }
-  slug: string
+  path: string
 }
 
-const Topic = ({ fallback, slug }: PropTypes) => (
+const Topic = ({ fallback, path }: PropTypes) => (
   <SWRConfig value={{ fallback }}>
-    <TopicPage slug={slug} />
+    <TopicPage path={path} />
   </SWRConfig>
 )
 
@@ -45,16 +46,18 @@ const SORT_MODE_MAP: {
 
 const getServerSidePropsFn = async ({
   AuthUser,
-  params: { slug },
+  params: { slugs = [] },
   query: { sort = 'latest' },
   req,
 }: {
   AuthUser: AuthUser
-  params: { slug: string }
+  params: { slugs: string[] }
   query: { sort: string }
   req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+  const path = slugs.map(slugify).join('/')
 
   if (!TOPICS_ENABLED) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -68,8 +71,8 @@ const getServerSidePropsFn = async ({
   const uid = AuthUser.id
   const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as TopicSortMode
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const topicPostsCacheKey = createTopicPostsCacheKey(slug, { sortMode })
-  const topicCacheKey = createTopicCacheKey(slug)
+  const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
+  const topicCacheKey = createTopicCacheKey(path)
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
@@ -81,23 +84,23 @@ const getServerSidePropsFn = async ({
         fallback: {
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
-        slug,
+        path,
         key: topicCacheKey,
       },
     }
   }
 
   const [posts, topic, { sidebarHashtags }] = await Promise.all([
-    getTopicPosts(slug, {
+    getTopicPosts(path, {
       db: adminDb,
       uid,
       sortMode,
     }),
-    getTopic(slug, { db: adminDb }),
+    getTopic(path, { db: adminDb }),
     sidebarDataPromise,
   ])
 
-  if (!topic || posts.length === 0) {
+  if (!topic) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return {
       notFound: true,
@@ -112,7 +115,7 @@ const getServerSidePropsFn = async ({
         [topicPostsCacheKey]: posts,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
       },
-      slug,
+      path,
       key: topicCacheKey,
     },
   }

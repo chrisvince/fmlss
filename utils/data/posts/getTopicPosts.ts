@@ -26,7 +26,7 @@ type GetTopicPosts = (
 ) => Promise<Post[]>
 
 const getTopicPosts: GetTopicPosts = async (
-  slug,
+  path,
   { db: dbProp, startAfter, uid, sortMode = 'latest' } = {}
 ) => {
   const db = dbProp || firebase.firestore()
@@ -37,8 +37,7 @@ const getTopicPosts: GetTopicPosts = async (
     | null
   let postData: PostData[] = []
 
-  const lowerCaseSlug = slug.toLowerCase()
-  const topicPostsCacheKey = createTopicPostsCacheKey(lowerCaseSlug, {
+  const topicPostsCacheKey = createTopicPostsCacheKey(path, {
     sortMode,
   })
   const cachedData = get(topicPostsCacheKey)
@@ -49,9 +48,7 @@ const getTopicPosts: GetTopicPosts = async (
   } else {
     postDocs = await pipe(
       () =>
-        db
-          .collectionGroup(POSTS_COLLECTION)
-          .where('topic.slug', '==', lowerCaseSlug),
+        db.collectionGroup(POSTS_COLLECTION).where('topic.path', '==', path),
       query =>
         sortMode === 'popular'
           ? query.orderBy('recentViewCount', 'desc')

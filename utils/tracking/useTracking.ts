@@ -21,7 +21,6 @@ interface Options {
 type EventFunction = (
   resource: Resource,
   data: {
-    slug: string
     [key: string]: unknown
   },
   options?: Options

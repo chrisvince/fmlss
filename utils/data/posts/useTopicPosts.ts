@@ -46,7 +46,7 @@ type UseTopicPosts = (
 }
 
 const useTopicPosts: UseTopicPosts = (
-  slug,
+  path,
   { sortMode = 'latest', swrConfig = {} } = {}
 ) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
@@ -54,7 +54,7 @@ const useTopicPosts: UseTopicPosts = (
   }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createTopicPostsCacheKey(slug, { sortMode })]
+  const fallbackData = fallback[createTopicPostsCacheKey(path, { sortMode })]
   const { id: uid } = useAuthUser()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
@@ -66,11 +66,11 @@ const useTopicPosts: UseTopicPosts = (
         ) {
           return null
         }
-        return createTopicPostsCacheKey(slug, { pageIndex: index, sortMode })
+        return createTopicPostsCacheKey(path, { pageIndex: index, sortMode })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
-        return getTopicPosts(slug, {
+        return getTopicPosts(path, {
           sortMode,
           startAfter: pageStartAfterTrace[pageIndex],
           uid,

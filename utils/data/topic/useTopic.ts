@@ -20,12 +20,12 @@ type UseTopic = (
   isValidating: boolean
 }
 
-const useTopic: UseTopic = (slug, { swrConfig = {} } = {}) => {
-  const topicCacheKey = createTopicCacheKey(slug)
+const useTopic: UseTopic = (path, { swrConfig = {} } = {}) => {
+  const topicCacheKey = createTopicCacheKey(path)
 
   const { data, error, isLoading, isValidating } = useSWR(
     topicCacheKey,
-    () => getTopic(slug),
+    () => getTopic(path),
     {
       ...DEFAULT_SWR_CONFIG,
       ...swrConfig,

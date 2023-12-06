@@ -18,7 +18,7 @@ type GetTopic = (
   }
 ) => Promise<Topic | null>
 
-const getTopic: GetTopic = async (slug, { db: dbProp } = {}) => {
+const getTopic: GetTopic = async (path, { db: dbProp } = {}) => {
   const db = dbProp || firebase.firestore()
 
   let doc:
@@ -27,7 +27,7 @@ const getTopic: GetTopic = async (slug, { db: dbProp } = {}) => {
     | null
   let data: TopicData
 
-  const topicCacheKey = createTopicCacheKey(slug)
+  const topicCacheKey = createTopicCacheKey(path)
   const cachedData = get(topicCacheKey)
 
   if (isServer && cachedData) {
@@ -35,8 +35,8 @@ const getTopic: GetTopic = async (slug, { db: dbProp } = {}) => {
     doc = null
   } else {
     const topicsRef = await db
-      .collection(TOPICS_COLLECTION)
-      .where('slug', '==', slug)
+      .collectionGroup(TOPICS_COLLECTION)
+      .where('path', '==', path)
       .limit(1)
       .get()
 
