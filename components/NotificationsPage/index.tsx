@@ -22,14 +22,12 @@ const NotificationsPage = () => {
       }
       renderPageTitle
     >
-      <MenuList>
-        <NotificationsList
-          isLoading={isLoading}
-          moreToLoad={moreToLoad}
-          onLoadMore={loadMore}
-          notifications={notifications}
-        />
-      </MenuList>
+      <NotificationsList
+        isLoading={isLoading}
+        moreToLoad={moreToLoad}
+        onLoadMore={loadMore}
+        notifications={notifications}
+      />
     </Page>
   )
 }

@@ -9,6 +9,7 @@ import NotificationsListItem, {
   NotificationListItemSize,
 } from '../NotificationsListItem'
 import PageSpinner from '../PageSpinner'
+import { MenuList } from '@mui/material'
 
 const { CELL_CACHE_MEASURER_NOTIFICATION_ITEM_MIN_HEIGHT } = constants
 
@@ -40,48 +41,50 @@ const NotificationsList = ({
   return notifications.length === 0 && isLoading ? (
     <PageSpinner />
   ) : notifications.length > 0 ? (
-    <ContentList
-      cellMeasurerCache={cellMeasurerCache.current}
-      items={notifications}
-      moreToLoad={moreToLoad}
-      onLoadMore={onLoadMore}
-    >
-      {untypedNotification => {
-        const notification = untypedNotification as Notification
-        if (notification.data.type === NotificationType.Like) {
-          return (
-            <NotificationsListItem
-              createdAt={notification.data.createdAt}
-              eventCount={notification.data.eventCount}
-              listHasUnreadNotifications={hasUnreadNotifications}
-              notificationType={notification.data.type}
-              postBody={notification.data.targetPostBody}
-              size={NotificationListItemSize.Large}
-              slug={notification.data.targetPost.slug}
-              unread={!notification.data.readAt}
-              key={notification.data.id}
-            />
-          )
-        }
+    <MenuList>
+      <ContentList
+        cellMeasurerCache={cellMeasurerCache.current}
+        items={notifications}
+        moreToLoad={moreToLoad}
+        onLoadMore={onLoadMore}
+      >
+        {untypedNotification => {
+          const notification = untypedNotification as Notification
+          if (notification.data.type === NotificationType.Like) {
+            return (
+              <NotificationsListItem
+                createdAt={notification.data.createdAt}
+                eventCount={notification.data.eventCount}
+                listHasUnreadNotifications={hasUnreadNotifications}
+                notificationType={notification.data.type}
+                postBody={notification.data.targetPostBody}
+                size={NotificationListItemSize.Large}
+                slug={notification.data.targetPost.slug}
+                unread={!notification.data.readAt}
+                key={notification.data.id}
+              />
+            )
+          }
 
-        if (notification.data.type === NotificationType.Reply) {
-          return (
-            <NotificationsListItem
-              createdAt={notification.data.createdAt}
-              eventCount={notification.data.eventCount}
-              listHasUnreadNotifications={hasUnreadNotifications}
-              multiLevelActivity={notification.data.multiLevelActivity}
-              notificationType={notification.data.type}
-              postBody={notification.data.targetPostBody}
-              size={NotificationListItemSize.Large}
-              slug={notification.data.targetPost.slug}
-              unread={!notification.data.readAt}
-              key={notification.data.id}
-            />
-          )
-        }
-      }}
-    </ContentList>
+          if (notification.data.type === NotificationType.Reply) {
+            return (
+              <NotificationsListItem
+                createdAt={notification.data.createdAt}
+                eventCount={notification.data.eventCount}
+                listHasUnreadNotifications={hasUnreadNotifications}
+                multiLevelActivity={notification.data.multiLevelActivity}
+                notificationType={notification.data.type}
+                postBody={notification.data.targetPostBody}
+                size={NotificationListItemSize.Large}
+                slug={notification.data.targetPost.slug}
+                unread={!notification.data.readAt}
+                key={notification.data.id}
+              />
+            )
+          }
+        }}
+      </ContentList>
+    </MenuList>
   ) : (
     <CenteredMessage>No notifications.</CenteredMessage>
   )
