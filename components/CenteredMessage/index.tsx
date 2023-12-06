@@ -16,9 +16,12 @@ const CenteredMessage = ({ children }: Props) => (
       position: 'absolute',
       top: 0,
       width: '100vw',
+      pointerEvents: 'none',
     }}
   >
-    <Typography variant="body2">{children}</Typography>
+    <Typography variant="body2" sx={{ pointerEvents: 'all' }}>
+      {children}
+    </Typography>
   </Box>
 )
 
