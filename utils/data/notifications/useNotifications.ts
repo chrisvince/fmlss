@@ -10,6 +10,7 @@ import { FirebaseDoc, Notification } from '../../../types'
 import { useEffect, useMemo, useRef } from 'react'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import checkPossibleMoreToLoad from '../../checkPossibleMoreToLoad'
+import { useSWRConfig } from 'swr'
 
 const { NOTIFICATION_PAGINATION_COUNT } = constants
 
@@ -45,14 +46,28 @@ const useNotifications: UseNotifications = ({
   const pageStartAfterTraceRef = useRef<{ [key: string]: FirebaseDoc }>({})
   const { id: uid } = useAuthUser()
 
+  const { fallback } = useSWRConfig()
+
+  const fallbackData =
+    fallback[
+      createNotificationCacheKey(uid!, {
+        pageIndex: 0,
+        limit,
+      })
+    ]
+
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (pageIndex, previousPageData) => {
-        if ((previousPageData && previousPageData.length < limit) || skip) {
+        if (
+          (previousPageData && previousPageData.length < limit) ||
+          skip ||
+          !uid
+        ) {
           return null
         }
 
-        return createNotificationCacheKey(uid!, {
+        return createNotificationCacheKey(uid, {
           pageIndex,
           limit,
         })
@@ -65,6 +80,7 @@ const useNotifications: UseNotifications = ({
         })
       },
       {
+        fallbackData,
         ...DEFAULT_SWR_CONFIG,
         ...swrConfig,
       }

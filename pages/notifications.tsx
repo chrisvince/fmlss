@@ -22,7 +22,8 @@ import {
 import fetchSidebarData from '../utils/data/sidebar/fetchSidebarData'
 import getNotifications from '../utils/data/notifications/getNotifications'
 
-const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL, NOTIFICATION_PAGINATION_COUNT } =
+  constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
@@ -63,6 +64,7 @@ const getServerSidePropsFn = async ({
   }
 
   const notificationsCacheKey = createNotificationCacheKey(uid, {
+    limit: NOTIFICATION_PAGINATION_COUNT,
     pageIndex: 0,
   })
 

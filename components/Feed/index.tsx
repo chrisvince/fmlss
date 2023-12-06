@@ -37,9 +37,9 @@ const Feed = ({
     })
   )
 
-  return isLoading ? (
+  return posts.length === 0 && isLoading ? (
     <PageSpinner />
-  ) : posts.length ? (
+  ) : posts.length > 0 ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache.current}
       items={posts}

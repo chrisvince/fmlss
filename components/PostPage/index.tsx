@@ -103,7 +103,7 @@ const PostPage = ({ slug }: PropTypes) => {
           </>
         }
       >
-        {isLoading ? (
+        {!post && isLoading ? (
           <PageSpinner />
         ) : post ? (
           <>

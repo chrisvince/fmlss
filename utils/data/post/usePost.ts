@@ -8,7 +8,6 @@ import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import getPost from './getPost'
 import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import { mutateWatchedPost } from '../utils/mutateWatchedPost'
-import laggy from '../../swrLaggy'
 
 const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
@@ -38,7 +37,6 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
     {
       ...DEFAULT_SWR_CONFIG,
       ...swrConfig,
-      use: [laggy],
     }
   )
 

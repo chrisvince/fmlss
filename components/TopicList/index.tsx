@@ -30,9 +30,9 @@ const TopicsList = ({
     })
   )
 
-  return isLoading ? (
+  return topics.length === 0 && isLoading ? (
     <PageSpinner />
-  ) : topics.length ? (
+  ) : topics.length > 0 ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache.current}
       moreToLoad={moreToLoad}

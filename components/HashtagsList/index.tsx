@@ -30,9 +30,9 @@ const HashtagsList = ({
     })
   )
 
-  return isLoading ? (
+  return hashtags.length === 0 && isLoading ? (
     <PageSpinner />
-  ) : hashtags.length ? (
+  ) : hashtags.length > 0 ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache.current}
       items={hashtags}

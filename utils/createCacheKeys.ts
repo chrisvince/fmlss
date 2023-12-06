@@ -86,8 +86,8 @@ const createTopicsStartsWithCacheKey = (searchString: string) =>
 
 const createNotificationCacheKey = (
   uid: string,
-  { pageIndex = 0, limit }: { pageIndex: number; limit?: number }
-) => `notifications/${uid}?${limit ? `&limit=${limit}` : ''}-${pageIndex}`
+  { pageIndex = 0, limit }: { pageIndex: number; limit: number }
+) => `notifications/${uid}/limit=${limit}-${pageIndex}`
 
 const createHasUnreadNotificationsCacheKey = (uid: string) =>
   `has-unread-notifications/${uid}`

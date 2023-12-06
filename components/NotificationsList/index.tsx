@@ -37,9 +37,9 @@ const NotificationsList = ({
     [notifications]
   )
 
-  return isLoading ? (
+  return notifications.length === 0 && isLoading ? (
     <PageSpinner />
-  ) : notifications.length ? (
+  ) : notifications.length > 0 ? (
     <ContentList
       cellMeasurerCache={cellMeasurerCache.current}
       items={notifications}
