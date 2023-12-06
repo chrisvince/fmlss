@@ -62,6 +62,7 @@ const TopicsPage = () => {
                 component={Link}
                 href={href}
                 key={href}
+                replace
                 shallow
                 variant={sortModeOption === sortMode ? 'contained' : undefined}
               >
