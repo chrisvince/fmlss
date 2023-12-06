@@ -1,6 +1,6 @@
 import { CircularProgress, useMediaQuery } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { LegacyRef, useCallback } from 'react'
+import { LegacyRef, ReactNode, useCallback } from 'react'
 import {
   AutoSizer,
   CellMeasurer,
@@ -21,7 +21,7 @@ interface PropTypes {
     item: unknown,
     index: number,
     options: { measure: () => void }
-  ) => JSX.Element
+  ) => ReactNode
   items: unknown[]
   moreToLoad: boolean
   onLoadMore: () => Promise<unknown>
@@ -80,7 +80,7 @@ const ContentList = ({
               style={style}
             >
               {isRowLoaded({ index }) && items[index]
-                ? render(items[index], index, { measure })
+                ? render?.(items[index], index, { measure })
                 : renderLoader(moreToLoad)}
             </div>
           )}

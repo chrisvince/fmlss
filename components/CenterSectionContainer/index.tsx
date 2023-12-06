@@ -9,7 +9,7 @@ const {
 } = constants
 
 interface PropTypes {
-  children: ReactNode
+  children?: ReactNode
   thin?: boolean
 }
 

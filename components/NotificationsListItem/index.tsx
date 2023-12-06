@@ -68,7 +68,7 @@ interface Props {
   createdAt: number
   eventCount: number
   listHasUnreadNotifications?: boolean
-  multiLevelActivity: boolean
+  multiLevelActivity?: boolean
   notificationType: NotificationType
   postBody: string
   size?: NotificationListItemSize
@@ -80,7 +80,7 @@ const NotificationsListItem = ({
   createdAt,
   eventCount,
   listHasUnreadNotifications = false,
-  multiLevelActivity,
+  multiLevelActivity = false,
   notificationType,
   postBody,
   size = NotificationListItemSize.Small,

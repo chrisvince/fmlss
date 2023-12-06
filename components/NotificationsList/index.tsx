@@ -1,7 +1,7 @@
 import { CellMeasurerCache } from 'react-virtualized'
 import { useMemo, useRef } from 'react'
 
-import { Notification } from '../../types'
+import { Notification, NotificationType } from '../../types'
 import CenteredMessage from '../CenteredMessage'
 import ContentList from '../ContentList'
 import constants from '../../constants'
@@ -46,22 +46,41 @@ const NotificationsList = ({
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
     >
-      {notification => (
-        <NotificationsListItem
-          createdAt={(notification as Notification).data.createdAt}
-          eventCount={(notification as Notification).data.eventCount}
-          listHasUnreadNotifications={hasUnreadNotifications}
-          multiLevelActivity={
-            (notification as Notification).data.multiLevelActivity
-          }
-          notificationType={(notification as Notification).data.type}
-          postBody={(notification as Notification).data.targetPostBody}
-          size={NotificationListItemSize.Large}
-          slug={(notification as Notification).data.targetPost.slug}
-          unread={!(notification as Notification).data.readAt}
-          key={(notification as Notification).data.id}
-        />
-      )}
+      {untypedNotification => {
+        const notification = untypedNotification as Notification
+        if (notification.data.type === NotificationType.Like) {
+          return (
+            <NotificationsListItem
+              createdAt={notification.data.createdAt}
+              eventCount={notification.data.eventCount}
+              listHasUnreadNotifications={hasUnreadNotifications}
+              notificationType={notification.data.type}
+              postBody={notification.data.targetPostBody}
+              size={NotificationListItemSize.Large}
+              slug={notification.data.targetPost.slug}
+              unread={!notification.data.readAt}
+              key={notification.data.id}
+            />
+          )
+        }
+
+        if (notification.data.type === NotificationType.Reply) {
+          return (
+            <NotificationsListItem
+              createdAt={notification.data.createdAt}
+              eventCount={notification.data.eventCount}
+              listHasUnreadNotifications={hasUnreadNotifications}
+              multiLevelActivity={notification.data.multiLevelActivity}
+              notificationType={notification.data.type}
+              postBody={notification.data.targetPostBody}
+              size={NotificationListItemSize.Large}
+              slug={notification.data.targetPost.slug}
+              unread={!notification.data.readAt}
+              key={notification.data.id}
+            />
+          )
+        }
+      }}
     </ContentList>
   ) : (
     <CenteredMessage>No notifications.</CenteredMessage>

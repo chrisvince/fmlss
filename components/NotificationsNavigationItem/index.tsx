@@ -9,10 +9,13 @@ import {
 } from '@mui/material'
 import { Box } from '@mui/system'
 import { useRef, useState } from 'react'
-import NotificationsListItem from '../NotificationsListItem'
+import NotificationsListItem, {
+  NotificationListItemSize,
+} from '../NotificationsListItem'
 import CaptionLink from '../CaptionLink'
 import useNotifications from '../../utils/data/notifications/useNotifications'
 import useHasUnreadNotifications from '../../utils/data/notifications/useHasUnreadNotifications'
+import { NotificationType } from '../../types'
 
 const NotificationsNavigationItem = () => {
   const notificationsButtonRef = useRef<HTMLButtonElement>(null)
@@ -83,19 +86,40 @@ const NotificationsNavigationItem = () => {
           </Box>
           {notifications.length > 0 ? (
             <MenuList>
-              {notifications.map(notification => (
-                <NotificationsListItem
-                  createdAt={notification.data.createdAt}
-                  eventCount={notification.data.eventCount}
-                  key={notification.data.id}
-                  listHasUnreadNotifications={hasUnreadNotifications}
-                  multiLevelActivity={notification.data.multiLevelActivity}
-                  notificationType={notification.data.type}
-                  postBody={notification.data.targetPostBody}
-                  slug={notification.data.targetPost.slug}
-                  unread={!notification.data.readAt}
-                />
-              ))}
+              {notifications.map(notification => {
+                if (notification.data.type === NotificationType.Like) {
+                  return (
+                    <NotificationsListItem
+                      createdAt={notification.data.createdAt}
+                      eventCount={notification.data.eventCount}
+                      listHasUnreadNotifications={hasUnreadNotifications}
+                      notificationType={notification.data.type}
+                      postBody={notification.data.targetPostBody}
+                      size={NotificationListItemSize.Small}
+                      slug={notification.data.targetPost.slug}
+                      unread={!notification.data.readAt}
+                      key={notification.data.id}
+                    />
+                  )
+                }
+
+                if (notification.data.type === NotificationType.Reply) {
+                  return (
+                    <NotificationsListItem
+                      createdAt={notification.data.createdAt}
+                      eventCount={notification.data.eventCount}
+                      listHasUnreadNotifications={hasUnreadNotifications}
+                      multiLevelActivity={notification.data.multiLevelActivity}
+                      notificationType={notification.data.type}
+                      postBody={notification.data.targetPostBody}
+                      size={NotificationListItemSize.Small}
+                      slug={notification.data.targetPost.slug}
+                      unread={!notification.data.readAt}
+                      key={notification.data.id}
+                    />
+                  )
+                }
+              })}
             </MenuList>
           ) : (
             <Box
