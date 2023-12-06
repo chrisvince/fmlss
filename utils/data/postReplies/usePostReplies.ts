@@ -17,8 +17,8 @@ import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import { InfiniteData } from '../types'
-import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
-import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
+import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
+import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 
 const { POST_PAGINATION_COUNT } = constants
@@ -146,9 +146,9 @@ const usePostReplies: UsePostReplies = (
         if (!currentData) return
 
         const userIsWatchingPost = checkUserWatchingPost(slug, currentData)
-        await updateWatchingPostInServer(userIsWatchingPost, slug)
+        await updateWatchedPostInServer(userIsWatchingPost, slug)
 
-        const mutatedData = mutateWatchingPostInfiniteData(
+        const mutatedData = mutateWatchedPostInfiniteData(
           userIsWatchingPost,
           slug,
           currentData

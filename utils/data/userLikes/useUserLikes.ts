@@ -16,8 +16,8 @@ import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import { InfiniteData } from '../types'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
-import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
-import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
+import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
+import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -121,9 +121,9 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
         if (!currentData) return
 
         const userIsWatchingPost = checkUserWatchingPost(slug, currentData)
-        await updateWatchingPostInServer(userIsWatchingPost, slug)
+        await updateWatchedPostInServer(userIsWatchingPost, slug)
 
-        const mutatedData = mutateWatchingPostInfiniteData(
+        const mutatedData = mutateWatchedPostInfiniteData(
           userIsWatchingPost,
           slug,
           currentData

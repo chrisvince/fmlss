@@ -6,8 +6,8 @@ import { createPostCacheKey } from '../../createCacheKeys'
 import { mutatePostLike } from '../utils/mutatePostLike'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import getPost from './getPost'
-import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
-import { mutateWatchingPost } from '../utils/mutateWatchingPost'
+import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
+import { mutateWatchedPost } from '../utils/mutateWatchedPost'
 
 const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
@@ -56,8 +56,8 @@ const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
     const handleMutation: MutatorCallback<Post | null> = async post => {
       if (!post) return
       const userIsWatchingPost = !!post.user?.watching
-      await updateWatchingPostInServer(userIsWatchingPost, post.data.slug)
-      const mutatedData = mutateWatchingPost(userIsWatchingPost, post)
+      await updateWatchedPostInServer(userIsWatchingPost, post.data.slug)
+      const mutatedData = mutateWatchedPost(userIsWatchingPost, post)
       return mutatedData
     }
 

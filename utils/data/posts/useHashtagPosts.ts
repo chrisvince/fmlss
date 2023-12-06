@@ -15,8 +15,8 @@ import { InfiniteData } from '../types'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
 import checkUserLikesPost from '../utils/checkUserLikesPost'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
-import { mutateWatchingPostInfiniteData } from '../utils/mutateWatchingPost'
-import updateWatchingPostInServer from '../utils/updateWatchingPostInServer'
+import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
+import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 
 const { POST_PAGINATION_COUNT } = constants
@@ -133,9 +133,9 @@ const useHashtagPosts: UsePostFeed = (
         if (!currentData) return
 
         const userIsWatchingPost = checkUserWatchingPost(slug, currentData)
-        await updateWatchingPostInServer(userIsWatchingPost, slug)
+        await updateWatchedPostInServer(userIsWatchingPost, slug)
 
-        const mutatedData = mutateWatchingPostInfiniteData(
+        const mutatedData = mutateWatchedPostInfiniteData(
           userIsWatchingPost,
           slug,
           currentData

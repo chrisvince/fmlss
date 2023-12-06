@@ -1,15 +1,15 @@
 import { Post } from '../../../types'
 import { InfiniteData } from '../types'
 
-type MutateWatchingPostInfiniteData = (
+type MutateWatchedPostInfiniteData = (
   userLikesPost: boolean,
   documentPath: string,
   currentData: InfiniteData
 ) => InfiniteData
 
-type MutateWatchingPost = (userWatchingPost: boolean, post: Post) => Post
+type MutateWatchedPost = (userWatchingPost: boolean, post: Post) => Post
 
-const mutateWatchingPost: MutateWatchingPost = (userWatchingPost, post) => {
+const mutateWatchedPost: MutateWatchedPost = (userWatchingPost, post) => {
   if (userWatchingPost) {
     return {
       ...post,
@@ -23,7 +23,7 @@ const mutateWatchingPost: MutateWatchingPost = (userWatchingPost, post) => {
   }
 }
 
-const mutateWatchingPostInfiniteData: MutateWatchingPostInfiniteData = (
+const mutateWatchedPostInfiniteData: MutateWatchedPostInfiniteData = (
   userWatchingPost,
   slug,
   currentData = []
@@ -31,8 +31,8 @@ const mutateWatchingPostInfiniteData: MutateWatchingPostInfiniteData = (
   currentData.map(posts =>
     posts.map(post => {
       if (post.data.slug !== slug) return post
-      return mutateWatchingPost(userWatchingPost, post)
+      return mutateWatchedPost(userWatchingPost, post)
     })
   )
 
-export { mutateWatchingPost, mutateWatchingPostInfiniteData }
+export { mutateWatchedPost, mutateWatchedPostInfiniteData }
