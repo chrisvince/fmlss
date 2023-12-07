@@ -15,7 +15,7 @@ const ProfileEmailListItem = () => {
   const authUser = useAuthUser()
 
   return (
-    <ListItem>
+    <ListItem disableGutters>
       <ListItemButton
         component={Link}
         href="/profile/email"
@@ -37,12 +37,12 @@ const ProfileEmailListItem = () => {
             <KeyboardArrowRightRounded />
           </ListItemIcon>
         )}
+        {!authUser.emailVerified && (
+          <ListItemSecondaryAction>
+            <EmailVerificationLink />
+          </ListItemSecondaryAction>
+        )}
       </ListItemButton>
-      {!authUser.emailVerified && (
-        <ListItemSecondaryAction>
-          <EmailVerificationLink />
-        </ListItemSecondaryAction>
-      )}
     </ListItem>
   )
 }

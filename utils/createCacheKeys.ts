@@ -78,8 +78,7 @@ const createTopicCacheKey = (slug: string) => `topic/${slug}`
 
 const createSidebarHashtagsCacheKey = () => 'sidebar/hashtags'
 const createSidebarTopicsCacheKey = () => 'sidebar/topics'
-
-const createUserCacheKey = (uid: string | null) => (uid ? `user/${uid}` : null)
+const createUserCacheKey = (uid: string) => `user/${uid}`
 
 const createTopicsStartsWithCacheKey = (searchString: string) =>
   `topics/search/${searchString}`

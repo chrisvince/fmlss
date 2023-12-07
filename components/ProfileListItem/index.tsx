@@ -18,7 +18,7 @@ const ProfileListItem = ({
   primaryText,
   secondaryText,
 }: ProfileListItemProps) => (
-  <ListItem>
+  <ListItem disableGutters>
     <ListItemButton component={Link} href={href}>
       <ListItemText primary={primaryText} secondary={secondaryText} />
       <ListItemIcon sx={{ minWidth: 'unset' }}>

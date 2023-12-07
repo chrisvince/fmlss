@@ -1,54 +1,40 @@
 import {
   AuthUser,
-  useAuthUser,
+  getFirebaseAdmin,
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
 
-import { ListItem, ListItemText, ListItemButton } from '@mui/material'
-
-import Page from '../../components/Page'
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import constants from '../../constants'
-import ProfileList from '../../components/ProfileList'
-import ProfileListItem from '../../components/ProfileListItem'
-import ProfileEmailListItem from '../../components/ProfileEmailListItem'
+import ProfilePage from '../../components/ProfilePage'
+import getUser from '../../utils/data/user/getUser'
+import { createUserCacheKey } from '../../utils/createCacheKeys'
+import { SWRConfig } from 'swr/_internal'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
-const UserProfile = () => {
-  const authUser = useAuthUser()
-  const handleSignOutButtonClick = authUser.signOut
-
-  return (
-    <Page pageTitle="Profile" thinContainer renderPageTitle>
-      <ProfileList heading="Account">
-        <ProfileListItem
-          href="/profile/name"
-          primaryText="Name"
-          secondaryText={authUser.displayName}
-        />
-        <ProfileEmailListItem />
-      </ProfileList>
-      <ProfileList heading="Security">
-        <ProfileListItem href="/profile/password" primaryText="Password" />
-        <ListItem>
-          <ListItemButton onClick={handleSignOutButtonClick}>
-            <ListItemText primary="Sign out" />
-          </ListItemButton>
-        </ListItem>
-      </ProfileList>
-    </Page>
-  )
+interface Props {
+  fallback: {
+    [key: string]: unknown
+  }
 }
+
+const UserProfile = ({ fallback }: Props) => (
+  <SWRConfig value={{ fallback }}>
+    <ProfilePage />
+  </SWRConfig>
+)
 
 const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+  const admin = getFirebaseAdmin()
+  const adminDb = admin.firestore()
   const uid = AuthUser.id
 
   if (!uid) {
@@ -62,7 +48,17 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
     }
   }
 
+  const userCacheKey = createUserCacheKey(uid)
+  const user = await getUser(uid, { db: adminDb })
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+  return {
+    props: {
+      fallback: {
+        [userCacheKey]: user,
+      },
+    },
+  }
 }
 
 export const getServerSideProps = withAuthUserTokenSSR(

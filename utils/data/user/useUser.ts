@@ -2,11 +2,10 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { useAuthUser } from 'next-firebase-auth'
 import useSWR, { SWRConfiguration } from 'swr'
-import { User, UserData, UserDataInput } from '../../../types'
+import { User, UserDataInput } from '../../../types'
 import { createUserCacheKey } from '../../createCacheKeys'
 import getUser from './getUser'
 import constants from '../../../constants'
-import { useState } from 'react'
 
 const { USERS_COLLECTION } = constants
 
@@ -24,7 +23,7 @@ type UseUser = (options?: { swrConfig?: SWRConfiguration; skip?: boolean }) => {
 
 const useUser: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
   const { id: uid } = useAuthUser()
-  const userCacheKey = createUserCacheKey(uid)
+  const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
     !skip ? userCacheKey : undefined,
