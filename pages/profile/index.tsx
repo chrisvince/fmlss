@@ -51,7 +51,7 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const uid = AuthUser.id
 
-  if (uid) {
+  if (!uid) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
