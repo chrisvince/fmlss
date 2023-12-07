@@ -1,5 +1,5 @@
 import { Box } from '@mui/system'
-import { ReactNode, useMemo } from 'react'
+import { Fragment, ReactNode, useMemo } from 'react'
 
 interface TruncatedPathTitleProps {
   pathTitleSegments: string[]
@@ -23,7 +23,7 @@ const TruncatedPathTitle = ({ pathTitleSegments }: TruncatedPathTitleProps) => {
       }}
     >
       {elements.map((element, index) => (
-        <>
+        <Fragment key={`${element}-${index}`}>
           <Box
             key={`${element}-${index}`}
             sx={{
@@ -55,7 +55,7 @@ const TruncatedPathTitle = ({ pathTitleSegments }: TruncatedPathTitleProps) => {
             {element}
           </Box>
           {index !== elements.length - 1 && '/'}
-        </>
+        </Fragment>
       ))}
     </Box>
   )
