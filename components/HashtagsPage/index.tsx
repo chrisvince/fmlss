@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { Button } from '@mui/material'
+import { Button, ButtonGroup } from '@mui/material'
 
 import Page from '../Page'
-import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { HashtagsSortMode } from '../../types'
 import useHashtags from '../../utils/data/hashtags/useHashtags'
 import HashtagsList from '../HashtagsList'
@@ -58,7 +57,13 @@ const HashtagsPage = () => {
       rightPanelChildren={TOPICS_ENABLED && <SidebarTopicsSection />}
     >
       <MobileContainer>
-        <ViewSelectorButtonGroup>
+        <ButtonGroup
+          aria-label="Sort Selection"
+          fullWidth
+          size="small"
+          sx={{ marginBottom: 2 }}
+          variant="outlined"
+        >
           {SORT_MODE_OPTIONS.map(
             ({ href, sortMode: sortModeOption, label }) => (
               <Button
@@ -73,7 +78,7 @@ const HashtagsPage = () => {
               </Button>
             )
           )}
-        </ViewSelectorButtonGroup>
+        </ButtonGroup>
       </MobileContainer>
       <HashtagsList
         hashtags={hashtags}

@@ -1,11 +1,10 @@
 import Link from 'next/link'
-import { Button } from '@mui/material'
+import { Button, ButtonGroup } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import Page from '../Page'
 import Feed from '../Feed'
 import useTopicPosts from '../../utils/data/posts/useTopicPosts'
-import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { TopicSortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
@@ -94,7 +93,13 @@ const TopicPage = ({ path }: PropTypes) => {
       rightPanelChildren={<SidebarHashtagsSection />}
     >
       <MobileContainer>
-        <ViewSelectorButtonGroup>
+        <ButtonGroup
+          aria-label="Sort Selection"
+          fullWidth
+          size="small"
+          sx={{ marginBottom: 2 }}
+          variant="outlined"
+        >
           {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
             <Button
               component={Link}
@@ -107,7 +112,7 @@ const TopicPage = ({ path }: PropTypes) => {
               {label}
             </Button>
           ))}
-        </ViewSelectorButtonGroup>
+        </ButtonGroup>
       </MobileContainer>
       <Feed
         isLoading={topicIsLoading || postsAreLoading}

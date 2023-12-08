@@ -1,13 +1,12 @@
 import { SyntheticEvent, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Button, FormControlLabel, Switch } from '@mui/material'
+import { Button, ButtonGroup, FormControlLabel, Switch } from '@mui/material'
 import { useRouter } from 'next/router'
 import { Box } from '@mui/system'
 
 import Page from '../Page'
 import Feed from '../Feed'
 import useHashtagPosts from '../../utils/data/posts/useHashtagPosts'
-import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import { HashtagSortMode } from '../../types'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
@@ -102,7 +101,13 @@ const HashtagPage = ({ slug }: PropTypes) => {
       }
     >
       <MobileContainer>
-        <ViewSelectorButtonGroup>
+        <ButtonGroup
+          aria-label="Sort Selection"
+          fullWidth
+          size="small"
+          sx={{ marginBottom: 2 }}
+          variant="outlined"
+        >
           {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
             <Button
               component={Link}
@@ -115,7 +120,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
               {label}
             </Button>
           ))}
-        </ViewSelectorButtonGroup>
+        </ButtonGroup>
         <Box
           sx={{
             display: 'flex',

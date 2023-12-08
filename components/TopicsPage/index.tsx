@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { Button } from '@mui/material'
+import { Button, ButtonGroup } from '@mui/material'
 
 import Page from '../Page'
-import ViewSelectorButtonGroup from '../ViewSelectorButtonGroup'
 import type { TopicsSortMode } from '../../types'
 import TopicsList from '../TopicList'
 import useTopics from '../../utils/data/topics/useTopics'
@@ -55,7 +54,13 @@ const TopicsPage = () => {
       rightPanelChildren={<SidebarHashtagsSection />}
     >
       <MobileContainer>
-        <ViewSelectorButtonGroup>
+        <ButtonGroup
+          aria-label="Sort Selection"
+          fullWidth
+          size="small"
+          sx={{ marginBottom: 2 }}
+          variant="outlined"
+        >
           {SORT_MODE_OPTIONS.map(
             ({ href, sortMode: sortModeOption, label }) => (
               <Button
@@ -70,7 +75,7 @@ const TopicsPage = () => {
               </Button>
             )
           )}
-        </ViewSelectorButtonGroup>
+        </ButtonGroup>
       </MobileContainer>
       <TopicsList
         topics={topics}
