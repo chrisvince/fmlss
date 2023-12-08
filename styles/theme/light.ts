@@ -97,6 +97,13 @@ const theme = createTheme({
       defaultProps: {
         disableRipple: true,
       },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&:active': {
+            background: theme.palette.action.selected,
+          },
+        }),
+      },
     },
     MuiButton: {
       defaultProps: {
@@ -107,10 +114,17 @@ const theme = createTheme({
         size: 'small',
       },
       styleOverrides: {
-        root: {
+        root: ({ theme, ownerState }) => ({
           borderRadius: 100,
           textTransform: 'none',
-        },
+          '&:active': {
+            background: {
+              contained: theme.palette.primary.light,
+              outlined: theme.palette.action.selected,
+              text: theme.palette.action.selected,
+            }[ownerState.variant ?? 'contained'],
+          },
+        }),
         fullWidth: {
           ':not(.MuiButtonGroup-grouped)': {
             height: '39px',
@@ -204,9 +218,12 @@ const theme = createTheme({
     },
     MuiListItemButton: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           borderRadius: 100,
-        },
+          '&:active': {
+            background: theme.palette.action.selected,
+          },
+        }),
       },
     },
     MuiListItemText: {
