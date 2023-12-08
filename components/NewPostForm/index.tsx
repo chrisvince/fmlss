@@ -1,6 +1,11 @@
 import { LoadingButton } from '@mui/lab'
-import { DialogActions, DialogContent, Typography } from '@mui/material'
-import { Box } from '@mui/system'
+import {
+  DialogActions,
+  DialogContent,
+  Typography,
+  useMediaQuery,
+} from '@mui/material'
+import { Box, useTheme } from '@mui/system'
 import { useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
@@ -35,6 +40,8 @@ const NewPostForm = ({
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
   const [subtopics, setSubtopics] = useState<string[]>([])
   const handleTopicChange = async (subtopic: string[]) => setSubtopics(subtopic)
+  const theme = useTheme()
+  const buttonNotFullWidth = useMediaQuery(theme.breakpoints.up('sm'))
 
   const [postLengthStatus, setPostLengthStatus] =
     useState<postLengthStatusType>()
@@ -55,6 +62,7 @@ const NewPostForm = ({
       type="button"
       onClick={submitPost}
       variant="contained"
+      fullWidth={buttonNotFullWidth ? false : true}
     >
       Post
     </LoadingButton>
