@@ -202,7 +202,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
           type="submit"
           variant="contained"
         >
-          Submit
+          Save
         </LoadingButton>
       </Box>
     </Box>

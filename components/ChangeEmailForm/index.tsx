@@ -169,7 +169,7 @@ const ChangeEmailForm = () => {
             variant="contained"
             fullWidth
           >
-            Change email
+            Save
           </LoadingButton>
           {formError && (
             <Typography variant="caption" color="error">

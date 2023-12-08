@@ -119,7 +119,7 @@ const ChangeNameForm = () => {
             variant="contained"
             fullWidth
           >
-            Update
+            Save
           </LoadingButton>
           {formError && (
             <Typography variant="caption" color="error">
