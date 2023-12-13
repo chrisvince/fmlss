@@ -79,11 +79,13 @@ const NewPostForm = ({
       }}
     >
       {replyingToPost && (
-        <PostItem
-          bodySize={BodySize.Large}
-          hideActionBar
-          post={replyingToPost}
-        />
+        <Box sx={{ py: isInModal ? undefined : 1 }}>
+          <PostItem
+            bodySize={BodySize.Large}
+            hideActionBar
+            post={replyingToPost}
+          />
+        </Box>
       )}
       <Box>
         <PostBodyTextArea
