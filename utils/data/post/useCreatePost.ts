@@ -26,7 +26,7 @@ const useCreatePost = (parentSlug?: string) => {
       return
     }
 
-    if (subtopics.length === 0) {
+    if (!parentSlug && subtopics.length === 0) {
       setErrorMessage('Topic is required!')
       return
     }
