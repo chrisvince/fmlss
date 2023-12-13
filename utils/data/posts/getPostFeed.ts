@@ -48,8 +48,6 @@ const getPostFeed: GetPosts = async ({
         sortMode === FeedSortMode.popular
           ? query.orderBy('recentViewCount', 'desc')
           : query,
-      query =>
-        sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(POST_PAGINATION_COUNT).get()
