@@ -18,11 +18,16 @@ const useCreatePost = (parentSlug?: string) => {
 
   const handleCreatePost = async ({
     body,
-    subtopics,
+    subtopics = [],
     linkPreviews,
   }: HandleCreatePostProps) => {
     if (!body) {
       setErrorMessage('Post is required!')
+      return
+    }
+
+    if (subtopics.length === 0) {
+      setErrorMessage('Topic is required!')
       return
     }
 

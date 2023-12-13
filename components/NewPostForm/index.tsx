@@ -53,7 +53,9 @@ const NewPostForm = ({
   }
 
   const disableButton =
-    !hasContent || postLengthStatus === postLengthStatusType.error
+    (!slug && subtopics.length === 0) ||
+    !hasContent ||
+    postLengthStatus === postLengthStatusType.error
 
   const button = (
     <LoadingButton
