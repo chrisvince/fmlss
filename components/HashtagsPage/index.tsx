@@ -54,6 +54,7 @@ const HashtagsPage = () => {
     <Page
       description="See posts by hashtags posted on Fameless"
       pageTitle="Hashtags"
+      renderPageTitle
       rightPanelChildren={TOPICS_ENABLED && <SidebarTopicsSection />}
     >
       <MobileContainer>

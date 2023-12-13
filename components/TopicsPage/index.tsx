@@ -51,6 +51,7 @@ const TopicsPage = () => {
     <Page
       description="See topics of posts made on Fameless"
       pageTitle="Topics"
+      renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
       <MobileContainer>
