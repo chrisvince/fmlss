@@ -100,7 +100,7 @@ const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           '&:active': {
-            background: theme.palette.action.selected,
+            backgroundColor: theme.palette.action.selected,
           },
         }),
       },
@@ -118,7 +118,7 @@ const theme = createTheme({
           borderRadius: 100,
           textTransform: 'none',
           '&:active': {
-            background: {
+            backgroundColor: {
               contained: theme.palette.primary.light,
               outlined: theme.palette.action.selected,
               text: theme.palette.action.selected,
@@ -221,7 +221,7 @@ const theme = createTheme({
         root: ({ theme }) => ({
           borderRadius: 100,
           '&:active': {
-            background: theme.palette.action.selected,
+            backgroundColor: theme.palette.action.selected,
           },
         }),
       },
