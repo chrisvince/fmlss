@@ -1,46 +1,44 @@
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-
 import Page from '../Page'
 import Feed from '../Feed'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
-import type { FeedSortMode } from '../../types'
+import { FeedSortMode } from '../../types'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
 import FakeInlineCreatePost from '../FakeInlineCreatePost'
+import Error from 'next/error'
 
 const { TOPICS_ENABLED } = constants
 
-const SORT_MODE_MAP: {
-  [key: string]: string
-} = {
-  latest: 'latest',
-  popular: 'popular',
-  'most-likes': 'mostLikes',
+enum TITLE_MAP {
+  latest = 'Feed',
+  popular = 'Popular',
 }
 
 const FeedPage = () => {
-  const { asPath: path } = useRouter()
+  const {
+    query: { sortMode: sortModes },
+  } = useRouter()
 
-  const pathSortMode = SORT_MODE_MAP[
-    path?.split?.('/')?.[2] ?? 'latest'
-  ] as FeedSortMode
-
-  const [sortMode, setSortMode] = useState<FeedSortMode>(pathSortMode)
+  const sortMode =
+    FeedSortMode[
+      (sortModes?.[0] ? sortModes[0] : FeedSortMode.latest) as FeedSortMode
+    ]
 
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
-    usePostFeed({
-      sortMode,
-    })
+    usePostFeed({ sortMode })
 
-  useEffect(() => {
-    setSortMode(pathSortMode)
-  }, [pathSortMode])
+  if (!sortMode) {
+    return <Error statusCode={404} />
+  }
+
+  const pageTitle = TITLE_MAP[sortMode]
 
   return (
     <Page
-      pageTitle="Feed"
+      pageTitle={pageTitle}
+      renderPageTitle
       rightPanelChildren={
         <>
           <SidebarHashtagsSection />
@@ -51,7 +49,6 @@ const FeedPage = () => {
       <FakeInlineCreatePost />
       <Feed
         isLoading={isLoading}
-        key={sortMode}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}

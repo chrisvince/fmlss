@@ -1,1 +1,4 @@
-export type FeedSortMode = 'latest' | 'popular' | 'mostLikes'
+export enum FeedSortMode {
+  latest = 'latest',
+  popular = 'popular',
+}

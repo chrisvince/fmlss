@@ -1,9 +1,9 @@
-import type { FeedSortMode } from '../types'
+import { FeedSortMode } from '../types'
 
 const createHashtagPostsCacheKey = (
   slug: string,
   showType: 'post' | 'reply' | 'both',
-  sortMode: FeedSortMode = 'latest',
+  sortMode: FeedSortMode = FeedSortMode.latest,
   pageIndex: number | null = 0
 ) =>
   `hashtag/${slug}/posts/${showType}/${sortMode}${
@@ -68,7 +68,7 @@ const createTopicsCacheKey = (sortMode: string, pageIndex: number | null = 0) =>
 const createTopicPostsCacheKey = (
   slug: string,
   {
-    sortMode = 'latest',
+    sortMode = FeedSortMode.latest,
     pageIndex = 0,
   }: { sortMode?: FeedSortMode; pageIndex?: number | null } = {}
 ) =>

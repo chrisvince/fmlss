@@ -25,7 +25,7 @@ const getPostFeed: GetPosts = async ({
   db: dbProp,
   startAfter,
   uid,
-  sortMode = 'latest',
+  sortMode = FeedSortMode.latest,
 } = {}) => {
   const db = dbProp || firebase.firestore()
 
@@ -45,7 +45,7 @@ const getPostFeed: GetPosts = async ({
     postDocs = await pipe(
       () => db.collection(POSTS_COLLECTION),
       query =>
-        sortMode === 'popular'
+        sortMode === FeedSortMode.popular
           ? query.orderBy('recentViewCount', 'desc')
           : query,
       query =>
