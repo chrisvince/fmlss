@@ -1,4 +1,4 @@
 export enum FeedSortMode {
-  latest = 'latest',
-  popular = 'popular',
+  Latest = 'latest',
+  Popular = 'popular',
 }

@@ -1,1 +1,5 @@
-export type HashtagSortMode = 'latest' | 'popular' | 'mostLikes'
+export enum HashtagSortMode {
+  Latest = 'latest',
+  Popular = 'popular',
+  MostLikes = 'mostLikes',
+}

@@ -8,7 +8,7 @@ import {
   createHashtagPostsCacheKey,
   getPageIndexFromCacheKey,
 } from '../../createCacheKeys'
-import getHashtagPosts from './getHashtagPosts'
+import getHashtagPosts, { HashtagShowType } from './getHashtagPosts'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
 import { InfiniteData } from '../types'
@@ -31,7 +31,7 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 type UsePostFeed = (
   slug: string,
   options?: {
-    showType?: 'post' | 'reply' | 'both'
+    showType?: HashtagShowType
     sortMode?: HashtagSortMode
     swrConfig?: SWRInfiniteConfiguration
   }
@@ -48,7 +48,11 @@ type UsePostFeed = (
 
 const useHashtagPosts: UsePostFeed = (
   slug,
-  { showType = 'post', sortMode = 'latest', swrConfig = {} } = {}
+  {
+    showType = HashtagShowType.Post,
+    sortMode = HashtagSortMode.Latest,
+    swrConfig = {},
+  } = {}
 ) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc

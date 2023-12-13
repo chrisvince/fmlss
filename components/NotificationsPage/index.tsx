@@ -1,4 +1,3 @@
-import { MenuList } from '@mui/material'
 import constants from '../../constants'
 import useNotifications from '../../utils/data/notifications/useNotifications'
 import Page from '../Page'

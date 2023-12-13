@@ -21,10 +21,14 @@ const FeedPage = () => {
     query: { sortMode: sortModes },
   } = useRouter()
 
+  const sortModeParam = sortModes?.[0] ? sortModes[0].toLowerCase() : undefined
+
   const sortMode =
-    FeedSortMode[
-      (sortModes?.[0] ? sortModes[0] : FeedSortMode.latest) as FeedSortMode
-    ]
+    sortModeParam &&
+    // @ts-expect-error: includes should be string
+    Object.values(FeedSortMode).includes(sortModeParam)
+      ? (sortModeParam as FeedSortMode)
+      : FeedSortMode.Latest
 
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
     usePostFeed({ sortMode })

@@ -1,9 +1,10 @@
-import { FeedSortMode } from '../types'
+import { FeedSortMode, HashtagSortMode, TopicSortMode } from '../types'
+import { HashtagShowType } from './data/posts/getHashtagPosts'
 
 const createHashtagPostsCacheKey = (
   slug: string,
-  showType: 'post' | 'reply' | 'both',
-  sortMode: FeedSortMode = FeedSortMode.latest,
+  showType: HashtagShowType = HashtagShowType.Post,
+  sortMode: HashtagSortMode = HashtagSortMode.Latest,
   pageIndex: number | null = 0
 ) =>
   `hashtag/${slug}/posts/${showType}/${sortMode}${
@@ -68,9 +69,9 @@ const createTopicsCacheKey = (sortMode: string, pageIndex: number | null = 0) =>
 const createTopicPostsCacheKey = (
   slug: string,
   {
-    sortMode = FeedSortMode.latest,
+    sortMode = TopicSortMode.Latest,
     pageIndex = 0,
-  }: { sortMode?: FeedSortMode; pageIndex?: number | null } = {}
+  }: { sortMode?: TopicSortMode; pageIndex?: number | null } = {}
 ) =>
   `topic/${slug}/posts/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 

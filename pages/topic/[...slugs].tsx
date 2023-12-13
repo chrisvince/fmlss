@@ -7,7 +7,7 @@ import {
 import { SWRConfig } from 'swr'
 
 import TopicPage from '../../components/TopicPage'
-import type { TopicSortMode } from '../../types'
+import { TopicSortMode } from '../../types'
 import {
   createTopicCacheKey,
   createTopicPostsCacheKey,
@@ -69,7 +69,8 @@ const getServerSidePropsFn = async ({
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as TopicSortMode
+  const sortMode = (SORT_MODE_MAP[sort] ??
+    TopicSortMode.Latest) as TopicSortMode
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
   const topicCacheKey = createTopicCacheKey(path)

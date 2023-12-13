@@ -43,7 +43,7 @@ type UsePostFeed = (options?: {
 }
 
 const usePostFeed: UsePostFeed = ({
-  sortMode = 'latest',
+  sortMode = FeedSortMode.Latest,
   swrConfig = {},
 } = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{

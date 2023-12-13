@@ -33,7 +33,7 @@ type UseHashtags = (options?: {
 }
 
 const useHashtags: UseHashtags = ({
-  sortMode = 'latest',
+  sortMode = HashtagsSortMode.Latest,
   swrConfig = {},
 } = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{

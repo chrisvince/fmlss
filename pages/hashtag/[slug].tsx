@@ -7,13 +7,15 @@ import {
 import { SWRConfig } from 'swr'
 
 import HashtagPage from '../../components/HashtagPage'
-import type { HashtagSortMode } from '../../types'
+import { HashtagSortMode } from '../../types'
 import {
   createHashtagPostsCacheKey,
   createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
 } from '../../utils/createCacheKeys'
-import getHashtagPosts from '../../utils/data/posts/getHashtagPosts'
+import getHashtagPosts, {
+  HashtagShowType,
+} from '../../utils/data/posts/getHashtagPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
@@ -21,7 +23,7 @@ import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
-const DEFAULT_POST_TYPE = 'post'
+const DEFAULT_POST_TYPE = HashtagShowType.Post
 
 interface PropTypes {
   fallback: {
@@ -59,7 +61,8 @@ const getServerSidePropsFn = async ({
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const sortMode = (SORT_MODE_MAP[sort] ?? 'latest') as HashtagSortMode
+  const sortMode = (SORT_MODE_MAP[sort] ??
+    HashtagSortMode.Latest) as HashtagSortMode
 
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
     slug,

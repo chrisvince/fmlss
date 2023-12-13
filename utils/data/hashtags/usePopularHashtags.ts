@@ -1,7 +1,7 @@
 import useSWR, { SWRConfiguration } from 'swr'
 import { SWRInfiniteConfiguration } from 'swr/infinite'
 
-import { Hashtag } from '../../../types'
+import { Hashtag, HashtagsSortMode } from '../../../types'
 import { createSidebarHashtagsCacheKey } from '../../createCacheKeys'
 import getHashtags from './getHashtags'
 import constants from '../../../constants'
@@ -29,7 +29,7 @@ const usePopularHashtags: UsePopularHashtags = ({ swrConfig = {} } = {}) => {
     cacheKey,
     () =>
       getHashtags({
-        sortMode: 'popular',
+        sortMode: HashtagsSortMode.Popular,
         limit: SIDEBAR_LIST_COUNT,
       }),
     {

@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Button, ButtonGroup } from '@mui/material'
 
 import Page from '../Page'
-import type { HashtagsSortMode } from '../../types'
+import { HashtagsSortMode } from '../../types'
 import useHashtags from '../../utils/data/hashtags/useHashtags'
 import HashtagsList from '../HashtagsList'
 import SidebarTopicsSection from '../SidebarTopicsSection'
@@ -17,38 +16,34 @@ const SORT_MODE_OPTIONS = [
   {
     href: '/hashtags',
     label: 'Popular',
-    sortMode: 'popular',
+    sortMode: HashtagsSortMode.Popular,
   },
   {
     href: '/hashtags/latest',
     label: 'Latest',
-    sortMode: 'latest',
+    sortMode: HashtagsSortMode.Latest,
   },
 ]
 
-const SORT_MODE_MAP: {
-  [key: string]: string
-} = {
-  latest: 'latest',
-  popular: 'popular',
-}
-
 const HashtagsPage = () => {
-  const { asPath: path } = useRouter()
+  const {
+    query: { sortMode: sortModes },
+  } = useRouter()
 
-  const pathSortMode = SORT_MODE_MAP[
-    path?.split?.('/')?.[2] ?? 'popular'
-  ] as HashtagsSortMode
+  const lowercaseSortMode = sortModes?.[0]
+    ? sortModes[0].toLowerCase()
+    : undefined
 
-  const [sortMode, setSortMode] = useState<HashtagsSortMode>(pathSortMode)
+  const sortMode =
+    lowercaseSortMode &&
+    // @ts-expect-error: includes should be string
+    Object.values(FeedSortMode).includes(lowercaseSortMode)
+      ? (lowercaseSortMode as HashtagsSortMode)
+      : HashtagsSortMode.Latest
 
   const { isLoading, loadMore, moreToLoad, hashtags } = useHashtags({
     sortMode,
   })
-
-  useEffect(() => {
-    setSortMode(pathSortMode)
-  }, [pathSortMode])
 
   return (
     <Page

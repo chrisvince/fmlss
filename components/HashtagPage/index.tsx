@@ -13,6 +13,7 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
+import { HashtagShowType } from '../../utils/data/posts/getHashtagPosts'
 
 const { TOPICS_ENABLED } = constants
 
@@ -31,32 +32,27 @@ const generateSortOptions = (slug: string) => [
     label: 'Popular',
     sortMode: 'popular',
   },
-  // {
-  //   href: `/hashtag/${hashtag}?sort=most-likes`,
-  //   label: 'Most Likes',
-  //   sortMode: 'mostLikes',
-  // },
 ]
-
-const SORT_MODE_MAP: {
-  [key: string]: string
-} = {
-  latest: 'latest',
-  popular: 'popular',
-  'most-likes': 'mostLikes',
-}
 
 const HashtagPage = ({ slug }: PropTypes) => {
   const {
     query: { sort },
   } = useRouter()
-  const [showType, setShowType] = useState<'post' | 'both'>('post')
+  const [showType, setShowType] = useState<HashtagShowType>(
+    HashtagShowType.Post
+  )
+
   const { track } = useTracking()
 
-  const pathSortMode = (SORT_MODE_MAP[sort as string] ??
-    'latest') as HashtagSortMode
+  const lowercaseSortMode =
+    sort && typeof sort === 'string' ? sort.toLowerCase() : undefined
 
-  const [sortMode, setSortMode] = useState<HashtagSortMode>(pathSortMode)
+  const sortMode =
+    lowercaseSortMode &&
+    // @ts-expect-error: includes should be string
+    Object.values(HashtagSortMode).includes(lowercaseSortMode)
+      ? (lowercaseSortMode as HashtagSortMode)
+      : HashtagSortMode.Latest
 
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
     useHashtagPosts(slug, {
@@ -64,13 +60,9 @@ const HashtagPage = ({ slug }: PropTypes) => {
       sortMode,
     })
 
-  useEffect(() => {
-    setSortMode(pathSortMode)
-  }, [pathSortMode])
-
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
     const { checked } = event.target as HTMLInputElement
-    setShowType(checked ? 'both' : 'post')
+    setShowType(checked ? HashtagShowType.Both : HashtagShowType.Post)
   }
 
   const sortOptions = generateSortOptions(slug)

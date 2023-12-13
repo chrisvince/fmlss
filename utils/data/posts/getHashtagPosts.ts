@@ -15,20 +15,31 @@ import checkUserIsWatching from '../author/checkUserIsWatching'
 const { HASHTAG_LIST_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
   constants
 
+export enum HashtagShowType {
+  Post = 'post',
+  Both = 'both',
+}
+
 type GetHashtagPosts = (
   slug: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
     uid?: string | null
-    showType?: 'post' | 'reply' | 'both'
+    showType?: HashtagShowType
     sortMode?: HashtagSortMode
   }
 ) => Promise<Post[]>
 
 const getHashtagPosts: GetHashtagPosts = async (
   slug,
-  { db: dbProp, startAfter, uid, showType = 'post', sortMode = 'latest' } = {}
+  {
+    db: dbProp,
+    startAfter,
+    uid,
+    showType = HashtagShowType.Post,
+    sortMode = HashtagSortMode.Latest,
+  } = {}
 ) => {
   const db = dbProp || firebase.firestore()
 
@@ -58,11 +69,13 @@ const getHashtagPosts: GetHashtagPosts = async (
       query =>
         showType !== 'both' ? query.where('type', '==', showType) : query,
       query =>
-        sortMode === 'popular'
+        sortMode === HashtagSortMode.Popular
           ? query.orderBy('recentViewCount', 'desc')
           : query,
       query =>
-        sortMode === 'mostLikes' ? query.orderBy('likesCount', 'desc') : query,
+        sortMode === HashtagSortMode.MostLikes
+          ? query.orderBy('likesCount', 'desc')
+          : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(POST_PAGINATION_COUNT).get()
