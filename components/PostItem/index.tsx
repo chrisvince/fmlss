@@ -76,8 +76,12 @@ const PostItem = ({
           alignItems: 'center',
           columnGap: 0.8,
           display: 'grid',
-          gridTemplateAreas: `"statusIcon topic watchStatus"`,
-          gridTemplateColumns: 'min-content minmax(0, 1fr) min-content',
+          gridTemplateAreas: byUser
+            ? `"statusIcon topic watchStatus"`
+            : `"topic watchStatus"`,
+          gridTemplateColumns: byUser
+            ? 'min-content minmax(0, 1fr) min-content'
+            : 'minmax(0, 1fr) min-content',
         }}
       >
         {byUser && (
