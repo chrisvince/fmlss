@@ -15,7 +15,7 @@ const UserRepliesPage = () => {
 
   return (
     <Page
-      description="See posts you've replied on Fameless"
+      description="See posts you've replied to on Fameless"
       pageTitle="Replies"
       renderPageTitle
       rightPanelChildren={
