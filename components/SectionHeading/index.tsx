@@ -20,8 +20,8 @@ const SectionHeading = ({ children }: PropTypes) => {
             fontWeight: 'bold',
             lineHeight: [undefined, '0.8em'],
             mb: [
-              undefined,
-              2.35, // matches the position of the feed to the feed page
+              2,
+              4.25, // matches the position of the feed to the feed page
             ],
           }}
         >
