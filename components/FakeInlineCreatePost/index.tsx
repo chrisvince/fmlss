@@ -1,5 +1,5 @@
-import { ButtonBase, Typography } from '@mui/material'
-import { Box } from '@mui/system'
+import { ButtonBase, Typography, useMediaQuery } from '@mui/material'
+import { Box, useTheme } from '@mui/system'
 import { useState } from 'react'
 
 import useUser from '../../utils/data/user/useUser'
@@ -8,6 +8,7 @@ import usePostBodyTextAreaPlaceholder from '../../utils/usePostBodyTextAreaPlace
 import SignUpModal from '../SignUpModal'
 import NewPostModal from '../NewPostModal'
 import { NotesRounded } from '@mui/icons-material'
+import Link from 'next/link'
 
 const FakeInlineCreatePost = () => {
   const { user } = useUser()
@@ -19,6 +20,8 @@ const FakeInlineCreatePost = () => {
   const handleSignInModalClose = () => setShowSignInModal(false)
   const handleNewPostModalClose = () => setNewPostModalOpen(false)
   const placeholder = usePostBodyTextAreaPlaceholder()
+  const { breakpoints } = useTheme()
+  const isMobileDevice = useMediaQuery(breakpoints.down('sm'))
 
   const handleButtonClick = () => {
     if (!isLoggedIn) {
@@ -35,8 +38,14 @@ const FakeInlineCreatePost = () => {
     <>
       <ButtonBase
         aria-label="Create post"
-        onClick={handleButtonClick}
-        sx={{ display: 'block', width: '100%' }}
+        component={isMobileDevice ? Link : 'button'}
+        href={isMobileDevice ? '/post/new' : undefined}
+        onClick={!isMobileDevice ? handleButtonClick : undefined}
+        sx={{
+          ':active': { backgroundColor: 'unset' },
+          display: 'block',
+          width: '100%',
+        }}
       >
         <Box aria-hidden="true" sx={{ pointerEvents: 'none' }}>
           <MobileContainer>
