@@ -19,6 +19,7 @@ const mapNotificationReplyToData = (
     createdAt: data.createdAt.toMillis(),
     eventCount: data.eventCount,
     id: doc.id,
+    isOwnPost: data.isOwnPost,
     multiLevelActivity: data.multiLevelActivity,
     readAt: data.readAt ? data.readAt.toMillis() : null,
     rootPost: mapPostRelation(data.rootPost),

@@ -7,7 +7,7 @@ import {
   Link as MuiLink,
 } from '@mui/material'
 import { Box } from '@mui/system'
-import { NotificationType } from '../../types'
+import { NotificationData, NotificationType } from '../../types'
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 
@@ -16,12 +16,13 @@ const TIME_SET_INTERVAL = 60_000
 const resolveActionText = (
   notificationType: NotificationType,
   eventCount: number,
-  multiLevelActivity: boolean
+  multiLevelActivity: boolean,
+  isOwnPost: boolean
 ) => {
   const formattedEventCount = eventCount > 99 ? '99+' : eventCount
 
   if (multiLevelActivity) {
-    return `Your post has activity`
+    return `${isOwnPost ? 'Your post' : 'A post your watching'} has activity`
   }
 
   switch (notificationType) {
@@ -30,8 +31,11 @@ const resolveActionText = (
       if (eventCount > 1) return `${formattedEventCount} people ${commonText}`
       return `Someone ${commonText}`
     }
+
     case NotificationType.Reply: {
-      const commonText = 'replied to your post'
+      const commonText = `replied to ${
+        isOwnPost ? 'your post' : 'a post your watching'
+      }`
       if (eventCount > 1) return `${formattedEventCount} people ${commonText}`
       return `Someone ${commonText}`
     }
@@ -65,34 +69,22 @@ export enum NotificationListItemSize {
 }
 
 interface Props {
-  createdAt: number
-  eventCount: number
   listHasUnreadNotifications?: boolean
-  multiLevelActivity?: boolean
-  notificationType: NotificationType
-  postBody: string
   size?: NotificationListItemSize
-  slug: string
-  unread?: boolean
+  notification: NotificationData
 }
 
 const NotificationsListItem = ({
-  createdAt,
-  eventCount,
   listHasUnreadNotifications = false,
-  multiLevelActivity = false,
-  notificationType,
-  postBody,
+  notification,
   size = NotificationListItemSize.Small,
-  slug,
-  unread = false,
 }: Props) => {
-  const [time, setTime] = useState(calculateTime(createdAt))
+  const [time, setTime] = useState(calculateTime(notification.createdAt))
   const timerRef = useRef<NodeJS.Timer>()
 
   useEffect(() => {
     const timerRefCurrent = timerRef.current
-    const calcAndSetTime = () => setTime(calculateTime(createdAt))
+    const calcAndSetTime = () => setTime(calculateTime(notification.createdAt))
 
     if (timerRef.current) {
       clearInterval(timerRef.current)
@@ -118,7 +110,7 @@ const NotificationsListItem = ({
       removeEventListener('blur', handleWindowBlur)
       clearInterval(timerRefCurrent)
     }
-  }, [createdAt])
+  }, [notification.createdAt])
 
   const textVariant = {
     [NotificationListItemSize.Small]: 'caption',
@@ -140,12 +132,12 @@ const NotificationsListItem = ({
     >
       <MuiLink
         component={Link}
-        href={`/post/${slug}`}
+        href={`/post/${notification.targetPost.slug}`}
         sx={{ display: 'contents' }}
       >
-        {(listHasUnreadNotifications || unread) && (
+        {(listHasUnreadNotifications || !notification.readAt) && (
           <ListItemIcon>
-            {unread && (
+            {!notification.readAt && (
               <FiberManualRecordRounded
                 sx={{ height: '8px', width: '8px' }}
                 color="info"
@@ -167,14 +159,19 @@ const NotificationsListItem = ({
           >
             <Box component="b" sx={{ fontWeight: 500 }}>
               {resolveActionText(
-                notificationType,
-                eventCount,
-                multiLevelActivity
+                notification.type,
+                notification.eventCount,
+                notification.type === NotificationType.Reply
+                  ? notification.multiLevelActivity
+                  : false,
+                notification.type === NotificationType.Reply
+                  ? notification.isOwnPost
+                  : false
               )}
             </Box>
             :{' '}
             <Box component="span" sx={{ fontWeight: 400 }}>
-              {postBody}
+              {notification.targetPostBody}
             </Box>
           </Typography>
           <Typography

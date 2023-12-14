@@ -59,7 +59,11 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
   const handleMobileMenuOpen = () => setMobileNavigationOpen(true)
   const handleMobileMenuClose = () => setMobileNavigationOpen(false)
   const handleProfileMenuClose = () => setProfileMenuOpen(false)
-  const handleSignOutClick = signOut
+
+  const handleSignOutClick = () => {
+    signOut()
+    router.push('/')
+  }
 
   const handleProfileMenuButtonClick = () =>
     setProfileMenuOpen(current => !current)

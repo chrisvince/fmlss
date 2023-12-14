@@ -50,38 +50,15 @@ const NotificationsList = ({
       >
         {untypedNotification => {
           const notification = untypedNotification as Notification
-          if (notification.data.type === NotificationType.Like) {
-            return (
-              <NotificationsListItem
-                createdAt={notification.data.createdAt}
-                eventCount={notification.data.eventCount}
-                listHasUnreadNotifications={hasUnreadNotifications}
-                notificationType={notification.data.type}
-                postBody={notification.data.targetPostBody}
-                size={NotificationListItemSize.Large}
-                slug={notification.data.targetPost.slug}
-                unread={!notification.data.readAt}
-                key={notification.data.id}
-              />
-            )
-          }
 
-          if (notification.data.type === NotificationType.Reply) {
-            return (
-              <NotificationsListItem
-                createdAt={notification.data.createdAt}
-                eventCount={notification.data.eventCount}
-                listHasUnreadNotifications={hasUnreadNotifications}
-                multiLevelActivity={notification.data.multiLevelActivity}
-                notificationType={notification.data.type}
-                postBody={notification.data.targetPostBody}
-                size={NotificationListItemSize.Large}
-                slug={notification.data.targetPost.slug}
-                unread={!notification.data.readAt}
-                key={notification.data.id}
-              />
-            )
-          }
+          return (
+            <NotificationsListItem
+              key={notification.data.id}
+              listHasUnreadNotifications={hasUnreadNotifications}
+              notification={notification.data}
+              size={NotificationListItemSize.Large}
+            />
+          )
         }}
       </ContentList>
     </MenuList>

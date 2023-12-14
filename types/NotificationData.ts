@@ -15,6 +15,7 @@ interface NotificationDataBase {
 }
 
 export interface NotificationReplyData extends NotificationDataBase {
+  isOwnPost: boolean
   multiLevelActivity: boolean
   type: NotificationType.Reply
 }

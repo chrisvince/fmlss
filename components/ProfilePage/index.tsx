@@ -6,11 +6,17 @@ import ProfileListItem from '../ProfileListItem'
 import { useAuthUser } from 'next-firebase-auth'
 import ProfileToggleListItem from '../ProfileToggleListItem'
 import useUser from '../../utils/data/user/useUser'
+import { useRouter } from 'next/router'
 
 const ProfilePage = () => {
-  const authUser = useAuthUser()
-  const handleSignOutButtonClick = authUser.signOut
+  const { displayName, signOut } = useAuthUser()
+  const { push } = useRouter()
   const { update, user } = useUser()
+
+  const handleSignOutButtonClick = async () => {
+    signOut()
+    push('/')
+  }
 
   const emailNotificationsLikes =
     user?.data.settings.notifications.email.likes ?? false
@@ -34,7 +40,7 @@ const ProfilePage = () => {
         <ProfileListItem
           href="/profile/name"
           primaryText="Name"
-          secondaryText={authUser.displayName}
+          secondaryText={displayName}
         />
         <ProfileEmailListItem />
       </ProfileList>
