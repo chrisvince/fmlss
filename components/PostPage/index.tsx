@@ -40,18 +40,26 @@ const PostPage = ({ slug }: PropTypes) => {
   const pageTitle = truncateString(post?.data.body)
   const handleParentPostLoad = () => setParentPostLoaded(true)
   const mainContentWrapperRef = useRef<HTMLDivElement>(null)
+  const firstPostModalHasBeenShownRef = useRef(false)
 
   const [mainContentMinHeight, setContentMinHeight] = useState<
     number | undefined
   >()
 
   useEffect(() => {
-    if (!user || userIsLoading || !createdByUser || shownFirstPostMessage) {
+    if (
+      !user ||
+      userIsLoading ||
+      !createdByUser ||
+      shownFirstPostMessage ||
+      firstPostModalHasBeenShownRef.current
+    ) {
       return
     }
 
     setFirstPostModalOpen(true)
     updateUser({ shownFirstPostMessage: true })
+    firstPostModalHasBeenShownRef.current = true
   }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser, user])
 
   useEffect(() => {
