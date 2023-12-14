@@ -1,8 +1,8 @@
-import { LoadingButton } from '@mui/lab'
-import { Typography } from '@mui/material'
+import { ButtonBase, Typography } from '@mui/material'
 import { useState } from 'react'
 
 import { sendEmailVerificationEmail } from '../../utils/callableFirebaseFunctions'
+import { Box } from '@mui/system'
 
 const UI_STATES = {
   NOT_SUBMITTED: 'not-submitted',
@@ -42,13 +42,14 @@ const EmailVerificationLink = () => {
   }
 
   return (
-    <LoadingButton
-      onClick={handleVerifyEmailClick}
-      variant="outlined"
-      loading={uiState === UI_STATES.LOADING}
-    >
-      <Typography variant="caption">Send verification email</Typography>
-    </LoadingButton>
+    <Box>
+      <Typography variant="caption">Your email is not verified!</Typography>{' '}
+      <ButtonBase onClick={handleVerifyEmailClick}>
+        <Typography variant="caption" sx={{ textDecoration: 'underline' }}>
+          Send verification email
+        </Typography>
+      </ButtonBase>
+    </Box>
   )
 }
 
