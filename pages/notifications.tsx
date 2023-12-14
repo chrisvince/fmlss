@@ -53,16 +53,7 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const uid = AuthUser.id
 
-  if (!uid) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
+  // @ts-expect-error: we know uid is defined
   const notificationsCacheKey = createNotificationCacheKey(uid, {
     limit: NOTIFICATION_PAGINATION_COUNT,
     pageIndex: 0,
@@ -88,6 +79,7 @@ const getServerSidePropsFn = async ({
   }
 
   const [notifications, { sidebarHashtags, sidebarTopics }] = await Promise.all(
+    // @ts-expect-error: we know uid is defined
     [getNotifications(uid, { db: adminDb }), sidebarDataPromise]
   )
 

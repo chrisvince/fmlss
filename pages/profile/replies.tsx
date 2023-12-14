@@ -49,16 +49,7 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const uid = AuthUser.id
 
-  if (!uid) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
+  // @ts-expect-error: we know uid is defined
   const userRepliesCacheKey = createUserRepliesCacheKey(uid)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
@@ -80,6 +71,7 @@ const getServerSidePropsFn = async ({
   }
 
   const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
+    // @ts-expect-error: we know uid is defined
     getUserPosts(uid, { db: adminDb, type: 'reply' }),
     sidebarDataPromise,
   ])

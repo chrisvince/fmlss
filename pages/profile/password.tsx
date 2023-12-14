@@ -28,18 +28,8 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const uid = AuthUser.id
 
-  if (!uid) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
   const { data: userHasPassword } = await checkUserHasPassword({
+    // @ts-expect-error: we know uid is defined
     uid,
   })
 
