@@ -1,11 +1,62 @@
+import absoluteUrl from 'next-absolute-url'
 import { init } from 'next-firebase-auth'
+import constants from '../constants'
+
+const { ALLOWED_HOSTS } = constants
+
+const AUTH_DESTINATION_QUERY_PARAM = 'destination'
+const AUTH_DEFAULT_DESTINATION = '/feed'
 
 const daysToMilliseconds = (days: number) => days * 60 * 60 * 24 * 1000
 
 const initAuth = () => {
   init({
-    authPageURL: '/',
-    appPageURL: '/feed',
+    authPageURL: ({ ctx }) => {
+      const isServerSide = typeof window === 'undefined'
+
+      const origin = isServerSide
+        ? absoluteUrl(ctx.req).origin
+        : window.location.origin
+
+      const destPath = isServerSide ? ctx.resolvedUrl : window.location.href
+      const destURL = new URL(destPath, origin)
+      return `/?${AUTH_DESTINATION_QUERY_PARAM}=${encodeURIComponent(
+        destURL.toString()
+      )}`
+    },
+
+    appPageURL: ({ ctx }) => {
+      const isServerSide = typeof window === 'undefined'
+
+      const origin = isServerSide
+        ? absoluteUrl(ctx.req).origin
+        : window.location.origin
+
+      const params = isServerSide
+        ? // @ts-expect-error: url is defined on server
+          new URL(ctx.req.url, origin).searchParams
+        : new URLSearchParams(window.location.search)
+
+      const destinationParamVal = params.get(AUTH_DESTINATION_QUERY_PARAM)
+
+      if (!destinationParamVal) {
+        return AUTH_DEFAULT_DESTINATION
+      }
+
+      const allowed = ALLOWED_HOSTS.includes(new URL(destinationParamVal).host)
+
+      if (!allowed) {
+        console.warn(
+          `Redirect destination host must be one of ${ALLOWED_HOSTS.join(
+            ', '
+          )}.`
+        )
+
+        return AUTH_DEFAULT_DESTINATION
+      }
+
+      return destinationParamVal
+    },
     loginAPIEndpoint: '/api/auth/signIn',
     logoutAPIEndpoint: '/api/auth/signOut',
     onLoginRequestError: err => {

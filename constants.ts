@@ -4,6 +4,7 @@ const secondsToMs = (seconds: number) => seconds * 1000
 const PASSWORD_MIN_LENGTH = 8
 
 interface CONSTANTS {
+  ALLOWED_HOSTS: string[]
   APP_URL: string
   AUTHORED_POSTS_COLLECTION: string
   AUTOCOMPLETE_LENGTH: number
@@ -85,6 +86,7 @@ interface CONSTANTS {
 }
 
 const constants: CONSTANTS = {
+  ALLOWED_HOSTS: ['localhost:3000', 'fameless.net', 'www.fameless.net'],
   APP_URL: 'https://fameless.net',
   AUTHORED_POSTS_COLLECTION: 'authoredPosts',
   AUTOCOMPLETE_LENGTH: 5,
