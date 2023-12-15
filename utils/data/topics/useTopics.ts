@@ -32,7 +32,10 @@ type UseTopics = (options?: {
   moreToLoad: boolean
 }
 
-const useTopics: UseTopics = ({ sortMode = 'latest', swrConfig = {} } = {}) => {
+const useTopics: UseTopics = ({
+  sortMode = TopicsSortMode.Latest,
+  swrConfig = {},
+} = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
   }>({})
