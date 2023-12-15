@@ -1,1 +1,4 @@
-export type TopicsSortMode = 'latest' | 'popular'
+export enum TopicsSortMode {
+  Latest = 'latest',
+  Popular = 'popular',
+}

@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Button, ButtonGroup } from '@mui/material'
 
 import Page from '../Page'
-import type { TopicsSortMode } from '../../types'
+import { TopicsSortMode } from '../../types'
 import TopicsList from '../TopicList'
 import useTopics from '../../utils/data/topics/useTopics'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
@@ -23,29 +22,23 @@ const SORT_MODE_OPTIONS = [
   },
 ]
 
-const SORT_MODE_MAP: {
-  [key: string]: string
-} = {
-  latest: 'latest',
-  popular: 'popular',
-}
-
 const TopicsPage = () => {
-  const { asPath: path } = useRouter()
+  const {
+    query: { sortMode: sortModes },
+  } = useRouter()
 
-  const pathSortMode = SORT_MODE_MAP[
-    path?.split?.('/')?.[2] ?? 'popular'
-  ] as TopicsSortMode
+  const sortModeParam = sortModes?.[0] ? sortModes[0].toLowerCase() : undefined
 
-  const [sortMode, setSortMode] = useState<TopicsSortMode>(pathSortMode)
+  const sortMode =
+    sortModeParam &&
+    // @ts-expect-error: includes should be string
+    Object.values(TopicsSortMode).includes(sortModeParam)
+      ? (sortModeParam as TopicsSortMode)
+      : TopicsSortMode.Popular
 
   const { topics, isLoading, loadMore, moreToLoad } = useTopics({
     sortMode,
   })
-
-  useEffect(() => {
-    setSortMode(pathSortMode)
-  }, [pathSortMode])
 
   return (
     <Page
@@ -81,7 +74,6 @@ const TopicsPage = () => {
       <TopicsList
         topics={topics}
         isLoading={isLoading}
-        key={sortMode}
         moreToLoad={moreToLoad}
         onLoadMore={loadMore}
       />
