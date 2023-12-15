@@ -37,9 +37,9 @@ const HashtagsPage = () => {
   const sortMode =
     lowercaseSortMode &&
     // @ts-expect-error: includes should be string
-    Object.values(FeedSortMode).includes(lowercaseSortMode)
+    Object.values(HashtagsSortMode).includes(lowercaseSortMode)
       ? (lowercaseSortMode as HashtagsSortMode)
-      : HashtagsSortMode.Latest
+      : HashtagsSortMode.Popular
 
   const { isLoading, loadMore, moreToLoad, hashtags } = useHashtags({
     sortMode,
