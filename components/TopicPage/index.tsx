@@ -28,11 +28,6 @@ const generateSortOptions = (path: string) => [
     label: 'Popular',
     sortMode: 'popular',
   },
-  // {
-  //   href: `/topic/${path}?sort=most-likes`,
-  //   label: 'Most Likes',
-  //   sortMode: 'mostLikes',
-  // },
 ]
 
 const SORT_MODE_MAP: {
@@ -90,6 +85,7 @@ const TopicPage = ({ path }: PropTypes) => {
     <Page
       description={`See ${topic?.data.title} posts`}
       pageTitle={topic?.data.title}
+      renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
       <MobileContainer>
