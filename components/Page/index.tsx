@@ -5,8 +5,6 @@ import PageTitle from '../SectionHeading'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
-import PageBackButton from '../PageBackButton'
-import MobileContainer from '../MobileContainer'
 
 const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
 const URL = process.env.VERCEL_URL ?? APP_URL
@@ -24,14 +22,13 @@ const renderTitle = ({ title, pageTitle }: RenderTitle) => {
 }
 
 interface Props {
+  aboveTitleContent?: ReactNode
   article?: {
     publishedTime?: string
     modifiedTime?: string
     section?: string
     tags?: string[]
   }
-  backButtonHref?: string
-  backButtonText?: string
   children: ReactNode
   description?: string
   layout?: 'rightPanel' | 'none'
@@ -46,9 +43,8 @@ interface Props {
 }
 
 const Page = ({
+  aboveTitleContent,
   article = {},
-  backButtonHref,
-  backButtonText = 'Back',
   children,
   description = DEFAULT_DESCRIPTION,
   layout = 'rightPanel',
@@ -103,13 +99,7 @@ const Page = ({
           thinContainer={thinContainer}
           main={
             <>
-              {backButtonHref && (
-                <MobileContainer>
-                  <PageBackButton href={backButtonHref}>
-                    {backButtonText}
-                  </PageBackButton>
-                </MobileContainer>
-              )}
+              {aboveTitleContent}
               {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
               {children}
             </>
@@ -118,13 +108,7 @@ const Page = ({
         />
       ) : (
         <>
-          {backButtonHref && (
-            <MobileContainer>
-              <PageBackButton href={backButtonHref}>
-                {backButtonText}
-              </PageBackButton>
-            </MobileContainer>
-          )}
+          {aboveTitleContent}
           {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
           {children}
         </>

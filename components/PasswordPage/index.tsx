@@ -1,6 +1,7 @@
 import ChangePasswordForm from '../ChangePasswordForm'
 import MobileContainer from '../MobileContainer'
 import Page from '../Page'
+import PageBackButton from '../PageBackButton'
 
 interface Props {
   userHasPassword: boolean
@@ -8,8 +9,7 @@ interface Props {
 
 const PasswordPage = ({ userHasPassword }: Props) => (
   <Page
-    backButtonHref="/profile"
-    backButtonText="Profile"
+    aboveTitleContent={<PageBackButton href="/profile">Profile</PageBackButton>}
     pageTitle={userHasPassword ? 'Password' : 'Create password'}
     renderPageTitle
     thinContainer
