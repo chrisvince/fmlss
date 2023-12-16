@@ -9,7 +9,7 @@ import { TopicSortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import useTracking from '../../utils/tracking/useTracking'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useTopic from '../../utils/data/topic/useTopic'
 import Error from 'next/error'
 
@@ -30,25 +30,22 @@ const generateSortOptions = (path: string) => [
   },
 ]
 
-const SORT_MODE_MAP: {
-  [key: string]: string
-} = {
-  latest: 'latest',
-  popular: 'popular',
-  'most-likes': 'mostLikes',
-}
-
 const TopicPage = ({ path }: PropTypes) => {
+  const { topic, isLoading: topicIsLoading } = useTopic(path)
+  const { track } = useTracking()
   const {
     query: { sort },
   } = useRouter()
-  const { topic, isLoading: topicIsLoading } = useTopic(path)
-  const { track } = useTracking()
 
-  const pathSortMode = (SORT_MODE_MAP[sort as string] ??
-    'latest') as TopicSortMode
+  const sortModeParam =
+    sort && !Array.isArray(sort) ? sort.toLowerCase() : undefined
 
-  const [sortMode, setSortMode] = useState<TopicSortMode>(pathSortMode)
+  const sortMode =
+    sortModeParam &&
+    // @ts-expect-error: includes should be string
+    Object.values(TopicSortMode).includes(sortModeParam)
+      ? (sortModeParam as TopicSortMode)
+      : TopicSortMode.Latest
 
   const {
     isLoading: postsAreLoading,
@@ -58,10 +55,6 @@ const TopicPage = ({ path }: PropTypes) => {
     posts,
     watchPost,
   } = useTopicPosts(path, { sortMode })
-
-  useEffect(() => {
-    setSortMode(pathSortMode)
-  }, [pathSortMode])
 
   const sortOptions = generateSortOptions(path)
 
