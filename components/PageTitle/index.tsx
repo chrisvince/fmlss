@@ -15,14 +15,13 @@ const SectionHeading = ({ children }: PropTypes) => {
       <MobileContainer>
         <Typography
           component="h1"
-          variant="h4"
+          variant="h1"
           sx={{
-            fontWeight: 'bold',
-            lineHeight: [undefined, '0.8em'],
             mb: [
               2,
-              4.25, // matches the position of the feed to the feed page
+              4.2, // matches the position of the feed to the feed page
             ],
+            mt: -1.2, // matches the position of the feed to the feed page
           }}
         >
           {children}

@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import constants from '../../constants'
 import type { ReactNode } from 'react'
-import PageTitle from '../SectionHeading'
+import PageTitle from '../PageTitle'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
