@@ -9,6 +9,7 @@ import TopicPathTitleText from '../TopicPathTitleText'
 
 type PropTypes = {
   topic: Topic
+  component?: ElementType<any> & (ElementType<any> | undefined)
 }
 
 const TopicListItem = ({ topic }: PropTypes) => {
@@ -16,7 +17,7 @@ const TopicListItem = ({ topic }: PropTypes) => {
   const viewCount = formatViewCount(topic.data.viewCount)
 
   return (
-    <ListItemFrame href={`/topic/${encodeURIComponent(topic.data.slug)}`}>
+    <ListItemFrame component={component} href={`/topic/${topic.data.path}`}>
       <Box
         sx={{
           display: 'flex',

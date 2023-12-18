@@ -1,13 +1,13 @@
 import { Box } from '@mui/system'
 import { useRouter } from 'next/router'
-import { SyntheticEvent, useEffect, useState } from 'react'
+import { ElementType, SyntheticEvent, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface PropTypes {
   'aria-label'?: string
   'aria-labelledby'?: string
   children: React.ReactNode
-  component?: React.ElementType
+  component?: ElementType<any> & (ElementType<any> | undefined)
   href: string
   isSidebar?: boolean
 }
