@@ -5,6 +5,7 @@ import { Topic } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
 import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
+import TopicPathTitleText from '../TopicPathTitleText'
 
 type PropTypes = {
   topic: Topic
@@ -25,7 +26,7 @@ const TopicListItem = ({ topic }: PropTypes) => {
         }}
       >
         <Typography component="div" variant="h5">
-          {topic.data.title}
+          <TopicPathTitleText>{topic.data.pathTitle}</TopicPathTitleText>
         </Typography>
         <Box
           sx={{

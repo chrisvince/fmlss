@@ -3,9 +3,8 @@ import Link from 'next/link'
 
 import truncateString from '../../utils/truncateString'
 import constants from '../../constants'
-import { AlternateEmailRounded } from '@mui/icons-material'
 import TruncatedPathTitle from '../TruncatedPathTitle'
-import { Box } from '@mui/system'
+import TopicPathTitleText from '../TopicPathTitleText'
 
 const { TOPICS_ENABLED } = constants
 
@@ -36,33 +35,25 @@ const TopicBadge = ({ pathTitleSegments, slug, pathTitle }: Props) => {
   return (
     <Tooltip
       placement="bottom"
-      title={
-        <Box sx={{ alignItems: 'center', display: 'flex', gap: 0.1 }}>
-          <AlternateEmailRounded fontSize="inherit" color="inherit" />
-          {pathTitle}
-        </Box>
-      }
+      title={<TopicPathTitleText>{pathTitle}</TopicPathTitleText>}
     >
       <MuiLink
         component={Link}
         href={`/topic/${slug}`}
         sx={{
-          alignItems: 'center',
           display: 'flex',
-          gap: 0.1,
           height: '1em',
-          overflow: 'hidden',
           '&:hover': {
             borderBottom: '1px solid currentColor',
-            marginBottom: '-1px',
           },
         }}
         underline="none"
         variant="caption"
         color="text.secondary"
       >
-        <AlternateEmailRounded fontSize="inherit" color="inherit" />
-        <TruncatedPathTitle pathTitleSegments={pathTitleSegments} />
+        <TopicPathTitleText>
+          <TruncatedPathTitle pathTitleSegments={pathTitleSegments} />
+        </TopicPathTitleText>
       </MuiLink>
     </Tooltip>
   )
