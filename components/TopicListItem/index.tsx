@@ -5,6 +5,8 @@ import { Topic } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
 import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
+import { ElementType } from 'react'
+import formatSubtopicsCount from '../../utils/formatting/formatSubtopicsCount'
 import TopicPathTitleText from '../TopicPathTitleText'
 
 type PropTypes = {
@@ -12,8 +14,13 @@ type PropTypes = {
   component?: ElementType<any> & (ElementType<any> | undefined)
 }
 
-const TopicListItem = ({ topic }: PropTypes) => {
-  const postCount = formatPostCount(topic.data.postCount)
+const TopicListItem = ({ component, topic }: PropTypes) => {
+  const recursivePostCount = formatPostCount(topic.data.recursivePostCount)
+
+  const recursiveSubtopicCount = formatSubtopicsCount(
+    topic.data.recursiveSubtopicCount
+  )
+
   const viewCount = formatViewCount(topic.data.viewCount)
 
   return (
@@ -38,11 +45,12 @@ const TopicListItem = ({ topic }: PropTypes) => {
             whiteSpace: 'nowrap',
           }}
         >
-          {postCount && (
-            <Typography variant="caption" component="div" align="right">
-              {postCount}
-            </Typography>
-          )}
+          <Typography variant="caption" component="div" align="right">
+            {recursivePostCount}
+          </Typography>
+          <Typography variant="caption" component="div" align="right">
+            {recursiveSubtopicCount}
+          </Typography>
           {viewCount && (
             <Typography variant="caption" component="div" align="right">
               {viewCount}

@@ -7,9 +7,12 @@ export interface TopicDataRequest {
   pathTitle: string
   pathTitleSegments: string[]
   postCount: number
+  recursivePostCount: number
+  recursiveSubtopicCount: number
   recentViewCount: number
   slug: string
   slugSegments: string[]
+  subtopicCount: number
   title: string
   updatedAt: firestore.Timestamp
   viewCount: number
