@@ -1,7 +1,7 @@
 import useSWR, { SWRConfiguration } from 'swr'
 import { SWRInfiniteConfiguration } from 'swr/infinite'
 
-import { Topic } from '../../../types'
+import { Topic, TopicsSortMode } from '../../../types'
 import { createSidebarTopicsCacheKey } from '../../createCacheKeys'
 import constants from '../../../constants'
 import getTopics from './getTopics'
@@ -29,7 +29,7 @@ const usePopularTopics: UsePopularTopics = ({ swrConfig = {} } = {}) => {
     cacheKey,
     () =>
       getTopics({
-        sortMode: 'popular',
+        sortMode: TopicsSortMode.Popular,
         limit: SIDEBAR_LIST_COUNT,
       }),
     {

@@ -1,4 +1,9 @@
-import { FeedSortMode, HashtagSortMode, TopicSortMode } from '../types'
+import {
+  FeedSortMode,
+  HashtagSortMode,
+  TopicSortMode,
+  TopicsSortMode,
+} from '../types'
 import { HashtagShowType } from './data/posts/getHashtagPosts'
 
 const createHashtagPostsCacheKey = (
@@ -63,8 +68,16 @@ const createHashtagsCacheKey = (
   pageIndex: number | null = 0
 ) => `hashtags/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
-const createTopicsCacheKey = (sortMode: string, pageIndex: number | null = 0) =>
-  `topics/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
+const createTopicsCacheKey = ({
+  pageIndex = 0,
+  parentTopicRef,
+  sortMode,
+}: {
+  pageIndex?: number | null
+  parentTopicRef?: string
+  sortMode: TopicsSortMode
+}) =>
+  `topics/${parentTopicRef ? `${parentTopicRef}/` : ''}${sortMode}-${pageIndex}`
 
 const createTopicPostsCacheKey = (
   slug: string,

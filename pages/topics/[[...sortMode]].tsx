@@ -76,7 +76,7 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
-  const topicsCacheKey = createTopicsCacheKey(sortMode)
+  const topicsCacheKey = createTopicsCacheKey({ sortMode })
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()

@@ -17,16 +17,18 @@ type GetTopics = (options?: {
   cacheTime?: number
   db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
   limit?: number
+  parentTopicRef?: string
   sortMode?: TopicsSortMode
   startAfter?: FirebaseDoc
 }) => Promise<Topic[]>
 
 const getTopics: GetTopics = async ({
-  sortMode = 'popular',
-  cacheKey = createTopicsCacheKey(sortMode),
   cacheTime = TOPICS_CACHE_TIME,
   db: dbProp,
   limit = POST_PAGINATION_COUNT,
+  parentTopicRef,
+  sortMode = TopicsSortMode.Popular,
+  cacheKey = createTopicsCacheKey({ sortMode, parentTopicRef }),
   startAfter,
 } = {}) => {
   const db = dbProp || firebase.firestore()
@@ -45,9 +47,14 @@ const getTopics: GetTopics = async ({
     topicDocs = null
   } else {
     topicDocs = await pipe(
-      () => db.collection(TOPICS_COLLECTION),
+      () =>
+        db.collection(
+          parentTopicRef
+            ? `${parentTopicRef}/${TOPICS_COLLECTION}`
+            : TOPICS_COLLECTION
+        ),
       query =>
-        sortMode === 'popular'
+        sortMode === TopicsSortMode.Popular
           ? query.orderBy('recentViewCount', 'desc')
           : query,
       query => query.orderBy('createdAt', 'desc'),

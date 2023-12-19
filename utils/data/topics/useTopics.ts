@@ -21,6 +21,8 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 }
 
 type UseTopics = (options?: {
+  parentRef?: string
+  skip?: boolean
   sortMode?: TopicsSortMode
   swrConfig?: SWRInfiniteConfiguration
 }) => {
@@ -33,6 +35,8 @@ type UseTopics = (options?: {
 }
 
 const useTopics: UseTopics = ({
+  parentRef: parentTopicRef,
+  skip,
   sortMode = TopicsSortMode.Latest,
   swrConfig = {},
 } = {}) => {
@@ -41,24 +45,30 @@ const useTopics: UseTopics = ({
   }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createTopicsCacheKey(sortMode)]
+  const fallbackData =
+    fallback[createTopicsCacheKey({ parentTopicRef: parentTopicRef, sortMode })]
 
   const { data, error, isLoading, isValidating, setSize, size } =
     useSWRInfinite(
-      (index, previousPageData) => {
+      (pageIndex, previousPageData) => {
         if (
-          previousPageData &&
-          previousPageData.length < POST_PAGINATION_COUNT
+          skip ||
+          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
         ) {
           return null
         }
-        return createTopicsCacheKey(sortMode, index)
+        return createTopicsCacheKey({
+          sortMode,
+          pageIndex,
+          parentTopicRef,
+        })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
         return getTopics({
           sortMode,
           startAfter: pageStartAfterTrace[pageIndex],
+          parentTopicRef,
         })
       },
       {
