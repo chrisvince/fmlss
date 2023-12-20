@@ -10,12 +10,21 @@ const SidebarListItem = ({ leftText, rightText }: PropTypes) => {
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: 'grid',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        gridTemplateColumns: 'minmax(0, 1fr) auto',
+        gap: 2,
       }}
     >
-      <Typography variant="body2" component="div">
+      <Typography
+        variant="body2"
+        component="div"
+        sx={{
+          overflowWrap: 'break-word',
+          wordWrap: 'break-word',
+          hyphens: 'auto',
+        }}
+      >
         {leftText}
       </Typography>
       <Typography variant="caption">{rightText}</Typography>
