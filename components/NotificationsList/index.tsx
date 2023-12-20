@@ -41,7 +41,7 @@ const NotificationsList = ({
   return notifications.length === 0 && isLoading ? (
     <PageSpinner />
   ) : notifications.length > 0 ? (
-    <MenuList>
+    <MenuList sx={{ padding: 0 }}>
       <ContentList
         cellMeasurerCache={cellMeasurerCache.current}
         items={notifications}
