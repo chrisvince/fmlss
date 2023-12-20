@@ -33,18 +33,10 @@ const TopicListItem = ({ component, topic }: PropTypes) => {
           gap: 2,
         }}
       >
-        <Typography component="div" variant="h5">
+        <Typography component="div" variant="body1">
           <TopicPathTitleText>{topic.data.pathTitle}</TopicPathTitleText>
         </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            gap: 2,
-            whiteSpace: 'nowrap',
-          }}
-        >
+        <Box sx={{ whiteSpace: 'nowrap' }}>
           <Typography variant="caption" component="div" align="right">
             {recursivePostCount}
           </Typography>
