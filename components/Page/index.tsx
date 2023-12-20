@@ -32,7 +32,7 @@ interface Props {
   children: ReactNode
   description?: string
   layout?: 'rightPanel' | 'none'
-  pageTitle?: string
+  pageTitle?: ReactNode
   renderPageTitle?: boolean
   rightPanelChildren?: ReactNode
   thinContainer?: boolean

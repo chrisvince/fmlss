@@ -77,7 +77,7 @@ const TopicPage = ({ path }: PropTypes) => {
   return (
     <Page
       description={`See ${topic?.data.title} posts`}
-      pageTitle={topic?.data.title}
+      pageTitle={<TopicPathTitleText>{topic?.data.title}</TopicPathTitleText>}
       renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
