@@ -7,7 +7,7 @@ import {
 import { SWRConfig } from 'swr'
 
 import TopicsPage from '../../components/TopicsPage'
-import type { TopicsSortMode } from '../../types'
+import { TopicsSortMode } from '../../types'
 import {
   createTopicsCacheKey,
   createSidebarHashtagsCacheKey,
@@ -40,18 +40,18 @@ const Topics = ({ fallback }: PropTypes) => (
 )
 
 const SORT_MODE_MAP: {
-  [key: string]: string
+  [key: string]: TopicsSortMode
 } = {
-  latest: 'latest',
-  popular: 'popular',
+  latest: TopicsSortMode.Latest,
+  popular: TopicsSortMode.Popular,
 }
 
 const getServerSidePropsFn = async ({
-  params: { sortMode: sortModeArray },
   req,
+  query: { sort = TopicsSortMode.Popular },
 }: {
   AuthUser: AuthUser
-  params: { sortMode: string }
+  query: { sort: string }
   req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -63,19 +63,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  if (sortModeArray?.length > 1) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return { notFound: true }
-  }
-
-  const sortModeParam = sortModeArray?.[0] ?? 'popular'
-  const sortMode = SORT_MODE_MAP[sortModeParam] as TopicsSortMode
-
-  if (!sortMode) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return { notFound: true }
-  }
-
+  const sortMode = SORT_MODE_MAP[sort] ?? TopicsSortMode.Popular
   const topicsCacheKey = createTopicsCacheKey({ sortMode })
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const admin = getFirebaseAdmin()

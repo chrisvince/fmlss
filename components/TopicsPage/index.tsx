@@ -16,7 +16,7 @@ const SORT_MODE_OPTIONS = [
     sortMode: 'popular',
   },
   {
-    href: '/topics/latest',
+    href: '/topics?sort=latest',
     label: 'Latest',
     sortMode: 'latest',
   },
@@ -24,10 +24,11 @@ const SORT_MODE_OPTIONS = [
 
 const TopicsPage = () => {
   const {
-    query: { sortMode: sortModes },
+    query: { sort },
   } = useRouter()
 
-  const sortModeParam = sortModes?.[0] ? sortModes[0].toLowerCase() : undefined
+  const sortModeParam =
+    sort && !Array.isArray(sort) ? sort.toLowerCase() : undefined
 
   const sortMode =
     sortModeParam &&
