@@ -21,6 +21,7 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 }
 
 type UseTopics = (options?: {
+  limit?: number
   parentRef?: string
   skip?: boolean
   sortMode?: TopicsSortMode
@@ -35,6 +36,7 @@ type UseTopics = (options?: {
 }
 
 const useTopics: UseTopics = ({
+  limit = POST_PAGINATION_COUNT,
   parentRef: parentTopicRef,
   skip,
   sortMode = TopicsSortMode.Latest,
@@ -46,7 +48,9 @@ const useTopics: UseTopics = ({
 
   const { fallback } = useSWRConfig()
   const fallbackData =
-    fallback[createTopicsCacheKey({ parentTopicRef: parentTopicRef, sortMode })]
+    fallback[
+      createTopicsCacheKey({ parentTopicRef: parentTopicRef, sortMode, limit })
+    ]
 
   const { data, error, isLoading, isValidating, setSize, size } =
     useSWRInfinite(
@@ -69,6 +73,7 @@ const useTopics: UseTopics = ({
           sortMode,
           startAfter: pageStartAfterTrace[pageIndex],
           parentTopicRef,
+          limit,
         })
       },
       {

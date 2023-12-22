@@ -1,3 +1,4 @@
+import constants from '../constants'
 import {
   FeedSortMode,
   HashtagSortMode,
@@ -5,6 +6,8 @@ import {
   TopicsSortMode,
 } from '../types'
 import { HashtagShowType } from './data/posts/getHashtagPosts'
+
+const { POST_PAGINATION_COUNT } = constants
 
 const createHashtagPostsCacheKey = (
   slug: string,
@@ -69,15 +72,19 @@ const createHashtagsCacheKey = (
 ) => `hashtags/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
 const createTopicsCacheKey = ({
+  limit = POST_PAGINATION_COUNT,
   pageIndex = 0,
   parentTopicRef,
   sortMode,
 }: {
+  limit?: number
   pageIndex?: number | null
   parentTopicRef?: string
   sortMode: TopicsSortMode
 }) =>
-  `topics/${parentTopicRef ? `${parentTopicRef}/` : ''}${sortMode}-${pageIndex}`
+  `topics/${
+    parentTopicRef ? `${parentTopicRef}/` : ''
+  }${sortMode}/limit=${limit}-${pageIndex}`
 
 const createTopicPostsCacheKey = (
   slug: string,

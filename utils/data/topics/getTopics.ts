@@ -28,7 +28,7 @@ const getTopics: GetTopics = async ({
   limit = POST_PAGINATION_COUNT,
   parentTopicRef,
   sortMode = TopicsSortMode.Popular,
-  cacheKey = createTopicsCacheKey({ sortMode, parentTopicRef }),
+  cacheKey = createTopicsCacheKey({ sortMode, parentTopicRef, limit }),
   startAfter,
 } = {}) => {
   const db = dbProp || firebase.firestore()
