@@ -7,9 +7,20 @@ interface Props {
 }
 
 const TopicPathTitleText = ({ children }: Props) => (
-  <Box sx={{ alignItems: 'flex-start', display: 'flex', gap: '0.2em' }}>
+  <Box sx={{ alignItems: 'flex-start', display: 'flex', gap: '0.1em' }}>
     <AlternateEmailRounded fontSize="inherit" color="inherit" />
-    <Box sx={{ mt: '-0.23em' }}>{children}</Box>
+    <Box
+      sx={{
+        fontSize: 'inherit',
+        mt: '-0.15lh',
+        overflowWrap: 'break-word',
+        wordWrap: 'break-word',
+        hyphens: 'auto',
+        maxWidth: '100%',
+      }}
+    >
+      {children}
+    </Box>
   </Box>
 )
 
