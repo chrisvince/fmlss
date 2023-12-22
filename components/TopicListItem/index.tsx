@@ -7,11 +7,10 @@ import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
 import { ElementType } from 'react'
 import formatSubtopicsCount from '../../utils/formatting/formatSubtopicsCount'
-import TopicPathTitleText from '../TopicPathTitleText'
 
 type PropTypes = {
-  topic: Topic
   component?: ElementType<any> & (ElementType<any> | undefined)
+  topic: Topic
 }
 
 const TopicListItem = ({ component, topic }: PropTypes) => {
@@ -23,6 +22,12 @@ const TopicListItem = ({ component, topic }: PropTypes) => {
 
   const viewCount = formatViewCount(topic.data.viewCount)
 
+  const title = (
+    <Typography component="div" variant="body1">
+      {topic.data.title}
+    </Typography>
+  )
+
   return (
     <ListItemFrame component={component} href={`/topic/${topic.data.path}`}>
       <Box
@@ -33,9 +38,14 @@ const TopicListItem = ({ component, topic }: PropTypes) => {
           gap: 2,
         }}
       >
-        <Typography component="div" variant="body1">
-          <TopicPathTitleText>{topic.data.pathTitle}</TopicPathTitleText>
-        </Typography>
+        {topic.data.description ? (
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            {title}
+            <Typography variant="caption">{topic.data.description}</Typography>
+          </Box>
+        ) : (
+          title
+        )}
         <Box sx={{ whiteSpace: 'nowrap' }}>
           <Typography variant="caption" component="div" align="right">
             {recursivePostCount}
