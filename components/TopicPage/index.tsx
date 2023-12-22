@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Button, ButtonGroup } from '@mui/material'
+import { Button, ButtonGroup, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 import Page from '../Page'
@@ -12,6 +12,13 @@ import useTracking from '../../utils/tracking/useTracking'
 import { useEffect } from 'react'
 import useTopic from '../../utils/data/topic/useTopic'
 import Error from 'next/error'
+import useTopics from '../../utils/data/topics/useTopics'
+import TopicSubtopicsList from '../TopicSubtopicsList'
+import constants from '../../constants'
+import CaptionLink from '../CaptionLink'
+import { Box } from '@mui/system'
+
+const { SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
 
 type PropTypes = {
   path: string
@@ -56,6 +63,12 @@ const TopicPage = ({ path }: PropTypes) => {
     watchPost,
   } = useTopicPosts(path, { sortMode })
 
+  const { topics } = useTopics({
+    parentRef: topic?.data.ref,
+    skip: !topic,
+    limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
+  })
+
   const sortOptions = generateSortOptions(path)
 
   useEffect(() => {
@@ -74,6 +87,8 @@ const TopicPage = ({ path }: PropTypes) => {
     return <Error statusCode={404} />
   }
 
+  const isTopics = topics.length > 0
+
   return (
     <Page
       description={`See ${topic?.data.title} posts`}
@@ -81,6 +96,29 @@ const TopicPage = ({ path }: PropTypes) => {
       renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
+      {isTopics && (
+        <>
+          <Typography variant="h2" sx={{ mb: 2 }}>
+            Subtopics
+          </Typography>
+          <TopicSubtopicsList topics={topics} />
+          {topics.length >= SUBTOPICS_ON_TOPIC_PAGE_LIMIT && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
+              <CaptionLink
+                href={`/topics/${topic?.data.path}`}
+                color="secondary.main"
+              >
+                View all
+              </CaptionLink>
+            </Box>
+          )}
+        </>
+      )}
+      {isTopics && (
+        <Typography variant="h2" sx={{ mb: 2, mt: 6 }}>
+          Posts
+        </Typography>
+      )}
       <MobileContainer>
         <ButtonGroup
           aria-label="Sort Selection"

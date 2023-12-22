@@ -7,11 +7,12 @@ import {
 import { SWRConfig } from 'swr'
 
 import TopicPage from '../../components/TopicPage'
-import { TopicSortMode } from '../../types'
+import { TopicSortMode, TopicsSortMode } from '../../types'
 import {
   createTopicCacheKey,
   createTopicPostsCacheKey,
   createSidebarHashtagsCacheKey,
+  createTopicsCacheKey,
 } from '../../utils/createCacheKeys'
 import getTopicPosts from '../../utils/data/posts/getTopicPosts'
 import constants from '../../constants'
@@ -20,8 +21,13 @@ import { NextApiRequest } from 'next'
 import getTopic from '../../utils/data/topic/getTopic'
 import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 import slugify from '../../utils/slugify'
+import getTopics from '../../utils/data/topics/getTopics'
 
-const { GET_SERVER_SIDE_PROPS_TIME_LABEL, TOPICS_ENABLED } = constants
+const {
+  GET_SERVER_SIDE_PROPS_TIME_LABEL,
+  SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
+  TOPICS_ENABLED,
+} = constants
 
 interface PropTypes {
   fallback: {
@@ -37,17 +43,16 @@ const Topic = ({ fallback, path }: PropTypes) => (
 )
 
 const SORT_MODE_MAP: {
-  [key: string]: string
+  [key: string]: TopicSortMode
 } = {
-  latest: 'latest',
-  popular: 'popular',
-  'most-likes': 'mostLikes',
+  latest: TopicSortMode.Latest,
+  popular: TopicSortMode.Popular,
 }
 
 const getServerSidePropsFn = async ({
   AuthUser,
   params: { slugs = [] },
-  query: { sort = 'latest' },
+  query: { sort = TopicSortMode.Latest },
   req,
 }: {
   AuthUser: AuthUser
@@ -56,7 +61,6 @@ const getServerSidePropsFn = async ({
   req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-
   const path = slugs.map(slugify).join('/')
 
   if (!TOPICS_ENABLED) {
@@ -69,12 +73,32 @@ const getServerSidePropsFn = async ({
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const sortMode = (SORT_MODE_MAP[sort] ??
-    TopicSortMode.Latest) as TopicSortMode
+  const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Latest
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
   const topicCacheKey = createTopicCacheKey(path)
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const topic = await getTopic(path, { db: adminDb })
+
+  if (!topic) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+    return {
+      notFound: true,
+    }
+  }
+
+  const topicsCacheKey = createTopicsCacheKey({
+    limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
+    pageIndex: 0,
+    parentTopicRef: topic.data.ref,
+    sortMode: TopicsSortMode.Latest,
+  })
+
+  const topics = await getTopics({
+    db: adminDb,
+    limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
+    parentTopicRef: topic.data.ref,
+  })
 
   if (isInternalRequest(req)) {
     const { sidebarHashtags } = await sidebarDataPromise
@@ -84,6 +108,8 @@ const getServerSidePropsFn = async ({
       props: {
         fallback: {
           [sidebarHashtagsCacheKey]: sidebarHashtags,
+          [topicCacheKey]: topic,
+          [topicsCacheKey]: topics,
         },
         path,
         key: topicCacheKey,
@@ -91,30 +117,23 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, topic, { sidebarHashtags }] = await Promise.all([
+  const [posts, { sidebarHashtags }] = await Promise.all([
     getTopicPosts(path, {
       db: adminDb,
       uid,
       sortMode,
     }),
-    getTopic(path, { db: adminDb }),
     sidebarDataPromise,
   ])
-
-  if (!topic) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-    return {
-      notFound: true,
-    }
-  }
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {
+        [sidebarHashtagsCacheKey]: sidebarHashtags,
         [topicCacheKey]: topic,
         [topicPostsCacheKey]: posts,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        [topicsCacheKey]: topics,
       },
       path,
       key: topicCacheKey,
