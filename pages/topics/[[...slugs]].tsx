@@ -11,6 +11,7 @@ import { TopicsSortMode } from '../../types'
 import {
   createTopicsCacheKey,
   createSidebarHashtagsCacheKey,
+  createTopicCacheKey,
 } from '../../utils/createCacheKeys'
 import getTopics from '../../utils/data/topics/getTopics'
 import constants from '../../constants'
@@ -22,6 +23,7 @@ import {
 } from '../../config/withAuthConfig'
 import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 import { SidebarResourceKey } from '../../utils/data/sidebar/fetchSidebarData'
+import getTopic from '../../utils/data/topic/getTopic'
 
 const { TOPICS_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -31,11 +33,12 @@ interface PropTypes {
   fallback: {
     [key: string]: unknown
   }
+  parentTopicPath: string | null
 }
 
-const Topics = ({ fallback }: PropTypes) => (
+const Topics = ({ fallback, parentTopicPath }: PropTypes) => (
   <SWRConfig value={{ fallback }}>
-    <TopicsPage />
+    <TopicsPage parentTopicPath={parentTopicPath} />
   </SWRConfig>
 )
 
@@ -47,10 +50,12 @@ const SORT_MODE_MAP: {
 }
 
 const getServerSidePropsFn = async ({
+  params: { slugs = [] },
   req,
   query: { sort = TopicsSortMode.Popular },
 }: {
   AuthUser: AuthUser
+  params: { slugs: string[] }
   query: { sort: string }
   req: NextApiRequest
 }) => {
@@ -64,10 +69,16 @@ const getServerSidePropsFn = async ({
   }
 
   const sortMode = SORT_MODE_MAP[sort] ?? TopicsSortMode.Popular
-  const topicsCacheKey = createTopicsCacheKey({ sortMode })
+  const parentTopicPath = slugs.join('/') || null
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
+
+  const parentTopicPromise = parentTopicPath
+    ? getTopic(parentTopicPath, {
+        db: adminDb,
+      })
+    : null
 
   const sidebarDataPromise = fetchSidebarData({
     db: adminDb,
@@ -75,32 +86,76 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags } = await sidebarDataPromise
+    const [parentTopic, { sidebarHashtags }] = await Promise.all([
+      parentTopicPromise,
+      sidebarDataPromise,
+    ])
+
+    const topicsCacheKey = createTopicsCacheKey({
+      sortMode,
+      parentTopicRef: parentTopic?.data.ref,
+    })
+
+    if (parentTopicPath && !parentTopic) {
+      console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+      return {
+        notFound: true,
+      }
+    }
+
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
+          ...(parentTopicPath && parentTopic
+            ? {
+                [createTopicCacheKey(parentTopicPath)]: parentTopic,
+              }
+            : {}),
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
         key: topicsCacheKey,
+        parentTopicPath,
       },
     }
   }
 
+  const parentTopic = await parentTopicPromise
+
+  const topicsCacheKey = createTopicsCacheKey({
+    sortMode,
+    parentTopicRef: parentTopic?.data.ref,
+  })
+
   const [topics, { sidebarHashtags }] = await Promise.all([
-    getTopics({ db: adminDb, sortMode }),
+    getTopics({ db: adminDb, sortMode, parentTopicRef: parentTopic?.data.ref }),
     sidebarDataPromise,
   ])
+
+  if (parentTopicPath && !parentTopic) {
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+    return {
+      notFound: true,
+    }
+  }
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {
+        ...(parentTopicPath && parentTopic
+          ? {
+              [createTopicCacheKey(parentTopicPath)]: parentTopic,
+            }
+          : {}),
         [sidebarHashtagsCacheKey]: sidebarHashtags,
         [topicsCacheKey]: topics,
       },
       key: topicsCacheKey,
+      parentTopicPath,
     },
   }
 }

@@ -8,6 +8,7 @@ import TopicsList from '../TopicList'
 import useTopics from '../../utils/data/topics/useTopics'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
+import useTopic from '../../utils/data/topic/useTopic'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -22,7 +23,11 @@ const SORT_MODE_OPTIONS = [
   },
 ]
 
-const TopicsPage = () => {
+interface PropTypes {
+  parentTopicPath: string | null
+}
+
+const TopicsPage = ({ parentTopicPath }: PropTypes) => {
   const {
     query: { sort },
   } = useRouter()
@@ -37,14 +42,17 @@ const TopicsPage = () => {
       ? (sortModeParam as TopicsSortMode)
       : TopicsSortMode.Popular
 
+  const { topic: parentTopic } = useTopic(parentTopicPath)
+
   const { topics, isLoading, loadMore, moreToLoad } = useTopics({
+    parentRef: parentTopic?.data.ref,
     sortMode,
   })
 
   return (
     <Page
       description="See topics of posts made on Fameless"
-      pageTitle="Topics"
+      pageTitle={parentTopic?.data.title ?? 'Topics'}
       renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
