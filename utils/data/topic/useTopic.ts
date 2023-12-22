@@ -9,7 +9,7 @@ const DEFAULT_SWR_CONFIG: SWRConfiguration = {
 }
 
 type UseTopic = (
-  slug: string,
+  path: string | null,
   options?: {
     swrConfig?: SWRConfiguration
   }
@@ -21,11 +21,11 @@ type UseTopic = (
 }
 
 const useTopic: UseTopic = (path, { swrConfig = {} } = {}) => {
-  const topicCacheKey = createTopicCacheKey(path)
+  const topicCacheKey = path ? createTopicCacheKey(path) : null
 
   const { data, error, isLoading, isValidating } = useSWR(
     topicCacheKey,
-    () => getTopic(path),
+    () => getTopic(path!),
     {
       ...DEFAULT_SWR_CONFIG,
       ...swrConfig,

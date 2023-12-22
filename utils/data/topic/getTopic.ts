@@ -11,10 +11,9 @@ import isServer from '../../isServer'
 const { TOPICS_COLLECTION, TOPIC_CACHE_TIME } = constants
 
 type GetTopic = (
-  slug: string,
+  path: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-    uid?: string | null
   }
 ) => Promise<Topic | null>
 
