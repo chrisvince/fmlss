@@ -2,6 +2,7 @@ import { firestore } from 'firebase-admin'
 
 export interface TopicDataRequest {
   createdAt: firestore.Timestamp
+  description: string | null
   id: string
   path: string
   pathTitle: string

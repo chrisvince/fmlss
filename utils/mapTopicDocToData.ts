@@ -6,6 +6,7 @@ const mapTopicDocToData: MapTopicDocToData = doc => {
   const data = doc.data() as TopicDataRequest
   return {
     createdAt: data.createdAt.toMillis(),
+    description: data.description ?? null,
     id: doc.id,
     path: data.path,
     pathTitle: data.pathTitle,

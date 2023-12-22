@@ -1,5 +1,6 @@
 export interface TopicData {
   createdAt: number
+  description: string | null
   id: string
   path: string
   pathTitle: string
