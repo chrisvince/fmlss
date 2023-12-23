@@ -5,16 +5,17 @@ import truncateString from '../../utils/truncateString'
 import constants from '../../constants'
 import TruncatedPathTitle from '../TruncatedPathTitle'
 import TopicPathTitleText from '../TopicPathTitleText'
+import { SubtopicSegment } from '../../types'
 
 const { TOPICS_ENABLED } = constants
 
 interface Props {
-  pathTitleSegments: string[]
-  slug: string
   pathTitle: string
+  slug: string
+  subtopicSegments: SubtopicSegment[]
 }
 
-const TopicBadge = ({ pathTitleSegments, slug, pathTitle }: Props) => {
+const TopicBadge = ({ pathTitle, slug, subtopicSegments }: Props) => {
   const chipElement = (
     <Chip
       label={truncateString(pathTitle)}
@@ -52,7 +53,7 @@ const TopicBadge = ({ pathTitleSegments, slug, pathTitle }: Props) => {
         color="text.secondary"
       >
         <TopicPathTitleText>
-          <TruncatedPathTitle pathTitleSegments={pathTitleSegments} />
+          <TruncatedPathTitle subtopicSegments={subtopicSegments} />
         </TopicPathTitleText>
       </MuiLink>
     </Tooltip>

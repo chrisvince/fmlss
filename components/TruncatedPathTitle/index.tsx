@@ -1,18 +1,23 @@
 import { Box } from '@mui/system'
 import { Fragment, ReactNode, useMemo } from 'react'
+import { SubtopicSegment } from '../../types'
 
 interface TruncatedPathTitleProps {
-  pathTitleSegments: string[]
+  subtopicSegments: SubtopicSegment[]
 }
 
-const TruncatedPathTitle = ({ pathTitleSegments }: TruncatedPathTitleProps) => {
+const TruncatedPathTitle = ({ subtopicSegments }: TruncatedPathTitleProps) => {
   const elements: ReactNode[] = useMemo(() => {
-    if (pathTitleSegments.length > 2) {
-      return [pathTitleSegments[0], '...', pathTitleSegments.at(-1)]
+    if (subtopicSegments.length > 2) {
+      return [
+        subtopicSegments[0].pathTitle,
+        '...',
+        subtopicSegments.at(-1)?.pathTitle,
+      ]
     }
 
-    return pathTitleSegments
-  }, [pathTitleSegments])
+    return subtopicSegments.map(({ pathTitle }) => pathTitle)
+  }, [subtopicSegments])
 
   return (
     <Box

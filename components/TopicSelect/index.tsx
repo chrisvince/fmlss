@@ -66,15 +66,6 @@ const insertText = (
   return before + pastedText + after
 }
 
-export interface Topic {
-  path: string
-  pathTitle: string
-  pathTitleSegments: string[]
-  slug: string
-  slugSegments: string[]
-  title: string
-}
-
 const isMaximumSubtopics = (subtopics: string[]) =>
   subtopics.length >= TOPIC_MAX_SUBTOPICS - 1
 
@@ -420,7 +411,9 @@ const TopicSelect = ({ onChange }: Props) => {
                   <MenuItem
                     key={topic.data.id}
                     onClick={createAutofillClickHandler(
-                      topic.data.pathTitleSegments
+                      topic.data.subtopicSegments.map(
+                        ({ pathTitle }) => pathTitle
+                      )
                     )}
                   >
                     {topic.data.pathTitle}

@@ -1,9 +1,8 @@
-import { PostPreview } from '.'
-import { Topic } from '../components/TopicSelect'
+import { PostPreview, TopicRelation } from '.'
 
 export interface PostData {
   body: string
-  topic?: Topic
+  topic: TopicRelation
   createdAt: number
   documentDepth: number
   hashtags: string[]

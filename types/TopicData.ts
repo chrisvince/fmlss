@@ -1,17 +1,21 @@
+export interface SubtopicSegment {
+  path: string
+  pathTitle: string
+}
+
 export interface TopicData {
   createdAt: number
   description: string | null
   id: string
   path: string
   pathTitle: string
-  pathTitleSegments: string[]
   postCount: number
   recentViewCount: number
   recursivePostCount: number
   recursiveSubtopicCount: number
   ref: string
+  subtopicSegments: SubtopicSegment[]
   slug: string
-  slugSegments: string[]
   subtopicCount: number
   title: string
   updatedAt: number

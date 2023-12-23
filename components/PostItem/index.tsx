@@ -93,8 +93,8 @@ const PostItem = ({
           <Box sx={{ display: 'flex', gridArea: 'topic' }}>
             <TopicBadge
               pathTitle={post.data.topic.pathTitle}
-              pathTitleSegments={post.data.topic.pathTitleSegments}
               slug={post.data.topic.path}
+              subtopicSegments={post.data.topic.subtopicSegments}
             />
           </Box>
         )}

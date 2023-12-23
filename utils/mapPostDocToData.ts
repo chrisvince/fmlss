@@ -1,8 +1,8 @@
 import type { FirebaseDoc, PostData, PostDataRequest } from '../types'
 
-type MapPostDbToClient = (postDoc: FirebaseDoc) => PostData
+type MapPostDocToData = (postDoc: FirebaseDoc) => PostData
 
-const mapPostDocToData: MapPostDbToClient = postDoc => {
+const mapPostDocToData: MapPostDocToData = postDoc => {
   const postData = postDoc.data() as PostDataRequest
 
   return {
@@ -35,18 +35,13 @@ const mapPostDocToData: MapPostDbToClient = postDoc => {
     reference: postDoc.ref.path,
     slug: postData.slug,
     updatedAt: postData.updatedAt.toMillis(),
-    ...(postData.topic
-      ? {
-          topic: {
-            path: postData.topic.path,
-            pathTitle: postData.topic.pathTitle,
-            pathTitleSegments: postData.topic.pathTitleSegments,
-            slug: postData.topic.slug,
-            slugSegments: postData.topic.slugSegments,
-            title: postData.topic.title,
-          },
-        }
-      : {}),
+    topic: {
+      path: postData.topic.path,
+      pathTitle: postData.topic.pathTitle,
+      slug: postData.topic.slug,
+      subtopicSegments: postData.topic.subtopicSegments,
+      title: postData.topic.title,
+    },
   }
 }
 
