@@ -43,7 +43,7 @@ const EmailVerificationLink = () => {
 
   return (
     <Box>
-      <Typography variant="caption">Your email is not verified!</Typography>{' '}
+      <Typography variant="caption">Your email is not verified.</Typography>{' '}
       <ButtonBase onClick={handleVerifyEmailClick}>
         <Typography variant="caption" sx={{ textDecoration: 'underline' }}>
           Send verification email
