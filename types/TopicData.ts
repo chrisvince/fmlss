@@ -1,6 +1,8 @@
 export interface SubtopicSegment {
   path: string
   pathTitle: string
+  slug: string
+  title: string
 }
 
 export interface TopicData {

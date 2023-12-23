@@ -3,6 +3,8 @@ import { firestore } from 'firebase-admin'
 interface SubtopicSegmentRequest {
   path: string
   pathTitle: string
+  slug: string
+  title: string
 }
 export interface TopicDataRequest {
   createdAt: firestore.Timestamp
