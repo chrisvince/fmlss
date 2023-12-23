@@ -9,6 +9,7 @@ import useTopics from '../../utils/data/topics/useTopics'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import useTopic from '../../utils/data/topic/useTopic'
+import TopicBreadcrumbs from '../TopicBreadcrumbs'
 
 const SORT_MODE_OPTIONS = [
   {
@@ -51,6 +52,13 @@ const TopicsPage = ({ parentTopicPath }: PropTypes) => {
 
   return (
     <Page
+      aboveTitleContent={
+        parentTopic?.data.subtopicSegments ? (
+          <TopicBreadcrumbs
+            subtopicSegments={parentTopic?.data.subtopicSegments}
+          />
+        ) : null
+      }
       description="See topics of posts made on Fameless"
       pageTitle={parentTopic?.data.title ?? 'Topics'}
       renderPageTitle

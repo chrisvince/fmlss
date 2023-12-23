@@ -17,6 +17,7 @@ import TopicSubtopicsList from '../TopicSubtopicsList'
 import constants from '../../constants'
 import CaptionLink from '../CaptionLink'
 import { Box } from '@mui/system'
+import TopicBreadcrumbs from '../TopicBreadcrumbs'
 
 const { SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
 
@@ -96,6 +97,9 @@ const TopicPage = ({ path }: PropTypes) => {
       renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
+      {topic?.data.subtopicSegments && (
+        <TopicBreadcrumbs subtopicSegments={topic?.data.subtopicSegments} />
+      )}
       {isTopics && (
         <>
           <Typography variant="h2" sx={{ mb: 2 }}>
