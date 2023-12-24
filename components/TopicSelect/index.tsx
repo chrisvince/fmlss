@@ -23,6 +23,7 @@ import { DraftHandleValue, Editor, EditorState, convertFromRaw } from 'draft-js'
 import { Box } from '@mui/system'
 import { AlternateEmailRounded } from '@mui/icons-material'
 import { dropLast, last, remove, splitAt } from 'ramda'
+import { SubtopicSegment } from '../../firebase/functions/src/types/Topic'
 
 const { TOPIC_MAX_LENGTH, TOPIC_MAX_SUBTOPICS, TOPIC_MIN_LENGTH } = constants
 
@@ -102,22 +103,26 @@ const TopicSelect = ({ onChange }: Props) => {
 
   const [subtopics, setSubtopics] = useState<string[]>([])
 
-  const createAutofillClickHandler = (pathTitleSegments: string[]) => () => {
-    const currentSelection = editorState.getSelection()
-    const newSubtopics = dropLast(1, pathTitleSegments)
-    const newText = last(pathTitleSegments)
+  const createAutofillClickHandler =
+    (subtopicSegments: SubtopicSegment[]) => () => {
+      const pathTitleSegments = subtopicSegments.map(({ title }) => title)
+      const currentSelection = editorState.getSelection()
+      const newSubtopics = dropLast(1, pathTitleSegments)
+      const newText = last(pathTitleSegments)
 
-    const newSelection = currentSelection.merge({
-      focusOffset: newText?.length,
-      anchorOffset: newText?.length,
-    })
+      const newSelection = currentSelection.merge({
+        focusOffset: newText?.length,
+        anchorOffset: newText?.length,
+      })
 
-    const content = EditorState.createWithContent(createStateFromText(newText))
-    const newEditorState = EditorState.forceSelection(content, newSelection)
-    setEditorState(newEditorState)
-    setSubtopics(newSubtopics)
-    setAutoCompleteOpen(false)
-  }
+      const content = EditorState.createWithContent(
+        createStateFromText(newText)
+      )
+      const newEditorState = EditorState.forceSelection(content, newSelection)
+      setEditorState(newEditorState)
+      setSubtopics(newSubtopics)
+      setAutoCompleteOpen(false)
+    }
 
   const onEditorStateChange = useCallback(
     (editorState: EditorState) => {
@@ -411,9 +416,7 @@ const TopicSelect = ({ onChange }: Props) => {
                   <MenuItem
                     key={topic.data.id}
                     onClick={createAutofillClickHandler(
-                      topic.data.subtopicSegments.map(
-                        ({ pathTitle }) => pathTitle
-                      )
+                      topic.data.subtopicSegments
                     )}
                   >
                     {topic.data.pathTitle}
