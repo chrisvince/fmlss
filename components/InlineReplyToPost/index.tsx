@@ -7,7 +7,7 @@ import useCreatePost from '../../utils/data/post/useCreatePost'
 import MobileContainer from '../MobileContainer'
 import PostBodyTextArea, {
   PostBodyTextAreaRef,
-  postLengthStatusType,
+  PostLengthStatusType,
 } from '../PostBodyTextArea'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
@@ -19,9 +19,9 @@ const InlineReplyToPost = ({ slug }: Props) => {
   const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
 
   const [postLengthStatus, setPostLengthStatus] =
-    useState<postLengthStatusType>()
+    useState<PostLengthStatusType>()
 
-  const disableButton = postLengthStatus === postLengthStatusType.error
+  const disableButton = postLengthStatus === PostLengthStatusType.error
 
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
 

@@ -109,7 +109,7 @@ const mapUrlMetaToPostPreview = (
   }
 }
 
-export enum postLengthStatusType {
+export enum PostLengthStatusType {
   warning = 'warning',
   error = 'error',
   none = 'none',
@@ -172,7 +172,7 @@ type Props = {
   focusOnMount?: boolean
   onChange?: (text: string) => void
   onCommandEnter?: () => void
-  onLengthStatusChange?: (status: postLengthStatusType) => void
+  onLengthStatusChange?: (status: PostLengthStatusType) => void
   postType?: PostType
   size?: PostBodyTextAreaSize
 }
@@ -194,7 +194,7 @@ const PostBodyTextArea = (
   )
 
   const [postLengthStatus, setPostLengthStatus] =
-    useState<postLengthStatusType>(postLengthStatusType.none)
+    useState<PostLengthStatusType>(PostLengthStatusType.none)
 
   const [trackedLinkPreviews, setTrackedLinkPreviews] = useState<
     TrackedLinkPreview[]
@@ -249,17 +249,17 @@ const PostBodyTextArea = (
 
   useEffect(() => {
     if (value.length > POST_MAX_LENGTH) {
-      setPostLengthStatus(postLengthStatusType.error)
-      onLengthStatusChange?.(postLengthStatusType.error)
+      setPostLengthStatus(PostLengthStatusType.error)
+      onLengthStatusChange?.(PostLengthStatusType.error)
       return
     }
     if (value.length >= POST_WARNING_LENGTH) {
-      setPostLengthStatus(postLengthStatusType.warning)
-      onLengthStatusChange?.(postLengthStatusType.warning)
+      setPostLengthStatus(PostLengthStatusType.warning)
+      onLengthStatusChange?.(PostLengthStatusType.warning)
       return
     }
-    setPostLengthStatus(postLengthStatusType.none)
-    onLengthStatusChange?.(postLengthStatusType.none)
+    setPostLengthStatus(PostLengthStatusType.none)
+    onLengthStatusChange?.(PostLengthStatusType.none)
   }, [onLengthStatusChange, value])
 
   const handleLinkPreviewClose = useCallback((id: string) => {
@@ -456,14 +456,14 @@ const PostBodyTextArea = (
                 variant="caption"
                 sx={{
                   fontWeight:
-                    postLengthStatus === postLengthStatusType.warning ||
-                    postLengthStatus === postLengthStatusType.error
+                    postLengthStatus === PostLengthStatusType.warning ||
+                    postLengthStatus === PostLengthStatusType.error
                       ? 'bold'
                       : undefined,
                   color:
-                    postLengthStatus === postLengthStatusType.error
+                    postLengthStatus === PostLengthStatusType.error
                       ? 'error.main'
-                      : postLengthStatus === postLengthStatusType.warning
+                      : postLengthStatus === PostLengthStatusType.warning
                       ? 'warning.main'
                       : undefined,
                 }}

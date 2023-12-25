@@ -6,7 +6,7 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
@@ -14,7 +14,7 @@ import TopicSelect from '../TopicSelect'
 import PostBodyTextArea, {
   PostBodyTextAreaRef,
   PostBodyTextAreaSize,
-  postLengthStatusType,
+  PostLengthStatusType,
 } from '../PostBodyTextArea'
 import PostItem, { BodySize } from '../PostItem'
 import constants from '../../constants'
@@ -24,12 +24,14 @@ const { TOPICS_ENABLED } = constants
 
 interface Props {
   isInModal?: boolean
+  onContentExists?: (contentExists: boolean) => void
   postType?: PostType
   slug?: string
 }
 
 const NewPostForm = ({
   isInModal = false,
+  onContentExists,
   postType = PostType.New,
   slug,
 }: Props) => {
@@ -44,7 +46,7 @@ const NewPostForm = ({
   const buttonNotFullWidth = useMediaQuery(theme.breakpoints.up('sm'))
 
   const [postLengthStatus, setPostLengthStatus] =
-    useState<postLengthStatusType>()
+    useState<PostLengthStatusType>()
 
   const submitPost = async () => {
     const body = postBodyTextAreaRef.current?.value
@@ -52,10 +54,16 @@ const NewPostForm = ({
     await createPost({ body, subtopics, linkPreviews })
   }
 
+  const bodyOrSubtopicExists = hasContent || (!slug && subtopics.length > 0)
+
   const disableButton =
     (!slug && subtopics.length === 0) ||
     !hasContent ||
-    postLengthStatus === postLengthStatusType.error
+    postLengthStatus === PostLengthStatusType.error
+
+  useEffect(() => {
+    onContentExists?.(bodyOrSubtopicExists)
+  }, [bodyOrSubtopicExists, onContentExists])
 
   const button = (
     <LoadingButton
