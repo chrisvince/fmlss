@@ -8,7 +8,7 @@ import { SWRConfig } from 'swr'
 import { NextApiRequest } from 'next'
 
 import FeedPage from '../../components/FeedPage'
-import type { FeedSortMode } from '../../types'
+import { FeedSortMode } from '../../types'
 import {
   createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
@@ -61,7 +61,7 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
-  const sortModeParam = sortModeArray?.[0] ?? 'latest'
+  const sortModeParam = sortModeArray?.[0] ?? FeedSortMode.Latest
   const sortMode = SORT_MODE_MAP[sortModeParam] as FeedSortMode
 
   if (!sortMode) {
