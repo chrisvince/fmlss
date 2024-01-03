@@ -10,7 +10,7 @@ export interface PostDataRequest {
   id: string
   likesCount: number
   linkPreviews: PostPreview[]
-  originalPost?: FirebaseDoc & {
+  originalPost: FirebaseDoc & {
     slug: string
   }
   parent?: FirebaseDoc & {

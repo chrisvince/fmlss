@@ -13,15 +13,11 @@ const mapPostDocToData: MapPostDocToData = postDoc => {
     id: postDoc.id,
     likesCount: postData.likesCount,
     linkPreviews: postData.linkPreviews,
-    ...(postData.originalPost
-      ? {
-          originalPost: {
-            id: postData.originalPost.id,
-            ref: postData.originalPost.ref.path,
-            slug: postData.originalPost.slug,
-          },
-        }
-      : {}),
+    originalPost: {
+      id: postData.originalPost.id,
+      ref: postData.originalPost.ref.path,
+      slug: postData.originalPost.slug,
+    },
     ...(postData.parent
       ? {
           parent: {
