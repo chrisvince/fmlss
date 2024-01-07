@@ -13,12 +13,12 @@ export enum PostAttachmentType {
 export interface PostAttachmentUrl {
   description: string
   href: string
-  image?: {
+  image: {
     alt: string
     height?: number
     src: string
     width?: number
-  }
+  } | null
   subtitle: string
   title: string
   type: PostAttachmentType.Url

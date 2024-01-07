@@ -3,7 +3,7 @@ import { Metadata } from 'html-metadata-parser'
 
 const mapPostAttachmentUrl = (
   { meta, og }: Metadata,
-  image: Image | undefined
+  image: Image | null
 ): PostAttachmentUrl => ({
   description: meta.description ?? og.description ?? '',
   href: meta.url ?? og.url ?? '',

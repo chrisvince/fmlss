@@ -37,7 +37,7 @@ const getUrlMetaServer = async (url: string): Promise<PostAttachmentUrl> => {
     }
   }
 
-  const image: Image | undefined =
+  const image: Image | null =
     imageSrc && imageDimensions
       ? {
           alt: meta.meta.title ?? meta.og.title ?? '',
@@ -45,7 +45,7 @@ const getUrlMetaServer = async (url: string): Promise<PostAttachmentUrl> => {
           src: imageSrc,
           width: imageDimensions.width,
         }
-      : undefined
+      : null
 
   const mappedData = mapPostAttachmentUrl(meta, image)
   return mappedData
