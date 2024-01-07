@@ -23,7 +23,7 @@ import { DraftHandleValue, Editor, EditorState, convertFromRaw } from 'draft-js'
 import { Box } from '@mui/system'
 import { AlternateEmailRounded } from '@mui/icons-material'
 import { dropLast, last, remove, splitAt } from 'ramda'
-import { SubtopicSegment } from '../../firebase/functions/src/types/Topic'
+import { SubtopicSegment } from '../../types'
 
 const { TOPIC_MAX_LENGTH, TOPIC_MAX_SUBTOPICS, TOPIC_MIN_LENGTH } = constants
 
