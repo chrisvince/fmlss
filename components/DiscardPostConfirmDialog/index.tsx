@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ConfirmDialog from '../ConfirmDialog'
 
 interface Props {
@@ -12,6 +12,22 @@ const DiscardPostConfirmDialog: React.FC<Props> = ({
   onCancel,
   onConfirm,
 }) => {
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        onConfirm()
+      }
+    }
+
+    if (open) {
+      document.addEventListener('keydown', handleKeydown)
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeydown)
+    }
+  })
+
   return (
     <ConfirmDialog
       cancelText="Cancel"
