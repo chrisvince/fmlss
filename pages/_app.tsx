@@ -1,25 +1,26 @@
 import Head from 'next/head'
-import { ReactElement, ReactNode, useEffect } from 'react'
-import type { AppProps } from 'next/app'
-import { ThemeProvider, CssBaseline } from '@mui/material'
+import { ReactElement, ReactNode, useMemo } from 'react'
+import type { AppContext, AppProps } from 'next/app'
+import { CssBaseline } from '@mui/material'
 import { withAuthUser } from 'next-firebase-auth'
-import { CacheProvider, EmotionCache } from '@emotion/react'
 import Script from 'next/script'
 import { NextPage } from 'next'
 import { store } from '../store'
 import { Provider as ReduxProvider } from 'react-redux'
+import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter'
+import qs from 'querystring'
 
 import initAuth from '../utils/initAuth'
 import initFirebase from '../utils/initFirebase'
 import Layout from '../components/Layout'
-import { light } from '../styles/theme'
-import createEmotionCache from '../utils/createEmotionServer'
+import resolveTheme from '../styles/theme'
 import isDevelopment from '../utils/isDevelopment'
+import { ThemeProvider } from '@mui/material/styles'
+import useColorScheme from '../utils/useColorScheme'
 
 initFirebase()
 initAuth()
 
-const clientSideEmotionCache = createEmotionCache()
 const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
 type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<P, IP> & {
@@ -28,25 +29,22 @@ type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<P, IP> & {
 
 type Props = AppProps & {
   Component: NextPageWithLayout
-  emotionCache?: EmotionCache
+  colorSchemeCookie?: string
 }
 
-const App = ({
-  Component,
-  pageProps,
-  emotionCache = clientSideEmotionCache,
-}: Props) => {
-  useEffect(() => {
-    const jssStyles = document.querySelector('#jss-server-side')
-    if (jssStyles) {
-      jssStyles?.parentElement?.removeChild(jssStyles)
-    }
-  }, [])
+const App = (props: Props) => {
+  const { Component, pageProps, colorSchemeCookie } = props
+
+  const { value: colorScheme } = useColorScheme({
+    ssrValue: colorSchemeCookie,
+  })
+
+  const theme = useMemo(() => resolveTheme(colorScheme), [colorScheme])
 
   const getLayout = Component.getLayout ?? (page => <Layout>{page}</Layout>)
 
   return (
-    <CacheProvider value={emotionCache}>
+    <AppCacheProvider {...props}>
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
@@ -62,13 +60,25 @@ const App = ({
         </Script>
       )}
       <ReduxProvider store={store}>
-        <ThemeProvider theme={light}>
+        <ThemeProvider theme={theme}>
           <CssBaseline />
           {getLayout(<Component {...pageProps} />)}
         </ThemeProvider>
       </ReduxProvider>
-    </CacheProvider>
+    </AppCacheProvider>
   )
+}
+
+App.getInitialProps = async ({ ctx }: AppContext) => {
+  if (!ctx.req?.headers.cookie) {
+    return {}
+  }
+
+  const cookies = qs.decode(ctx.req.headers.cookie, '; ')
+
+  return {
+    colorSchemeCookie: cookies.colorScheme,
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

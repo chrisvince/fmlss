@@ -66,6 +66,13 @@ const ProfilePage = () => {
           Replies
         </ProfileToggleListItem>
       </ProfileList>
+      <ProfileList heading="Display">
+        <ProfileListItem
+          href="/profile/appearance"
+          primaryText="Appearance"
+          secondaryText={user?.data.settings.colorScheme}
+        />
+      </ProfileList>
     </Page>
   )
 }

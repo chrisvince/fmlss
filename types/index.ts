@@ -1,3 +1,4 @@
+export * from './ColorSchemeSetting'
 export * from './CreatePostAttachment'
 export * from './FeedSortMode'
 export * from './FirebaseDoc'

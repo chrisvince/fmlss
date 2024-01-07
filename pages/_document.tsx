@@ -1,22 +1,26 @@
-import NextDocument, {
+import {
   Html,
   Head,
   Main,
   NextScript,
   DocumentContext,
+  DocumentProps,
 } from 'next/document'
 import React from 'react'
-import { ServerStyleSheets as JSSServerStyleSheets } from '@mui/styles'
-import createEmotionServer from '@emotion/server/create-instance'
-import createEmotionCache from '../utils/createEmotionCache'
 import isDevelopment from '../utils/isDevelopment'
+import {
+  DocumentHeadTags,
+  DocumentHeadTagsProps,
+  documentGetInitialProps,
+} from '@mui/material-nextjs/v14-pagesRouter'
 
 const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
-const Document = () => {
+const Document = (props: DocumentProps & DocumentHeadTagsProps) => {
   return (
     <Html lang="en">
       <Head>
+        <DocumentHeadTags {...props} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -47,66 +51,9 @@ const Document = () => {
   )
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-let prefixer: any
-let cleanCSS: any
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
-if (process.env.NODE_ENV === 'production') {
-  /* eslint-disable @typescript-eslint/no-var-requires */
-  const postcss = require('postcss')
-  const autoprefixer = require('autoprefixer')
-  const CleanCSS = require('clean-css')
-  /* eslint-enable @typescript-eslint/no-var-requires */
-  prefixer = postcss([autoprefixer])
-  cleanCSS = new CleanCSS()
-}
-
 Document.getInitialProps = async (ctx: DocumentContext) => {
-  const originalRenderPage = ctx.renderPage
-  const cache = createEmotionCache()
-  const { extractCriticalToChunks } = createEmotionServer(cache)
-  const jssSheets = new JSSServerStyleSheets()
-
-  ctx.renderPage = () =>
-    originalRenderPage({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      enhanceApp: (App: any) =>
-        function EnhanceApp(props) {
-          return jssSheets.collect(<App emotionCache={cache} {...props} />)
-        },
-    })
-
-  const initialProps = await NextDocument.getInitialProps(ctx)
-  const emotionStyles = extractCriticalToChunks(initialProps.html)
-  const emotionStyleTags = emotionStyles.styles.map(style => (
-    <style
-      data-emotion={`${style.key} ${style.ids.join(' ')}`}
-      key={style.key}
-      dangerouslySetInnerHTML={{ __html: style.css }}
-    />
-  ))
-
-  let css = jssSheets.toString()
-
-  if (css && process.env.NODE_ENV === 'production') {
-    const result1 = await prefixer.process(css, { from: undefined })
-    css = result1.css
-    css = cleanCSS.minify(css).styles
-  }
-
-  return {
-    ...initialProps,
-    styles: [
-      ...emotionStyleTags,
-      <style
-        id="jss-server-side"
-        key="jss-server-side"
-        dangerouslySetInnerHTML={{ __html: css }}
-      />,
-      ...React.Children.toArray(initialProps.styles),
-    ],
-  }
+  const finalProps = await documentGetInitialProps(ctx)
+  return finalProps
 }
 
 export default Document
