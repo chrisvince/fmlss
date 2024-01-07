@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { PostPreview } from '../../../types'
 import { createPost } from '../../callableFirebaseFunctions'
 import usePost from './usePost'
+import { CreatePostAttachment } from '../../../types'
 
 interface HandleCreatePostProps {
-  body?: string
+  body: string
   subtopics?: string[]
-  linkPreviews?: PostPreview[]
+  attachments: CreatePostAttachment[]
 }
 
 const useCreatePost = (parentSlug?: string) => {
@@ -19,7 +19,7 @@ const useCreatePost = (parentSlug?: string) => {
   const handleCreatePost = async ({
     body,
     subtopics = [],
-    linkPreviews,
+    attachments,
   }: HandleCreatePostProps) => {
     if (!body) {
       setErrorMessage('Post is required!')
@@ -37,7 +37,7 @@ const useCreatePost = (parentSlug?: string) => {
       const { data } = await createPost({
         body,
         subtopics,
-        linkPreviews,
+        attachments,
         parentRef: post?.data.reference,
       })
       await navigate(`/post/${data.slug}`)

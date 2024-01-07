@@ -7,7 +7,7 @@ import PostActionBar from '../PostActionBar'
 import PostBody from '../PostBody'
 import UserAuthoredIcon from '../UserAuthoredIcon'
 import constants from '../../constants'
-import PostPreviews from '../PostPreviews'
+import PostAttachments from '../PostAttachments'
 import WatchButton from '../WatchButton'
 import useWatchingState from '../../utils/useWatchingState'
 
@@ -22,10 +22,8 @@ type PropTypes = {
   bodyElementId?: string
   bodySize?: BodySize
   hideActionBar?: boolean
-  measure?: () => void
   noBottomBorder?: boolean
   onLikePost?: (slug: string) => Promise<void> | void
-  onPostPreviewsLoaded?: () => void
   onWatchPost?: (documentPath: string) => Promise<void> | void
   post: Post
 }
@@ -34,10 +32,8 @@ const PostItem = ({
   bodyElementId,
   bodySize = BodySize.Small,
   hideActionBar,
-  measure,
   noBottomBorder,
   onLikePost,
-  onPostPreviewsLoaded,
   onWatchPost,
   post,
 }: PropTypes) => {
@@ -111,12 +107,7 @@ const PostItem = ({
         </Box>
       </Box>
       <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
-      <PostPreviews
-        measure={measure}
-        onPostPreviewLoaded={onPostPreviewsLoaded}
-        postId={post.data.id}
-        postPreviews={post.data.linkPreviews}
-      />
+      <PostAttachments attachments={post.data.attachments} />
       {!hideActionBar && (
         <PostActionBar
           createdAt={post.data.createdAt}

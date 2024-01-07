@@ -75,7 +75,6 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
                     <Box>
                       <PostListItem
                         key={(post as Post).data.slug}
-                        measure={measure}
                         onLikePost={likePost}
                         onWatchPost={watchPost}
                         post={post as Post}

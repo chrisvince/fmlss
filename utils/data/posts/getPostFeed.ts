@@ -4,13 +4,20 @@ import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { FeedSortMode, FirebaseDoc, Post, PostData } from '../../../types'
+import {
+  FeedSortMode,
+  FirebaseDoc,
+  Post,
+  PostData,
+  PostDocWithAttachments,
+} from '../../../types'
 import { createPostFeedCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
+import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 
 const { FEED_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } = constants
 
@@ -55,7 +62,11 @@ const getPostFeed: GetPosts = async ({
 
     if (postDocs.empty) return []
 
-    postData = postDocs.docs.map(doc => mapPostDocToData(doc))
+    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+      postDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
+    )
+
+    postData = postDocsWithAttachments.map(mapPostDocToData)
     put(postFeedCacheKey, postData, FEED_CACHE_TIME)
   }
 

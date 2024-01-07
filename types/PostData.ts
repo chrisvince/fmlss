@@ -1,6 +1,7 @@
-import { PostPreview, TopicRelation } from '.'
+import { PostAttachment, TopicRelation } from '.'
 
 export interface PostData {
+  attachments: PostAttachment[]
   body: string
   topic: TopicRelation
   createdAt: number
@@ -8,7 +9,6 @@ export interface PostData {
   hashtags: string[]
   id: string
   likesCount: number
-  linkPreviews: PostPreview[]
   originalPost?: {
     id: string
     ref: string

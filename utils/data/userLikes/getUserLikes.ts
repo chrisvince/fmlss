@@ -4,13 +4,19 @@ import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { FirebaseDoc, Post, PostData } from '../../../types'
+import {
+  FirebaseDoc,
+  Post,
+  PostData,
+  PostDocWithAttachments,
+} from '../../../types'
 import { createUserLikesCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import setCacheIsLikedByUser from '../author/setCacheIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
+import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 
 const {
   POST_PAGINATION_COUNT,
@@ -60,9 +66,14 @@ const getUserLikes: GetUserLikes = async (
     const originPostDocsPromise = postDocs.docs.map(doc =>
       doc.data().origin.ref.get()
     )
+
     const originPostDocs = await Promise.all(originPostDocsPromise)
 
-    postData = originPostDocs.map(doc => mapPostDocToData(doc))
+    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+      originPostDocs.map(getPostDocWithAttachmentsFromPostDoc)
+    )
+
+    postData = postDocsWithAttachments.map(mapPostDocToData)
     put(userLikesCacheKey, postData, USER_LIKES_CACHE_TIME)
   }
 

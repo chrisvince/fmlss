@@ -3,7 +3,12 @@ import 'firebase/firestore'
 import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
-import { FirebaseDoc, Post, PostData } from '../../../types'
+import {
+  FirebaseDoc,
+  Post,
+  PostData,
+  PostDocWithAttachments,
+} from '../../../types'
 import constants from '../../../constants'
 import mapPostDocToData from '../../mapPostDocToData'
 import { createPostRepliesCacheKey } from '../../createCacheKeys'
@@ -11,6 +16,7 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
+import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 
 const { POST_PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
@@ -57,7 +63,12 @@ const getPostReplies: GetPostReplies = async (
 
     if (replyDocs.empty) return []
 
-    replyData = replyDocs.docs.map(doc => mapPostDocToData(doc))
+    const replyDocsWithAttachments: PostDocWithAttachments[] =
+      await Promise.all(
+        replyDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
+      )
+
+    replyData = replyDocsWithAttachments.map(mapPostDocToData)
 
     const cacheTime =
       replyData.length < POST_PAGINATION_COUNT ? REPLIES_CACHE_TIME : undefined

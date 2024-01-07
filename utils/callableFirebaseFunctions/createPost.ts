@@ -1,14 +1,13 @@
 import firebase from 'firebase/app'
 import 'firebase/functions'
 import { isNil, reject } from 'ramda'
-
-import { PostPreview } from '../../types'
+import { CreatePostAttachment } from '../../types'
 
 interface Input {
+  attachments: CreatePostAttachment[]
   body: string
-  subtopics?: string[]
-  linkPreviews?: PostPreview[]
   parentRef?: string
+  subtopics: string[]
 }
 
 type Response = {

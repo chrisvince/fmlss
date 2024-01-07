@@ -82,7 +82,6 @@ const RepliesListSubReplies = ({
           dotPosition="top"
         >
           <PostListItem
-            measure={measure}
             onLikePost={likePost}
             onWatchPost={watchPost}
             post={reply as Post}

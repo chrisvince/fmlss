@@ -10,6 +10,7 @@ import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
+import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 
 const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
 
@@ -50,7 +51,12 @@ const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
     }
 
     doc = postsRef.docs[0]
-    data = mapPostDocToData(doc)
+
+    const postDocWithAttachments = await getPostDocWithAttachmentsFromPostDoc(
+      doc
+    )
+
+    data = mapPostDocToData(postDocWithAttachments)
     put(postCacheKey, data, POST_CACHE_TIME)
   }
 

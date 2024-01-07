@@ -6,19 +6,20 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
 import TopicSelect from '../TopicSelect'
 import PostBodyTextArea, {
-  PostBodyTextAreaRef,
   PostBodyTextAreaSize,
   PostLengthStatusType,
+  TrackedMatch,
 } from '../PostBodyTextArea'
 import PostItem, { BodySize } from '../PostItem'
 import constants from '../../constants'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
+import mapTrackedMatchToCreatePostAttachment from '../../utils/mapTrackedMatchToCreatePostAttachment'
 
 const { TOPICS_ENABLED } = constants
 
@@ -36,10 +37,12 @@ const NewPostForm = ({
   slug,
 }: Props) => {
   const { post: replyingToPost } = usePost(slug)
-  const [hasContent, setHasContent] = useState<boolean>(false)
-  const handleTextChange = (text: string) => setHasContent(!!text)
+  const [bodyText, setBodyText] = useState<string>('')
+  const [trackedMatches, setTrackedMatches] = useState<TrackedMatch[]>([])
+  const hasContent = !!bodyText
+  const handleTrackedMatchesChange = setTrackedMatches
+  const handleTextChange = setBodyText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
-  const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
   const [subtopics, setSubtopics] = useState<string[]>([])
   const handleTopicChange = async (subtopic: string[]) => setSubtopics(subtopic)
   const theme = useTheme()
@@ -48,13 +51,15 @@ const NewPostForm = ({
   const [postLengthStatus, setPostLengthStatus] =
     useState<PostLengthStatusType>()
 
-  const submitPost = async () => {
-    const body = postBodyTextAreaRef.current?.value
-    const linkPreviews = postBodyTextAreaRef.current?.linkPreviews
-    await createPost({ body, subtopics, linkPreviews })
-  }
+  const submitPost = () =>
+    createPost({
+      body: bodyText,
+      subtopics,
+      attachments: trackedMatches.map(mapTrackedMatchToCreatePostAttachment),
+    })
 
-  const bodyOrSubtopicExists = hasContent || (!slug && subtopics.length > 0)
+  const bodyOrSubtopicExists =
+    hasContent || (!slug && subtopics.length > 0) || trackedMatches.length > 0
 
   const disableButton =
     (!slug && subtopics.length === 0) ||
@@ -101,16 +106,16 @@ const NewPostForm = ({
         <PostBodyTextArea
           disabled={isLoading}
           focusOnMount
+          onChange={handleTextChange}
+          onCommandEnter={submitPost}
+          onLengthStatusChange={setPostLengthStatus}
+          onTrackedMatchesChange={handleTrackedMatchesChange}
+          postType={postType}
           size={
             replyingToPost
               ? PostBodyTextAreaSize.Small
               : PostBodyTextAreaSize.Large
           }
-          onChange={handleTextChange}
-          onCommandEnter={submitPost}
-          onLengthStatusChange={setPostLengthStatus}
-          postType={postType}
-          ref={postBodyTextAreaRef}
         />
       </Box>
       {TOPICS_ENABLED && !slug && <TopicSelect onChange={handleTopicChange} />}

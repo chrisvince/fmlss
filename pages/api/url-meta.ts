@@ -1,17 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import getMetaData, { Metadata } from 'html-metadata-parser'
-
-const mapMeta = ({ images, meta, og }: Metadata) => ({
-  title: meta.title ?? og.title,
-  description: meta.description ?? og.description,
-  image:
-    meta.image ??
-    og.image ??
-    (images?.at(-1) as unknown as { src: string })?.src,
-  url: meta.url ?? og.url,
-  type: meta.type ?? og.type,
-  siteName: meta.site_name ?? og.site_name,
-})
+import getUrlMetaServer from '../../utils/data/urlMeta/getUrlMetaServer'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req
@@ -24,15 +12,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const meta = await getMetaData(url)
-    const mappedMeta = mapMeta(meta)
-    return res.status(200).json(mappedMeta)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = await getUrlMetaServer(url)
+    return res.status(200).json(data)
   } catch (error: any) {
     if (error.code === 'ENOTFOUND') {
-      return res.status(404)
+      return res.status(404).json({ error: 'URL not found' })
     }
-    return res.status(500)
+
+    return res.status(500).json({ error: error.message })
   }
 }
 

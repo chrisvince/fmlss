@@ -1,7 +1,8 @@
 import { firestore } from 'firebase-admin'
-import { FirebaseDoc, PostPreview, TopicRelation } from '.'
+import { FirebaseDoc, TopicRelation, PostAttachmentDb } from '.'
 
 export interface PostDataRequest {
+  attachments: PostAttachmentDb[]
   body: string
   topic: TopicRelation
   createdAt: firestore.Timestamp
@@ -9,7 +10,6 @@ export interface PostDataRequest {
   hashtags: string[]
   id: string
   likesCount: number
-  linkPreviews: PostPreview[]
   originalPost: FirebaseDoc & {
     slug: string
   }

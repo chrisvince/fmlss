@@ -1,35 +1,37 @@
 import { LoadingButton } from '@mui/lab'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { SyntheticEvent, useRef, useState } from 'react'
+import { SyntheticEvent, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import MobileContainer from '../MobileContainer'
 import PostBodyTextArea, {
-  PostBodyTextAreaRef,
   PostLengthStatusType,
+  TrackedMatch,
 } from '../PostBodyTextArea'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
+import mapTrackedMatchToCreatePostAttachment from '../../utils/mapTrackedMatchToCreatePostAttachment'
 
 interface Props {
   slug?: string
 }
 
 const InlineReplyToPost = ({ slug }: Props) => {
-  const postBodyTextAreaRef = useRef<PostBodyTextAreaRef>(null)
-
   const [postLengthStatus, setPostLengthStatus] =
     useState<PostLengthStatusType>()
 
+  const [bodyText, setBodyText] = useState<string>('')
+  const [trackedMatches, setTrackedMatches] = useState<TrackedMatch[]>([])
+  const handleTextChange = setBodyText
+  const handleTrackedMatchesChange = setTrackedMatches
   const disableButton = postLengthStatus === PostLengthStatusType.error
-
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
 
-  const submitPost = async () => {
-    const body = postBodyTextAreaRef.current?.value
-    const linkPreviews = postBodyTextAreaRef.current?.linkPreviews
-    await createPost({ body, linkPreviews })
-  }
+  const submitPost = async () =>
+    createPost({
+      body: bodyText,
+      attachments: trackedMatches.map(mapTrackedMatchToCreatePostAttachment),
+    })
 
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault()
@@ -52,10 +54,11 @@ const InlineReplyToPost = ({ slug }: Props) => {
           <Box sx={{ pt: 2 }}>
             <PostBodyTextArea
               disabled={isLoading}
+              onChange={handleTextChange}
               onCommandEnter={submitPost}
               onLengthStatusChange={setPostLengthStatus}
+              onTrackedMatchesChange={handleTrackedMatchesChange}
               postType={slug ? PostType.Reply : PostType.New}
-              ref={postBodyTextAreaRef}
             />
           </Box>
           {errorMessage && (

@@ -4,13 +4,20 @@ import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { HashtagSortMode, FirebaseDoc, Post, PostData } from '../../../types'
+import {
+  HashtagSortMode,
+  FirebaseDoc,
+  Post,
+  PostData,
+  PostDocWithAttachments,
+} from '../../../types'
 import { createHashtagPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
+import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 
 const { HASHTAG_LIST_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
   constants
@@ -83,7 +90,11 @@ const getHashtagPosts: GetHashtagPosts = async (
 
     if (postDocs.empty) return []
 
-    postData = postDocs.docs.map(doc => mapPostDocToData(doc))
+    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+      postDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
+    )
+
+    postData = postDocsWithAttachments.map(mapPostDocToData)
     put(hashtagPostsCacheKey, postData, HASHTAG_LIST_CACHE_TIME)
   }
 

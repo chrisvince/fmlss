@@ -4,13 +4,20 @@ import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { TopicSortMode, FirebaseDoc, Post, PostData } from '../../../types'
+import {
+  TopicSortMode,
+  FirebaseDoc,
+  Post,
+  PostData,
+  PostDocWithAttachments,
+} from '../../../types'
 import { createTopicPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
+import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 
 const { TOPIC_LIST_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
   constants
@@ -60,7 +67,11 @@ const getTopicPosts: GetTopicPosts = async (
 
     if (postDocs.empty) return []
 
-    postData = postDocs.docs.map(doc => mapPostDocToData(doc))
+    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+      postDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
+    )
+
+    postData = postDocsWithAttachments.map(mapPostDocToData)
     put(topicPostsCacheKey, postData, TOPIC_LIST_CACHE_TIME)
   }
 

@@ -4,13 +4,19 @@ import { get, put } from 'memory-cache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import { FirebaseDoc, Post, PostData } from '../../../types'
+import {
+  FirebaseDoc,
+  Post,
+  PostData,
+  PostDocWithAttachments,
+} from '../../../types'
 import { createUserPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import setCacheIsCreatedByUser from '../author/setCacheIsCreatedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
+import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 
 const {
   AUTHORED_POSTS_COLLECTION,
@@ -62,9 +68,14 @@ const getUserPosts: GetUserPosts = async (
     const originPostDocsPromise = postDocs.docs.map(doc =>
       doc.data().origin.ref.get()
     )
+
     const originPostDocs = await Promise.all(originPostDocsPromise)
 
-    postData = originPostDocs.map(doc => mapPostDocToData(doc))
+    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+      originPostDocs.map(getPostDocWithAttachmentsFromPostDoc)
+    )
+
+    postData = postDocsWithAttachments.map(mapPostDocToData)
     put(userPostsCacheKey, postData, USER_POSTS_CACHE_TIME)
   }
 

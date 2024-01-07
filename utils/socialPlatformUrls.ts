@@ -1,3 +1,5 @@
+import { PostAttachmentType } from '../types'
+
 export const isTwitterPostUrl = (url: string) =>
   ['twitter.com/', '/status/'].every(condition => url.includes(condition))
 
@@ -42,3 +44,25 @@ export const isPinterestPostUrl = (url: string) =>
     'pinterest.se/pin',
     'ru.pinterest.com/pin',
   ].some(condition => url.includes(condition))
+
+export const resolvePostAttachmentTypeFromUrl = (url: string) => {
+  if (isTwitterPostUrl(url)) {
+    return PostAttachmentType.Twitter
+  }
+  if (isFacebookPostUrl(url)) {
+    return PostAttachmentType.Facebook
+  }
+  if (isInstagramPostUrl(url)) {
+    return PostAttachmentType.Instagram
+  }
+  if (isTikTokPostUrl(url)) {
+    return PostAttachmentType.Tiktok
+  }
+  if (isYouTubePostUrl(url)) {
+    return PostAttachmentType.Youtube
+  }
+  if (isPinterestPostUrl(url)) {
+    return PostAttachmentType.Pinterest
+  }
+  return PostAttachmentType.Url
+}

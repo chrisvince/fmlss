@@ -46,10 +46,9 @@ const Feed = ({
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}
     >
-      {(post, _, { measure }) => (
+      {post => (
         <PostListItem
           key={(post as Post).data.slug}
-          measure={measure}
           onLikePost={onLikePost}
           onWatchPost={onWatchPost}
           post={post as Post}

@@ -1,18 +1,24 @@
-import type { FirebaseDoc, PostData, PostDataRequest } from '../types'
+import type {
+  PostData,
+  PostDataRequest,
+  PostDocWithAttachments,
+} from '../types'
 
-type MapPostDocToData = (postDoc: FirebaseDoc) => PostData
+type MapPostDocToData = (
+  postDocWithAttachments: PostDocWithAttachments
+) => PostData
 
-const mapPostDocToData: MapPostDocToData = postDoc => {
+const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
   const postData = postDoc.data() as PostDataRequest
 
   return {
+    attachments,
     body: postData.body,
     createdAt: postData.createdAt.toMillis(),
     documentDepth: postData.documentDepth,
     hashtags: postData.hashtags,
     id: postDoc.id,
     likesCount: postData.likesCount,
-    linkPreviews: postData.linkPreviews,
     originalPost: {
       id: postData.originalPost.id,
       ref: postData.originalPost.ref.path,

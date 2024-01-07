@@ -5,7 +5,6 @@ import { Box } from '@mui/system'
 interface Props {
   children: React.ReactNode
   onClose?: () => void
-  showCloseButton?: boolean
 }
 
 const CloseButtonWrapper = ({ children, onClose }: Props) => (
@@ -13,6 +12,7 @@ const CloseButtonWrapper = ({ children, onClose }: Props) => (
     sx={{
       position: 'relative',
       display: 'block',
+      marginBlockStart: 2,
       '@media (hover: none)': {
         '.MuiButtonBase-root': {
           opacity: 1,

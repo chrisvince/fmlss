@@ -1,10 +1,8 @@
 import {
-  forwardRef,
   KeyboardEvent,
   LegacyRef,
   useCallback,
   useEffect,
-  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -17,97 +15,28 @@ import { Typography } from '@mui/material'
 import createLinkifyPlugin, { extractLinks } from '@draft-js-plugins/linkify'
 import { Box } from '@mui/system'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
-import debounce from 'lodash.debounce'
 import { Match } from 'linkify-it'
 
 import constants from '../../constants'
-import {
-  PostPreview as PostPreviewType,
-  PostPreviewFacebook,
-  PostPreviewInstagram,
-  PostPreviewMeta,
-  PostPreviewPinterest,
-  PostPreviewTikTok,
-  PostPreviewTwitter,
-  PostPreviewYouTube,
-} from '../../types'
-import getMetaFromUrl, { UrlMeta } from '../../utils/getMetaFromUrl'
+import { PostAttachmentType } from '../../types'
 import numeral from 'numeral'
-import {
-  isFacebookPostUrl,
-  isInstagramPostUrl,
-  isPinterestPostUrl,
-  isTikTokPostUrl,
-  isTwitterPostUrl,
-  isYouTubePostUrl,
-} from '../../utils/socialPlatformUrls'
-import { TrackedLinkPreview } from '../../types/TrackedLinkPreview'
-import PostBodyPreviews from '../PostBodyPreviews'
+import PostBodyAttachments from '../PostBodyAttachments'
 import usePostBodyTextAreaPlaceholder, {
   PostType,
 } from '../../utils/usePostBodyTextAreaPlaceholder'
 import { NotesRounded } from '@mui/icons-material'
 import PluginEditor from '@draft-js-plugins/editor/lib/Editor'
+import { pipe } from 'ramda'
+import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
+import debounce from 'lodash.debounce'
 
 const { POST_MAX_LENGTH } = constants
 
 const POST_WARNING_LENGTH = POST_MAX_LENGTH - 80
-const MAX_POST_PREVIEWS = 2
+const MAX_POST_ATTACHMENTS = 2
 
 const formatPostLength = (length: number | undefined) =>
   numeral(length ?? 0).format('0,0')
-
-const preprocessTrackedLinkPreview = (
-  trackedLinkPreview: TrackedLinkPreview[],
-  links: Match[]
-) =>
-  trackedLinkPreview.reduce((acc, ye) => {
-    const existingLink = links.some(({ url }) => url === ye.match.url)
-
-    if (!existingLink && ye.closed) {
-      return acc
-    }
-
-    if (!existingLink) {
-      return [...acc, { ...ye, inBody: false }]
-    }
-
-    return [...acc, ye]
-  }, [] as TrackedLinkPreview[])
-
-const checkTrackedLinkPreviewEquality = (
-  aTrackedLinkPreview: TrackedLinkPreview[],
-  bTrackedLinkPreview: TrackedLinkPreview[]
-) => {
-  if (aTrackedLinkPreview.length !== bTrackedLinkPreview.length) return false
-
-  return aTrackedLinkPreview.every(a => {
-    const b = bTrackedLinkPreview.find(({ match }) => match.url === a.match.url)
-    if (!b) return false
-
-    return [a.closed === b.closed, a.inBody === b.inBody].every(x => x)
-  })
-}
-
-const mapUrlMetaToPostPreview = (
-  meta: UrlMeta | undefined,
-  url: string
-): PostPreviewMeta => {
-  const { href, host } = new URL(url)
-  return {
-    description: meta?.description,
-    href,
-    image: meta?.image
-      ? {
-          src: meta.image,
-          alt: meta.title,
-        }
-      : undefined,
-    subtitle: host,
-    title: meta?.siteName,
-    type: 'url',
-  }
-}
 
 export enum PostLengthStatusType {
   warning = 'warning',
@@ -135,14 +64,6 @@ const linkifyPlugin = createLinkifyPlugin({
   component: LinkifyLink,
 })
 
-const removeDuplicateTrackedPostPreviewReducer = (
-  acc: TrackedLinkPreview[],
-  linkPreview: TrackedLinkPreview
-) => {
-  const existingLink = acc.find(({ id }) => id === linkPreview.id)
-  return existingLink ? acc : [...acc, linkPreview]
-}
-
 const emptyContentState = convertFromRaw({
   entityMap: {},
   blocks: [
@@ -157,11 +78,6 @@ const emptyContentState = convertFromRaw({
   ],
 })
 
-export interface PostBodyTextAreaRef {
-  linkPreviews: PostPreviewType[]
-  value: string
-}
-
 export enum PostBodyTextAreaSize {
   Small = 'small',
   Large = 'large',
@@ -173,41 +89,35 @@ type Props = {
   onChange?: (text: string) => void
   onCommandEnter?: () => void
   onLengthStatusChange?: (status: PostLengthStatusType) => void
+  onTrackedMatchesChange?: (trackedMatches: TrackedMatch[]) => void
   postType?: PostType
   size?: PostBodyTextAreaSize
 }
 
-const PostBodyTextArea = (
-  {
-    disabled,
-    focusOnMount,
-    onChange,
-    onCommandEnter,
-    onLengthStatusChange,
-    postType = PostType.New,
-    size = PostBodyTextAreaSize.Small,
-  }: Props,
-  ref: React.Ref<PostBodyTextAreaRef>
-) => {
+export interface TrackedMatch {
+  closed: boolean
+  error: Error | null
+  match: Match
+  type: PostAttachmentType
+  url: string
+}
+
+const PostBodyTextArea = ({
+  disabled,
+  focusOnMount,
+  onChange,
+  onCommandEnter,
+  onLengthStatusChange,
+  onTrackedMatchesChange,
+  postType = PostType.New,
+  size = PostBodyTextAreaSize.Small,
+}: Props) => {
   const [editorState, setEditorState] = useState<EditorState>(() =>
     EditorState.createWithContent(emptyContentState)
   )
 
   const [postLengthStatus, setPostLengthStatus] =
     useState<PostLengthStatusType>(PostLengthStatusType.none)
-
-  const [trackedLinkPreviews, setTrackedLinkPreviews] = useState<
-    TrackedLinkPreview[]
-  >([])
-
-  const displayedTrackedLinkPreviews = useMemo(
-    () =>
-      trackedLinkPreviews
-        .filter(({ closed }) => !closed)
-        .reduce(removeDuplicateTrackedPostPreviewReducer, [])
-        .slice(0, MAX_POST_PREVIEWS),
-    [trackedLinkPreviews]
-  )
 
   const editorRef = useRef<Editor>()
 
@@ -220,170 +130,140 @@ const PostBodyTextArea = (
     }, 0)
   }, [focusOnMount])
 
-  const onEditorStateChange = (editorState: EditorState) => {
+  const updatePostLengthStatus = useCallback((text: string) => {
+    if (text.length > POST_MAX_LENGTH) {
+      setPostLengthStatus(PostLengthStatusType.error)
+      return
+    }
+
+    if (text.length >= POST_WARNING_LENGTH) {
+      setPostLengthStatus(PostLengthStatusType.warning)
+      return
+    }
+
+    setPostLengthStatus(PostLengthStatusType.none)
+  }, [])
+
+  const removeDuplicateMatches = (links: Match[] | null) =>
+    links?.reduce((acc, link) => {
+      const existingLink = acc.some(({ url }) => url === link.url)
+      return existingLink ? acc : [...acc, link]
+    }, [] as Match[]) ?? []
+
+  const convertMatchToTrackedMatch = (match: Match): TrackedMatch => ({
+    closed: false,
+    error: null,
+    match,
+    type: resolvePostAttachmentTypeFromUrl(match.url),
+    url: match.url,
+  })
+
+  const [trackedMatches, setTrackedMatches] = useState<TrackedMatch[]>([])
+
+  const mergeTrackedMatches = useCallback(
+    (newTrackedMatches: TrackedMatch[]) =>
+      newTrackedMatches.map(newTrackedMatch => {
+        const existingTrackedMatch = trackedMatches.find(
+          ({ url }) => url === newTrackedMatch.url
+        )
+
+        if (!existingTrackedMatch) {
+          return newTrackedMatch
+        }
+
+        return {
+          ...newTrackedMatch,
+          closed: existingTrackedMatch.closed,
+          error: existingTrackedMatch.error,
+        }
+      }),
+    [trackedMatches]
+  )
+
+  const filterTrackedMatches = useCallback(
+    (test: TrackedMatch[]) =>
+      test
+        .filter(({ closed, error }) => !closed && !error)
+        .slice(0, MAX_POST_ATTACHMENTS),
+    []
+  )
+
+  const updateTrackedMatchesFromText = useMemo(
+    () =>
+      debounce(
+        (text: string) =>
+          pipe(
+            extractLinks,
+            removeDuplicateMatches,
+            links => links.map(convertMatchToTrackedMatch),
+            mergeTrackedMatches,
+            filterTrackedMatches,
+            setTrackedMatches
+          )(text),
+        600
+      ),
+    [filterTrackedMatches, mergeTrackedMatches]
+  )
+
+  const handleEditorStateChange = (editorState: EditorState) => {
+    const text = editorState.getCurrentContent().getPlainText()
     setEditorState(editorState)
-    onChange?.(editorState.getCurrentContent().getPlainText())
+    onChange?.(text)
+    updateTrackedMatchesFromText(text)
+    updatePostLengthStatus(text)
   }
 
   const handleReturn = (event: KeyboardEvent) => {
     if (!event.metaKey && !event.ctrlKey) {
       return 'not-handled'
     }
+
     onCommandEnter?.()
     return 'handled'
   }
 
-  const value = editorState?.getCurrentContent().getPlainText()
-  const links = extractLinks(value)
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      linkPreviews: displayedTrackedLinkPreviews.map(
-        ({ linkPreview }) => linkPreview
-      ),
-      value,
-    }),
-    [displayedTrackedLinkPreviews, value]
-  )
-
   useEffect(() => {
-    if (value.length > POST_MAX_LENGTH) {
-      setPostLengthStatus(PostLengthStatusType.error)
-      onLengthStatusChange?.(PostLengthStatusType.error)
-      return
-    }
-    if (value.length >= POST_WARNING_LENGTH) {
-      setPostLengthStatus(PostLengthStatusType.warning)
-      onLengthStatusChange?.(PostLengthStatusType.warning)
-      return
-    }
-    setPostLengthStatus(PostLengthStatusType.none)
-    onLengthStatusChange?.(PostLengthStatusType.none)
-  }, [onLengthStatusChange, value])
+    onLengthStatusChange?.(postLengthStatus)
+  }, [onLengthStatusChange, postLengthStatus])
 
-  const handleLinkPreviewClose = useCallback((id: string) => {
-    setTrackedLinkPreviews(currentTrackedLinkPreviews =>
-      currentTrackedLinkPreviews.reduce((acc, currentTrackedLinkPreview) => {
-        if (currentTrackedLinkPreview.id !== id) {
-          return [...acc, currentTrackedLinkPreview]
+  const handleAttachmentClose = useCallback((url: string) => {
+    setTrackedMatches(currentTrackedMatches =>
+      currentTrackedMatches.map(currentTrackedMatch => {
+        if (currentTrackedMatch.url !== url) {
+          return currentTrackedMatch
         }
 
-        if (!currentTrackedLinkPreview.inBody) {
-          return acc
-        }
-
-        const newPayload: TrackedLinkPreview = {
-          ...currentTrackedLinkPreview,
+        return {
+          ...currentTrackedMatch,
           closed: true,
         }
-
-        return [...acc, newPayload]
-      }, [] as TrackedLinkPreview[])
+      })
     )
   }, [])
 
-  const updateTrackedLinkPreviews = useCallback(
-    async (links: Match[]) => {
-      const run = async () => {
-        const newTrackedLinkPreviews = await links.reduce(async (acc, link) => {
-          const { href } = new URL(link.url)
-          const existingLink = trackedLinkPreviews.some(({ id }) => id === href)
+  const handleAttachmentError = useCallback((url: string, error: Error) => {
+    setTrackedMatches(currentTrackedMatches =>
+      currentTrackedMatches.map(currentTrackedMatch => {
+        if (currentTrackedMatch.url !== url) {
+          return currentTrackedMatch
+        }
 
-          if (existingLink) {
-            return acc
-          }
+        return {
+          ...currentTrackedMatch,
+          error,
+        }
+      })
+    )
+  }, [])
 
-          let postPreview
-
-          if (isTwitterPostUrl(link.url)) {
-            postPreview = {
-              href: link.url,
-              type: 'twitter',
-            } as PostPreviewTwitter
-          } else if (isFacebookPostUrl(link.url)) {
-            postPreview = {
-              href: link.url,
-              type: 'facebook',
-            } as PostPreviewFacebook
-          } else if (isInstagramPostUrl(link.url)) {
-            postPreview = {
-              href: link.url,
-              type: 'instagram',
-            } as PostPreviewInstagram
-          } else if (isTikTokPostUrl(link.url)) {
-            postPreview = {
-              href: link.url,
-              type: 'tiktok',
-            } as PostPreviewTikTok
-          } else if (isYouTubePostUrl(link.url)) {
-            postPreview = {
-              href: link.url,
-              type: 'youtube',
-            } as PostPreviewYouTube
-          } else if (isPinterestPostUrl(link.url)) {
-            postPreview = {
-              href: link.url,
-              type: 'pinterest',
-            } as PostPreviewPinterest
-          } else {
-            const meta = await getMetaFromUrl(link.url)
-            postPreview = mapUrlMetaToPostPreview(
-              meta,
-              link.url
-            ) as PostPreviewMeta
-          }
-
-          const newLink: TrackedLinkPreview = {
-            closed: false,
-            id: href,
-            linkPreview: postPreview,
-            match: link,
-            inBody: true,
-          }
-
-          return [...(await acc), newLink]
-        }, Promise.resolve(trackedLinkPreviews))
-
-        const trackedLinkPreviewsEqual = checkTrackedLinkPreviewEquality(
-          trackedLinkPreviews,
-          newTrackedLinkPreviews
-        )
-
-        if (trackedLinkPreviewsEqual) return
-        setTrackedLinkPreviews(newTrackedLinkPreviews)
-      }
-
-      run()
-    },
-    [trackedLinkPreviews]
-  )
-
-  const debouncedUpdateTrackedLinkPreviews = useMemo(
-    () => debounce(updateTrackedLinkPreviews, 1000),
-    [updateTrackedLinkPreviews]
-  )
-
-  useEffect(() => {
-    setTrackedLinkPreviews(currentTrackedLinkPreviews => {
-      const neww = preprocessTrackedLinkPreview(
-        currentTrackedLinkPreviews,
-        links || []
-      )
-
-      if (checkTrackedLinkPreviewEquality(currentTrackedLinkPreviews, neww)) {
-        return currentTrackedLinkPreviews
-      }
-
-      return neww
-    })
-
-    debouncedUpdateTrackedLinkPreviews(links || [])
-  }, [debouncedUpdateTrackedLinkPreviews, links])
-
+  const value = editorState.getCurrentContent().getPlainText()
   const placeholder = usePostBodyTextAreaPlaceholder({ postType })
   const shouldRenderPostLength = value?.length > POST_WARNING_LENGTH
   const large = size === PostBodyTextAreaSize.Large
+
+  useEffect(() => {
+    onTrackedMatchesChange?.(trackedMatches)
+  }, [trackedMatches, onTrackedMatchesChange])
 
   return (
     <Box>
@@ -435,7 +315,7 @@ const PostBodyTextArea = (
             <Editor
               editorState={editorState}
               handleReturn={handleReturn}
-              onChange={onEditorStateChange}
+              onChange={handleEditorStateChange}
               placeholder={placeholder}
               plugins={[linkifyPlugin, hashtagPlugin]}
               preserveSelectionOnBlur
@@ -473,18 +353,15 @@ const PostBodyTextArea = (
               </Typography>
             </Box>
           )}
-        </Box>
-      </Box>
-      {displayedTrackedLinkPreviews.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <PostBodyPreviews
-            onClose={id => handleLinkPreviewClose(id)}
-            trackedLinkPreviews={displayedTrackedLinkPreviews}
+          <PostBodyAttachments
+            onClose={handleAttachmentClose}
+            onError={handleAttachmentError}
+            trackedMatches={trackedMatches}
           />
         </Box>
-      )}
+      </Box>
     </Box>
   )
 }
 
-export default forwardRef(PostBodyTextArea)
+export default PostBodyTextArea
