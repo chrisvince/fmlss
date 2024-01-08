@@ -408,7 +408,11 @@ const TopicSelect = ({ onChange }: Props) => {
             <Popper
               open={autoCompleteOpen}
               anchorEl={wrapperRef.current}
-              sx={{ zIndex: 'modal', backgroundColor: 'white', boxShadow: 3 }}
+              sx={{
+                zIndex: 'modal',
+                backgroundColor: 'background.paper',
+                boxShadow: 3,
+              }}
               placement="bottom-start"
             >
               <MenuList>
