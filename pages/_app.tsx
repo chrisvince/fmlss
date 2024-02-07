@@ -17,6 +17,7 @@ import resolveTheme from '../styles/theme'
 import isDevelopment from '../utils/isDevelopment'
 import { ThemeProvider } from '@mui/material/styles'
 import useColorScheme from '../utils/useColorScheme'
+import { ColorSchemeSetting } from '../types'
 
 initFirebase()
 initAuth()
@@ -29,7 +30,7 @@ type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<P, IP> & {
 
 type Props = AppProps & {
   Component: NextPageWithLayout
-  colorSchemeCookie?: string
+  colorSchemeCookie?: ColorSchemeSetting
 }
 
 const App = (props: Props) => {
@@ -40,7 +41,6 @@ const App = (props: Props) => {
   })
 
   const theme = useMemo(() => resolveTheme(colorScheme), [colorScheme])
-
   const getLayout = Component.getLayout ?? (page => <Layout>{page}</Layout>)
 
   return (
