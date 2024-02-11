@@ -97,14 +97,19 @@ const TopicPage = ({ path }: PropTypes) => {
       renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
-      {topic?.data.subtopicSegments && (
-        <TopicBreadcrumbs subtopicSegments={topic?.data.subtopicSegments} />
-      )}
+      {topic?.data.subtopicSegments &&
+        topic.data.subtopicSegments.length > 1 && (
+          <MobileContainer>
+            <TopicBreadcrumbs subtopicSegments={topic?.data.subtopicSegments} />
+          </MobileContainer>
+        )}
       {isTopics && (
         <>
-          <Typography variant="h2" sx={{ mb: 2 }}>
-            Subtopics
-          </Typography>
+          <MobileContainer>
+            <Typography variant="h2" sx={{ mb: 2 }}>
+              Subtopics
+            </Typography>
+          </MobileContainer>
           <TopicSubtopicsList topics={topics} />
           {topics.length >= SUBTOPICS_ON_TOPIC_PAGE_LIMIT && (
             <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
@@ -119,9 +124,11 @@ const TopicPage = ({ path }: PropTypes) => {
         </>
       )}
       {isTopics && (
-        <Typography variant="h2" sx={{ mb: 2, mt: 6 }}>
-          Posts
-        </Typography>
+        <MobileContainer>
+          <Typography variant="h2" sx={{ mb: 2, mt: 6 }}>
+            Posts
+          </Typography>
+        </MobileContainer>
       )}
       <MobileContainer>
         <ButtonGroup
