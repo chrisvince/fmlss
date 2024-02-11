@@ -21,7 +21,7 @@ const SectionHeading = ({ children }: PropTypes) => {
               2,
               4.2, // matches the position of the feed to the feed page
             ],
-            mt: -1.2, // matches the position of the feed to the feed page
+            mt: [0, -1.2], // matches the position of the feed to the feed page
           }}
         >
           {children}
