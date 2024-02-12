@@ -99,6 +99,7 @@ const NewPostForm = ({
             bodySize={BodySize.Large}
             hideActionBar
             post={replyingToPost}
+            noCensoring
           />
         </Box>
       )}

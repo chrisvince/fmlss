@@ -11,6 +11,9 @@ import PostAttachments from '../PostAttachments'
 import WatchButton from '../WatchButton'
 import useWatchingState from '../../utils/useWatchingState'
 import { ReactionId } from '../../types/Reaction'
+import PostCensorWrapper from '../PostCensorWrapper'
+import { CensorTypes } from '../../types/CensorTypes'
+import useUser from '../../utils/data/user/useUser'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -24,6 +27,7 @@ type PropTypes = {
   bodySize?: BodySize
   hideActionBar?: boolean
   noBottomBorder?: boolean
+  noCensoring?: boolean
   onLikePost?: (slug: string) => Promise<void> | void
   onPostReaction?: (
     reaction: ReactionId | undefined,
@@ -38,6 +42,7 @@ const PostItem = ({
   bodySize = BodySize.Small,
   hideActionBar,
   noBottomBorder,
+  noCensoring = false,
   onLikePost,
   onPostReaction,
   onWatchPost,
@@ -47,6 +52,13 @@ const PostItem = ({
   const { toggleWatching, watching } = useWatchingState(!!post.user?.watching)
   const allowReplying = post.data.documentDepth < POST_MAX_DEPTH
   const byUser = !!post.user?.created
+  const { user } = useUser()
+  const censored = noCensoring
+    ? false
+    : (post.data.majorityReaction?.id === ReactionId.AdultContent &&
+        user?.data.settings.content.hideAdultContent) ||
+      (post.data.majorityReaction?.id === ReactionId.Offensive &&
+        user?.data.settings.content.hideOffensiveContent)
 
   const handleLikeButtonClick = () => {
     toggleLike()
@@ -58,7 +70,7 @@ const PostItem = ({
     onWatchPost?.(post.data.slug)
   }
 
-  return (
+  const content = (
     <Box
       sx={{
         alignItems: 'stretch',
@@ -130,6 +142,16 @@ const PostItem = ({
       )}
     </Box>
   )
+
+  if (censored) {
+    return (
+      <PostCensorWrapper censorType={CensorTypes.AdultContent}>
+        {content}
+      </PostCensorWrapper>
+    )
+  }
+
+  return content
 }
 
 export default PostItem
