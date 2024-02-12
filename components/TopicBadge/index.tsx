@@ -34,10 +34,7 @@ const TopicBadge = ({ pathTitle, slug, subtopicSegments }: Props) => {
   }
 
   return (
-    <Tooltip
-      placement="bottom"
-      title={<TopicPathTitleText>{pathTitle}</TopicPathTitleText>}
-    >
+    <Tooltip placement="bottom" title={pathTitle}>
       <MuiLink
         component={Link}
         href={`/topic/${slug}`}
