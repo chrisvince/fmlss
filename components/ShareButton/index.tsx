@@ -90,10 +90,7 @@ const ShareButton = ({ slug }: Props) => {
         anchorEl={buttonRef.current}
         open={menuOpen}
         onClose={handleMenuClose}
-        MenuListProps={{
-          'aria-labelledby': 'profile-menu-button',
-          dense: true,
-        }}
+        MenuListProps={{ dense: true }}
       >
         <MenuItem onClick={handleCopyUrlButton}>
           <ListItemIcon>
