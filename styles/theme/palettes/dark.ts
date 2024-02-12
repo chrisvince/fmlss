@@ -3,7 +3,7 @@ import { ThemeOptions } from '@mui/material/styles'
 const dark: ThemeOptions['palette'] = {
   mode: 'dark',
   primary: {
-    main: '#ffffffDE',
+    main: '#eeeeee',
   },
   secondary: {
     main: '#3b90ce',
