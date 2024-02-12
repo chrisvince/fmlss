@@ -14,6 +14,7 @@ import { ReactionId } from '../../types/Reaction'
 import PostCensorWrapper from '../PostCensorWrapper'
 import { CensorTypes } from '../../types/CensorTypes'
 import useUser from '../../utils/data/user/useUser'
+import Link from 'next/link'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -100,7 +101,9 @@ const PostItem = ({
       >
         {byUser && (
           <Box sx={{ display: 'flex', gridArea: 'statusIcon' }}>
-            <UserAuthoredIcon />
+            <Link href="/profile/posts" style={{ display: 'contents' }}>
+              <UserAuthoredIcon />
+            </Link>
           </Box>
         )}
         {post.data.topic && (
