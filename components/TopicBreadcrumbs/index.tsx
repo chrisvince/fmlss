@@ -9,9 +9,6 @@ interface Props {
 
 const TopicBreadcrumbs = ({ subtopicSegments }: Props) => (
   <Breadcrumbs>
-    <MuiLink component={Link} href="/topics" underline="hover">
-      Topics
-    </MuiLink>
     {subtopicSegments.map(({ title, path }, index, array) =>
       index < array.length - 1 ? (
         <MuiLink

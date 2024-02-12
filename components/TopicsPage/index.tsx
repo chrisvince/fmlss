@@ -53,7 +53,8 @@ const TopicsPage = ({ parentTopicPath }: PropTypes) => {
   return (
     <Page
       aboveTitleContent={
-        parentTopic?.data.subtopicSegments ? (
+        parentTopic?.data.subtopicSegments &&
+        parentTopic.data.subtopicSegments.length > 1 ? (
           <TopicBreadcrumbs
             subtopicSegments={parentTopic?.data.subtopicSegments}
           />
