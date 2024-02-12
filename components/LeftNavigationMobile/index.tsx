@@ -5,6 +5,8 @@ import {
   ChatRounded,
   FavoriteBorderOutlined,
   FavoriteRounded,
+  NotificationsOutlined,
+  NotificationsRounded,
   PersonRounded,
   ReplyAllRounded,
   StarOutlineRounded,
@@ -12,9 +14,7 @@ import {
   TagRounded,
   ViewStreamOutlined,
   ViewStreamRounded,
-  AlternateEmailRounded,
-  NotificationsOutlined,
-  NotificationsRounded,
+  WorkspacesRounded,
 } from '@mui/icons-material'
 import { useTheme } from '@mui/system'
 
@@ -49,8 +49,8 @@ const NAVIGATION_ITEMS = [
         {
           currentPaths: ['/topics', '/topic'],
           href: '/topics',
-          icon: AlternateEmailRounded,
-          iconCurrent: AlternateEmailRounded,
+          icon: WorkspacesRounded,
+          iconCurrent: WorkspacesRounded,
           label: 'Topics',
         },
       ]

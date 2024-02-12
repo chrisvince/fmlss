@@ -21,7 +21,7 @@ import useTopicSearch from '../../utils/data/topics/useTopicSearch'
 import constants from '../../constants'
 import { DraftHandleValue, Editor, EditorState, convertFromRaw } from 'draft-js'
 import { Box } from '@mui/system'
-import { AlternateEmailRounded } from '@mui/icons-material'
+import { WorkspacesRounded } from '@mui/icons-material'
 import { dropLast, last, remove, splitAt } from 'ramda'
 import { SubtopicSegment } from '../../types'
 
@@ -347,7 +347,7 @@ const TopicSelect = ({ onChange }: Props) => {
             justifyContent: 'center',
           }}
         >
-          <AlternateEmailRounded color="action" />
+          <WorkspacesRounded color="action" />
         </Box>
         <Box ref={wrapperRef} sx={{ pt: 1 }}>
           <Box

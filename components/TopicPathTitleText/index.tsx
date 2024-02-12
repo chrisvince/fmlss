@@ -1,4 +1,4 @@
-import { AlternateEmailRounded } from '@mui/icons-material'
+import { WorkspacesRounded } from '@mui/icons-material'
 import { Box } from '@mui/system'
 import { ReactNode } from 'react'
 
@@ -7,8 +7,8 @@ interface Props {
 }
 
 const TopicPathTitleText = ({ children }: Props) => (
-  <Box sx={{ alignItems: 'flex-start', display: 'flex', gap: '0.1em' }}>
-    <AlternateEmailRounded fontSize="inherit" color="inherit" />
+  <Box sx={{ alignItems: 'flex-start', display: 'flex', gap: '0.25em' }}>
+    <WorkspacesRounded fontSize="inherit" color="inherit" />
     <Box
       sx={{
         fontSize: 'inherit',

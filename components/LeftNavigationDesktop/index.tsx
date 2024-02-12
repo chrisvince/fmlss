@@ -1,7 +1,6 @@
 import { Box } from '@mui/system'
 import { List, useTheme } from '@mui/material'
 import {
-  AlternateEmailRounded,
   ChatOutlined,
   ChatRounded,
   FavoriteBorderOutlined,
@@ -15,6 +14,7 @@ import {
   TagRounded,
   ViewStreamOutlined,
   ViewStreamRounded,
+  WorkspacesRounded,
 } from '@mui/icons-material'
 import { useAuthUser } from 'next-firebase-auth'
 
@@ -48,8 +48,8 @@ const NAVIGATION_ITEMS = [
         {
           currentPaths: ['/topics', '/topic'],
           href: '/topics',
-          icon: AlternateEmailRounded,
-          iconCurrent: AlternateEmailRounded,
+          icon: WorkspacesRounded,
+          iconCurrent: WorkspacesRounded,
           label: 'Topics',
         },
       ]
