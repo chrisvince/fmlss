@@ -17,6 +17,7 @@ import {
   createSidebarHashtagsCacheKey,
   createPostCacheKey,
   createPostRepliesCacheKey,
+  createUserCacheKey,
 } from '../../../utils/createCacheKeys'
 import constants from '../../../constants'
 import isInternalRequest from '../../../utils/isInternalRequest'
@@ -24,6 +25,7 @@ import usePost from '../../../utils/data/post/usePost'
 import fetchSidebarData from '../../../utils/data/sidebar/fetchSidebarData'
 import Layout from '../../../components/Layout'
 import { ReactElement } from 'react'
+import getUser from '../../../utils/data/user/getUser'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, POST_REPLIES_SSR } = constants
 
@@ -74,6 +76,7 @@ const getServerSidePropsFn = async ({
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   if (isInternalRequest(req)) {
     const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
@@ -100,24 +103,28 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
-  const [replies, { sidebarHashtags, sidebarTopics }] = await Promise.all([
-    POST_REPLIES_SSR
-      ? getPostReplies(post.data.reference, slug, {
-          uid,
-          db: adminDb,
-        })
-      : null,
-    sidebarDataPromise,
-  ])
+  const [replies, { sidebarHashtags, sidebarTopics }, user] = await Promise.all(
+    [
+      POST_REPLIES_SSR
+        ? getPostReplies(post.data.reference, slug, {
+            uid,
+            db: adminDb,
+          })
+        : null,
+      sidebarDataPromise,
+      userCacheKey ? getUser(uid, { db: adminDb }) : null,
+    ]
+  )
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
     props: {
       fallback: {
-        [sidebarTopicsCacheKey]: sidebarTopics,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
         [postCacheKey]: post,
         [postRepliesCacheKey]: replies,
+        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        [sidebarTopicsCacheKey]: sidebarTopics,
+        ...(userCacheKey ? { [userCacheKey]: user } : {}),
       },
       key: postCacheKey,
     },

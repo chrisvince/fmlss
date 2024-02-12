@@ -112,6 +112,9 @@ const createNotificationCacheKey = (
 const createHasUnreadNotificationsCacheKey = (uid: string) =>
   `has-unread-notifications/${uid}`
 
+const createPostReactionCacheKey = (slug: string, uid: string) =>
+  `post/${slug}/reaction/${uid}`
+
 export {
   createTopicsCacheKey,
   createTopicsStartsWithCacheKey,
@@ -119,6 +122,7 @@ export {
   createTopicPostsCacheKey,
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
+  createPostReactionCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,

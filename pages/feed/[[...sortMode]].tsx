@@ -13,6 +13,7 @@ import {
   createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
   createPostFeedCacheKey,
+  createUserCacheKey,
 } from '../../utils/createCacheKeys'
 import getPostFeed from '../../utils/data/posts/getPostFeed'
 import constants from '../../constants'
@@ -22,6 +23,7 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import getUser from '../../utils/data/user/getUser'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -68,13 +70,24 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
+  const uid = AuthUser.id
+
+  if (!uid) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
   const postFeedCacheKey = createPostFeedCacheKey(sortMode)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
+  const userCacheKey = createUserCacheKey(uid)
 
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const uid = AuthUser.id
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
 
   if (isInternalRequest(req)) {
@@ -92,13 +105,14 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
+  const [posts, { sidebarHashtags, sidebarTopics }, user] = await Promise.all([
     getPostFeed({
       db: adminDb,
       sortMode,
       uid,
     }),
     sidebarDataPromise,
+    getUser(uid, { db: adminDb }),
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -106,9 +120,10 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarTopicsCacheKey]: sidebarTopics,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        [userCacheKey]: user,
         [postFeedCacheKey]: posts,
+        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        [sidebarTopicsCacheKey]: sidebarTopics,
       },
       key: postFeedCacheKey,
     },

@@ -8,6 +8,7 @@ import CenteredMessage from '../CenteredMessage'
 import PageSpinner from '../PageSpinner'
 import BlockMessage from '../BlockMessage'
 import constants from '../../constants'
+import { ReactionId } from '../../types/Reaction'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -16,6 +17,10 @@ type PropTypes = {
   isRepliesFeed?: boolean
   moreToLoad: boolean
   onLikePost: (slug: string) => Promise<void>
+  onPostReaction?: (
+    reaction: ReactionId | undefined,
+    slug: string
+  ) => Promise<void>
   onLoadMore: () => Promise<unknown>
   onWatchPost: (documentPath: string) => Promise<void>
   posts: Post[]
@@ -27,6 +32,7 @@ const Feed = ({
   moreToLoad,
   onLikePost,
   onLoadMore,
+  onPostReaction,
   onWatchPost,
   posts,
 }: PropTypes) => {
@@ -50,6 +56,7 @@ const Feed = ({
         <PostListItem
           key={(post as Post).data.slug}
           onLikePost={onLikePost}
+          onPostReaction={onPostReaction}
           onWatchPost={onWatchPost}
           post={post as Post}
         />

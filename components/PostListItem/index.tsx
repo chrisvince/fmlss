@@ -3,14 +3,24 @@ import { useId } from 'react'
 import { Post } from '../../types'
 import ListItemFrame from '../ListItemFrame'
 import PostItem from '../PostItem'
+import { ReactionId } from '../../types/Reaction'
 
 type PropTypes = {
   onLikePost: (slug: string) => Promise<void>
+  onPostReaction?: (
+    reaction: ReactionId | undefined,
+    slug: string
+  ) => Promise<void>
   onWatchPost: (documentPath: string) => Promise<void>
   post: Post
 }
 
-const PostListItem = ({ onLikePost, onWatchPost, post }: PropTypes) => {
+const PostListItem = ({
+  onLikePost,
+  onPostReaction,
+  onWatchPost,
+  post,
+}: PropTypes) => {
   const ariaLabelledById = useId()
 
   return (
@@ -23,6 +33,7 @@ const PostListItem = ({ onLikePost, onWatchPost, post }: PropTypes) => {
         bodyElementId={ariaLabelledById}
         noBottomBorder
         onLikePost={onLikePost}
+        onPostReaction={onPostReaction}
         onWatchPost={onWatchPost}
         post={post}
       />

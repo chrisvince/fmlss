@@ -30,8 +30,15 @@ const FeedPage = () => {
       ? (sortModeParam as FeedSortMode)
       : FeedSortMode.Latest
 
-  const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
-    usePostFeed({ sortMode })
+  const {
+    isLoading,
+    likePost,
+    loadMore,
+    moreToLoad,
+    posts,
+    reactToPost,
+    watchPost,
+  } = usePostFeed({ sortMode })
 
   if (!sortMode) {
     return <Error statusCode={404} />
@@ -56,6 +63,7 @@ const FeedPage = () => {
         moreToLoad={moreToLoad}
         onLikePost={likePost}
         onLoadMore={loadMore}
+        onPostReaction={reactToPost}
         onWatchPost={watchPost}
         posts={posts}
       />

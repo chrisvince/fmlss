@@ -12,6 +12,9 @@ import LikeButton from '../LikeButton'
 import ReplyButton from '../ReplyButton'
 import ShareButton from '../ShareButton'
 import constants from '../../constants'
+import ReactButton from '../ReactButton'
+import ReactionSummary from '../ReactionSummary'
+import { MajorityReaction, ReactionId } from '../../types/Reaction'
 
 const SaveButton = dynamic(() => import('../SaveButton'))
 const ReplyModal = dynamic(() => import('../ReplyModal'), { ssr: false })
@@ -23,7 +26,13 @@ interface PropTypes {
   createdAt: number
   like: boolean
   likesCount: number
+  majorityReaction?: MajorityReaction
   onLike: () => unknown
+  onPostReaction?: (
+    reaction: ReactionId | undefined,
+    slug: string
+  ) => Promise<void>
+  postReaction?: ReactionId | null
   postsCount: number
   showReplyButton: boolean
   slug: string
@@ -33,7 +42,10 @@ const PostActionBar = ({
   createdAt,
   like,
   likesCount,
+  majorityReaction,
   onLike,
+  onPostReaction,
+  postReaction,
   postsCount,
   showReplyButton = true,
   slug,
@@ -85,6 +97,17 @@ const PostActionBar = ({
     console.log('save post')
   }
 
+  const handlePostReactionChange = (reaction: ReactionId | undefined) => {
+    if (!isLoggedIn) {
+      setModalActionText('Sign up to react to this post.')
+      setRenderSignUpModal(true)
+      setSignUpModalOpen(true)
+      return
+    }
+
+    onPostReaction?.(reaction, slug)
+  }
+
   return (
     <>
       <Box
@@ -123,6 +146,12 @@ const PostActionBar = ({
               gap: 2,
             }}
           >
+            {majorityReaction && (
+              <ReactionSummary
+                percentage={majorityReaction.percentage}
+                reactionId={majorityReaction.id}
+              />
+            )}
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               {formatLikesCount(likesCount)}
             </Typography>
@@ -142,6 +171,10 @@ const PostActionBar = ({
           }}
         >
           <LikeButton like={like} onClick={handleLikeButtonClick} />
+          <ReactButton
+            onChange={handlePostReactionChange}
+            postReaction={postReaction}
+          />
           {showReplyButton && (
             <ReplyButton
               onClick={!isMobileDevice ? handleReplyButtonClick : undefined}

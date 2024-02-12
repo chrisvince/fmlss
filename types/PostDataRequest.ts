@@ -1,5 +1,6 @@
 import { firestore } from 'firebase-admin'
 import { FirebaseDoc, TopicRelation, PostAttachmentDb } from '.'
+import { MajorityReaction } from './Reaction'
 
 export interface PostDataRequest {
   attachments: PostAttachmentDb[]
@@ -10,6 +11,7 @@ export interface PostDataRequest {
   hashtags: string[]
   id: string
   likesCount: number
+  majorityReaction?: MajorityReaction
   originalPost: FirebaseDoc & {
     slug: string
   }

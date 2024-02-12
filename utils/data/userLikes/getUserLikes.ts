@@ -17,6 +17,7 @@ import setCacheIsLikedByUser from '../author/setCacheIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
+import getPostReaction from '../author/getPostReaction'
 
 const {
   POST_PAGINATION_COUNT,
@@ -80,9 +81,10 @@ const getUserLikes: GetUserLikes = async (
   const postsPromise = postData.map(async (postDataItem, index) => {
     const postDoc = postDocs?.docs[index] ?? null
 
-    const [createdByUser, userIsWatching] = await Promise.all([
+    const [createdByUser, userIsWatching, reaction] = await Promise.all([
       checkIsCreatedByUser(postDataItem.slug, uid, { db }),
       checkUserIsWatching(postDataItem.slug, uid, { db }),
+      getPostReaction(postDataItem.slug, uid, { db }),
     ])
 
     setCacheIsLikedByUser(postDataItem.slug, uid)
@@ -93,6 +95,7 @@ const getUserLikes: GetUserLikes = async (
       user: {
         created: createdByUser,
         like: true,
+        reaction,
         watching: userIsWatching,
       },
     }

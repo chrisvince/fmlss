@@ -11,6 +11,7 @@ import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
+import getPostReaction from '../author/getPostReaction'
 
 const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
 
@@ -67,11 +68,13 @@ const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
     }
   }
 
-  const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
-    checkIsCreatedByUser(data.slug, uid, { db }),
-    checkIsLikedByUser(data.slug, uid, { db }),
-    checkUserIsWatching(data.slug, uid, { db }),
-  ])
+  const [createdByUser, likedByUser, userIsWatching, reaction] =
+    await Promise.all([
+      checkIsCreatedByUser(data.slug, uid, { db }),
+      checkIsLikedByUser(data.slug, uid, { db }),
+      checkUserIsWatching(data.slug, uid, { db }),
+      getPostReaction(data.slug, uid, { db }),
+    ])
 
   return {
     data,
@@ -79,6 +82,7 @@ const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
     user: {
       created: createdByUser,
       like: likedByUser,
+      reaction,
       watching: userIsWatching,
     },
   }

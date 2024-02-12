@@ -8,13 +8,15 @@ type Icon = OverridableComponent<SvgIconTypeMap<object, 'svg'>> & {
 }
 
 interface PropTypes {
-  icon: Icon
-  href?: string
-  onClick?: () => void
-  text: string | number
   active?: boolean
   activeIcon?: Icon
+  href?: string
+  icon: Icon | (() => JSX.Element)
+  onClick?: () => void
   rotateIcon?: number
+  text: string | number
+  textBold?: boolean
+  textColor?: string
   activeColor?:
     | 'action'
     | 'disabled'
@@ -36,8 +38,10 @@ const ActionButton = (
     href,
     icon: Icon,
     onClick,
-    text,
     rotateIcon,
+    text,
+    textBold,
+    textColor,
   }: PropTypes,
   ref: ForwardedRef<HTMLButtonElement>
 ) => {
@@ -79,7 +83,10 @@ const ActionButton = (
       )}
       <Typography
         id={labelledById}
-        sx={{ color: 'text.primary' }}
+        sx={{
+          color: textColor ?? 'text.primary',
+          fontWeight: textBold ? 600 : undefined,
+        }}
         variant="caption"
       >
         {text}

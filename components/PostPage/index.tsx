@@ -28,7 +28,7 @@ type PropTypes = {
 }
 
 const PostPage = ({ slug }: PropTypes) => {
-  const { isLoading, likePost, post, watchPost } = usePost(slug)
+  const { isLoading, likePost, post, watchPost, reactToPost } = usePost(slug)
   const { user, update: updateUser, isLoading: userIsLoading } = useUser()
   const [firstPostModalOpen, setFirstPostModalOpen] = useState(false)
   const [parentPostLoaded, setParentPostLoaded] = useState(false)
@@ -140,6 +140,7 @@ const PostPage = ({ slug }: PropTypes) => {
                     bodySize={BodySize.Large}
                     noBottomBorder
                     onLikePost={likePost}
+                    onPostReaction={reactToPost}
                     onWatchPost={watchPost}
                     post={post}
                   />

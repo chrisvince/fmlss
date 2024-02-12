@@ -19,6 +19,14 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
     hashtags: postData.hashtags,
     id: postDoc.id,
     likesCount: postData.likesCount,
+    ...(postData.majorityReaction
+      ? {
+          majorityReaction: {
+            id: postData.majorityReaction.id,
+            percentage: postData.majorityReaction.percentage,
+          },
+        }
+      : {}),
     originalPost: {
       id: postData.originalPost.id,
       ref: postData.originalPost.ref.path,

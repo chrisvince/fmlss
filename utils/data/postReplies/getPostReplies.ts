@@ -17,6 +17,7 @@ import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
+import getPostReaction from '../author/getPostReaction'
 
 const { POST_PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
@@ -86,11 +87,13 @@ const getPostReplies: GetPostReplies = async (
       }
     }
 
-    const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
-      checkIsCreatedByUser(replyDataItem.slug, uid, { db }),
-      checkIsLikedByUser(replyDataItem.slug, uid, { db }),
-      checkUserIsWatching(replyDataItem.slug, uid, { db }),
-    ])
+    const [createdByUser, likedByUser, userIsWatching, reaction] =
+      await Promise.all([
+        checkIsCreatedByUser(replyDataItem.slug, uid, { db }),
+        checkIsLikedByUser(replyDataItem.slug, uid, { db }),
+        checkUserIsWatching(replyDataItem.slug, uid, { db }),
+        getPostReaction(replyDataItem.slug, uid, { db }),
+      ])
 
     return {
       data: replyDataItem,
@@ -98,6 +101,7 @@ const getPostReplies: GetPostReplies = async (
       user: {
         created: createdByUser,
         like: likedByUser,
+        reaction,
         watching: userIsWatching,
       },
     }

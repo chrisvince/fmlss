@@ -6,6 +6,10 @@ export interface UserData {
   lastName: string
   settings: {
     colorScheme: ColorSchemeSetting
+    content: {
+      hideAdultContent: boolean
+      hideOffensiveContent: boolean
+    }
     notifications: {
       email: {
         likes: boolean

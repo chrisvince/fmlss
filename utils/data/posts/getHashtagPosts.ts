@@ -18,6 +18,7 @@ import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
+import getPostReaction from '../author/getPostReaction'
 
 const { HASHTAG_LIST_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
   constants
@@ -108,11 +109,13 @@ const getHashtagPosts: GetHashtagPosts = async (
       }
     }
 
-    const [createdByUser, likedByUser, userIsWatching] = await Promise.all([
-      checkIsCreatedByUser(postDataItem.slug, uid, { db }),
-      checkIsLikedByUser(postDataItem.slug, uid, { db }),
-      checkUserIsWatching(postDataItem.slug, uid, { db }),
-    ])
+    const [createdByUser, likedByUser, userIsWatching, reaction] =
+      await Promise.all([
+        checkIsCreatedByUser(postDataItem.slug, uid, { db }),
+        checkIsLikedByUser(postDataItem.slug, uid, { db }),
+        checkUserIsWatching(postDataItem.slug, uid, { db }),
+        getPostReaction(postDataItem.slug, uid, { db }),
+      ])
 
     return {
       data: postDataItem,
@@ -120,6 +123,7 @@ const getHashtagPosts: GetHashtagPosts = async (
       user: {
         created: createdByUser,
         like: likedByUser,
+        reaction,
         watching: userIsWatching,
       },
     }

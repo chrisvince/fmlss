@@ -10,6 +10,7 @@ import constants from '../../constants'
 import PostAttachments from '../PostAttachments'
 import WatchButton from '../WatchButton'
 import useWatchingState from '../../utils/useWatchingState'
+import { ReactionId } from '../../types/Reaction'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -24,6 +25,10 @@ type PropTypes = {
   hideActionBar?: boolean
   noBottomBorder?: boolean
   onLikePost?: (slug: string) => Promise<void> | void
+  onPostReaction?: (
+    reaction: ReactionId | undefined,
+    slug: string
+  ) => Promise<void>
   onWatchPost?: (documentPath: string) => Promise<void> | void
   post: Post
 }
@@ -34,6 +39,7 @@ const PostItem = ({
   hideActionBar,
   noBottomBorder,
   onLikePost,
+  onPostReaction,
   onWatchPost,
   post,
 }: PropTypes) => {
@@ -113,7 +119,10 @@ const PostItem = ({
           createdAt={post.data.createdAt}
           like={like}
           likesCount={likesCount}
+          majorityReaction={post.data.majorityReaction}
           onLike={handleLikeButtonClick}
+          onPostReaction={onPostReaction}
+          postReaction={post.user?.reaction}
           postsCount={post.data.postsCount}
           showReplyButton={allowReplying}
           slug={post.data.slug}
