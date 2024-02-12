@@ -9,11 +9,7 @@ interface TruncatedPathTitleProps {
 const TruncatedPathTitle = ({ subtopicSegments }: TruncatedPathTitleProps) => {
   const elements: ReactNode[] = useMemo(() => {
     if (subtopicSegments.length > 2) {
-      return [
-        subtopicSegments[0].pathTitle,
-        '...',
-        subtopicSegments.at(-1)?.pathTitle,
-      ]
+      return [subtopicSegments[0].title, '...', subtopicSegments.at(-1)?.title]
     }
 
     return subtopicSegments.map(({ pathTitle }) => pathTitle)
