@@ -17,6 +17,7 @@ import setCacheIsCreatedByUser from '../author/setCacheIsCreatedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
+import getPostReaction from '../author/getPostReaction'
 
 const {
   AUTHORED_POSTS_COLLECTION,
@@ -84,9 +85,10 @@ const getUserPosts: GetUserPosts = async (
 
     setCacheIsCreatedByUser(postDataItem.slug, uid)
 
-    const [likedByUser, userIsWatching] = await Promise.all([
+    const [likedByUser, userIsWatching, reaction] = await Promise.all([
       checkIsLikedByUser(postDataItem.slug, uid, { db }),
       checkUserIsWatching(postDataItem.slug, uid, { db }),
+      getPostReaction(postDataItem.slug, uid, { db }),
     ])
 
     return {
@@ -95,6 +97,7 @@ const getUserPosts: GetUserPosts = async (
       user: {
         created: true,
         like: likedByUser,
+        reaction,
         watching: userIsWatching,
       },
     }
