@@ -70,7 +70,6 @@ const PostBodyTextArea = ({
     if (!focusOnMount || focusOnMountHasRun.current) return
 
     setTimeout(() => {
-      console.log('focusOnMount')
       if (!editorRef.current) return
       editorRef.current.focus()
       focusOnMountHasRun.current = true
