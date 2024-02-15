@@ -1,12 +1,9 @@
 import { KeyboardEvent, LegacyRef, useEffect, useMemo, useRef } from 'react'
-import createHashtagPlugin, { HashtagProps } from '@draft-js-plugins/hashtag'
 import { EditorState } from 'draft-js'
 import Editor from '@draft-js-plugins/editor'
 import 'draft-js/dist/Draft.css'
 import { Typography } from '@mui/material'
-import createLinkifyPlugin from '@draft-js-plugins/linkify'
 import { Box } from '@mui/system'
-import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
 
 import constants from '../../constants'
 import numeral from 'numeral'
@@ -17,10 +14,17 @@ import usePostBodyTextAreaPlaceholder, {
 import { NotesRounded } from '@mui/icons-material'
 import PluginEditor from '@draft-js-plugins/editor/lib/Editor'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
+import createHashtagPlugin from '../../utils/draft-js/plugins/hashtag'
+import createLinkifyPlugin from '../../utils/draft-js/plugins/linkify'
 
 const { POST_MAX_LENGTH } = constants
 
 const POST_WARNING_LENGTH = POST_MAX_LENGTH - 80
+
+const PLUGINS = [
+  createLinkifyPlugin(),
+  createHashtagPlugin({ readOnly: false }),
+]
 
 const formatPostLength = (length: number | undefined) =>
   numeral(length ?? 0).format('0,0')
@@ -30,26 +34,6 @@ export enum PostLengthStatusType {
   Error = 'error',
   None = 'none',
 }
-
-const Hashtag = ({ children }: HashtagProps) => (
-  <Typography color="secondary" component="span">
-    {children}
-  </Typography>
-)
-
-const LinkifyLink = ({ children }: ComponentProps) => (
-  <Typography color="secondary" component="span">
-    {children}
-  </Typography>
-)
-
-const hashtagPlugin = createHashtagPlugin({
-  hashtagComponent: Hashtag,
-})
-
-const linkifyPlugin = createLinkifyPlugin({
-  component: LinkifyLink,
-})
 
 export enum PostBodyTextAreaSize {
   Small = 'small',
@@ -175,7 +159,7 @@ const PostBodyTextArea = ({
               handleReturn={handleReturn}
               onChange={handleEditorStateChange}
               placeholder={placeholder}
-              plugins={[linkifyPlugin, hashtagPlugin]}
+              plugins={PLUGINS}
               preserveSelectionOnBlur
               readOnly={disabled}
               ref={editorRef as LegacyRef<PluginEditor>}
