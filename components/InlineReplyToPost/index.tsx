@@ -1,36 +1,39 @@
 import { LoadingButton } from '@mui/lab'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import MobileContainer from '../MobileContainer'
-import PostBodyTextArea, {
-  PostLengthStatusType,
-  TrackedMatch,
-} from '../PostBodyTextArea'
+import PostBodyTextArea from '../PostBodyTextArea'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
-import mapTrackedMatchToCreatePostAttachment from '../../utils/mapTrackedMatchToCreatePostAttachment'
+import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAttachmentInputToCreatePostAttachment'
+import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 
 interface Props {
-  slug?: string
+  slug: string
 }
 
 const InlineReplyToPost = ({ slug }: Props) => {
-  const [postLengthStatus, setPostLengthStatus] =
-    useState<PostLengthStatusType>()
+  const {
+    closePostAttachment,
+    editorState,
+    getRaw: getRawEditorState,
+    overMaxLength,
+    postAttachments,
+    hasText,
+    setEditorState,
+  } = usePostBodyEditorState()
 
-  const [bodyText, setBodyText] = useState<string>('')
-  const [trackedMatches, setTrackedMatches] = useState<TrackedMatch[]>([])
-  const handleTextChange = setBodyText
-  const handleTrackedMatchesChange = setTrackedMatches
-  const disableButton = postLengthStatus === PostLengthStatusType.error
+  const disableButton = overMaxLength || !hasText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
 
   const submitPost = async () =>
     createPost({
-      body: bodyText,
-      attachments: trackedMatches.map(mapTrackedMatchToCreatePostAttachment),
+      body: getRawEditorState(),
+      attachments: postAttachments.map(
+        mapPostAttachmentInputToCreatePostAttachment
+      ),
     })
 
   const handleSubmit = (event: SyntheticEvent) => {
@@ -54,11 +57,12 @@ const InlineReplyToPost = ({ slug }: Props) => {
           <Box sx={{ pt: 2 }}>
             <PostBodyTextArea
               disabled={isLoading}
-              onChange={handleTextChange}
+              editorState={editorState}
+              onChange={setEditorState}
               onCommandEnter={submitPost}
-              onLengthStatusChange={setPostLengthStatus}
-              onTrackedMatchesChange={handleTrackedMatchesChange}
-              postType={slug ? PostType.Reply : PostType.New}
+              onPostAttachmentClose={closePostAttachment}
+              postAttachments={postAttachments}
+              postType={PostType.Reply}
             />
           </Box>
           {errorMessage && (
@@ -79,6 +83,18 @@ const InlineReplyToPost = ({ slug }: Props) => {
             loading={isLoading}
             type="submit"
             variant="contained"
+            sx={
+              !hasText
+                ? {
+                    backgroundColor: theme =>
+                      `${theme.palette.primary.main} !important`,
+                    color: theme =>
+                      `${theme.palette.getContrastText(
+                        theme.palette.primary.main
+                      )} !important`,
+                  }
+                : undefined
+            }
           >
             Post
           </LoadingButton>

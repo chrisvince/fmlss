@@ -11,15 +11,12 @@ import { useEffect, useState } from 'react'
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
 import TopicSelect from '../TopicSelect'
-import PostBodyTextArea, {
-  PostBodyTextAreaSize,
-  PostLengthStatusType,
-  TrackedMatch,
-} from '../PostBodyTextArea'
+import PostBodyTextArea, { PostBodyTextAreaSize } from '../PostBodyTextArea'
 import PostItem, { BodySize } from '../PostItem'
 import constants from '../../constants'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
-import mapTrackedMatchToCreatePostAttachment from '../../utils/mapTrackedMatchToCreatePostAttachment'
+import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAttachmentInputToCreatePostAttachment'
+import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 
 const { TOPICS_ENABLED } = constants
 
@@ -37,34 +34,37 @@ const NewPostForm = ({
   slug,
 }: Props) => {
   const { post: replyingToPost } = usePost(slug)
-  const [bodyText, setBodyText] = useState<string>('')
-  const [trackedMatches, setTrackedMatches] = useState<TrackedMatch[]>([])
-  const hasContent = !!bodyText
-  const handleTrackedMatchesChange = setTrackedMatches
-  const handleTextChange = setBodyText
+
+  const {
+    closePostAttachment,
+    editorState,
+    getRaw: getRawEditorState,
+    hasText,
+    overMaxLength,
+    postAttachments,
+    setEditorState,
+  } = usePostBodyEditorState()
+
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
   const [subtopics, setSubtopics] = useState<string[]>([])
   const handleTopicChange = async (subtopic: string[]) => setSubtopics(subtopic)
   const theme = useTheme()
   const buttonNotFullWidth = useMediaQuery(theme.breakpoints.up('sm'))
 
-  const [postLengthStatus, setPostLengthStatus] =
-    useState<PostLengthStatusType>()
-
   const submitPost = () =>
     createPost({
-      body: bodyText,
+      body: getRawEditorState(),
       subtopics,
-      attachments: trackedMatches.map(mapTrackedMatchToCreatePostAttachment),
+      attachments: postAttachments.map(
+        mapPostAttachmentInputToCreatePostAttachment
+      ),
     })
 
   const bodyOrSubtopicExists =
-    hasContent || (!slug && subtopics.length > 0) || trackedMatches.length > 0
+    hasText || (!slug && subtopics.length > 0) || postAttachments.length > 0
 
   const disableButton =
-    (!slug && subtopics.length === 0) ||
-    !hasContent ||
-    postLengthStatus === PostLengthStatusType.error
+    (!slug && subtopics.length === 0) || !hasText || overMaxLength
 
   useEffect(() => {
     onContentExists?.(bodyOrSubtopicExists)
@@ -106,11 +106,12 @@ const NewPostForm = ({
       <Box>
         <PostBodyTextArea
           disabled={isLoading}
+          editorState={editorState}
           focusOnMount
-          onChange={handleTextChange}
+          onChange={setEditorState}
           onCommandEnter={submitPost}
-          onLengthStatusChange={setPostLengthStatus}
-          onTrackedMatchesChange={handleTrackedMatchesChange}
+          onPostAttachmentClose={closePostAttachment}
+          postAttachments={postAttachments}
           postType={postType}
           size={
             replyingToPost

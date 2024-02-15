@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import { PostAttachmentType } from '../../types'
-import { TrackedMatch } from '../PostBodyTextArea'
 import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
+import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 
 const PostBodyAttachmentTiktok = dynamic(
   () => import('../PostBodyAttachmentTiktok')
@@ -13,21 +13,21 @@ interface Props {
   isAboveFold?: boolean // should do something with this
   onClose?: (url: string) => void
   onError?: (error: Error) => void
-  trackedMatch: TrackedMatch
+  postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachment = ({ onClose, onError, trackedMatch }: Props) => {
-  const type = resolvePostAttachmentTypeFromUrl(trackedMatch.url)
+const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
+  const type = resolvePostAttachmentTypeFromUrl(postAttachment.url)
 
   const handleClose = () => {
-    onClose?.(trackedMatch.url)
+    onClose?.(postAttachment.url)
   }
 
   if (type === PostAttachmentType.Tiktok) {
     return (
       <PostBodyAttachmentTiktok
         onClose={handleClose}
-        trackedMatch={trackedMatch}
+        postAttachment={postAttachment}
       />
     )
   }
@@ -37,7 +37,7 @@ const PostBodyAttachment = ({ onClose, onError, trackedMatch }: Props) => {
       <PostBodyAttachmentUrl
         onClose={handleClose}
         onError={onError}
-        trackedMatch={trackedMatch}
+        postAttachment={postAttachment}
       />
     )
   }

@@ -1,26 +1,26 @@
 import { Box } from '@mui/system'
-import { TrackedMatch } from '../PostBodyTextArea'
 import PostBodyAttachment from '../PostBodyAttachment'
+import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 
 interface Props {
   onClose?: (id: string) => void
   onError?: (id: string, error: Error) => void
-  trackedMatches: TrackedMatch[]
+  postAttachments: PostAttachmentInput[]
 }
 
-const PostBodyAttachments = ({ onClose, onError, trackedMatches }: Props) => {
-  if (trackedMatches.length <= 0) {
+const PostBodyAttachments = ({ onClose, onError, postAttachments }: Props) => {
+  if (postAttachments.length <= 0) {
     return null
   }
 
   return (
     <Box>
-      {trackedMatches.map(trackedMatch => (
+      {postAttachments.map(postAttachment => (
         <PostBodyAttachment
-          key={trackedMatch.url}
-          onClose={() => onClose?.(trackedMatch.url)}
-          onError={error => onError?.(trackedMatch.url, error)}
-          trackedMatch={trackedMatch}
+          key={postAttachment.url}
+          onClose={() => onClose?.(postAttachment.url)}
+          onError={error => onError?.(postAttachment.url, error)}
+          postAttachment={postAttachment}
         />
       ))}
     </Box>

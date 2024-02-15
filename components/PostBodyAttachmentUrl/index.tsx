@@ -1,23 +1,23 @@
 import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
 import CloseButtonWrapper from '../CloseButtonWrapper'
-import { TrackedMatch } from '../PostBodyTextArea'
 import { PostAttachmentType } from '../../types'
 import useUrlMeta from '../../utils/data/urlMeta/useUrlMeta'
 import PostAttachmentUrl from '../PostAttachmentUrl'
+import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 
 interface Props {
   onClose?: () => void
   onError?: (error: Error) => void
-  trackedMatch: TrackedMatch
+  postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachmentUrl = ({ onClose, onError, trackedMatch }: Props) => {
+const PostBodyAttachmentUrl = ({ onClose, onError, postAttachment }: Props) => {
   const isUrlLink =
-    resolvePostAttachmentTypeFromUrl(trackedMatch.url) ===
+    resolvePostAttachmentTypeFromUrl(postAttachment.url) ===
     PostAttachmentType.Url
 
   const { data, error, isLoading } = useUrlMeta(
-    isUrlLink ? trackedMatch.url : null,
+    isUrlLink ? postAttachment.url : null,
     { onError }
   )
 

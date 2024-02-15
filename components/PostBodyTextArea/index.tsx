@@ -1,24 +1,14 @@
-import {
-  KeyboardEvent,
-  LegacyRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { KeyboardEvent, LegacyRef, useEffect, useMemo, useRef } from 'react'
 import createHashtagPlugin, { HashtagProps } from '@draft-js-plugins/hashtag'
-import { convertFromRaw, EditorState } from 'draft-js'
+import { EditorState } from 'draft-js'
 import Editor from '@draft-js-plugins/editor'
 import 'draft-js/dist/Draft.css'
 import { Typography } from '@mui/material'
-import createLinkifyPlugin, { extractLinks } from '@draft-js-plugins/linkify'
+import createLinkifyPlugin from '@draft-js-plugins/linkify'
 import { Box } from '@mui/system'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
-import { Match } from 'linkify-it'
 
 import constants from '../../constants'
-import { PostAttachmentType } from '../../types'
 import numeral from 'numeral'
 import PostBodyAttachments from '../PostBodyAttachments'
 import usePostBodyTextAreaPlaceholder, {
@@ -26,22 +16,19 @@ import usePostBodyTextAreaPlaceholder, {
 } from '../../utils/usePostBodyTextAreaPlaceholder'
 import { NotesRounded } from '@mui/icons-material'
 import PluginEditor from '@draft-js-plugins/editor/lib/Editor'
-import { pipe } from 'ramda'
-import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
-import debounce from 'lodash.debounce'
+import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 
 const { POST_MAX_LENGTH } = constants
 
 const POST_WARNING_LENGTH = POST_MAX_LENGTH - 80
-const MAX_POST_ATTACHMENTS = 2
 
 const formatPostLength = (length: number | undefined) =>
   numeral(length ?? 0).format('0,0')
 
 export enum PostLengthStatusType {
-  warning = 'warning',
-  error = 'error',
-  none = 'none',
+  Warning = 'warning',
+  Error = 'error',
+  None = 'none',
 }
 
 const Hashtag = ({ children }: HashtagProps) => (
@@ -64,20 +51,6 @@ const linkifyPlugin = createLinkifyPlugin({
   component: LinkifyLink,
 })
 
-const emptyContentState = convertFromRaw({
-  entityMap: {},
-  blocks: [
-    {
-      depth: 0,
-      entityRanges: [],
-      inlineStyleRanges: [],
-      key: '',
-      text: '',
-      type: 'unstyled',
-    },
-  ],
-})
-
 export enum PostBodyTextAreaSize {
   Small = 'small',
   Large = 'large',
@@ -85,132 +58,43 @@ export enum PostBodyTextAreaSize {
 
 type Props = {
   disabled?: boolean
+  editorState: EditorState
   focusOnMount?: boolean
-  onChange?: (text: string) => void
+  postAttachments?: PostAttachmentInput[]
+  onChange?: (text: EditorState) => void
   onCommandEnter?: () => void
-  onLengthStatusChange?: (status: PostLengthStatusType) => void
-  onTrackedMatchesChange?: (trackedMatches: TrackedMatch[]) => void
+  onPostAttachmentClose?: (url: string) => void
   postType?: PostType
   size?: PostBodyTextAreaSize
 }
 
-export interface TrackedMatch {
-  closed: boolean
-  error: Error | null
-  match: Match
-  type: PostAttachmentType
-  url: string
-}
-
 const PostBodyTextArea = ({
   disabled,
+  editorState,
   focusOnMount,
   onChange,
   onCommandEnter,
-  onLengthStatusChange,
-  onTrackedMatchesChange,
+  onPostAttachmentClose,
+  postAttachments = [],
   postType = PostType.New,
   size = PostBodyTextAreaSize.Small,
 }: Props) => {
-  const [editorState, setEditorState] = useState<EditorState>(() =>
-    EditorState.createWithContent(emptyContentState)
-  )
-
-  const [postLengthStatus, setPostLengthStatus] =
-    useState<PostLengthStatusType>(PostLengthStatusType.none)
-
   const editorRef = useRef<Editor>()
+  const focusOnMountHasRun = useRef(false)
 
   useEffect(() => {
-    if (!focusOnMount) return
+    if (!focusOnMount || focusOnMountHasRun.current) return
 
     setTimeout(() => {
+      console.log('focusOnMount')
       if (!editorRef.current) return
       editorRef.current.focus()
+      focusOnMountHasRun.current = true
     }, 0)
   }, [focusOnMount])
 
-  const updatePostLengthStatus = useCallback((text: string) => {
-    if (text.length > POST_MAX_LENGTH) {
-      setPostLengthStatus(PostLengthStatusType.error)
-      return
-    }
-
-    if (text.length >= POST_WARNING_LENGTH) {
-      setPostLengthStatus(PostLengthStatusType.warning)
-      return
-    }
-
-    setPostLengthStatus(PostLengthStatusType.none)
-  }, [])
-
-  const removeDuplicateMatches = (links: Match[] | null) =>
-    links?.reduce((acc, link) => {
-      const existingLink = acc.some(({ url }) => url === link.url)
-      return existingLink ? acc : [...acc, link]
-    }, [] as Match[]) ?? []
-
-  const convertMatchToTrackedMatch = (match: Match): TrackedMatch => ({
-    closed: false,
-    error: null,
-    match,
-    type: resolvePostAttachmentTypeFromUrl(match.url),
-    url: match.url,
-  })
-
-  const [trackedMatches, setTrackedMatches] = useState<TrackedMatch[]>([])
-
-  const mergeTrackedMatches = useCallback(
-    (newTrackedMatches: TrackedMatch[]) =>
-      newTrackedMatches.map(newTrackedMatch => {
-        const existingTrackedMatch = trackedMatches.find(
-          ({ url }) => url === newTrackedMatch.url
-        )
-
-        if (!existingTrackedMatch) {
-          return newTrackedMatch
-        }
-
-        return {
-          ...newTrackedMatch,
-          closed: existingTrackedMatch.closed,
-          error: existingTrackedMatch.error,
-        }
-      }),
-    [trackedMatches]
-  )
-
-  const filterTrackedMatches = useCallback(
-    (test: TrackedMatch[]) =>
-      test
-        .filter(({ closed, error }) => !closed && !error)
-        .slice(0, MAX_POST_ATTACHMENTS),
-    []
-  )
-
-  const updateTrackedMatchesFromText = useMemo(
-    () =>
-      debounce(
-        (text: string) =>
-          pipe(
-            extractLinks,
-            removeDuplicateMatches,
-            links => links.map(convertMatchToTrackedMatch),
-            mergeTrackedMatches,
-            filterTrackedMatches,
-            setTrackedMatches
-          )(text),
-        600
-      ),
-    [filterTrackedMatches, mergeTrackedMatches]
-  )
-
-  const handleEditorStateChange = (editorState: EditorState) => {
-    const text = editorState.getCurrentContent().getPlainText()
-    setEditorState(editorState)
-    onChange?.(text)
-    updateTrackedMatchesFromText(text)
-    updatePostLengthStatus(text)
+  const handleEditorStateChange = (newEditorState: EditorState) => {
+    onChange?.(newEditorState)
   }
 
   const handleReturn = (event: KeyboardEvent) => {
@@ -222,48 +106,22 @@ const PostBodyTextArea = ({
     return 'handled'
   }
 
-  useEffect(() => {
-    onLengthStatusChange?.(postLengthStatus)
-  }, [onLengthStatusChange, postLengthStatus])
-
-  const handleAttachmentClose = useCallback((url: string) => {
-    setTrackedMatches(currentTrackedMatches =>
-      currentTrackedMatches.map(currentTrackedMatch => {
-        if (currentTrackedMatch.url !== url) {
-          return currentTrackedMatch
-        }
-
-        return {
-          ...currentTrackedMatch,
-          closed: true,
-        }
-      })
-    )
-  }, [])
-
-  const handleAttachmentError = useCallback((url: string, error: Error) => {
-    setTrackedMatches(currentTrackedMatches =>
-      currentTrackedMatches.map(currentTrackedMatch => {
-        if (currentTrackedMatch.url !== url) {
-          return currentTrackedMatch
-        }
-
-        return {
-          ...currentTrackedMatch,
-          error,
-        }
-      })
-    )
-  }, [])
-
-  const value = editorState.getCurrentContent().getPlainText()
+  const plainText = editorState?.getCurrentContent().getPlainText()
   const placeholder = usePostBodyTextAreaPlaceholder({ postType })
-  const shouldRenderPostLength = value?.length > POST_WARNING_LENGTH
+  const shouldRenderPostLength = (plainText?.length ?? 0) > POST_WARNING_LENGTH
   const large = size === PostBodyTextAreaSize.Large
 
-  useEffect(() => {
-    onTrackedMatchesChange?.(trackedMatches)
-  }, [trackedMatches, onTrackedMatchesChange])
+  const postLengthStatus = useMemo(() => {
+    if (plainText.length > POST_MAX_LENGTH) {
+      return PostLengthStatusType.Error
+    }
+
+    if (plainText.length >= POST_WARNING_LENGTH) {
+      return PostLengthStatusType.Warning
+    }
+
+    return PostLengthStatusType.None
+  }, [plainText.length])
 
   return (
     <Box>
@@ -336,27 +194,27 @@ const PostBodyTextArea = ({
                 variant="caption"
                 sx={{
                   fontWeight:
-                    postLengthStatus === PostLengthStatusType.warning ||
-                    postLengthStatus === PostLengthStatusType.error
+                    postLengthStatus === PostLengthStatusType.Warning ||
+                    postLengthStatus === PostLengthStatusType.Error
                       ? 'bold'
                       : undefined,
                   color:
-                    postLengthStatus === PostLengthStatusType.error
+                    postLengthStatus === PostLengthStatusType.Error
                       ? 'error.main'
-                      : postLengthStatus === PostLengthStatusType.warning
+                      : postLengthStatus === PostLengthStatusType.Warning
                       ? 'warning.main'
                       : undefined,
                 }}
               >
-                {formatPostLength(value?.length ?? 0)}/
+                {formatPostLength(plainText?.length ?? 0)}/
                 {formatPostLength(POST_MAX_LENGTH)}
               </Typography>
             </Box>
           )}
           <PostBodyAttachments
-            onClose={handleAttachmentClose}
-            onError={handleAttachmentError}
-            trackedMatches={trackedMatches}
+            onClose={onPostAttachmentClose}
+            onError={onPostAttachmentClose}
+            postAttachments={postAttachments}
           />
         </Box>
       </Box>

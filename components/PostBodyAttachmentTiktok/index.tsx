@@ -1,19 +1,19 @@
 import useTiktokAttachment from '../../utils/data/tiktok/useTiktokAttachment'
+import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 import { isTikTokPostUrl } from '../../utils/socialPlatformUrls'
 import CloseButtonWrapper from '../CloseButtonWrapper'
-import { TrackedMatch } from '../PostBodyTextArea'
 import PostAttachmentTikTok from '../PostAttachmentTikTok'
 
 interface Props {
   onClose?: () => void
-  trackedMatch: TrackedMatch
+  postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachmentTiktok = ({ onClose, trackedMatch }: Props) => {
-  const isTiktokLink = isTikTokPostUrl(trackedMatch.url)
+const PostBodyAttachmentTiktok = ({ onClose, postAttachment }: Props) => {
+  const isTiktokLink = isTikTokPostUrl(postAttachment.url)
 
   const { data, isLoading } = useTiktokAttachment(
-    isTiktokLink ? trackedMatch.url : null
+    isTiktokLink ? postAttachment.url : null
   )
 
   if (!isTiktokLink || isLoading) {

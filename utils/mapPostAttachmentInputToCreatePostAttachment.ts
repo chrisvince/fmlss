@@ -1,8 +1,8 @@
-import { TrackedMatch } from '../components/PostBodyTextArea'
 import { CreatePostAttachment, PostAttachmentType } from '../types'
+import { PostAttachmentInput } from './draft-js/usePostBodyEditorState'
 
-const mapTrackedMatchToCreatePostAttachment = (
-  trackedMatch: TrackedMatch
+const mapPostAttachmentInputToCreatePostAttachment = (
+  trackedMatch: PostAttachmentInput
 ): CreatePostAttachment => {
   switch (trackedMatch.type) {
     case PostAttachmentType.Tiktok:
@@ -20,4 +20,4 @@ const mapTrackedMatchToCreatePostAttachment = (
   throw new Error('Invalid attachment type')
 }
 
-export default mapTrackedMatchToCreatePostAttachment
+export default mapPostAttachmentInputToCreatePostAttachment

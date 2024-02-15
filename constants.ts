@@ -45,6 +45,7 @@ interface CONSTANTS {
   PAGE_TITLE_HEIGHT: string
   PASSWORD_MIN_LENGTH: number
   PASSWORD_REGEX_PATTERN: RegExp
+  POST_ATTACHMENTS_MAX: number
   POST_AUTHOR_CACHE_TIME: number | undefined
   POST_CACHE_TIME: number
   POST_LIKES_CACHE_TIME: number
@@ -132,6 +133,7 @@ const constants: CONSTANTS = {
   PAGE_TITLE_HEIGHT: '34.59px',
   PASSWORD_MIN_LENGTH,
   PASSWORD_REGEX_PATTERN: /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/g,
+  POST_ATTACHMENTS_MAX: 2,
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever
   POST_CACHE_TIME: secondsToMs(30),
   POST_LIKES_CACHE_TIME: secondsToMs(10),
