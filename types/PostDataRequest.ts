@@ -6,7 +6,7 @@ export interface PostDataRequest {
   attachments: PostAttachmentDb[]
   body: string
   bodyText: string
-  topic: TopicRelation
+  topic?: TopicRelation
   createdAt: firestore.Timestamp
   documentDepth: number
   hashtags: string[]

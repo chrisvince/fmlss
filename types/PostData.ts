@@ -5,7 +5,7 @@ export interface PostData {
   attachments: PostAttachment[]
   body: string
   bodyText: string
-  topic: TopicRelation
+  topic?: TopicRelation
   createdAt: number
   documentDepth: number
   hashtags: string[]

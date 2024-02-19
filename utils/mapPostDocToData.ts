@@ -46,13 +46,17 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
     reference: postDoc.ref.path,
     slug: postData.slug,
     updatedAt: postData.updatedAt.toMillis(),
-    topic: {
-      path: postData.topic.path,
-      pathTitle: postData.topic.pathTitle,
-      slug: postData.topic.slug,
-      subtopicSegments: postData.topic.subtopicSegments,
-      title: postData.topic.title,
-    },
+    ...(postData.topic
+      ? {
+          topic: {
+            path: postData.topic.path,
+            pathTitle: postData.topic.pathTitle,
+            slug: postData.topic.slug,
+            subtopicSegments: postData.topic.subtopicSegments,
+            title: postData.topic.title,
+          },
+        }
+      : {}),
   }
 }
 
