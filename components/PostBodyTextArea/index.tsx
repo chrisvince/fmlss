@@ -1,4 +1,12 @@
-import { KeyboardEvent, LegacyRef, useEffect, useMemo, useRef } from 'react'
+import {
+  KeyboardEvent,
+  LegacyRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { EditorState } from 'draft-js'
 import Editor from '@draft-js-plugins/editor'
 import 'draft-js/dist/Draft.css'
@@ -16,12 +24,21 @@ import PluginEditor from '@draft-js-plugins/editor/lib/Editor'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 import createHashtagPlugin from '../../utils/draft-js/plugins/hashtag'
 import createLinkifyPlugin from '../../utils/draft-js/plugins/linkify'
+import '@draft-js-plugins/mention/lib/plugin.css'
+import { MentionData } from '@draft-js-plugins/mention'
+import createMentionPlugin from '../../utils/draft-js/plugins/mention'
+import getPeopleSearch from '../../utils/data/people/getPeopleSearch'
+import debounce from 'lodash.debounce'
+import slugify from '../../utils/slugify'
 
 const { POST_MAX_LENGTH } = constants
 
 const POST_WARNING_LENGTH = POST_MAX_LENGTH - 80
 
+const mentionPlugin = createMentionPlugin()
+
 const PLUGINS = [
+  mentionPlugin,
   createLinkifyPlugin(),
   createHashtagPlugin({ readOnly: false }),
 ]
@@ -65,6 +82,60 @@ const PostBodyTextArea = ({
 }: Props) => {
   const editorRef = useRef<Editor>()
   const focusOnMountHasRun = useRef(false)
+  const [mentionSuggestionsOpen, setMentionSuggestionsOpen] = useState(false)
+
+  const [mentionSuggestions, setMentionSuggestions] = useState<MentionData[]>(
+    []
+  )
+
+  const { MentionSuggestions } = mentionPlugin
+
+  const getMentionSuggestions = useMemo(
+    () =>
+      debounce(async (searchValue: string) => {
+        const searchValueSlug = slugify(searchValue)
+        const results = await getPeopleSearch(searchValue)
+
+        const resultMentions = results.map(({ data }) => ({
+          link: `/people/${data.slug}`,
+          name: data.name,
+        }))
+
+        const matchExists = results.some(
+          person => person.data.slug === searchValueSlug
+        )
+
+        const mentions = [
+          ...(matchExists
+            ? []
+            : [{ name: searchValue, link: `/people/${searchValueSlug}` }]),
+          ...resultMentions,
+        ]
+
+        setMentionSuggestionsOpen(true)
+        setMentionSuggestions(mentions)
+      }, 500),
+    []
+  )
+
+  const onSearchChange = useCallback(
+    async ({ value }: { value: string }) => {
+      if (!value) {
+        setMentionSuggestions([])
+        setMentionSuggestionsOpen(false)
+        return
+      }
+
+      const searchValueSlug = slugify(value)
+
+      setMentionSuggestions([
+        { name: value, link: `/people/${searchValueSlug}` },
+      ])
+
+      getMentionSuggestions(value)
+    },
+    [getMentionSuggestions]
+  )
 
   useEffect(() => {
     if (!focusOnMount || focusOnMountHasRun.current) return
@@ -165,6 +236,12 @@ const PostBodyTextArea = ({
               stripPastedStyles
             />
           </Typography>
+          <MentionSuggestions
+            onOpenChange={setMentionSuggestionsOpen}
+            onSearchChange={onSearchChange}
+            open={mentionSuggestionsOpen}
+            suggestions={mentionSuggestions}
+          />
           {shouldRenderPostLength && (
             <Box
               sx={{

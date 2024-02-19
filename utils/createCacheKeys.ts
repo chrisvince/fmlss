@@ -115,27 +115,45 @@ const createHasUnreadNotificationsCacheKey = (uid: string) =>
 const createPostReactionCacheKey = (slug: string, uid: string) =>
   `post/${slug}/reaction/${uid}`
 
+const createPeopleCacheKey = (
+  { pageIndex }: { pageIndex: number } = { pageIndex: 0 }
+) => `people-${pageIndex}`
+
+const createPersonCacheKey = (slug: string) => `person/${slug}`
+
+const createPersonPostsCacheKey = (
+  slug: string,
+  { pageIndex = 0 }: { pageIndex: number } = { pageIndex: 0 }
+) => `person/${slug}/posts-${pageIndex}`
+
+const createPeopleSearchCacheKey = (searchString: string) =>
+  `people/search/${searchString}`
+
 export {
-  createTopicsCacheKey,
-  createTopicsStartsWithCacheKey,
-  createTopicCacheKey,
-  createTopicPostsCacheKey,
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
-  createPostReactionCacheKey,
+  createHasUnreadNotificationsCacheKey,
+  createNotificationCacheKey,
+  createPeopleCacheKey,
+  createPeopleSearchCacheKey,
+  createPersonCacheKey,
+  createPersonPostsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKey,
   createPostLikeCacheKey,
+  createPostReactionCacheKey,
   createPostRepliesCacheKey,
-  createUserIsWatchingCacheKey,
-  createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
+  createSidebarTopicsCacheKey,
+  createTopicCacheKey,
+  createTopicPostsCacheKey,
+  createTopicsCacheKey,
+  createTopicsStartsWithCacheKey,
   createUserCacheKey,
+  createUserIsWatchingCacheKey,
   createUserLikesCacheKey,
   createUserPostsCacheKey,
   createUserRepliesCacheKey,
   getPageIndexFromCacheKey,
-  createNotificationCacheKey,
-  createHasUnreadNotificationsCacheKey,
 }

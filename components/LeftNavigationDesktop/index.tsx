@@ -1,6 +1,7 @@
 import { Box } from '@mui/system'
 import { List, useTheme } from '@mui/material'
 import {
+  AlternateEmailRounded,
   ChatOutlined,
   ChatRounded,
   FavoriteBorderOutlined,
@@ -42,6 +43,12 @@ const NAVIGATION_ITEMS = [
     icon: StarOutlineRounded,
     iconCurrent: StarRounded,
     label: 'Popular',
+  },
+  {
+    href: '/people',
+    icon: AlternateEmailRounded,
+    iconCurrent: AlternateEmailRounded,
+    label: 'People',
   },
   ...(TOPICS_ENABLED
     ? [

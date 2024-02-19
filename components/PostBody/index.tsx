@@ -4,8 +4,13 @@ import Editor from '@draft-js-plugins/editor'
 import createLinkifyPlugin from '../../utils/draft-js/plugins/linkify'
 import createHashtagPlugin from '../../utils/draft-js/plugins/hashtag'
 import { useState } from 'react'
+import createMentionPlugin from '../../utils/draft-js/plugins/mention'
 
-const PLUGINS = [createLinkifyPlugin(), createHashtagPlugin({ readOnly: true })]
+const PLUGINS = [
+  createMentionPlugin({ readOnly: true }),
+  createLinkifyPlugin(),
+  createHashtagPlugin({ readOnly: true }),
+]
 
 interface Props {
   body: string
