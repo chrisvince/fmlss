@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 
 import constants from '../../../constants'
 import { Topic, TopicData } from '../../../types'
@@ -27,10 +27,10 @@ const getTopic: GetTopic = async (path, { db: dbProp } = {}) => {
   let data: TopicData
 
   const topicCacheKey = createTopicCacheKey(path)
-  const cachedData = get(topicCacheKey)
+  const serverCachedData = get(topicCacheKey)
 
-  if (isServer && cachedData) {
-    data = cachedData
+  if (serverCachedData) {
+    data = serverCachedData
     doc = null
   } else {
     const topicsRef = await db

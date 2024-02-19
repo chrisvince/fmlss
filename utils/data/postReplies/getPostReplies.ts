@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import {
@@ -47,10 +47,10 @@ const getPostReplies: GetPostReplies = async (
 
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
   const collection = `${reference}/posts`
-  const cachedData = get(postRepliesCacheKey)
+  const serverCachedData = get(postRepliesCacheKey)
 
-  if (isServer && cachedData) {
-    replyData = cachedData
+  if (serverCachedData) {
+    replyData = serverCachedData
     replyDocs = null
   } else {
     replyDocs = await pipe(

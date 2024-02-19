@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
@@ -63,10 +63,10 @@ const getHashtagPosts: GetHashtagPosts = async (
     showType,
     sortMode
   )
-  const cachedData = get(hashtagPostsCacheKey)
+  const serverCachedData = get(hashtagPostsCacheKey)
 
-  if (isServer && cachedData) {
-    postData = cachedData
+  if (serverCachedData) {
+    postData = serverCachedData
     postDocs = null
   } else {
     postDocs = await pipe(

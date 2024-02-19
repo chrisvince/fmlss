@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 
 import { TopicData } from '../../../types'
 import { createTopicsStartsWithCacheKey } from '../../createCacheKeys'
@@ -29,10 +29,10 @@ const getTopicsSearch = async (
 
   let topicData: TopicData[] = []
 
-  const cachedData = get(cacheKey)
+  const serverCachedData = get(cacheKey)
 
-  if (isServer && cachedData) {
-    topicData = cachedData
+  if (serverCachedData) {
+    topicData = serverCachedData
     topicDocs = null
   } else {
     topicDocs = await db

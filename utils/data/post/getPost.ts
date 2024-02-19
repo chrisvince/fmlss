@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 
 import constants from '../../../constants'
 import { Post, PostData } from '../../../types'
@@ -35,10 +35,10 @@ const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
   let data: PostData
 
   const postCacheKey = createPostCacheKey(slug)
-  const cachedPostData = get(postCacheKey)
+  const serverCachedPostData = get(postCacheKey)
 
-  if (isServer && cachedPostData) {
-    data = cachedPostData
+  if (serverCachedPostData) {
+    data = serverCachedPostData
     doc = null
   } else {
     const postsRef = await db

@@ -1,9 +1,8 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 import constants from '../../../constants'
 import { createPostReactionCacheKey } from '../../createCacheKeys'
-import isServer from '../../isServer'
 import { PostReaction, ReactionId } from '../../../types/Reaction'
 
 const {
@@ -23,11 +22,11 @@ const getPostReaction = async (
 ) => {
   const db = dbProp || firebase.firestore()
   const postReactionCacheKey = createPostReactionCacheKey(slug, uid)
-  const cachedReaction = get(postReactionCacheKey) as ReactionId | null
+  const serverCachedReaction = get(postReactionCacheKey) as ReactionId | null
   let postReaction: ReactionId | null = null
 
-  if (isServer && cachedReaction !== null) {
-    postReaction = cachedReaction
+  if (serverCachedReaction !== null) {
+    postReaction = serverCachedReaction
   } else {
     const postReactionsRef = await db
       .collection(`${USERS_COLLECTION}/${uid}/${POST_REACTIONS_COLLECTION}`)

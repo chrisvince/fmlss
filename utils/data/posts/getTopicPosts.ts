@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
@@ -48,10 +48,10 @@ const getTopicPosts: GetTopicPosts = async (
   const topicPostsCacheKey = createTopicPostsCacheKey(path, {
     sortMode,
   })
-  const cachedData = get(topicPostsCacheKey)
+  const serverCachedData = get(topicPostsCacheKey)
 
-  if (isServer && cachedData) {
-    postData = cachedData
+  if (serverCachedData) {
+    postData = serverCachedData
     postDocs = null
   } else {
     postDocs = await pipe(

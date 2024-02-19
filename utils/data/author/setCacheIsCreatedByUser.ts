@@ -1,4 +1,4 @@
-import { put } from 'memory-cache'
+import { put } from '../../serverCache'
 import constants from '../../../constants'
 import { createPostAuthorCacheKey } from '../../createCacheKeys'
 import isServer from '../../isServer'

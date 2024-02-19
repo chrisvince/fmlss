@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
@@ -30,10 +30,10 @@ const getPeople: GetPeople = async ({ db: dbProp, startAfter } = {}) => {
   let peopleData: PersonData[] = []
 
   const cacheKey = createPeopleCacheKey()
-  const cachedData = get(cacheKey)
+  const serverCachedData = get(cacheKey)
 
-  if (isServer && cachedData) {
-    peopleData = cachedData
+  if (serverCachedData) {
+    peopleData = serverCachedData
     peopleDocs = null
   } else {
     peopleDocs = await pipe(

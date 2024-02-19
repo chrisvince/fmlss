@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
@@ -42,10 +42,10 @@ const getHashtags: GetHashtags = async ({
     | null
   let hashtagData: HashtagData[] = []
 
-  const cachedData = get(cacheKey)
+  const serverCachedData = get(cacheKey)
 
-  if (isServer && cachedData) {
-    hashtagData = cachedData
+  if (serverCachedData) {
+    hashtagData = serverCachedData
     hashtagDocs = null
   } else {
     hashtagDocs = await pipe(

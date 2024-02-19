@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 
 import constants from '../../../constants'
 import { createPersonCacheKey } from '../../createCacheKeys'
@@ -29,10 +29,10 @@ const getPerson: GetPerson = async (slug, { db: dbProp } = {}) => {
   let data: PersonData
 
   const personCacheKey = createPersonCacheKey(slug)
-  const cachedData = get(personCacheKey)
+  const serverCachedData = get(personCacheKey)
 
-  if (isServer && cachedData) {
-    data = cachedData
+  if (serverCachedData) {
+    data = serverCachedData
     doc = null
   } else {
     const peopleRef = await db

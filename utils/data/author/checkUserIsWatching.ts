@@ -1,9 +1,8 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 import constants from '../../../constants'
 import { createUserIsWatchingCacheKey } from '../../createCacheKeys'
-import isServer from '../../isServer'
 
 const {
   USERS_COLLECTION,
@@ -23,10 +22,13 @@ const checkUserIsWatching = async (
   const db = dbProp || firebase.firestore()
   let userIsWatching = false
   const userIsWatchingCacheKey = createUserIsWatchingCacheKey(slug, uid)
-  const cachedUserIsWatching = get(userIsWatchingCacheKey) as boolean | null
 
-  if (isServer && cachedUserIsWatching !== null) {
-    userIsWatching = cachedUserIsWatching
+  const serverCachedUserIsWatching = get(userIsWatchingCacheKey) as
+    | boolean
+    | null
+
+  if (serverCachedUserIsWatching !== null) {
+    userIsWatching = serverCachedUserIsWatching
   } else {
     const postWatchersSnapshot = await db
       .collection(`${USERS_COLLECTION}/${uid}/${WATCHED_POSTS_COLLECTION}`)

@@ -1,10 +1,9 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
 
+import { get, put } from '../../serverCache'
 import { createPostAuthorCacheKey } from '../../createCacheKeys'
 import constants from '../../../constants'
-import isServer from '../../isServer'
 
 const { AUTHORED_POSTS_COLLECTION, POST_AUTHOR_CACHE_TIME, USERS_COLLECTION } =
   constants
@@ -21,10 +20,10 @@ const checkIsCreatedByUser = async (
   const db = dbProp || firebase.firestore()
   let createdByUser = false
   const postAuthorCacheKey = createPostAuthorCacheKey(slug)
-  const cachedAuthorUid = get(postAuthorCacheKey)
+  const serverCachedAuthorUid = get(postAuthorCacheKey)
 
-  if (isServer && cachedAuthorUid) {
-    createdByUser = uid === cachedAuthorUid
+  if (serverCachedAuthorUid) {
+    createdByUser = uid === serverCachedAuthorUid
   } else {
     const authoredPostsRef = await db
       .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)

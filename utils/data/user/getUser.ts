@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import { get, put } from 'memory-cache'
+import { get, put } from '../../serverCache'
 
 import { User, UserData } from '../../../types'
 import { createUserCacheKey } from '../../createCacheKeys'
@@ -30,10 +30,10 @@ const getUser: GetUser = async (uid, { db: dbProp } = {}) => {
   let data: UserData
 
   const userCacheKey = createUserCacheKey(uid)
-  const cachedPostData = get(userCacheKey)
+  const serverCachedPostData = get(userCacheKey)
 
-  if (isServer && cachedPostData) {
-    data = cachedPostData
+  if (serverCachedPostData) {
+    data = serverCachedPostData
     doc = null
   } else {
     const fetchedDoc = await db.collection(USERS_COLLECTION).doc(uid).get()
