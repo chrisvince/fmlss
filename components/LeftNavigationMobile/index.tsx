@@ -1,6 +1,7 @@
 import { useAuthUser } from 'next-firebase-auth'
 import { Box, List, SwipeableDrawer, SwipeableDrawerProps } from '@mui/material'
 import {
+  AlternateEmailRounded,
   ChatOutlined,
   ChatRounded,
   FavoriteBorderOutlined,
@@ -43,6 +44,12 @@ const NAVIGATION_ITEMS = [
     icon: StarOutlineRounded,
     iconCurrent: StarRounded,
     label: 'Popular',
+  },
+  {
+    href: '/people',
+    icon: AlternateEmailRounded,
+    iconCurrent: AlternateEmailRounded,
+    label: 'People',
   },
   ...(TOPICS_ENABLED
     ? [
