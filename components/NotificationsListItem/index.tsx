@@ -128,7 +128,6 @@ const NotificationsListItem = ({
         py,
         '& .MuiListItemIcon-root': { minWidth: '20px' },
       }}
-      href="/notifications"
     >
       <MuiLink
         component={Link}
