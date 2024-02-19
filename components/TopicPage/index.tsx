@@ -18,6 +18,7 @@ import constants from '../../constants'
 import CaptionLink from '../CaptionLink'
 import { Box } from '@mui/system'
 import TopicBreadcrumbs from '../TopicBreadcrumbs'
+import PageSpinner from '../PageSpinner'
 
 const { SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
 
@@ -83,6 +84,10 @@ const TopicPage = ({ path }: PropTypes) => {
       { onceOnly: true }
     )
   }, [topic?.data.title, topicIsLoading, path, track])
+
+  if (topicIsLoading) {
+    return <PageSpinner />
+  }
 
   if (!topicIsLoading && !topic) {
     return <Error statusCode={404} />
