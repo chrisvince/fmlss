@@ -37,7 +37,7 @@ const PostPage = ({ slug }: PropTypes) => {
   const handleFirstPostModalClose = () => setFirstPostModalOpen(false)
   const { track } = useTracking()
   const theme = useTheme()
-  const pageTitle = truncateString(post?.data.body)
+  const pageTitle = truncateString(post?.data.bodyText)
   const handleParentPostLoad = () => setParentPostLoaded(true)
   const mainContentWrapperRef = useRef<HTMLDivElement>(null)
   const firstPostModalHasBeenShownRef = useRef(false)

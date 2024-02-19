@@ -5,6 +5,7 @@ import { MajorityReaction } from './Reaction'
 export interface PostDataRequest {
   attachments: PostAttachmentDb[]
   body: string
+  bodyText: string
   topic: TopicRelation
   createdAt: firestore.Timestamp
   documentDepth: number

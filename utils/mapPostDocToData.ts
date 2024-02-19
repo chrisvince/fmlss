@@ -14,6 +14,7 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
   return {
     attachments,
     body: postData.body,
+    bodyText: postData.bodyText,
     createdAt: postData.createdAt.toMillis(),
     documentDepth: postData.documentDepth,
     hashtags: postData.hashtags,

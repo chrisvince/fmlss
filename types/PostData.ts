@@ -4,6 +4,7 @@ import { MajorityReaction } from './Reaction'
 export interface PostData {
   attachments: PostAttachment[]
   body: string
+  bodyText: string
   topic: TopicRelation
   createdAt: number
   documentDepth: number
