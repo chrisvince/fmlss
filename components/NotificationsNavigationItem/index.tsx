@@ -8,14 +8,14 @@ import {
   Typography,
 } from '@mui/material'
 import { Box } from '@mui/system'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import NotificationsListItem, {
   NotificationListItemSize,
 } from '../NotificationsListItem'
 import CaptionLink from '../CaptionLink'
 import useNotifications from '../../utils/data/notifications/useNotifications'
 import useHasUnreadNotifications from '../../utils/data/notifications/useHasUnreadNotifications'
-import { NotificationType } from '../../types'
+import { useRouter } from 'next/router'
 
 const NotificationsNavigationItem = () => {
   const notificationsButtonRef = useRef<HTMLButtonElement>(null)
@@ -23,6 +23,19 @@ const NotificationsNavigationItem = () => {
   const handleNotificationsClose = () => setNotificationsOpen(false)
   const shouldLoadNotificationsRef = useRef(notificationsOpen)
   const { hasUnreadNotifications } = useHasUnreadNotifications()
+  const router = useRouter()
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setNotificationsOpen(false)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [router])
 
   if (notificationsOpen && !shouldLoadNotificationsRef.current) {
     shouldLoadNotificationsRef.current = true
