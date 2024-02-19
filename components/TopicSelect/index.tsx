@@ -84,7 +84,7 @@ const TopicSelect = ({ onChange }: Props) => {
       debounce(async (segmentTitles: string[]) => {
         await search(segmentTitles)
         setAutoCompleteOpen(true)
-      }, 1000),
+      }, 500),
     [search]
   )
 
