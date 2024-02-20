@@ -34,6 +34,7 @@ const ForgotPasswordForm = () => {
         message:
           'There was an issue resetting your password. Please try again later.',
       })
+      setFormIsLoading(false)
     }
   }
 
