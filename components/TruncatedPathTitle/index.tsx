@@ -12,7 +12,7 @@ const TruncatedPathTitle = ({ subtopicSegments }: TruncatedPathTitleProps) => {
       return [subtopicSegments[0].title, '...', subtopicSegments.at(-1)?.title]
     }
 
-    return subtopicSegments.map(({ pathTitle }) => pathTitle)
+    return subtopicSegments.map(({ title }) => title)
   }, [subtopicSegments])
 
   return (
