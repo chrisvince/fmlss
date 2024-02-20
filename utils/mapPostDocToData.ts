@@ -17,7 +17,11 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
     bodyText: postData.bodyText,
     createdAt: postData.createdAt.toMillis(),
     documentDepth: postData.documentDepth,
-    hashtags: postData.hashtags,
+    hashtags: postData.hashtags.map(hashtag => ({
+      display: hashtag.display,
+      ref: hashtag.ref.path,
+      slug: hashtag.slug,
+    })),
     id: postDoc.id,
     likesCount: postData.likesCount,
     ...(postData.majorityReaction

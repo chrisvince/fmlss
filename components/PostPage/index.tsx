@@ -101,7 +101,7 @@ const PostPage = ({ slug }: PropTypes) => {
           publishedTime: createdAt,
           modifiedTime: updatedAt,
           section: post?.data.topic?.title,
-          tags: post?.data.hashtags,
+          tags: post?.data.hashtags.map(hashtag => hashtag.slug),
         }}
         description={post?.data.body}
         rightPanelChildren={

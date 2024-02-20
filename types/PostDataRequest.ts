@@ -1,6 +1,7 @@
 import { firestore } from 'firebase-admin'
 import { FirebaseDoc, TopicRelation, PostAttachmentDb } from '.'
 import { MajorityReaction } from './Reaction'
+import { DocumentData, DocumentReference } from '@google-cloud/firestore'
 
 export interface PostDataRequest {
   attachments: PostAttachmentDb[]
@@ -9,7 +10,11 @@ export interface PostDataRequest {
   topic?: TopicRelation
   createdAt: firestore.Timestamp
   documentDepth: number
-  hashtags: string[]
+  hashtags: {
+    display: string
+    ref: DocumentReference<DocumentData>
+    slug: string
+  }[]
   id: string
   likesCount: number
   majorityReaction?: MajorityReaction

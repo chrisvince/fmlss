@@ -73,7 +73,7 @@ const getHashtagPosts: GetHashtagPosts = async (
       () =>
         db
           .collectionGroup(POSTS_COLLECTION)
-          .where('hashtags', 'array-contains', lowerCaseSlug),
+          .where('hashtagSlugs', 'array-contains', lowerCaseSlug),
       query =>
         showType !== 'both' ? query.where('type', '==', showType) : query,
       query =>

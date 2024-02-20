@@ -8,7 +8,11 @@ export interface PostData {
   topic?: TopicRelation
   createdAt: number
   documentDepth: number
-  hashtags: string[]
+  hashtags: {
+    display: string
+    ref: string
+    slug: string
+  }[]
   id: string
   likesCount: number
   majorityReaction?: MajorityReaction
