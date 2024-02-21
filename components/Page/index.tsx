@@ -10,6 +10,8 @@ const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
 const URL = process.env.VERCEL_URL ?? APP_URL
 const DEFAULT_DESCRIPTION = `${BRAND_NAME}, the nameless, faceless networking platform.`
 
+const APPLE_ICON_SIZES = [16, 32, 64, 128, 256, 512, 1024]
+
 interface RenderTitle {
   title?: string
   pageTitle?: string
@@ -79,7 +81,6 @@ const Page = ({
         <meta name="description" content={description} />
         <meta name="og:description" content={description} />
         <meta name="twitter:description" content={description} />
-        <link rel="icon" href="/favicon.ico" />
         {article.publishedTime && (
           <meta name="article:published_time" content={article.publishedTime} />
         )}
@@ -93,6 +94,17 @@ const Page = ({
           article.tags.map((tag, index) => (
             <meta key={`${tag}-${index}`} name="article:tag" content={tag} />
           ))}
+        {APPLE_ICON_SIZES.map(size => (
+          <link
+            key={size}
+            rel="apple-touch-icon"
+            sizes={`${size}x${size}`}
+            href={`icons/apple-icon-${size}.png`}
+          />
+        ))}
+        <meta name="apple-mobile-web-app-title" content={BRAND_NAME} />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
       </Head>
       {layout === 'rightPanel' ? (
         <NestedLayout
