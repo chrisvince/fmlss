@@ -102,6 +102,10 @@ const Page = ({
             href={`icons/apple-icon-${size}.png`}
           />
         ))}
+        <link
+          rel="apple-touch-startup-image"
+          href="icons/apple-icon-1024.png"
+        />
         <meta name="apple-mobile-web-app-title" content={BRAND_NAME} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
