@@ -109,6 +109,7 @@ const Page = ({
         <meta name="apple-mobile-web-app-title" content={BRAND_NAME} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <link rel="manifest" href="manifest.json" />
       </Head>
       {layout === 'rightPanel' ? (
         <NestedLayout
