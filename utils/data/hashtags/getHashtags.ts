@@ -27,7 +27,7 @@ type GetHashtags = (options?: {
 }) => Promise<Hashtag[]>
 
 const getHashtags: GetHashtags = async ({
-  sortMode = 'popular',
+  sortMode = HashtagsSortMode.Popular,
   cacheKey = createHashtagsCacheKey(sortMode),
   cacheTime = HASHTAGS_CACHE_TIME,
   db: dbProp,
@@ -51,8 +51,8 @@ const getHashtags: GetHashtags = async ({
     hashtagDocs = await pipe(
       () => db.collection(HASHTAGS_COLLECTION),
       query =>
-        sortMode === 'popular'
-          ? query.orderBy('recentViewCount', 'desc')
+        sortMode === HashtagsSortMode.Popular
+          ? query.orderBy('popularityScoreLast7Days', 'desc')
           : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),

@@ -54,7 +54,7 @@ const getPostFeed: GetPosts = async ({
       () => db.collection(POSTS_COLLECTION),
       query =>
         sortMode === FeedSortMode.Popular
-          ? query.orderBy('recentViewCount', 'desc')
+          ? query.orderBy('popularityScoreLast7Days', 'desc')
           : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
