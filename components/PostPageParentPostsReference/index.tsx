@@ -134,7 +134,7 @@ const PostPageParentPostsReference = ({
                   }}
                   variant="caption"
                 >
-                  {originalPost.data.body}
+                  {originalPost.data.bodyText}
                 </MuiLink>
               </Box>
             </Box>
