@@ -1,9 +1,9 @@
 {
   "name": "Fameless",
   "short_name": "Fameless",
-  "start_url": "https://fameless.net",
+  "start_url": "https://www.fameless.net/",
   "display": "standalone",
-  "scope": "https://fameless.net",
+  "scope": "https://www.fameless.net/",
   "icons": [
     {
       "src": "icons/apple-icon-16.png",
