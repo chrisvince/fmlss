@@ -45,7 +45,7 @@ const NotificationsNavigationItem = () => {
     setNotificationsOpen(current => !current)
 
   const { notifications, isLoading } = useNotifications({
-    limit: 10,
+    limit: 7,
     skip: !shouldLoadNotificationsRef.current,
   })
 
@@ -85,7 +85,6 @@ const NotificationsNavigationItem = () => {
         }}
         onClose={handleNotificationsClose}
         open={notificationsOpen}
-        sx={{ maxHeight: '300px' }}
       >
         <Paper
           sx={{
