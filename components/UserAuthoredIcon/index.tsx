@@ -5,7 +5,7 @@ const UserAuthoredIcon = () => (
   <Tooltip placement="top-start" title="Created by you. Only you can see this.">
     <PersonRounded
       sx={{
-        fontSize: '1em',
+        fontSize: '0.9em',
       }}
       color="secondary"
     />
