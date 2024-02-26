@@ -11,6 +11,10 @@ const PostAttachmentBorder = ({ children }: Props) => (
       borderColor: 'divider',
       borderRadius: 1,
       overflow: 'hidden',
+      transition: 'background-color ease-in-out 200ms',
+      '&:hover': {
+        backgroundColor: 'action.hover',
+      },
     }}
   >
     {children}
