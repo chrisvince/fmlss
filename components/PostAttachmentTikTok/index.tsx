@@ -39,7 +39,7 @@ const PostAttachmentTikTok = ({ attachment: postAttachment }: Props) => (
         }
         text={
           <Typography variant="caption">
-            <Box sx={{ fontWeight: 600, marginBlockEnd: 1 }}>Tiktok</Box>
+            <Box sx={{ fontWeight: 600, marginBlockEnd: 1 }}>TikTok</Box>
             <Box
               dangerouslySetInnerHTML={{ __html: postAttachment.textHtml }}
               sx={{
