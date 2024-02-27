@@ -83,6 +83,7 @@ const PostBodyTextArea = ({
   const editorRef = useRef<Editor>()
   const focusOnMountHasRun = useRef(false)
   const [mentionSuggestionsOpen, setMentionSuggestionsOpen] = useState(false)
+  const [displayTagInstruction, setDisplayTagInstruction] = useState(false)
 
   const [mentionSuggestions, setMentionSuggestions] = useState<MentionData[]>(
     []
@@ -177,6 +178,17 @@ const PostBodyTextArea = ({
     return PostLengthStatusType.None
   }, [plainText.length])
 
+  useEffect(() => {
+    setDisplayTagInstruction(currentDisplayTagInstruction => {
+      if (currentDisplayTagInstruction) return true
+      return !!plainText
+    })
+  }, [plainText])
+
+  const handleEditorBlur = () => {
+    setDisplayTagInstruction(false)
+  }
+
   return (
     <Box>
       <Box
@@ -202,8 +214,7 @@ const PostBodyTextArea = ({
             borderBottomColor: large ? 'action.disabled' : undefined,
             borderBottomStyle: large ? 'solid' : undefined,
             borderBottomWidth: large ? '1px' : undefined,
-            pb: 3,
-            pt: 1,
+            py: 1,
           }}
         >
           <Typography
@@ -227,6 +238,7 @@ const PostBodyTextArea = ({
             <Editor
               editorState={editorState}
               handleReturn={handleReturn}
+              onBlur={handleEditorBlur}
               onChange={handleEditorStateChange}
               placeholder={placeholder}
               plugins={PLUGINS}
@@ -276,6 +288,16 @@ const PostBodyTextArea = ({
             onError={onPostAttachmentClose}
             postAttachments={postAttachments}
           />
+          <Box
+            sx={{
+              opacity: displayTagInstruction ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+            }}
+          >
+            <Typography variant="caption" color="action.active">
+              Use # for hashtags and @ to tag people.
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>

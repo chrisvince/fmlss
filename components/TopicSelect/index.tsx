@@ -98,6 +98,8 @@ const TopicSelect = ({ onChange }: Props) => {
     EditorState.createWithContent(createStateFromText())
   )
 
+  const plainText = editorState.getCurrentContent().getPlainText()
+
   const [displaySubTopicInstruction, setDisplaySubTopicInstruction] =
     useState(false)
 
@@ -131,10 +133,6 @@ const TopicSelect = ({ onChange }: Props) => {
       const completeSubtopics = [...subtopics, ...(text ? [text] : [])]
       onChange?.(completeSubtopics)
 
-      if (text) {
-        setDisplaySubTopicInstruction(true)
-      }
-
       if (subtopics.length === 0 && text.length < 3) {
         clearSearch()
         return
@@ -144,6 +142,17 @@ const TopicSelect = ({ onChange }: Props) => {
     },
     [clearSearch, debouncedSearch, onChange, subtopics]
   )
+
+  useEffect(() => {
+    setDisplaySubTopicInstruction(currentDisplaySubTopicInstruction => {
+      if (currentDisplaySubTopicInstruction) return true
+      return !!plainText
+    })
+  }, [plainText])
+
+  const handleEditorBlur = () => {
+    setDisplaySubTopicInstruction(false)
+  }
 
   const handleKeyCommand = useCallback(
     (command: string, editorState: EditorState): DraftHandleValue => {
@@ -279,12 +288,12 @@ const TopicSelect = ({ onChange }: Props) => {
   const handlePastedText = useCallback(
     (text: string, _: string, editorState: EditorState): DraftHandleValue => {
       const removedSpecialChars = text.replace(/[^a-zA-Z" "/]/g, '')
-      const plainText = editorState.getCurrentContent().getPlainText()
+      const editorStateText = editorState.getCurrentContent().getPlainText()
       const currentSelection = editorState.getSelection()
       const anchorOffset = currentSelection.getAnchorOffset()
       const focusOffset = currentSelection.getFocusOffset()
 
-      const textSubtopics = insertText(removedSpecialChars, plainText, {
+      const textSubtopics = insertText(removedSpecialChars, editorStateText, {
         start: anchorOffset,
         end: focusOffset,
       }).split('/')
@@ -397,6 +406,7 @@ const TopicSelect = ({ onChange }: Props) => {
                 handleKeyCommand={handleKeyCommand}
                 handlePastedText={handlePastedText}
                 handleReturn={handleReturn}
+                onBlur={handleEditorBlur}
                 onChange={onEditorStateChange}
                 placeholder={placeholder}
                 preserveSelectionOnBlur
