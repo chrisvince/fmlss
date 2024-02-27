@@ -56,7 +56,7 @@ const ListItemFrame = ({
         backgroundColor: highlight ? 'action.hover' : undefined,
         '@media (hover: hover)': {
           '&:hover': {
-            backgroundColor: highlight ? 'action.selected' : 'action.hover',
+            backgroundColor: 'action.hover',
           },
         },
       }}
