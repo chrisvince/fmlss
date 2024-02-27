@@ -23,17 +23,19 @@ const PostAttachmentTikTok = ({ attachment: postAttachment }: Props) => (
       <PostAttachmentLayout
         layout={PostAttachmentLayoutLayout.MediaMedium}
         media={
-          <NextImage
-            src={postAttachment.image.src}
-            width={postAttachment.image.width}
-            height={postAttachment.image.height}
-            alt={postAttachment.image.alt}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-              display: 'block',
-            }}
-          />
+          <picture>
+            <img
+              src={postAttachment.image.src}
+              width={postAttachment.image.width}
+              height={postAttachment.image.height}
+              alt={postAttachment.image.alt}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+                display: 'block',
+              }}
+            />
+          </picture>
         }
         text={
           <Typography variant="caption">
