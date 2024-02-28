@@ -9,6 +9,7 @@ import PostBodyTextArea from '../PostBodyTextArea'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAttachmentInputToCreatePostAttachment'
 import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
+import PostBodyCounter from '../PostBodyCounter'
 
 interface Props {
   slug: string
@@ -24,6 +25,8 @@ const InlineReplyToPost = ({ slug }: Props) => {
     hasText,
     setEditorState,
   } = usePostBodyEditorState()
+
+  const plainText = editorState.getCurrentContent().getPlainText()
 
   const disableButton = overMaxLength || !hasText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
@@ -58,6 +61,7 @@ const InlineReplyToPost = ({ slug }: Props) => {
             <PostBodyTextArea
               disabled={isLoading}
               editorState={editorState}
+              isInlineReply
               onChange={setEditorState}
               onCommandEnter={submitPost}
               onPostAttachmentClose={closePostAttachment}
@@ -73,31 +77,50 @@ const InlineReplyToPost = ({ slug }: Props) => {
         </Box>
         <Box
           sx={{
+            alignItems: 'flex-end',
+            alignSelf: 'stretch',
             display: 'flex',
-            alignItems: 'center',
-            height: '72px',
+            flexDirection: 'column',
+            position: 'relative',
           }}
         >
-          <LoadingButton
-            disabled={disableButton}
-            loading={isLoading}
-            type="submit"
-            variant="contained"
-            sx={
-              !hasText
-                ? {
-                    backgroundColor: theme =>
-                      `${theme.palette.primary.main} !important`,
-                    color: theme =>
-                      `${theme.palette.getContrastText(
-                        theme.palette.primary.main
-                      )} !important`,
-                  }
-                : undefined
-            }
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              height: '73.5px',
+            }}
           >
-            Post
-          </LoadingButton>
+            <LoadingButton
+              disabled={disableButton}
+              loading={isLoading}
+              type="submit"
+              variant="contained"
+              sx={
+                !hasText
+                  ? {
+                      backgroundColor: theme =>
+                        `${theme.palette.primary.main} !important`,
+                      color: theme =>
+                        `${theme.palette.getContrastText(
+                          theme.palette.primary.main
+                        )} !important`,
+                    }
+                  : undefined
+              }
+            >
+              Post
+            </LoadingButton>
+          </Box>
+          <Box
+            sx={{
+              bottom: 0,
+              pb: 1,
+              position: 'absolute',
+            }}
+          >
+            <PostBodyCounter textLength={plainText.length} />
+          </Box>
         </Box>
       </Box>
     </MobileContainer>

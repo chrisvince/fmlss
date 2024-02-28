@@ -13,8 +13,6 @@ import 'draft-js/dist/Draft.css'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 
-import constants from '../../constants'
-import numeral from 'numeral'
 import PostBodyAttachments from '../PostBodyAttachments'
 import usePostBodyTextAreaPlaceholder, {
   PostType,
@@ -30,10 +28,7 @@ import createMentionPlugin from '../../utils/draft-js/plugins/mention'
 import getPeopleSearch from '../../utils/data/people/getPeopleSearch'
 import debounce from 'lodash.debounce'
 import slugify from '../../utils/slugify'
-
-const { POST_MAX_LENGTH } = constants
-
-const POST_WARNING_LENGTH = POST_MAX_LENGTH - 80
+import PostBodyCounter from '../PostBodyCounter'
 
 const mentionPlugin = createMentionPlugin()
 
@@ -42,9 +37,6 @@ const PLUGINS = [
   createLinkifyPlugin(),
   createHashtagPlugin({ readOnly: false }),
 ]
-
-const formatPostLength = (length: number | undefined) =>
-  numeral(length ?? 0).format('0,0')
 
 export enum PostLengthStatusType {
   Warning = 'warning',
@@ -61,10 +53,11 @@ type Props = {
   disabled?: boolean
   editorState: EditorState
   focusOnMount?: boolean
-  postAttachments?: PostAttachmentInput[]
+  isInlineReply?: boolean
   onChange?: (text: EditorState) => void
   onCommandEnter?: () => void
   onPostAttachmentClose?: (url: string) => void
+  postAttachments?: PostAttachmentInput[]
   postType?: PostType
   size?: PostBodyTextAreaSize
 }
@@ -73,6 +66,7 @@ const PostBodyTextArea = ({
   disabled,
   editorState,
   focusOnMount,
+  isInlineReply,
   onChange,
   onCommandEnter,
   onPostAttachmentClose,
@@ -163,20 +157,7 @@ const PostBodyTextArea = ({
 
   const plainText = editorState?.getCurrentContent().getPlainText()
   const placeholder = usePostBodyTextAreaPlaceholder({ postType })
-  const shouldRenderPostLength = (plainText?.length ?? 0) > POST_WARNING_LENGTH
   const large = size === PostBodyTextAreaSize.Large
-
-  const postLengthStatus = useMemo(() => {
-    if (plainText.length > POST_MAX_LENGTH) {
-      return PostLengthStatusType.Error
-    }
-
-    if (plainText.length >= POST_WARNING_LENGTH) {
-      return PostLengthStatusType.Warning
-    }
-
-    return PostLengthStatusType.None
-  }, [plainText.length])
 
   useEffect(() => {
     setDisplayTagInstruction(currentDisplayTagInstruction => {
@@ -214,7 +195,8 @@ const PostBodyTextArea = ({
             borderBottomColor: large ? 'action.disabled' : undefined,
             borderBottomStyle: large ? 'solid' : undefined,
             borderBottomWidth: large ? '1px' : undefined,
-            py: 1,
+            pt: 1,
+            pb: isInlineReply ? 3 : 1,
           }}
         >
           <Typography
@@ -254,33 +236,28 @@ const PostBodyTextArea = ({
             open={mentionSuggestionsOpen}
             suggestions={mentionSuggestions}
           />
-          {shouldRenderPostLength && (
+          {!isInlineReply && (
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
                 pt: 1,
               }}
             >
-              <Typography
-                variant="caption"
+              <Box
                 sx={{
-                  fontWeight:
-                    postLengthStatus === PostLengthStatusType.Warning ||
-                    postLengthStatus === PostLengthStatusType.Error
-                      ? 'bold'
-                      : undefined,
-                  color:
-                    postLengthStatus === PostLengthStatusType.Error
-                      ? 'error.main'
-                      : postLengthStatus === PostLengthStatusType.Warning
-                      ? 'warning.main'
-                      : undefined,
+                  opacity: displayTagInstruction ? 1 : 0,
+                  transition: 'opacity 0.4s ease',
                 }}
               >
-                {formatPostLength(plainText?.length ?? 0)}/
-                {formatPostLength(POST_MAX_LENGTH)}
-              </Typography>
+                <Typography variant="caption" color="action.active">
+                  Use # for hashtags and @ to tag people.
+                </Typography>
+              </Box>
+              <Box>
+                <PostBodyCounter textLength={plainText.length} />
+              </Box>
             </Box>
           )}
           <PostBodyAttachments
@@ -288,16 +265,6 @@ const PostBodyTextArea = ({
             onError={onPostAttachmentClose}
             postAttachments={postAttachments}
           />
-          <Box
-            sx={{
-              opacity: displayTagInstruction ? 1 : 0,
-              transition: 'opacity 0.4s ease',
-            }}
-          >
-            <Typography variant="caption" color="action.active">
-              Use # for hashtags and @ to tag people.
-            </Typography>
-          </Box>
         </Box>
       </Box>
     </Box>
