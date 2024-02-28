@@ -53,8 +53,8 @@ const ForgotPasswordForm = () => {
   if (submitted) {
     return (
       <TextAndCta
-        ctaHref={authEmail ? '/profile' : '/'}
-        ctaText={authEmail ? 'Go to profile' : 'Sign in'}
+        ctaHref={authEmail ? '/settings' : '/'}
+        ctaText={authEmail ? 'Go to settings' : 'Sign in'}
         message={`Your password reset request has been recieved. ${
           authEmail ? 'Y' : 'If an account exists, y'
         }ou will recieve an email with instructions to reset your password.`}

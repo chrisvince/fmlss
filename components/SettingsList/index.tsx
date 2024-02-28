@@ -2,13 +2,13 @@ import { List, ListSubheader, useTheme } from '@mui/material'
 import MobileContainer from '../MobileContainer'
 import { Box } from '@mui/system'
 
-interface ProfileListProps {
+interface SettingsListProps {
   children: React.ReactNode
   heading?: string
   id?: string
 }
 
-const ProfileList = ({ children, heading, id }: ProfileListProps) => {
+const SettingsList = ({ children, heading, id }: SettingsListProps) => {
   const theme = useTheme()
 
   return (
@@ -56,4 +56,4 @@ const ProfileList = ({ children, heading, id }: ProfileListProps) => {
   )
 }
 
-export default ProfileList
+export default SettingsList

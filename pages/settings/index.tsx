@@ -10,7 +10,7 @@ import {
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
 import constants from '../../constants'
-import ProfilePage from '../../components/ProfilePage'
+import SettingsPage from '../../components/SettingsPage'
 import getUser from '../../utils/data/user/getUser'
 import { createUserCacheKey } from '../../utils/createCacheKeys'
 import { SWRConfig } from 'swr/_internal'
@@ -25,9 +25,9 @@ interface Props {
   }
 }
 
-const UserProfile = ({ fallback }: Props) => (
+const Settings = ({ fallback }: Props) => (
   <SWRConfig value={{ fallback }}>
-    <ProfilePage />
+    <SettingsPage />
   </SWRConfig>
 )
 
@@ -57,4 +57,4 @@ export const getServerSideProps = withAuthUserTokenSSR(
 )(getServerSidePropsFn as any)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(UserProfile as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Settings as any)

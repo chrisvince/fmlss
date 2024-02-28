@@ -5,7 +5,9 @@ import PageBackButton from '../PageBackButton'
 
 const EmailPage = () => (
   <Page
-    aboveTitleContent={<PageBackButton href="/profile">Profile</PageBackButton>}
+    aboveTitleContent={
+      <PageBackButton href="/settings">Settings</PageBackButton>
+    }
     pageTitle="Email"
     renderPageTitle
     thinContainer

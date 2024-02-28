@@ -19,6 +19,7 @@ import {
   LogoutRounded,
   Menu as MenuIcon,
   PersonRounded,
+  SettingsRounded,
 } from '@mui/icons-material'
 
 import constants from '../../constants'
@@ -47,9 +48,9 @@ interface Props {
 const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
   const { displayName, email, id: uid, signOut } = useAuthUser()
   const router = useRouter()
-  const profileMenuButtonRef = useRef<HTMLButtonElement>(null)
+  const settingsMenuButtonRef = useRef<HTMLButtonElement>(null)
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [settingsMenuOpen, setSettingsMenuOpen] = useState(false)
   const theme = useTheme()
   const isAboveSm = useMediaQuery(theme.breakpoints.up('sm'))
   const shouldCollapse = useSelector(
@@ -58,15 +59,15 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
 
   const handleMobileMenuOpen = () => setMobileNavigationOpen(true)
   const handleMobileMenuClose = () => setMobileNavigationOpen(false)
-  const handleProfileMenuClose = () => setProfileMenuOpen(false)
+  const handleSettingsMenuClose = () => setSettingsMenuOpen(false)
 
   const handleSignOutClick = () => {
     signOut()
     router.push('/')
   }
 
-  const handleProfileMenuButtonClick = () =>
-    setProfileMenuOpen(current => !current)
+  const handleSettingsMenuButtonClick = () =>
+    setSettingsMenuOpen(current => !current)
 
   const handleMobileMenuButtonClick = () =>
     setMobileNavigationOpen(current => !current)
@@ -79,7 +80,7 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
   useEffect(() => {
     const handleRouteChange = () => {
       setMobileNavigationOpen(false)
-      setProfileMenuOpen(false)
+      setSettingsMenuOpen(false)
     }
     router.events.on('routeChangeComplete', handleRouteChange)
     return () => {
@@ -190,29 +191,29 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
               >
                 <NotificationsNavigationItem />
                 <IconButton
-                  id="profile-menu-button"
-                  aria-label="Profile menu"
-                  ref={profileMenuButtonRef}
-                  onClick={handleProfileMenuButtonClick}
+                  id="settings-menu-button"
+                  aria-label="Settings menu"
+                  ref={settingsMenuButtonRef}
+                  onClick={handleSettingsMenuButtonClick}
                   sx={{ padding: 0.7 }}
                 >
                   <PersonRounded />
                 </IconButton>
                 <Menu
-                  anchorEl={profileMenuButtonRef.current}
-                  open={profileMenuOpen}
-                  onClose={handleProfileMenuClose}
+                  anchorEl={settingsMenuButtonRef.current}
+                  open={settingsMenuOpen}
+                  onClose={handleSettingsMenuClose}
                   MenuListProps={{
-                    'aria-labelledby': 'profile-menu-button',
+                    'aria-labelledby': 'settings-menu-button',
                   }}
                 >
                   {uid && (
-                    <MenuItem component={Link} href="/profile">
+                    <MenuItem component={Link} href="/settings">
                       <ListItemIcon>
-                        <PersonRounded />
+                        <SettingsRounded />
                       </ListItemIcon>
                       <ListItemText
-                        primary="Profile"
+                        primary="Settings"
                         secondary={displayName ?? email}
                       />
                     </MenuItem>

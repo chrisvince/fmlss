@@ -8,8 +8,8 @@ import {
   FavoriteRounded,
   NotificationsOutlined,
   NotificationsRounded,
-  PersonRounded,
   ReplyAllRounded,
+  SettingsRounded,
   StarOutlineRounded,
   StarRounded,
   TagRounded,
@@ -69,19 +69,19 @@ const NAVIGATION_ITEMS = [
     label: 'Hashtags',
   },
   {
-    href: '/profile/likes',
+    href: '/likes',
     icon: FavoriteBorderOutlined,
     iconCurrent: FavoriteRounded,
     label: 'Likes',
   },
   {
-    href: '/profile/posts',
+    href: '/posts',
     icon: ChatOutlined,
     iconCurrent: ChatRounded,
     label: 'Posts',
   },
   {
-    href: '/profile/replies',
+    href: '/replies',
     icon: ReplyAllRounded,
     label: 'Replies',
   },
@@ -150,10 +150,10 @@ const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
             <List>
               <LeftNavigationListItem
                 exact
-                href={uid ? '/profile' : '/'}
-                icon={PersonRounded}
-                iconCurrent={PersonRounded}
-                primary={uid ? 'Profile' : 'Sign in'}
+                href={uid ? '/settings' : '/'}
+                icon={SettingsRounded}
+                iconCurrent={SettingsRounded}
+                primary={uid ? 'Settings' : 'Sign in'}
                 secondary={displayName ?? email}
               />
             </List>

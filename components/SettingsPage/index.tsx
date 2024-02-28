@@ -1,14 +1,14 @@
 import { Box, ListItem, ListItemButton, ListItemText } from '@mui/material'
 import Page from '../Page'
-import ProfileEmailListItem from '../ProfileEmailListItem'
-import ProfileList from '../ProfileList'
-import ProfileListItem from '../ProfileListItem'
+import SettingsEmailListItem from '../SettingsEmailListItem'
+import SettingsList from '../SettingsList'
+import SettingsListItem from '../SettingsListItem'
 import { useAuthUser } from 'next-firebase-auth'
-import ProfileToggleListItem from '../ProfileToggleListItem'
+import SettingsToggleListItem from '../SettingsToggleListItem'
 import useUser from '../../utils/data/user/useUser'
 import { useRouter } from 'next/router'
 
-const ProfilePage = () => {
+const SettingsPage = () => {
   const { displayName, signOut } = useAuthUser()
   const { push } = useRouter()
   const { update, user } = useUser()
@@ -46,64 +46,64 @@ const ProfilePage = () => {
   }
 
   return (
-    <Page pageTitle="Profile" thinContainer renderPageTitle>
+    <Page pageTitle="Settings" thinContainer renderPageTitle>
       <Box sx={{ pb: 4 }}>
-        <ProfileList heading="Account" id="account">
-          <ProfileListItem
-            href="/profile/name"
+        <SettingsList heading="Account" id="account">
+          <SettingsListItem
+            href="/settings/name"
             primaryText="Name"
             secondaryText={displayName}
           />
-          <ProfileEmailListItem />
-        </ProfileList>
-        <ProfileList heading="Security" id="security">
-          <ProfileListItem href="/profile/password" primaryText="Password" />
-        </ProfileList>
-        <ProfileList heading="Email Notifications" id="email-notifications">
-          <ProfileToggleListItem
+          <SettingsEmailListItem />
+        </SettingsList>
+        <SettingsList heading="Security" id="security">
+          <SettingsListItem href="/settings/password" primaryText="Password" />
+        </SettingsList>
+        <SettingsList heading="Email Notifications" id="email-notifications">
+          <SettingsToggleListItem
             checked={emailNotificationsLikes}
             onClick={handleEmailNotificationsLikesClick}
           >
             Likes
-          </ProfileToggleListItem>
-          <ProfileToggleListItem
+          </SettingsToggleListItem>
+          <SettingsToggleListItem
             checked={emailNotificationsReplies}
             onClick={handleEmailNotificationsRepliesClick}
           >
             Replies
-          </ProfileToggleListItem>
-        </ProfileList>
-        <ProfileList heading="Display" id="display">
-          <ProfileListItem
-            href="/profile/appearance"
+          </SettingsToggleListItem>
+        </SettingsList>
+        <SettingsList heading="Display" id="display">
+          <SettingsListItem
+            href="/settings/appearance"
             primaryText="Appearance"
             secondaryText={user?.data.settings.colorScheme}
           />
-        </ProfileList>
-        <ProfileList heading="Content" id="content">
-          <ProfileToggleListItem
+        </SettingsList>
+        <SettingsList heading="Content" id="content">
+          <SettingsToggleListItem
             checked={hideOffensiveContent}
             onClick={handleHideOffensiveContentClick}
           >
             Hide offensive content
-          </ProfileToggleListItem>
-          <ProfileToggleListItem
+          </SettingsToggleListItem>
+          <SettingsToggleListItem
             checked={hideAdultContent}
             onClick={handleHideAdultContentClick}
           >
             Hide adult content
-          </ProfileToggleListItem>
-        </ProfileList>
-        <ProfileList>
+          </SettingsToggleListItem>
+        </SettingsList>
+        <SettingsList>
           <ListItem>
             <ListItemButton onClick={handleSignOutButtonClick}>
               <ListItemText primary="Sign out" />
             </ListItemButton>
           </ListItem>
-        </ProfileList>
+        </SettingsList>
       </Box>
     </Page>
   )
 }
 
-export default ProfilePage
+export default SettingsPage

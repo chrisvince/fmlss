@@ -9,7 +9,7 @@ import Link from 'next/link'
 import EmailVerificationLink from '../EmailVerificationLink'
 import { KeyboardArrowRightRounded } from '@mui/icons-material'
 
-const ProfileEmailListItem = () => {
+const SettingsEmailListItem = () => {
   const authUser = useAuthUser()
 
   return (
@@ -17,7 +17,7 @@ const ProfileEmailListItem = () => {
       <ListItem disableGutters>
         <ListItemButton
           component={Link}
-          href="/profile/email"
+          href="/settings/email"
           sx={{ borderTop: 0 }}
         >
           <ListItemText secondary={authUser.email}>Email</ListItemText>
@@ -39,4 +39,4 @@ const ProfileEmailListItem = () => {
     </>
   )
 }
-export default ProfileEmailListItem
+export default SettingsEmailListItem

@@ -5,21 +5,22 @@ import {
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
-import UserPostsPage from '../../components/UserPostsPage'
+
+import UserLikesPage from '../components/UserLikesPage'
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
+} from '../config/withAuthConfig'
 import {
   createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
-  createUserPostsCacheKey,
-} from '../../utils/createCacheKeys'
-import getUserPosts from '../../utils/data/userPosts/getUserPosts'
-import constants from '../../constants'
-import isInternalRequest from '../../utils/isInternalRequest'
+  createUserLikesCacheKey,
+} from '../utils/createCacheKeys'
+import getUserLikes from '../utils/data/userLikes/getUserLikes'
+import constants from '../constants'
+import isInternalRequest from '../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
-import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarData from '../utils/data/sidebar/fetchSidebarData'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -31,9 +32,9 @@ interface PropTypes {
   }
 }
 
-const UserPosts = ({ fallback }: PropTypes) => (
+const UserLikes = ({ fallback }: PropTypes) => (
   <SWRConfig value={{ fallback }}>
-    <UserPostsPage />
+    <UserLikesPage />
   </SWRConfig>
 )
 
@@ -50,7 +51,7 @@ const getServerSidePropsFn = async ({
   const uid = AuthUser.id
 
   // @ts-expect-error: we know uid is defined
-  const userPostsCacheKey = createUserPostsCacheKey(uid)
+  const userLikesCacheKey = createUserLikesCacheKey(uid)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
@@ -61,31 +62,30 @@ const getServerSidePropsFn = async ({
 
     return {
       props: {
+        key: userLikesCacheKey,
         fallback: {
           [sidebarTopicsCacheKey]: sidebarTopics,
           [sidebarHashtagsCacheKey]: sidebarHashtags,
         },
-        key: userPostsCacheKey,
       },
     }
   }
 
   const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
     // @ts-expect-error: we know uid is defined
-    getUserPosts(uid, { db: adminDb, type: 'post' }),
+    getUserLikes(uid, { db: adminDb }),
     sidebarDataPromise,
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-
   return {
     props: {
+      key: userLikesCacheKey,
       fallback: {
         [sidebarTopicsCacheKey]: sidebarTopics,
         [sidebarHashtagsCacheKey]: sidebarHashtags,
-        [userPostsCacheKey]: posts,
+        [userLikesCacheKey]: posts,
       },
-      key: userPostsCacheKey,
     },
   }
 }
@@ -96,4 +96,4 @@ export const getServerSideProps = withAuthUserTokenSSR(
 )(getServerSidePropsFn as any)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(UserPosts as any)
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(UserLikes as any)

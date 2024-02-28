@@ -101,7 +101,7 @@ const PostItem = ({
       >
         {byUser && (
           <Box sx={{ display: 'flex', gridArea: 'statusIcon' }}>
-            <Link href="/profile/posts" style={{ display: 'contents' }}>
+            <Link href="/posts" style={{ display: 'contents' }}>
               <UserAuthoredIcon />
             </Link>
           </Box>

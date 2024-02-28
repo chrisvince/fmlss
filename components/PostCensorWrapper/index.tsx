@@ -47,7 +47,7 @@ const PostCensorWrapper = ({ censorType, children }: Props) => {
               community.
               <Link
                 component={NextLink}
-                href="/profile"
+                href="/settings"
                 sx={{ color: 'action.active' }}
               >
                 <InfoOutlined sx={{ fontSize: '1rem' }} />
@@ -62,10 +62,10 @@ const PostCensorWrapper = ({ censorType, children }: Props) => {
               You can control what you see in your{' '}
               <Link
                 component={NextLink}
-                href="/profile#content"
+                href="/settings#content"
                 sx={{ color: 'inherit' }}
               >
-                profile
+                settings
               </Link>
               .
             </Typography>

@@ -7,17 +7,17 @@ import {
 } from '@mui/material'
 import Link from 'next/link'
 
-interface ProfileListItemProps {
+interface SettingsListItemProps {
   href: string
   primaryText: string
   secondaryText?: string | null
 }
 
-const ProfileListItem = ({
+const SettingsListItem = ({
   href,
   primaryText,
   secondaryText,
-}: ProfileListItemProps) => (
+}: SettingsListItemProps) => (
   <ListItem disableGutters>
     <ListItemButton component={Link} href={href}>
       <ListItemText primary={primaryText} secondary={secondaryText} />
@@ -28,4 +28,4 @@ const ProfileListItem = ({
   </ListItem>
 )
 
-export default ProfileListItem
+export default SettingsListItem
