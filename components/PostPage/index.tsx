@@ -16,6 +16,11 @@ import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 import PostPageParentPostsReference from '../PostPageParentPostsReference'
+import {
+  ResourceType,
+  resourceViewed,
+} from '../../utils/callableFirebaseFunctions/resourceViewed'
+import useDelayedOnMount from '../../utils/useDelayedOnMount'
 
 const { TOPICS_ENABLED, POST_MAX_DEPTH } = constants
 
@@ -62,18 +67,11 @@ const PostPage = ({ slug }: PropTypes) => {
     firstPostModalHasBeenShownRef.current = true
   }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser, user])
 
-  useEffect(() => {
-    if (isLoading || (!isLoading && !post)) return
-
-    track(
-      'post',
-      {
-        title: pageTitle,
-        slug,
-      },
-      { onceOnly: true }
-    )
-  }, [isLoading, pageTitle, post, slug, track])
+  useDelayedOnMount(() => {
+    if (!user || isLoading || (!isLoading && !post)) return
+    track('post', { slug }, { onceOnly: true })
+    resourceViewed({ resourceType: ResourceType.Post, slug })
+  })
 
   useEffect(() => {
     if (!mainContentWrapperRef.current) return
