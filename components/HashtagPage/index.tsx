@@ -14,6 +14,12 @@ import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 import { HashtagShowType } from '../../utils/data/posts/getHashtagPosts'
+import useDelayedOnMount from '../../utils/useDelayedOnMount'
+import useUser from '../../utils/data/user/useUser'
+import {
+  ResourceType,
+  resourceViewed,
+} from '../../utils/callableFirebaseFunctions/resourceViewed'
 
 const { TOPICS_ENABLED } = constants
 
@@ -38,11 +44,13 @@ const HashtagPage = ({ slug }: PropTypes) => {
   const {
     query: { sort },
   } = useRouter()
+
   const [showType, setShowType] = useState<HashtagShowType>(
     HashtagShowType.Post
   )
 
   const { track } = useTracking()
+  const { user } = useUser()
 
   const lowercaseSortMode =
     sort && typeof sort === 'string' ? sort.toLowerCase() : undefined
@@ -79,6 +87,12 @@ const HashtagPage = ({ slug }: PropTypes) => {
       { onceOnly: true }
     )
   }, [isLoading, slug, title, track])
+
+  useDelayedOnMount(() => {
+    if (!user) return
+    track('post', { slug }, { onceOnly: true })
+    resourceViewed({ resourceType: ResourceType.Hashtag, slug })
+  })
 
   return (
     <Page
