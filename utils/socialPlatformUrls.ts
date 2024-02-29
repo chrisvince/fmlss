@@ -49,12 +49,17 @@ export const resolvePostAttachmentTypeFromUrl = (url: string) => {
   if (isTwitterPostUrl(url)) {
     return PostAttachmentType.Twitter
   }
-  if (isFacebookPostUrl(url)) {
-    return PostAttachmentType.Facebook
-  }
-  if (isInstagramPostUrl(url)) {
-    return PostAttachmentType.Instagram
-  }
+
+  // TODO: Add Facebook and Instagram support
+  // Currently bypassing so it is treated as a URL
+
+  // if (isFacebookPostUrl(url)) {
+  //   return PostAttachmentType.Facebook
+  // }
+  // if (isInstagramPostUrl(url)) {
+  //   return PostAttachmentType.Instagram
+  // }
+
   if (isTikTokPostUrl(url)) {
     return PostAttachmentType.Tiktok
   }
