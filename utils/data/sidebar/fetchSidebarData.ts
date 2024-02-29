@@ -6,6 +6,7 @@ import {
 import getTopics from '../topics/getTopics'
 import getHashtags from '../hashtags/getHashtags'
 import firebase from 'firebase/app'
+import { HashtagsSortMode, TopicsSortMode } from '../../../types'
 
 const { TOPICS_ENABLED, SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } =
   constants
@@ -31,6 +32,7 @@ const fetchSidebarData = async ({
       cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db,
       limit: SIDEBAR_LIST_COUNT,
+      sortMode: HashtagsSortMode.Popular,
     })
 
   const getSidebarTopics = () =>
@@ -39,6 +41,7 @@ const fetchSidebarData = async ({
       cacheTime: SIDEBAR_LIST_CACHE_TIME,
       db,
       limit: SIDEBAR_LIST_COUNT,
+      sortMode: TopicsSortMode.Popular,
     })
 
   const [sidebarHashtags, sidebarTopics] = await Promise.all([
