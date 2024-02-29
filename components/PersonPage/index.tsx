@@ -6,6 +6,13 @@ import usePerson from '../../utils/data/person/usePerson'
 import usePersonPosts from '../../utils/data/posts/usePersonPosts'
 import PageSpinner from '../PageSpinner'
 import Error from 'next/error'
+import useTracking from '../../utils/tracking/useTracking'
+import {
+  ResourceType,
+  resourceViewed,
+} from '../../utils/callableFirebaseFunctions/resourceViewed'
+import useDelayedOnMount from '../../utils/useDelayedOnMount'
+import { useAuthUser } from 'next-firebase-auth'
 
 type Props = {
   slug: string
@@ -13,9 +20,17 @@ type Props = {
 
 const PersonPage = ({ slug }: Props) => {
   const { person, isLoading: personIsLoading } = usePerson(slug)
+  const { track } = useTracking()
+  const { id: uid } = useAuthUser()
 
   const { posts, isLoading, moreToLoad, loadMore, likePost, watchPost } =
     usePersonPosts(slug)
+
+  useDelayedOnMount(() => {
+    if (!uid || personIsLoading || (!personIsLoading && !person)) return
+    track('post', { slug }, { onceOnly: true })
+    resourceViewed({ resourceType: ResourceType.Person, slug })
+  })
 
   if (personIsLoading) {
     return <PageSpinner />
