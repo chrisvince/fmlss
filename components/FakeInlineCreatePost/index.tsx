@@ -95,19 +95,21 @@ const FakeInlineCreatePost = () => {
                   height: '100%',
                 }}
               >
-                <Box
+                <Typography
                   sx={{
                     backgroundColor: 'primary.main',
+                    borderRadius: '100px',
                     color: 'primary.contrastText',
+                    fontSize: '0.9285714285714286rem',
+                    lineHeight: 1.75,
+                    minWidth: '64px',
                     px: 1.25,
                     py: 0.5,
-                    minWidth: '64px',
-                    lineHeight: 1.75,
-                    borderRadius: '100px',
+                    textAlign: 'center',
                   }}
                 >
                   Post
-                </Box>
+                </Typography>
               </Box>
             </Box>
           </MobileContainer>
