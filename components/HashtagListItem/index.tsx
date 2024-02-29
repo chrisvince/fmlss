@@ -11,7 +11,7 @@ type PropTypes = {
 }
 
 const HashtagListItem = ({ hashtag }: PropTypes) => {
-  const postCount = formatPostCount(hashtag.data.usageCount)
+  const postCount = formatPostCount(hashtag.data.postCount)
   const viewCount = formatViewCount(hashtag.data.viewCount)
 
   return (

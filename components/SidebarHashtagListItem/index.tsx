@@ -14,7 +14,7 @@ const SidebarHashtagListItem = ({ hashtag }: PropTypes) => (
   >
     <SidebarListItem
       leftText={hashtag.data.display}
-      rightText={formatPostCount(hashtag.data.usageCount)}
+      rightText={formatPostCount(hashtag.data.postCount)}
     />
   </ListItemFrame>
 )

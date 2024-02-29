@@ -4,6 +4,6 @@ export interface HashtagData {
   id: string
   slug: string
   updatedAt: number
-  usageCount: number
+  postCount: number
   viewCount: number
 }

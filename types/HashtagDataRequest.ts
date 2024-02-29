@@ -6,6 +6,6 @@ export interface HashtagDataRequest {
   id: string
   slug: string
   updatedAt: firestore.Timestamp
-  usageCount: number
+  postCount: number
   viewCount: number
 }
