@@ -43,7 +43,6 @@ const SORT_MODE_MAP: {
 } = {
   latest: 'latest',
   popular: 'popular',
-  'most-likes': 'mostLikes',
 }
 
 const getServerSidePropsFn = async ({

@@ -80,10 +80,6 @@ const getHashtagPosts: GetHashtagPosts = async (
         sortMode === HashtagSortMode.Popular
           ? query.orderBy('popularityScoreRecent', 'desc')
           : query,
-      query =>
-        sortMode === HashtagSortMode.MostLikes
-          ? query.orderBy('likesCount', 'desc')
-          : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(POST_PAGINATION_COUNT).get()
