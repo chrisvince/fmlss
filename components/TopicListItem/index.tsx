@@ -46,13 +46,23 @@ const TopicListItem = ({ component, topic }: PropTypes) => {
         ) : (
           title
         )}
-        <Box sx={{ whiteSpace: 'nowrap' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: 2,
+            whiteSpace: 'nowrap',
+          }}
+        >
           <Typography variant="caption" component="div" align="right">
             {recursivePostCount}
           </Typography>
-          <Typography variant="caption" component="div" align="right">
-            {recursiveSubtopicCount}
-          </Typography>
+          {topic.data.recursiveSubtopicCount > 0 && (
+            <Typography variant="caption" component="div" align="right">
+              {recursiveSubtopicCount}
+            </Typography>
+          )}
           {viewCount && (
             <Typography variant="caption" component="div" align="right">
               {viewCount}
