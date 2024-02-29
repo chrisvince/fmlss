@@ -43,6 +43,7 @@ const NewPostForm = ({
     overMaxLength,
     postAttachments,
     setEditorState,
+    textLength,
   } = usePostBodyEditorState()
 
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
@@ -118,6 +119,7 @@ const NewPostForm = ({
               ? PostBodyTextAreaSize.Small
               : PostBodyTextAreaSize.Large
           }
+          textLength={textLength}
         />
       </Box>
       {TOPICS_ENABLED && !slug && <TopicSelect onChange={handleTopicChange} />}

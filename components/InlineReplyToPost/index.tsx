@@ -20,13 +20,12 @@ const InlineReplyToPost = ({ slug }: Props) => {
     closePostAttachment,
     editorState,
     getRaw: getRawEditorState,
+    hasText,
     overMaxLength,
     postAttachments,
-    hasText,
     setEditorState,
+    textLength,
   } = usePostBodyEditorState()
-
-  const plainText = editorState.getCurrentContent().getPlainText()
 
   const disableButton = overMaxLength || !hasText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
@@ -67,6 +66,7 @@ const InlineReplyToPost = ({ slug }: Props) => {
               onPostAttachmentClose={closePostAttachment}
               postAttachments={postAttachments}
               postType={PostType.Reply}
+              textLength={textLength}
             />
           </Box>
           {errorMessage && (
@@ -119,7 +119,7 @@ const InlineReplyToPost = ({ slug }: Props) => {
               position: 'absolute',
             }}
           >
-            <PostBodyCounter textLength={plainText.length} />
+            <PostBodyCounter textLength={textLength} />
           </Box>
         </Box>
       </Box>

@@ -61,26 +61,20 @@ const mergePostAttachments = (
     }
   })
 
+const removeUrlText = (text: string, urlTexts: string[]): string => {
+  const pattern = urlTexts.join('|')
+  const regex = new RegExp(pattern, 'gi')
+  return text.replace(regex, '##########')
+}
+
 const usePostBodyEditorState = () => {
   const [editorState, setEditorState] = useState(createEmptyEditorState)
   const [postAttachments, setPostAttachments] = useState<PostAttachmentInput[]>(
     []
   )
 
-  const textLength = useMemo(() => {
-    const plainText = editorState.getCurrentContent().getPlainText()
-    return plainText.length
-  }, [editorState])
-
-  const hasText = textLength > 0
-
   const getRaw = (): string =>
     JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-
-  const overMaxLength = useMemo(
-    () => textLength > POST_MAX_LENGTH,
-    [textLength]
-  )
 
   const updatePostAttachments = useMemo(
     () =>
@@ -131,6 +125,24 @@ const usePostBodyEditorState = () => {
         .slice(0, POST_ATTACHMENTS_MAX),
     [postAttachments]
   )
+
+  const textLength = useMemo(() => {
+    const attachmentUrlTexts = postAttachments.map(({ match }) => match.text)
+
+    const textUrlsRemoved = removeUrlText(
+      getPlainTextFromEditorState(editorState),
+      attachmentUrlTexts
+    )
+
+    return textUrlsRemoved.length
+  }, [editorState, postAttachments])
+
+  const overMaxLength = useMemo(
+    () => textLength > POST_MAX_LENGTH,
+    [textLength]
+  )
+
+  const hasText = textLength > 0
 
   return {
     closePostAttachment: handlePostAttachmentClose,

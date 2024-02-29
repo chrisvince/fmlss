@@ -60,6 +60,7 @@ type Props = {
   postAttachments?: PostAttachmentInput[]
   postType?: PostType
   size?: PostBodyTextAreaSize
+  textLength: number
 }
 
 const PostBodyTextArea = ({
@@ -73,6 +74,7 @@ const PostBodyTextArea = ({
   postAttachments = [],
   postType = PostType.New,
   size = PostBodyTextAreaSize.Small,
+  textLength,
 }: Props) => {
   const editorRef = useRef<Editor>()
   const focusOnMountHasRun = useRef(false)
@@ -256,7 +258,7 @@ const PostBodyTextArea = ({
                 </Typography>
               </Box>
               <Box>
-                <PostBodyCounter textLength={plainText.length} />
+                <PostBodyCounter textLength={textLength} />
               </Box>
             </Box>
           )}
