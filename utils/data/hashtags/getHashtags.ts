@@ -52,7 +52,7 @@ const getHashtags: GetHashtags = async ({
       () => db.collection(HASHTAGS_COLLECTION),
       query =>
         sortMode === HashtagsSortMode.Popular
-          ? query.orderBy('popularityScoreLast7Days', 'desc')
+          ? query.orderBy('popularityScoreRecent', 'desc')
           : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),

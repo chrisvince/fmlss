@@ -59,7 +59,7 @@ const getTopicPosts: GetTopicPosts = async (
         db.collectionGroup(POSTS_COLLECTION).where('topic.path', '==', path),
       query =>
         sortMode === TopicSortMode.Popular
-          ? query.orderBy('popularityScoreLast7Days', 'desc')
+          ? query.orderBy('popularityScoreRecent', 'desc')
           : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),

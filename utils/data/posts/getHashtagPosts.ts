@@ -78,7 +78,7 @@ const getHashtagPosts: GetHashtagPosts = async (
         showType !== 'both' ? query.where('type', '==', showType) : query,
       query =>
         sortMode === HashtagSortMode.Popular
-          ? query.orderBy('popularityScoreLast7Days', 'desc')
+          ? query.orderBy('popularityScoreRecent', 'desc')
           : query,
       query =>
         sortMode === HashtagSortMode.MostLikes
