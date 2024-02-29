@@ -19,6 +19,12 @@ import CaptionLink from '../CaptionLink'
 import { Box } from '@mui/system'
 import TopicBreadcrumbs from '../TopicBreadcrumbs'
 import PageSpinner from '../PageSpinner'
+import useDelayedOnMount from '../../utils/useDelayedOnMount'
+import useUser from '../../utils/data/user/useUser'
+import {
+  ResourceType,
+  resourceViewed,
+} from '../../utils/callableFirebaseFunctions/resourceViewed'
 
 const { SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
 
@@ -42,6 +48,7 @@ const generateSortOptions = (path: string) => [
 const TopicPage = ({ path }: PropTypes) => {
   const { topic, isLoading: topicIsLoading } = useTopic(path)
   const { track } = useTracking()
+  const { user } = useUser()
   const {
     query: { sort },
   } = useRouter()
@@ -84,6 +91,12 @@ const TopicPage = ({ path }: PropTypes) => {
       { onceOnly: true }
     )
   }, [topic?.data.title, topicIsLoading, path, track])
+
+  useDelayedOnMount(() => {
+    if (!user || topicIsLoading || !topic) return
+    track('post', { slug: topic.data.slug }, { onceOnly: true })
+    resourceViewed({ resourceType: ResourceType.Topic, slug: topic.data.slug })
+  })
 
   if (topicIsLoading) {
     return <PageSpinner />
