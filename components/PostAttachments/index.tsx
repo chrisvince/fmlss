@@ -12,7 +12,13 @@ const PostAttachments = ({ attachments }: Props) => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+      }}
+    >
       {attachments.map(attachment => (
         <PostAttachment key={attachment.href} attachment={attachment} />
       ))}
