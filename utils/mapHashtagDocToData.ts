@@ -8,7 +8,6 @@ const mapHashtagDocToData: MapHashtagDocToData = doc => {
     createdAt: data.createdAt.toMillis(),
     display: data.display,
     id: doc.id,
-    recentViewCount: data.recentViewCount,
     slug: data.slug,
     updatedAt: data.updatedAt.toMillis(),
     usageCount: data.usageCount,

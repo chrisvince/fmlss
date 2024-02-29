@@ -13,7 +13,6 @@ export interface TopicDataRequest {
   path: string
   pathTitle: string
   postCount: number
-  recentViewCount: number
   recursivePostCount: number
   recursiveSubtopicCount: number
   subtopicSegments: SubtopicSegmentRequest[]

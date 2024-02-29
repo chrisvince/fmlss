@@ -11,7 +11,6 @@ const mapTopicDocToData: MapTopicDocToData = doc => {
     path: data.path,
     pathTitle: data.pathTitle,
     postCount: data.postCount,
-    recentViewCount: data.recentViewCount,
     recursivePostCount: data.recursivePostCount,
     recursiveSubtopicCount: data.recursiveSubtopicCount,
     ref: doc.ref.path,

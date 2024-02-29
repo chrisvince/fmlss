@@ -12,7 +12,6 @@ export interface TopicData {
   path: string
   pathTitle: string
   postCount: number
-  recentViewCount: number
   recursivePostCount: number
   recursiveSubtopicCount: number
   ref: string
