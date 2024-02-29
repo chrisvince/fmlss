@@ -6,6 +6,11 @@ import getImageDimensionsFromUrl, {
   ImageDimensions,
 } from '../../getImageDimensionsFromUrl'
 import promiseTimeout from '../../promiseTimeout'
+import { get, put } from '../../serverCache'
+import createUrlMetaCacheKey from './createUrlMetaCacheKey'
+import constants from '../../../constants'
+
+const { URL_META_CACHE_TIME } = constants
 
 export interface UrlMeta {
   description: string
@@ -17,6 +22,13 @@ export interface UrlMeta {
 }
 
 const getUrlMetaServer = async (url: string): Promise<PostAttachmentUrl> => {
+  const cacheKey = createUrlMetaCacheKey(url)
+  const cachedData = get(cacheKey)
+
+  if (cachedData) {
+    return cachedData
+  }
+
   const meta = await promiseTimeout(getMetaData(url))
 
   const imageSrc =
@@ -48,6 +60,7 @@ const getUrlMetaServer = async (url: string): Promise<PostAttachmentUrl> => {
       : null
 
   const mappedData = mapPostAttachmentUrl(meta, image)
+  put(cacheKey, mappedData, URL_META_CACHE_TIME)
   return mappedData
 }
 

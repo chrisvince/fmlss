@@ -10,14 +10,14 @@ export interface UrlMeta {
 }
 
 const getUrlMetaClient = async (url: string) => {
-  const response = await fetch(`/api/url-meta?url=${url}`)
+  const response = await fetch(`/api/url-meta?url=${encodeURIComponent(url)}`)
+  const data = await response.json()
 
   if (!response.ok) {
-    throw new Error((await response.json()).error)
+    throw new Error(data.error)
   }
 
-  const data = (await response.json()) as PostAttachmentUrl
-  return data
+  return data as PostAttachmentUrl
 }
 
 export default getUrlMetaClient

@@ -182,6 +182,7 @@ const constants: CONSTANTS = {
   TOPICS_COLLECTION: 'topics',
   TOPICS_ENABLED: true,
   TWITTER_USERNAME: '@famelessnetwork',
+  URL_META_CACHE_TIME: hoursToMs(12),
   USER_CACHE_TIME: secondsToMs(60),
   USER_IS_WATCHING_CACHE_TIME: secondsToMs(10),
   USER_LIKES_CACHE_TIME: secondsToMs(10),
