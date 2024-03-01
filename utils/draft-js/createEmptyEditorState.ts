@@ -7,7 +7,7 @@ const emptyContentState = convertFromRaw({
       depth: 0,
       entityRanges: [],
       inlineStyleRanges: [],
-      key: '',
+      key: 'foo',
       text: '',
       type: 'unstyled',
     },
