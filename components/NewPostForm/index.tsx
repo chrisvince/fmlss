@@ -6,7 +6,7 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
@@ -17,6 +17,8 @@ import constants from '../../constants'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAttachmentInputToCreatePostAttachment'
 import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
+import { useRouter } from 'next/router'
+import DiscardPostConfirmDialog from '../DiscardPostConfirmDialog'
 
 const { TOPICS_ENABLED } = constants
 
@@ -51,15 +53,25 @@ const NewPostForm = ({
   const handleTopicChange = async (subtopic: string[]) => setSubtopics(subtopic)
   const theme = useTheme()
   const buttonNotFullWidth = useMediaQuery(theme.breakpoints.up('sm'))
+  const router = useRouter()
+  const routeChangeUrl = useRef<string>()
+  const allowNavigation = useRef<boolean>(false)
+  const [showCloseConfirmDialog, setShowCloseConfirmDialog] =
+    useState<boolean>(false)
 
-  const submitPost = () =>
-    createPost({
+  const submitPost = async () => {
+    allowNavigation.current = true
+
+    await createPost({
       body: getRawEditorState(),
       subtopics,
       attachments: postAttachments.map(
         mapPostAttachmentInputToCreatePostAttachment
       ),
     })
+
+    allowNavigation.current = false
+  }
 
   const bodyOrSubtopicExists =
     hasText || (!slug && subtopics.length > 0) || postAttachments.length > 0
@@ -70,6 +82,35 @@ const NewPostForm = ({
   useEffect(() => {
     onContentExists?.(bodyOrSubtopicExists)
   }, [bodyOrSubtopicExists, onContentExists])
+
+  const handleConfirmDiscard = async () => {
+    allowNavigation.current = true
+    setShowCloseConfirmDialog(false)
+    if (!routeChangeUrl.current) return
+    const routeChangeUrlCurrent = routeChangeUrl.current
+    await router.push(routeChangeUrlCurrent)
+    routeChangeUrl.current = undefined
+    allowNavigation.current = false
+  }
+
+  const handleRouteChangeStart = useCallback(
+    (url: string) => {
+      if (!bodyOrSubtopicExists || allowNavigation.current) return
+      routeChangeUrl.current = url
+      setShowCloseConfirmDialog(true)
+      router.events.emit('routeChangeError')
+      throw 'Abort route change. Please ignore this error.'
+    },
+    [bodyOrSubtopicExists, router.events]
+  )
+
+  useEffect(() => {
+    router.events.on('routeChangeStart', handleRouteChangeStart)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart)
+    }
+  }, [handleRouteChangeStart, router.events])
 
   const button = (
     <LoadingButton
@@ -154,6 +195,11 @@ const NewPostForm = ({
           {button}
         </DialogActions>
       )}
+      <DiscardPostConfirmDialog
+        onCancel={() => setShowCloseConfirmDialog(false)}
+        onConfirm={handleConfirmDiscard}
+        open={showCloseConfirmDialog}
+      />
     </>
   )
 }
