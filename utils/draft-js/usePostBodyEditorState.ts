@@ -62,6 +62,10 @@ const mergePostAttachments = (
   })
 
 const removeUrlText = (text: string, urlTexts: string[]): string => {
+  if (urlTexts.length === 0) {
+    return text
+  }
+
   const pattern = urlTexts.join('|')
   const regex = new RegExp(pattern, 'gi')
   return text.replace(regex, '##########')
