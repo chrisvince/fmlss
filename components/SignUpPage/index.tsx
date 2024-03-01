@@ -10,21 +10,19 @@ const SignUpPage = () => {
       pageTitle="Sign up"
       layout="none"
     >
-      <Container maxWidth="xs">
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
-            gap: 2,
-          }}
-        >
-          <Typography variant="body1" component="h1">
-            Create account
-          </Typography>
-          <SignUpForm />
-        </Box>
-      </Container>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          gap: 2,
+        }}
+      >
+        <Typography variant="body1" component="h1">
+          Create account
+        </Typography>
+        <SignUpForm />
+      </Box>
     </Page>
   )
 }
