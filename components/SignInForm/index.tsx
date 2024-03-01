@@ -210,7 +210,7 @@ const SignInForm = () => {
                 href="/sign-up"
                 variant="outlined"
               >
-                Create new account
+                Create account
               </Button>
             </Box>
           </Box>
