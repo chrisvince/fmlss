@@ -98,7 +98,7 @@ const TopicPage = ({ path }: PropTypes) => {
     resourceViewed({ resourceType: ResourceType.Topic, slug: topic.data.slug })
   })
 
-  if (topicIsLoading) {
+  if (topicIsLoading && !topic) {
     return <PageSpinner />
   }
 
