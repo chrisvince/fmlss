@@ -5,6 +5,7 @@ import {
   TopicSortMode,
   TopicsSortMode,
 } from '../types'
+import { PeopleSortMode } from '../types/PeopleSortMode'
 import { HashtagShowType } from './data/posts/getHashtagPosts'
 
 const { POST_PAGINATION_COUNT } = constants
@@ -115,9 +116,11 @@ const createHasUnreadNotificationsCacheKey = (uid: string) =>
 const createPostReactionCacheKey = (slug: string, uid: string) =>
   `post/${slug}/reaction/${uid}`
 
-const createPeopleCacheKey = (
-  { pageIndex }: { pageIndex: number } = { pageIndex: 0 }
-) => `people-${pageIndex}`
+const createPeopleCacheKey = ({
+  pageIndex = 0,
+  sortMode = PeopleSortMode.Popular,
+}: { pageIndex?: number; sortMode?: PeopleSortMode } = {}) =>
+  `people/${sortMode}-${pageIndex}`
 
 const createPersonCacheKey = (slug: string) => `person/${slug}`
 

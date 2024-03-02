@@ -11,6 +11,7 @@ import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import getPeople from './getPeople'
 import constants from '../../../constants'
 import { Person } from '../../../types/Person'
+import { PeopleSortMode } from '../../../types/PeopleSortMode'
 
 const { PEOPLE_PAGINATION_COUNT } = constants
 
@@ -21,7 +22,10 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateAll: true,
 }
 
-type UsePeople = (options?: { swrConfig?: SWRInfiniteConfiguration }) => {
+type UsePeople = (options?: {
+  swrConfig?: SWRInfiniteConfiguration
+  sortMode?: PeopleSortMode
+}) => {
   people: Person[]
   error: unknown
   isLoading: boolean
@@ -30,13 +34,16 @@ type UsePeople = (options?: { swrConfig?: SWRInfiniteConfiguration }) => {
   moreToLoad: boolean
 }
 
-const usePeople: UsePeople = ({ swrConfig = {} } = {}) => {
+const usePeople: UsePeople = ({
+  swrConfig = {},
+  sortMode = PeopleSortMode.Popular,
+} = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
   }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPeopleCacheKey()]
+  const fallbackData = fallback[createPeopleCacheKey({ sortMode })]
 
   const { data, error, isLoading, isValidating, setSize, size } =
     useSWRInfinite(
@@ -47,11 +54,12 @@ const usePeople: UsePeople = ({ swrConfig = {} } = {}) => {
         ) {
           return null
         }
-        return createPeopleCacheKey({ pageIndex })
+        return createPeopleCacheKey({ pageIndex, sortMode })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
         return getPeople({
+          sortMode,
           startAfter: pageStartAfterTrace[pageIndex],
         })
       },

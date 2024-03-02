@@ -14,6 +14,14 @@ import { SWRConfig } from 'swr'
 import PeoplePage from '../../components/PeoplePage'
 import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
+import { PeopleSortMode } from '../../types/PeopleSortMode'
+
+const SORT_MODE_MAP: {
+  [key: string]: PeopleSortMode
+} = {
+  [PeopleSortMode.Latest]: PeopleSortMode.Latest,
+  [PeopleSortMode.Popular]: PeopleSortMode.Popular,
+}
 
 interface Props {
   fallback: {
@@ -29,10 +37,17 @@ const PeopleIndex = ({ fallback }: Props) => {
   )
 }
 
-const getServerSidePropsFn = async ({ req }: { req: NextApiRequest }) => {
+const getServerSidePropsFn = async ({
+  req,
+  query: { sort = PeopleSortMode.Popular },
+}: {
+  req: NextApiRequest
+  query: { sort: string }
+}) => {
+  const sortMode = SORT_MODE_MAP[sort] ?? PeopleSortMode.Popular
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const peopleCacheKey = createPeopleCacheKey()
+  const peopleCacheKey = createPeopleCacheKey({ sortMode })
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const sidebarDataPromise = fetchSidebarData({ db: adminDb })
@@ -52,7 +67,7 @@ const getServerSidePropsFn = async ({ req }: { req: NextApiRequest }) => {
   }
 
   const [people, { sidebarHashtags, sidebarTopics }] = await Promise.all([
-    getPeople({ db: adminDb }),
+    getPeople({ db: adminDb, sortMode }),
     sidebarDataPromise,
   ])
 

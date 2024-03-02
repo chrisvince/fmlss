@@ -10,16 +10,22 @@ import isServer from '../../isServer'
 import mapPersonDocToData from '../../mapPersonDocToData'
 import { PersonData } from '../../../types/PersonData'
 import { Person } from '../../../types/Person'
+import { PeopleSortMode } from '../../../types/PeopleSortMode'
 
 const { PEOPLE_CACHE_TIME, PEOPLE_COLLECTION, POST_PAGINATION_COUNT } =
   constants
 
 type GetPeople = (options?: {
   db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+  sortMode?: PeopleSortMode
   startAfter?: FirebaseDoc
 }) => Promise<Person[]>
 
-const getPeople: GetPeople = async ({ db: dbProp, startAfter } = {}) => {
+const getPeople: GetPeople = async ({
+  db: dbProp,
+  sortMode = PeopleSortMode.Popular,
+  startAfter,
+} = {}) => {
   const db = dbProp || firebase.firestore()
 
   let peopleDocs:
@@ -29,7 +35,7 @@ const getPeople: GetPeople = async ({ db: dbProp, startAfter } = {}) => {
 
   let peopleData: PersonData[] = []
 
-  const cacheKey = createPeopleCacheKey()
+  const cacheKey = createPeopleCacheKey({ sortMode })
   const serverCachedData = get(cacheKey)
 
   if (serverCachedData) {
@@ -38,6 +44,10 @@ const getPeople: GetPeople = async ({ db: dbProp, startAfter } = {}) => {
   } else {
     peopleDocs = await pipe(
       () => db.collection(PEOPLE_COLLECTION),
+      query =>
+        sortMode === PeopleSortMode.Popular
+          ? query.orderBy('popularityScoreRecent', 'desc')
+          : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(POST_PAGINATION_COUNT).get()
