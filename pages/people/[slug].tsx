@@ -1,5 +1,4 @@
 import {
-  AuthUser,
   getFirebaseAdmin,
   withAuthUser,
   withAuthUserTokenSSR,
@@ -36,9 +35,7 @@ const getServerSidePropsFn = async ({
   params: { slug },
   req,
 }: {
-  AuthUser: AuthUser
   params: { slug: string }
-  query: { sort: string }
   req: NextApiRequest
 }) => {
   const admin = getFirebaseAdmin()
