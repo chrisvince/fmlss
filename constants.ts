@@ -19,6 +19,8 @@ const constants = {
   EMAIL_REGEX_PATTERN:
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
   ENABLE_SAVING: false,
+  ENABLE_SHOW_REPLIES: false,
+  ENABLE_SORTING: false,
   FEED_CACHE_TIME: secondsToMs(30),
   FOOTER_BASIC_HEIGHT: '56px',
   FIRST_NAME_MAX_LENGTH: 80,

@@ -39,21 +39,21 @@ const Hashtag = ({ fallback, slug }: PropTypes) => (
 )
 
 const SORT_MODE_MAP: {
-  [key: string]: string
+  [key: string]: HashtagSortMode
 } = {
-  latest: 'latest',
-  popular: 'popular',
+  [HashtagSortMode.Latest]: HashtagSortMode.Latest,
+  [HashtagSortMode.Popular]: HashtagSortMode.Popular,
 }
 
 const getServerSidePropsFn = async ({
   AuthUser,
   params: { slug },
-  query: { sort = 'latest' },
+  query: { sort = HashtagSortMode.Popular },
   req,
 }: {
   AuthUser: AuthUser
   params: { slug: string }
-  query: { sort: string }
+  query: { sort: HashtagSortMode }
   req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -61,7 +61,7 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const uid = AuthUser.id
   const sortMode = (SORT_MODE_MAP[sort] ??
-    HashtagSortMode.Latest) as HashtagSortMode
+    HashtagSortMode.Popular) as HashtagSortMode
 
   const hashtagPostsCacheKey = createHashtagPostsCacheKey(
     slug,

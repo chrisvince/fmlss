@@ -10,6 +10,9 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import useTopic from '../../utils/data/topic/useTopic'
 import TopicBreadcrumbs from '../TopicBreadcrumbs'
+import constants from '../../constants'
+
+const { ENABLE_SORTING } = constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -65,30 +68,34 @@ const TopicsPage = ({ parentTopicPath }: PropTypes) => {
       renderPageTitle
       rightPanelChildren={<SidebarHashtagsSection />}
     >
-      <MobileContainer>
-        <ButtonGroup
-          aria-label="Sort Selection"
-          fullWidth
-          size="small"
-          sx={{ marginBottom: 2 }}
-          variant="outlined"
-        >
-          {SORT_MODE_OPTIONS.map(
-            ({ href, sortMode: sortModeOption, label }) => (
-              <Button
-                component={Link}
-                href={href}
-                key={href}
-                replace
-                shallow
-                variant={sortModeOption === sortMode ? 'contained' : undefined}
-              >
-                {label}
-              </Button>
-            )
-          )}
-        </ButtonGroup>
-      </MobileContainer>
+      {ENABLE_SORTING && (
+        <MobileContainer>
+          <ButtonGroup
+            aria-label="Sort Selection"
+            fullWidth
+            size="small"
+            sx={{ marginBottom: 2 }}
+            variant="outlined"
+          >
+            {SORT_MODE_OPTIONS.map(
+              ({ href, sortMode: sortModeOption, label }) => (
+                <Button
+                  component={Link}
+                  href={href}
+                  key={href}
+                  replace
+                  shallow
+                  variant={
+                    sortModeOption === sortMode ? 'contained' : undefined
+                  }
+                >
+                  {label}
+                </Button>
+              )
+            )}
+          </ButtonGroup>
+        </MobileContainer>
+      )}
       <TopicsList
         topics={topics}
         isLoading={isLoading}

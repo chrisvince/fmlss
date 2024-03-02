@@ -21,7 +21,7 @@ import {
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 
-const { TOPICS_ENABLED } = constants
+const { ENABLE_SHOW_REPLIES, ENABLE_SORTING, TOPICS_ENABLED } = constants
 
 type PropTypes = {
   slug: string
@@ -30,13 +30,13 @@ type PropTypes = {
 const generateSortOptions = (slug: string) => [
   {
     href: `/hashtag/${slug}`,
-    label: 'Latest',
-    sortMode: 'latest',
-  },
-  {
-    href: `/hashtag/${slug}?sort=popular`,
     label: 'Popular',
     sortMode: 'popular',
+  },
+  {
+    href: `/hashtag/${slug}?sort=${HashtagSortMode.Latest}`,
+    label: 'Latest',
+    sortMode: 'latest',
   },
 ]
 
@@ -60,11 +60,11 @@ const HashtagPage = ({ slug }: PropTypes) => {
     // @ts-expect-error: includes should be string
     Object.values(HashtagSortMode).includes(lowercaseSortMode)
       ? (lowercaseSortMode as HashtagSortMode)
-      : HashtagSortMode.Latest
+      : HashtagSortMode.Popular
 
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
     useHashtagPosts(slug, {
-      showType: showType,
+      showType,
       sortMode,
     })
 
@@ -106,41 +106,49 @@ const HashtagPage = ({ slug }: PropTypes) => {
         </>
       }
     >
-      <MobileContainer>
-        <ButtonGroup
-          aria-label="Sort Selection"
-          fullWidth
-          size="small"
-          sx={{ marginBottom: 2 }}
-          variant="outlined"
-        >
-          {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
-            <Button
-              component={Link}
-              href={href}
-              key={href}
-              replace
-              shallow
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
+      {(ENABLE_SORTING || ENABLE_SHOW_REPLIES) && (
+        <MobileContainer>
+          {ENABLE_SORTING && (
+            <ButtonGroup
+              aria-label="Sort Selection"
+              fullWidth
+              size="small"
+              sx={{ marginBottom: 2 }}
+              variant="outlined"
             >
-              {label}
-            </Button>
-          ))}
-        </ButtonGroup>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            paddingY: 2,
-          }}
-        >
-          <FormControlLabel
-            control={<Switch onChange={handleIncludeRepliesChange} />}
-            label="Include replies"
-            labelPlacement="start"
-          />
-        </Box>
-      </MobileContainer>
+              {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
+                <Button
+                  component={Link}
+                  href={href}
+                  key={href}
+                  replace
+                  shallow
+                  variant={
+                    sortModeOption === sortMode ? 'contained' : undefined
+                  }
+                >
+                  {label}
+                </Button>
+              ))}
+            </ButtonGroup>
+          )}
+          {ENABLE_SHOW_REPLIES && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                paddingY: 2,
+              }}
+            >
+              <FormControlLabel
+                control={<Switch onChange={handleIncludeRepliesChange} />}
+                label="Include replies"
+                labelPlacement="start"
+              />
+            </Box>
+          )}
+        </MobileContainer>
+      )}
       <Feed
         isLoading={isLoading}
         key={sortMode}

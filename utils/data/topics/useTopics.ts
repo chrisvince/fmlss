@@ -39,7 +39,7 @@ const useTopics: UseTopics = ({
   limit = POST_PAGINATION_COUNT,
   parentRef: parentTopicRef,
   skip,
-  sortMode = TopicsSortMode.Latest,
+  sortMode = TopicsSortMode.Popular,
   swrConfig = {},
 } = {}) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{

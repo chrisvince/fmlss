@@ -35,7 +35,7 @@ type GetTopicPosts = (
 
 const getTopicPosts: GetTopicPosts = async (
   path,
-  { db: dbProp, startAfter, uid, sortMode = TopicSortMode.Latest } = {}
+  { db: dbProp, startAfter, uid, sortMode = TopicSortMode.Popular } = {}
 ) => {
   const db = dbProp || firebase.firestore()
 

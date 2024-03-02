@@ -17,6 +17,7 @@ import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
 import getPerson from '../../utils/data/person/getPerson'
 import PersonPage from '../../components/PersonPage'
 import getPersonPosts from '../../utils/data/posts/getPersonPosts'
+import { PersonPostsSortMode } from '../../types/PersonPostsSortMode'
 
 interface PropTypes {
   fallback: {
@@ -40,7 +41,6 @@ const getServerSidePropsFn = async ({
 }) => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-
   const personCacheKey = createPersonCacheKey(slug)
   const personPostsCacheKey = createPersonPostsCacheKey(slug)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
@@ -70,7 +70,10 @@ const getServerSidePropsFn = async ({
   const [person, posts, { sidebarHashtags, sidebarTopics }] = await Promise.all(
     [
       getPersonPromise,
-      getPersonPosts(slug, { db: adminDb }),
+      getPersonPosts(slug, {
+        db: adminDb,
+        sortMode: PersonPostsSortMode.Popular,
+      }),
       sidebarDataPromise,
     ]
   )

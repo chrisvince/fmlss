@@ -18,6 +18,7 @@ import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 import getPersonPosts from './getPersonPosts'
+import { PersonPostsSortMode } from '../../../types/PersonPostsSortMode'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -31,6 +32,7 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 type UsePersonPosts = (
   slug: string,
   options?: {
+    sortMode?: PersonPostsSortMode
     swrConfig?: SWRInfiniteConfiguration
   }
 ) => {
@@ -44,13 +46,16 @@ type UsePersonPosts = (
   watchPost: (documentPath: string) => Promise<void>
 }
 
-const usePersonPosts: UsePersonPosts = (slug, { swrConfig = {} } = {}) => {
+const usePersonPosts: UsePersonPosts = (
+  slug,
+  { sortMode = PersonPostsSortMode.Popular, swrConfig = {} } = {}
+) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
   }>({})
 
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPersonPostsCacheKey(slug)]
+  const fallbackData = fallback[createPersonPostsCacheKey(slug, { sortMode })]
   const { id: uid } = useAuthUser()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
@@ -62,11 +67,12 @@ const usePersonPosts: UsePersonPosts = (slug, { swrConfig = {} } = {}) => {
         ) {
           return null
         }
-        return createPersonPostsCacheKey(slug, { pageIndex })
+        return createPersonPostsCacheKey(slug, { pageIndex, sortMode })
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
         return getPersonPosts(slug, {
+          sortMode,
           startAfter: pageStartAfterTrace[pageIndex],
           uid,
         })

@@ -18,6 +18,7 @@ import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
+import { PersonPostsSortMode } from '../../../types/PersonPostsSortMode'
 
 const { PERSON_POSTS_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
   constants
@@ -26,6 +27,7 @@ type GetPersonPosts = (
   slug: string,
   options?: {
     db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+    sortMode?: PersonPostsSortMode
     startAfter?: FirebaseDoc
     uid?: string | null
   }
@@ -33,7 +35,7 @@ type GetPersonPosts = (
 
 const getPersonPosts: GetPersonPosts = async (
   slug,
-  { db: dbProp, startAfter, uid } = {}
+  { db: dbProp, sortMode = PersonPostsSortMode.Popular, startAfter, uid } = {}
 ) => {
   const db = dbProp || firebase.firestore()
 
@@ -45,7 +47,9 @@ const getPersonPosts: GetPersonPosts = async (
   let postData: PostData[] = []
 
   const lowerCaseSlug = slug.toLowerCase()
-  const personPostsCacheKey = createPersonPostsCacheKey(lowerCaseSlug)
+  const personPostsCacheKey = createPersonPostsCacheKey(lowerCaseSlug, {
+    sortMode,
+  })
   const serverCachedData = get(personPostsCacheKey)
 
   if (serverCachedData) {
@@ -57,6 +61,10 @@ const getPersonPosts: GetPersonPosts = async (
         db
           .collectionGroup(POSTS_COLLECTION)
           .where('peopleSlugs', 'array-contains', lowerCaseSlug),
+      query =>
+        sortMode === PersonPostsSortMode.Popular
+          ? query.orderBy('popularityScoreRecent', 'desc')
+          : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(POST_PAGINATION_COUNT).get()

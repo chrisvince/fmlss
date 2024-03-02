@@ -6,6 +6,7 @@ import {
   TopicsSortMode,
 } from '../types'
 import { PeopleSortMode } from '../types/PeopleSortMode'
+import { PersonPostsSortMode } from '../types/PersonPostsSortMode'
 import { HashtagShowType } from './data/posts/getHashtagPosts'
 
 const { POST_PAGINATION_COUNT } = constants
@@ -126,8 +127,11 @@ const createPersonCacheKey = (slug: string) => `person/${slug}`
 
 const createPersonPostsCacheKey = (
   slug: string,
-  { pageIndex = 0 }: { pageIndex: number } = { pageIndex: 0 }
-) => `person/${slug}/posts-${pageIndex}`
+  {
+    pageIndex = 0,
+    sortMode = PersonPostsSortMode.Popular,
+  }: { pageIndex?: number; sortMode?: PersonPostsSortMode } = {}
+) => `person/${slug}/${sortMode}/posts-${pageIndex}`
 
 const createPeopleSearchCacheKey = (searchString: string) =>
   `people/search/${searchString}`

@@ -8,6 +8,9 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import constants from '../../constants'
+
+const { ENABLE_SORTING } = constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -50,30 +53,34 @@ const PeoplePage = () => {
         </>
       }
     >
-      <MobileContainer>
-        <ButtonGroup
-          aria-label="Sort Selection"
-          fullWidth
-          size="small"
-          sx={{ marginBottom: 2 }}
-          variant="outlined"
-        >
-          {SORT_MODE_OPTIONS.map(
-            ({ href, sortMode: sortModeOption, label }) => (
-              <Button
-                component={Link}
-                href={href}
-                key={href}
-                replace
-                shallow
-                variant={sortModeOption === sortMode ? 'contained' : undefined}
-              >
-                {label}
-              </Button>
-            )
-          )}
-        </ButtonGroup>
-      </MobileContainer>
+      {ENABLE_SORTING && (
+        <MobileContainer>
+          <ButtonGroup
+            aria-label="Sort Selection"
+            fullWidth
+            size="small"
+            sx={{ marginBottom: 2 }}
+            variant="outlined"
+          >
+            {SORT_MODE_OPTIONS.map(
+              ({ href, sortMode: sortModeOption, label }) => (
+                <Button
+                  component={Link}
+                  href={href}
+                  key={href}
+                  replace
+                  shallow
+                  variant={
+                    sortModeOption === sortMode ? 'contained' : undefined
+                  }
+                >
+                  {label}
+                </Button>
+              )
+            )}
+          </ButtonGroup>
+        </MobileContainer>
+      )}
       <PeopleList
         isLoading={isLoading}
         moreToLoad={moreToLoad}

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import Page from '../Page'
 import Feed from '../Feed'
 import useTopicPosts from '../../utils/data/posts/useTopicPosts'
-import { TopicSortMode } from '../../types'
+import { TopicSortMode, TopicsSortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import useTracking from '../../utils/tracking/useTracking'
@@ -26,7 +26,7 @@ import {
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 
-const { SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
+const { ENABLE_SORTING, SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
 
 type PropTypes = {
   path: string
@@ -35,13 +35,13 @@ type PropTypes = {
 const generateSortOptions = (path: string) => [
   {
     href: `/topic/${path}`,
-    label: 'Latest',
-    sortMode: 'latest',
-  },
-  {
-    href: `/topic/${path}?sort=popular`,
     label: 'Popular',
     sortMode: 'popular',
+  },
+  {
+    href: `/topic/${path}?sort=${TopicSortMode.Latest}`,
+    label: 'Latest',
+    sortMode: 'latest',
   },
 ]
 
@@ -61,7 +61,7 @@ const TopicPage = ({ path }: PropTypes) => {
     // @ts-expect-error: includes should be string
     Object.values(TopicSortMode).includes(sortModeParam)
       ? (sortModeParam as TopicSortMode)
-      : TopicSortMode.Latest
+      : TopicSortMode.Popular
 
   const {
     isLoading: postsAreLoading,
@@ -73,9 +73,10 @@ const TopicPage = ({ path }: PropTypes) => {
   } = useTopicPosts(path, { sortMode })
 
   const { topics } = useTopics({
+    limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
     parentRef: topic?.data.ref,
     skip: !topic,
-    limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
+    sortMode: TopicsSortMode.Popular,
   })
 
   const sortOptions = generateSortOptions(path)
@@ -148,28 +149,30 @@ const TopicPage = ({ path }: PropTypes) => {
           </Typography>
         </MobileContainer>
       )}
-      <MobileContainer>
-        <ButtonGroup
-          aria-label="Sort Selection"
-          fullWidth
-          size="small"
-          sx={{ marginBottom: 2 }}
-          variant="outlined"
-        >
-          {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
-            <Button
-              component={Link}
-              href={href}
-              key={href}
-              replace
-              shallow
-              variant={sortModeOption === sortMode ? 'contained' : undefined}
-            >
-              {label}
-            </Button>
-          ))}
-        </ButtonGroup>
-      </MobileContainer>
+      {ENABLE_SORTING && (
+        <MobileContainer>
+          <ButtonGroup
+            aria-label="Sort Selection"
+            fullWidth
+            size="small"
+            sx={{ marginBottom: 2 }}
+            variant="outlined"
+          >
+            {sortOptions.map(({ href, sortMode: sortModeOption, label }) => (
+              <Button
+                component={Link}
+                href={href}
+                key={href}
+                replace
+                shallow
+                variant={sortModeOption === sortMode ? 'contained' : undefined}
+              >
+                {label}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </MobileContainer>
+      )}
       <Feed
         isLoading={topicIsLoading || postsAreLoading}
         key={sortMode}

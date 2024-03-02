@@ -57,7 +57,7 @@ const getServerSidePropsFn = async ({
 }: {
   AuthUser: AuthUser
   params: { slugs: string[] }
-  query: { sort: string }
+  query: { sort: TopicSortMode }
   req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -73,7 +73,7 @@ const getServerSidePropsFn = async ({
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const uid = AuthUser.id
-  const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Latest
+  const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Popular
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
   const topicCacheKey = createTopicCacheKey(path)
@@ -91,13 +91,14 @@ const getServerSidePropsFn = async ({
     limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
     pageIndex: 0,
     parentTopicRef: topic.data.ref,
-    sortMode: TopicsSortMode.Latest,
+    sortMode: TopicsSortMode.Popular,
   })
 
   const topics = await getTopics({
     db: adminDb,
     limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
     parentTopicRef: topic.data.ref,
+    sortMode: TopicsSortMode.Popular,
   })
 
   if (isInternalRequest(req)) {

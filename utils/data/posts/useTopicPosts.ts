@@ -47,7 +47,7 @@ type UseTopicPosts = (
 
 const useTopicPosts: UseTopicPosts = (
   path,
-  { sortMode = TopicSortMode.Latest, swrConfig = {} } = {}
+  { sortMode = TopicSortMode.Popular, swrConfig = {} } = {}
 ) => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc

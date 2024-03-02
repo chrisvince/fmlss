@@ -10,7 +10,7 @@ import SidebarTopicsSection from '../SidebarTopicsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 
-const { TOPICS_ENABLED } = constants
+const { ENABLE_SORTING, TOPICS_ENABLED } = constants
 
 const SORT_MODE_OPTIONS = [
   {
@@ -52,30 +52,34 @@ const HashtagsPage = () => {
       renderPageTitle
       rightPanelChildren={TOPICS_ENABLED && <SidebarTopicsSection />}
     >
-      <MobileContainer>
-        <ButtonGroup
-          aria-label="Sort Selection"
-          fullWidth
-          size="small"
-          sx={{ marginBottom: 2 }}
-          variant="outlined"
-        >
-          {SORT_MODE_OPTIONS.map(
-            ({ href, sortMode: sortModeOption, label }) => (
-              <Button
-                component={Link}
-                href={href}
-                key={href}
-                replace
-                shallow
-                variant={sortModeOption === sortMode ? 'contained' : undefined}
-              >
-                {label}
-              </Button>
-            )
-          )}
-        </ButtonGroup>
-      </MobileContainer>
+      {ENABLE_SORTING && (
+        <MobileContainer>
+          <ButtonGroup
+            aria-label="Sort Selection"
+            fullWidth
+            size="small"
+            sx={{ marginBottom: 2 }}
+            variant="outlined"
+          >
+            {SORT_MODE_OPTIONS.map(
+              ({ href, sortMode: sortModeOption, label }) => (
+                <Button
+                  component={Link}
+                  href={href}
+                  key={href}
+                  replace
+                  shallow
+                  variant={
+                    sortModeOption === sortMode ? 'contained' : undefined
+                  }
+                >
+                  {label}
+                </Button>
+              )
+            )}
+          </ButtonGroup>
+        </MobileContainer>
+      )}
       <HashtagsList
         hashtags={hashtags}
         isLoading={isLoading}
