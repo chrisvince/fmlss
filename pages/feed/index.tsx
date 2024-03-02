@@ -37,38 +37,18 @@ interface PropTypes {
 
 const Feed = ({ fallback }: PropTypes) => (
   <SWRConfig value={{ fallback }}>
-    <FeedPage />
+    <FeedPage sortMode={FeedSortMode.Latest} />
   </SWRConfig>
 )
 
-const SORT_MODE_MAP: {
-  [key: string]: string
-} = {
-  latest: 'latest',
-  popular: 'popular',
-}
-
 const getServerSidePropsFn = async ({
   AuthUser,
-  params: { sortMode: sortModeArray },
   req,
 }: {
   AuthUser: AuthUser
-  params: { sortMode: string }
   req: NextApiRequest
 }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  if (sortModeArray?.length > 1) {
-    return { notFound: true }
-  }
-
-  const sortModeParam = sortModeArray?.[0] ?? FeedSortMode.Latest
-  const sortMode = SORT_MODE_MAP[sortModeParam] as FeedSortMode
-
-  if (!sortMode) {
-    return { notFound: true }
-  }
-
   const uid = AuthUser.id
 
   if (!uid) {
@@ -80,7 +60,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const postFeedCacheKey = createPostFeedCacheKey(sortMode)
+  const postFeedCacheKey = createPostFeedCacheKey(FeedSortMode.Latest)
   const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const userCacheKey = createUserCacheKey(uid)
@@ -107,7 +87,7 @@ const getServerSidePropsFn = async ({
   const [posts, { sidebarHashtags, sidebarTopics }, user] = await Promise.all([
     getPostFeed({
       db: adminDb,
-      sortMode,
+      sortMode: FeedSortMode.Latest,
       uid,
     }),
     sidebarDataPromise,

@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import Page from '../Page'
 import Feed from '../Feed'
 import usePostFeed from '../../utils/data/posts/usePostFeed'
@@ -16,20 +15,11 @@ enum TITLE_MAP {
   popular = 'Popular',
 }
 
-const FeedPage = () => {
-  const {
-    query: { sortMode: sortModes },
-  } = useRouter()
+interface Props {
+  sortMode: FeedSortMode
+}
 
-  const sortModeParam = sortModes?.[0] ? sortModes[0].toLowerCase() : undefined
-
-  const sortMode =
-    sortModeParam &&
-    // @ts-expect-error: includes should be string
-    Object.values(FeedSortMode).includes(sortModeParam)
-      ? (sortModeParam as FeedSortMode)
-      : FeedSortMode.Latest
-
+const FeedPage = ({ sortMode }: Props) => {
   const {
     isLoading,
     likePost,

@@ -40,7 +40,7 @@ const NAVIGATION_ITEMS = [
     label: 'Feed',
   },
   {
-    href: '/feed/popular',
+    href: '/popular',
     icon: StarOutlineRounded,
     iconCurrent: StarRounded,
     label: 'Popular',

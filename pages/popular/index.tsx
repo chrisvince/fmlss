@@ -1,0 +1,118 @@
+import {
+  AuthUser,
+  getFirebaseAdmin,
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from 'next-firebase-auth'
+import { SWRConfig } from 'swr'
+import { NextApiRequest } from 'next'
+
+import FeedPage from '../../components/FeedPage'
+import { FeedSortMode } from '../../types'
+import {
+  createSidebarTopicsCacheKey,
+  createSidebarHashtagsCacheKey,
+  createPostFeedCacheKey,
+  createUserCacheKey,
+} from '../../utils/createCacheKeys'
+import getPostFeed from '../../utils/data/posts/getPostFeed'
+import constants from '../../constants'
+import isInternalRequest from '../../utils/isInternalRequest'
+import {
+  withAuthUserConfig,
+  withAuthUserTokenSSRConfig,
+} from '../../config/withAuthConfig'
+import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import getUser from '../../utils/data/user/getUser'
+
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
+
+const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
+
+interface PropTypes {
+  fallback: {
+    [key: string]: unknown
+  }
+}
+
+const Popular = ({ fallback }: PropTypes) => (
+  <SWRConfig value={{ fallback }}>
+    <FeedPage sortMode={FeedSortMode.Popular} />
+  </SWRConfig>
+)
+
+const getServerSidePropsFn = async ({
+  AuthUser,
+  req,
+}: {
+  AuthUser: AuthUser
+  req: NextApiRequest
+}) => {
+  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+  const uid = AuthUser.id
+
+  if (!uid) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  const postFeedCacheKey = createPostFeedCacheKey(FeedSortMode.Popular)
+  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
+  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
+  const userCacheKey = createUserCacheKey(uid)
+
+  const admin = getFirebaseAdmin()
+  const adminDb = admin.firestore()
+  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+
+  if (isInternalRequest(req)) {
+    const { sidebarTopics, sidebarHashtags } = await sidebarDataPromise
+    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+    return {
+      props: {
+        fallback: {
+          [sidebarTopicsCacheKey]: sidebarTopics,
+          [sidebarHashtagsCacheKey]: sidebarHashtags,
+        },
+        key: postFeedCacheKey,
+      },
+    }
+  }
+
+  const [posts, { sidebarHashtags, sidebarTopics }, user] = await Promise.all([
+    getPostFeed({
+      db: adminDb,
+      sortMode: FeedSortMode.Popular,
+      uid,
+    }),
+    sidebarDataPromise,
+    getUser(uid, { db: adminDb }),
+  ])
+
+  console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+
+  return {
+    props: {
+      fallback: {
+        [userCacheKey]: user,
+        [postFeedCacheKey]: posts,
+        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        [sidebarTopicsCacheKey]: sidebarTopics,
+      },
+      key: postFeedCacheKey,
+    },
+  }
+}
+
+export const getServerSideProps = withAuthUserTokenSSR(
+  withAuthUserTokenSSRConfig(ROUTE_MODE)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+)(getServerSidePropsFn as any)
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Popular as any)
