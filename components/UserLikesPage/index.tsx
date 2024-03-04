@@ -18,8 +18,8 @@ const UserLikesPage = () => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
+          <SidebarHashtagsSection />
         </>
       }
     >

@@ -20,8 +20,8 @@ const UserRepliesPage = () => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
+          <SidebarHashtagsSection />
         </>
       }
     >

@@ -101,8 +101,8 @@ const HashtagPage = ({ slug }: PropTypes) => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
+          <SidebarHashtagsSection />
         </>
       }
     >

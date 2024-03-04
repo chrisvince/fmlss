@@ -48,8 +48,8 @@ const PeoplePage = () => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           <SidebarTopicsSection />
+          <SidebarHashtagsSection />
         </>
       }
     >

@@ -42,8 +42,8 @@ const FeedPage = ({ sortMode }: Props) => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
+          <SidebarHashtagsSection />
         </>
       }
     >

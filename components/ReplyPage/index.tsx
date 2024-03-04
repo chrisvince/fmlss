@@ -28,8 +28,8 @@ const ReplyPage = ({ slug }: Props) => {
       pageTitle="Reply to Post"
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
+          <SidebarHashtagsSection />
         </>
       }
     >

@@ -14,8 +14,8 @@ const NotFoundPage = () => (
     pageTitle="Not found"
     rightPanelChildren={
       <>
-        <SidebarHashtagsSection />
         {TOPICS_ENABLED && <SidebarTopicsSection />}
+        <SidebarHashtagsSection />
       </>
     }
   >

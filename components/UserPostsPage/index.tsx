@@ -20,8 +20,8 @@ const UserPostsPage = () => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
+          <SidebarHashtagsSection />
         </>
       }
     >

@@ -47,8 +47,8 @@ const PersonPage = ({ slug }: Props) => {
       renderPageTitle
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           <SidebarTopicsSection />
+          <SidebarHashtagsSection />
         </>
       }
     >

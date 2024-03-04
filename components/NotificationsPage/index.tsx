@@ -15,8 +15,8 @@ const NotificationsPage = () => {
       pageTitle="Notifications"
       rightPanelChildren={
         <>
-          <SidebarHashtagsSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
+          <SidebarHashtagsSection />
         </>
       }
       renderPageTitle

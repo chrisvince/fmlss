@@ -104,8 +104,8 @@ const PostPage = ({ slug }: PropTypes) => {
         description={post?.data.bodyText}
         rightPanelChildren={
           <>
-            <SidebarHashtagsSection />
             {TOPICS_ENABLED && <SidebarTopicsSection />}
+            <SidebarHashtagsSection />
           </>
         }
       >
