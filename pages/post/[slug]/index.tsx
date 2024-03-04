@@ -13,8 +13,6 @@ import getPost from '../../../utils/data/post/getPost'
 import PostPage from '../../../components/PostPage'
 import getPostReplies from '../../../utils/data/postReplies/getPostReplies'
 import {
-  createSidebarTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
   createPostCacheKey,
   createPostRepliesCacheKey,
   createUserCacheKey,
@@ -22,7 +20,7 @@ import {
 import constants from '../../../constants'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import usePost from '../../../utils/data/post/usePost'
-import fetchSidebarData from '../../../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../../../utils/data/sidebar/fetchSidebarData'
 import Layout from '../../../components/Layout'
 import { ReactElement } from 'react'
 import getUser from '../../../utils/data/user/getUser'
@@ -73,21 +71,16 @@ const getServerSidePropsFn = async ({
   const uid = AuthUser.id
   const postCacheKey = createPostCacheKey(slug)
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
   const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
-        fallback: {
-          [sidebarTopicsCacheKey]: sidebarTopics,
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
-        },
+        fallback: sidebarFallbackData,
         key: postCacheKey,
       },
     }
@@ -103,18 +96,16 @@ const getServerSidePropsFn = async ({
     return { notFound: true }
   }
 
-  const [replies, { sidebarHashtags, sidebarTopics }, user] = await Promise.all(
-    [
-      POST_REPLIES_SSR
-        ? getPostReplies(post.data.reference, slug, {
-            uid,
-            db: adminDb,
-          })
-        : null,
-      sidebarDataPromise,
-      userCacheKey ? getUser(uid, { db: adminDb }) : null,
-    ]
-  )
+  const [replies, sidebarFallbackData, user] = await Promise.all([
+    POST_REPLIES_SSR
+      ? getPostReplies(post.data.reference, slug, {
+          uid,
+          db: adminDb,
+        })
+      : null,
+    sidebarDataPromise,
+    userCacheKey ? getUser(uid, { db: adminDb }) : null,
+  ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
@@ -122,8 +113,7 @@ const getServerSidePropsFn = async ({
       fallback: {
         [postCacheKey]: post,
         [postRepliesCacheKey]: replies,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
-        [sidebarTopicsCacheKey]: sidebarTopics,
+        ...sidebarFallbackData,
         ...(userCacheKey ? { [userCacheKey]: user } : {}),
       },
       key: postCacheKey,

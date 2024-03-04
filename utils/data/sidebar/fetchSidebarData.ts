@@ -2,59 +2,93 @@ import constants from '../../../constants'
 import {
   createSidebarTopicsCacheKey,
   createSidebarHashtagsCacheKey,
+  createSidebarPeopleCacheKey,
 } from '../../createCacheKeys'
 import getTopics from '../topics/getTopics'
 import getHashtags from '../hashtags/getHashtags'
 import firebase from 'firebase/app'
-import { HashtagsSortMode, TopicsSortMode } from '../../../types'
+import {
+  HashtagsSortMode,
+  PeopleSortMode,
+  TopicsSortMode,
+} from '../../../types'
+import getPeople from '../people/getPeople'
 
-const { TOPICS_ENABLED, SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } =
-  constants
+const { SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } = constants
 
 export enum SidebarResourceKey {
-  HASHTAGS = 'hashtags',
-  TOPICS = 'topics',
+  Hashtags = 'hashtags',
+  People = 'people',
+  Topics = 'topics',
 }
 
-const fetchSidebarData = async ({
+const fetchSidebarFallbackData = async ({
   db,
   exclude = [],
 }: {
   db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-  exclude?: (SidebarResourceKey.HASHTAGS | SidebarResourceKey.TOPICS)[]
+  exclude?: SidebarResourceKey[]
 }) => {
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
+  const hashtagsCacheKey = !exclude.includes(SidebarResourceKey.Hashtags)
+    ? createSidebarHashtagsCacheKey()
+    : null
+
+  const sidebarTopicsCacheKey = !exclude.includes(SidebarResourceKey.Topics)
+    ? createSidebarTopicsCacheKey()
+    : null
+
+  const sidebarPeopleCacheKey = !exclude.includes(SidebarResourceKey.People)
+    ? createSidebarPeopleCacheKey()
+    : null
 
   const getSidebarHashtags = () =>
-    getHashtags({
-      cacheKey: sidebarHashtagsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db,
-      limit: SIDEBAR_LIST_COUNT,
-      sortMode: HashtagsSortMode.Popular,
-    })
+    hashtagsCacheKey
+      ? getHashtags({
+          cacheKey: hashtagsCacheKey,
+          cacheTime: SIDEBAR_LIST_CACHE_TIME,
+          db,
+          limit: SIDEBAR_LIST_COUNT,
+          sortMode: HashtagsSortMode.Popular,
+        })
+      : null
 
   const getSidebarTopics = () =>
-    getTopics({
-      cacheKey: sidebarTopicsCacheKey,
-      cacheTime: SIDEBAR_LIST_CACHE_TIME,
-      db,
-      limit: SIDEBAR_LIST_COUNT,
-      sortMode: TopicsSortMode.Popular,
-    })
+    sidebarTopicsCacheKey
+      ? getTopics({
+          cacheKey: sidebarTopicsCacheKey,
+          cacheTime: SIDEBAR_LIST_CACHE_TIME,
+          db,
+          limit: SIDEBAR_LIST_COUNT,
+          sortMode: TopicsSortMode.Popular,
+        })
+      : null
 
-  const [sidebarHashtags, sidebarTopics] = await Promise.all([
-    exclude.includes(SidebarResourceKey.HASHTAGS) ? [] : getSidebarHashtags(),
-    exclude.includes(SidebarResourceKey.TOPICS) || !TOPICS_ENABLED
-      ? []
-      : getSidebarTopics(),
+  const getSidebarPeople = () =>
+    sidebarPeopleCacheKey
+      ? getPeople({
+          cacheKey: sidebarPeopleCacheKey,
+          cacheTime: SIDEBAR_LIST_CACHE_TIME,
+          db,
+          limit: SIDEBAR_LIST_COUNT,
+          sortMode: PeopleSortMode.Popular,
+        })
+      : null
+
+  const [sidebarHashtags, sidebarTopics, sidebarPeople] = await Promise.all([
+    hashtagsCacheKey ? getSidebarHashtags() : null,
+    sidebarTopicsCacheKey ? getSidebarTopics() : null,
+    sidebarPeopleCacheKey ? getSidebarPeople() : null,
   ])
 
   return {
-    sidebarHashtags,
-    sidebarTopics,
+    ...(hashtagsCacheKey ? { [hashtagsCacheKey]: sidebarHashtags } : {}),
+    ...(sidebarPeopleCacheKey
+      ? { [sidebarPeopleCacheKey]: sidebarPeople }
+      : {}),
+    ...(sidebarTopicsCacheKey
+      ? { [sidebarTopicsCacheKey]: sidebarTopics }
+      : {}),
   }
 }
 
-export default fetchSidebarData
+export default fetchSidebarFallbackData

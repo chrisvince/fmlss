@@ -9,15 +9,11 @@ import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
 
 import ReplyPage from '../../../components/ReplyPage'
-import {
-  createSidebarTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
-  createPostCacheKey,
-} from '../../../utils/createCacheKeys'
+import { createPostCacheKey } from '../../../utils/createCacheKeys'
 import getPost from '../../../utils/data/post/getPost'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import constants from '../../../constants'
-import fetchSidebarData from '../../../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../../../utils/data/sidebar/fetchSidebarData'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -55,26 +51,21 @@ const getServerSidePropsFn = async ({
   const slug = decodeURIComponent(encodedSlug)
   const uid = AuthUser.id
   const postCacheKey = createPostCacheKey(slug)
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
-        fallback: {
-          [sidebarTopicsCacheKey]: sidebarTopics,
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
-        },
+        fallback: sidebarFallbackData,
         key: postCacheKey,
       },
     }
   }
 
-  const [post, { sidebarHashtags, sidebarTopics }] = await Promise.all([
+  const [post, sidebarFallbackData] = await Promise.all([
     getPost(slug, {
       uid,
       db: adminDb,
@@ -91,8 +82,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarTopicsCacheKey]: sidebarTopics,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        ...sidebarFallbackData,
         [postCacheKey]: post,
       },
       key: postCacheKey,

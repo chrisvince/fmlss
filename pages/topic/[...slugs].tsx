@@ -11,7 +11,6 @@ import { TopicSortMode, TopicsSortMode } from '../../types'
 import {
   createTopicCacheKey,
   createTopicPostsCacheKey,
-  createSidebarHashtagsCacheKey,
   createTopicsCacheKey,
 } from '../../utils/createCacheKeys'
 import getTopicPosts from '../../utils/data/posts/getTopicPosts'
@@ -19,7 +18,7 @@ import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
 import getTopic from '../../utils/data/topic/getTopic'
-import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
 import slugify from '../../utils/slugify'
 import getTopics from '../../utils/data/topics/getTopics'
 
@@ -74,10 +73,9 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const uid = AuthUser.id
   const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Popular
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
   const topicCacheKey = createTopicCacheKey(path)
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
   const topic = await getTopic(path, { db: adminDb })
 
   if (!topic) {
@@ -102,13 +100,13 @@ const getServerSidePropsFn = async ({
   })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         fallback: {
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
+          ...sidebarFallbackData,
           [topicCacheKey]: topic,
           [topicsCacheKey]: topics,
         },
@@ -118,7 +116,7 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, { sidebarHashtags }] = await Promise.all([
+  const [posts, sidebarFallbackData] = await Promise.all([
     getTopicPosts(path, {
       db: adminDb,
       uid,
@@ -131,7 +129,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        ...sidebarFallbackData,
         [topicCacheKey]: topic,
         [topicPostsCacheKey]: posts,
         [topicsCacheKey]: topics,

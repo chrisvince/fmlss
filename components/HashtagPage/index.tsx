@@ -20,6 +20,7 @@ import {
   ResourceType,
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { ENABLE_SHOW_REPLIES, ENABLE_SORTING, TOPICS_ENABLED } = constants
 
@@ -101,6 +102,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
       renderPageTitle
       rightPanelChildren={
         <>
+          <SidebarPeopleSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
           <SidebarHashtagsSection />
         </>

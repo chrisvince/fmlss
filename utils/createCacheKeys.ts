@@ -100,6 +100,7 @@ const createTopicPostsCacheKey = (
 const createTopicCacheKey = (slug: string) => `topic/${slug}`
 
 const createSidebarHashtagsCacheKey = () => 'sidebar/hashtags'
+const createSidebarPeopleCacheKey = () => 'sidebar/people'
 const createSidebarTopicsCacheKey = () => 'sidebar/topics'
 const createUserCacheKey = (uid: string) => `user/${uid}`
 
@@ -152,6 +153,7 @@ export {
   createPostReactionCacheKey,
   createPostRepliesCacheKey,
   createSidebarHashtagsCacheKey,
+  createSidebarPeopleCacheKey,
   createSidebarTopicsCacheKey,
   createTopicCacheKey,
   createTopicPostsCacheKey,

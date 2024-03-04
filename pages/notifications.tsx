@@ -8,18 +8,14 @@ import { SWRConfig } from 'swr'
 import { NextApiRequest } from 'next'
 
 import NotificationsPage from '../components/NotificationsPage'
-import {
-  createSidebarTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
-  createNotificationCacheKey,
-} from '../utils/createCacheKeys'
+import { createNotificationCacheKey } from '../utils/createCacheKeys'
 import constants from '../constants'
 import isInternalRequest from '../utils/isInternalRequest'
 import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../config/withAuthConfig'
-import fetchSidebarData from '../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../utils/data/sidebar/fetchSidebarData'
 import getNotifications from '../utils/data/notifications/getNotifications'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, NOTIFICATION_PAGINATION_COUNT } =
@@ -59,26 +55,21 @@ const getServerSidePropsFn = async ({
     pageIndex: 0,
   })
 
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarTopics, sidebarHashtags } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
-        fallback: {
-          [sidebarTopicsCacheKey]: sidebarTopics,
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
-        },
+        fallback: sidebarFallbackData,
         key: notificationsCacheKey,
       },
     }
   }
 
-  const [notifications, { sidebarHashtags, sidebarTopics }] = await Promise.all(
+  const [notifications, sidebarFallbackData] = await Promise.all(
     // @ts-expect-error: we know uid is defined
     [getNotifications(uid, { db: adminDb }), sidebarDataPromise]
   )
@@ -88,8 +79,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarTopicsCacheKey]: sidebarTopics,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        ...sidebarFallbackData,
         [notificationsCacheKey]: notifications,
       },
       key: notificationsCacheKey,

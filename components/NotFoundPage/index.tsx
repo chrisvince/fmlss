@@ -6,6 +6,7 @@ import Page from '../Page'
 import TextAndCta from '../TextAndCta'
 import constants from '../../constants'
 import MobileContainer from '../MobileContainer'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { TOPICS_ENABLED } = constants
 
@@ -14,6 +15,7 @@ const NotFoundPage = () => (
     pageTitle="Not found"
     rightPanelChildren={
       <>
+        <SidebarPeopleSection />
         {TOPICS_ENABLED && <SidebarTopicsSection />}
         <SidebarHashtagsSection />
       </>

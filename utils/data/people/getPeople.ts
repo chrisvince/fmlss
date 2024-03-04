@@ -16,13 +16,19 @@ const { PEOPLE_CACHE_TIME, PEOPLE_COLLECTION, POST_PAGINATION_COUNT } =
   constants
 
 type GetPeople = (options?: {
+  cacheKey?: string
+  cacheTime?: number
   db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+  limit?: number
   sortMode?: PeopleSortMode
   startAfter?: FirebaseDoc
 }) => Promise<Person[]>
 
 const getPeople: GetPeople = async ({
+  cacheKey: cacheKeyProp,
+  cacheTime = PEOPLE_CACHE_TIME,
   db: dbProp,
+  limit = POST_PAGINATION_COUNT,
   sortMode = PeopleSortMode.Popular,
   startAfter,
 } = {}) => {
@@ -35,7 +41,7 @@ const getPeople: GetPeople = async ({
 
   let peopleData: PersonData[] = []
 
-  const cacheKey = createPeopleCacheKey({ sortMode })
+  const cacheKey = cacheKeyProp ?? createPeopleCacheKey({ sortMode })
   const serverCachedData = get(cacheKey)
 
   if (serverCachedData) {
@@ -50,13 +56,13 @@ const getPeople: GetPeople = async ({
           : query,
       query => query.orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(POST_PAGINATION_COUNT).get()
+      query => query.limit(limit).get()
     )()
 
     if (peopleDocs.empty) return []
 
     peopleData = peopleDocs.docs.map(doc => mapPersonDocToData(doc))
-    put(cacheKey, peopleData, PEOPLE_CACHE_TIME)
+    put(cacheKey, peopleData, cacheTime)
   }
 
   const people = peopleData.map((data, index) => ({

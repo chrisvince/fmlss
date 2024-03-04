@@ -8,10 +8,7 @@ import { SWRConfig } from 'swr'
 
 import HashtagsPage from '../../components/HashtagsPage'
 import type { HashtagsSortMode } from '../../types'
-import {
-  createHashtagsCacheKey,
-  createSidebarTopicsCacheKey,
-} from '../../utils/createCacheKeys'
+import { createHashtagsCacheKey } from '../../utils/createCacheKeys'
 import getHashtags from '../../utils/data/hashtags/getHashtags'
 import constants from '../../constants'
 import { NextApiRequest } from 'next'
@@ -20,7 +17,7 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import fetchSidebarData, {
+import fetchSidebarFallbackData, {
   SidebarResourceKey,
 } from '../../utils/data/sidebar/fetchSidebarData'
 
@@ -68,31 +65,27 @@ const getServerSidePropsFn = async ({
   }
 
   const hashtagsCacheKey = createHashtagsCacheKey(sortMode)
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
-
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
 
-  const sidebarDataPromise = fetchSidebarData({
+  const sidebarDataPromise = fetchSidebarFallbackData({
     db: adminDb,
-    exclude: [SidebarResourceKey.HASHTAGS],
+    exclude: [SidebarResourceKey.Hashtags],
   })
 
   if (isInternalRequest(req)) {
-    const { sidebarTopics } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
-        fallback: {
-          [sidebarTopicsCacheKey]: sidebarTopics,
-        },
+        fallback: sidebarFallbackData,
         key: hashtagsCacheKey,
       },
     }
   }
 
-  const [hashtags, { sidebarTopics }] = await Promise.all([
+  const [hashtags, sidebarFallbackData] = await Promise.all([
     getHashtags({ db: adminDb, sortMode }),
     sidebarDataPromise,
   ])
@@ -101,7 +94,7 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [sidebarTopicsCacheKey]: sidebarTopics,
+        ...sidebarFallbackData,
         [hashtagsCacheKey]: hashtags,
       },
       key: hashtagsCacheKey,

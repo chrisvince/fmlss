@@ -10,7 +10,6 @@ import TopicsPage from '../../components/TopicsPage'
 import { TopicsSortMode } from '../../types'
 import {
   createTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
   createTopicCacheKey,
 } from '../../utils/createCacheKeys'
 import getTopics from '../../utils/data/topics/getTopics'
@@ -21,7 +20,7 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
 import { SidebarResourceKey } from '../../utils/data/sidebar/fetchSidebarData'
 import getTopic from '../../utils/data/topic/getTopic'
 
@@ -70,7 +69,6 @@ const getServerSidePropsFn = async ({
 
   const sortMode = SORT_MODE_MAP[sort] ?? TopicsSortMode.Popular
   const parentTopicPath = slugs.join('/') || null
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
 
@@ -80,13 +78,13 @@ const getServerSidePropsFn = async ({
       })
     : null
 
-  const sidebarDataPromise = fetchSidebarData({
+  const sidebarDataPromise = fetchSidebarFallbackData({
     db: adminDb,
-    exclude: [SidebarResourceKey.TOPICS],
+    exclude: [SidebarResourceKey.Topics],
   })
 
   if (isInternalRequest(req)) {
-    const [parentTopic, { sidebarHashtags }] = await Promise.all([
+    const [parentTopic, sidebarFallbackData] = await Promise.all([
       parentTopicPromise,
       sidebarDataPromise,
     ])
@@ -114,7 +112,7 @@ const getServerSidePropsFn = async ({
                 [createTopicCacheKey(parentTopicPath)]: parentTopic,
               }
             : {}),
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
+          ...sidebarFallbackData,
         },
         key: topicsCacheKey,
         parentTopicPath,
@@ -129,7 +127,7 @@ const getServerSidePropsFn = async ({
     parentTopicRef: parentTopic?.data.ref,
   })
 
-  const [topics, { sidebarHashtags }] = await Promise.all([
+  const [topics, sidebarFallbackData] = await Promise.all([
     getTopics({ db: adminDb, sortMode, parentTopicRef: parentTopic?.data.ref }),
     sidebarDataPromise,
   ])
@@ -151,7 +149,7 @@ const getServerSidePropsFn = async ({
               [createTopicCacheKey(parentTopicPath)]: parentTopic,
             }
           : {}),
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        ...sidebarFallbackData,
         [topicsCacheKey]: topics,
       },
       key: topicsCacheKey,

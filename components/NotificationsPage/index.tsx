@@ -4,6 +4,7 @@ import Page from '../Page'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import NotificationsList from '../NotificationsList'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { TOPICS_ENABLED } = constants
 
@@ -15,6 +16,7 @@ const NotificationsPage = () => {
       pageTitle="Notifications"
       rightPanelChildren={
         <>
+          <SidebarPeopleSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
           <SidebarHashtagsSection />
         </>

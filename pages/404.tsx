@@ -2,12 +2,8 @@ import { getFirebaseAdmin } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 import NotFoundPage from '../components/NotFoundPage'
 import constants from '../constants'
-import {
-  createSidebarTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
-} from '../utils/createCacheKeys'
 import msToSeconds from '../utils/msToSeconds'
-import fetchSidebarData from '../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../utils/data/sidebar/fetchSidebarData'
 
 const { SIDEBAR_LIST_CACHE_TIME } = constants
 
@@ -26,19 +22,14 @@ const NotFound = ({ fallback }: Props) => (
 export const getStaticProps = async () => {
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
 
-  const { sidebarHashtags, sidebarTopics } = await fetchSidebarData({
+  const sidebarFallbackData = await fetchSidebarFallbackData({
     db: adminDb,
   })
 
   return {
     props: {
-      fallback: {
-        [sidebarTopicsCacheKey]: sidebarTopics,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
-      },
+      fallback: sidebarFallbackData,
     },
     revalidate: msToSeconds(SIDEBAR_LIST_CACHE_TIME),
   }

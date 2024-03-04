@@ -4,12 +4,10 @@ import {
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
 import getPeople from '../../utils/data/people/getPeople'
-import {
-  createPeopleCacheKey,
-  createSidebarHashtagsCacheKey,
-  createSidebarTopicsCacheKey,
-} from '../../utils/createCacheKeys'
-import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import { createPeopleCacheKey } from '../../utils/createCacheKeys'
+import fetchSidebarFallbackData, {
+  SidebarResourceKey,
+} from '../../utils/data/sidebar/fetchSidebarData'
 import { SWRConfig } from 'swr'
 import PeoplePage from '../../components/PeoplePage'
 import { NextApiRequest } from 'next'
@@ -48,25 +46,23 @@ const getServerSidePropsFn = async ({
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
   const peopleCacheKey = createPeopleCacheKey({ sortMode })
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({
+    db: adminDb,
+    exclude: [SidebarResourceKey.People],
+  })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
 
     return {
       props: {
-        fallback: {
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
-          [sidebarTopicsCacheKey]: sidebarTopics,
-        },
+        fallback: sidebarFallbackData,
         key: peopleCacheKey,
       },
     }
   }
 
-  const [people, { sidebarHashtags, sidebarTopics }] = await Promise.all([
+  const [people, sidebarFallbackData] = await Promise.all([
     getPeople({ db: adminDb, sortMode }),
     sidebarDataPromise,
   ])
@@ -75,8 +71,7 @@ const getServerSidePropsFn = async ({
     props: {
       fallback: {
         [peopleCacheKey]: people,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
-        [sidebarTopicsCacheKey]: sidebarTopics,
+        ...sidebarFallbackData,
       },
     },
   }

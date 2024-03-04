@@ -13,6 +13,7 @@ import {
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
 import { useAuthUser } from 'next-firebase-auth'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 type Props = {
   slug: string
@@ -47,6 +48,7 @@ const PersonPage = ({ slug }: Props) => {
       renderPageTitle
       rightPanelChildren={
         <>
+          <SidebarPeopleSection />
           <SidebarTopicsSection />
           <SidebarHashtagsSection />
         </>

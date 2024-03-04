@@ -9,6 +9,7 @@ import HashtagsList from '../HashtagsList'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { ENABLE_SORTING, TOPICS_ENABLED } = constants
 
@@ -50,7 +51,12 @@ const HashtagsPage = () => {
       description="See posts by hashtags posted on Fameless"
       pageTitle="Hashtags"
       renderPageTitle
-      rightPanelChildren={TOPICS_ENABLED && <SidebarTopicsSection />}
+      rightPanelChildren={
+        <>
+          <SidebarPeopleSection />
+          <SidebarTopicsSection />
+        </>
+      }
     >
       {ENABLE_SORTING && (
         <MobileContainer>

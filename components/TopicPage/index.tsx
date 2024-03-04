@@ -25,6 +25,8 @@ import {
   ResourceType,
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
+import SidebarPeopleSection from '../SidebarPeopleSection'
+import SidebarTopicsSection from '../SidebarTopicsSection'
 
 const { ENABLE_SORTING, SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
 
@@ -114,7 +116,13 @@ const TopicPage = ({ path }: PropTypes) => {
       description={`See ${topic?.data.title} posts`}
       pageTitle={topic?.data.title}
       renderPageTitle
-      rightPanelChildren={<SidebarHashtagsSection />}
+      rightPanelChildren={
+        <>
+          <SidebarPeopleSection />
+          <SidebarTopicsSection />
+          <SidebarHashtagsSection />
+        </>
+      }
     >
       {topic?.data.subtopicSegments &&
         topic.data.subtopicSegments.length > 1 && (

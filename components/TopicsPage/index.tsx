@@ -11,6 +11,7 @@ import MobileContainer from '../MobileContainer'
 import useTopic from '../../utils/data/topic/useTopic'
 import TopicBreadcrumbs from '../TopicBreadcrumbs'
 import constants from '../../constants'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { ENABLE_SORTING } = constants
 
@@ -66,7 +67,12 @@ const TopicsPage = ({ parentTopicPath }: PropTypes) => {
       description="See topics of posts made on Fameless"
       pageTitle={parentTopic?.data.title ?? 'Topics'}
       renderPageTitle
-      rightPanelChildren={<SidebarHashtagsSection />}
+      rightPanelChildren={
+        <>
+          <SidebarPeopleSection />
+          <SidebarHashtagsSection />
+        </>
+      }
     >
       {ENABLE_SORTING && (
         <MobileContainer>

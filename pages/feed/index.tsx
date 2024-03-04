@@ -10,8 +10,6 @@ import { NextApiRequest } from 'next'
 import FeedPage from '../../components/FeedPage'
 import { FeedSortMode } from '../../types'
 import {
-  createSidebarTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
   createPostFeedCacheKey,
   createUserCacheKey,
 } from '../../utils/createCacheKeys'
@@ -22,7 +20,7 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../../config/withAuthConfig'
-import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
 import getUser from '../../utils/data/user/getUser'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
@@ -61,30 +59,25 @@ const getServerSidePropsFn = async ({
   }
 
   const postFeedCacheKey = createPostFeedCacheKey(FeedSortMode.Latest)
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
   const userCacheKey = createUserCacheKey(uid)
 
   const admin = getFirebaseAdmin()
   const adminDb = admin.firestore()
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarTopics, sidebarHashtags } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
-        fallback: {
-          [sidebarTopicsCacheKey]: sidebarTopics,
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
-        },
+        fallback: sidebarFallbackData,
         key: postFeedCacheKey,
       },
     }
   }
 
-  const [posts, { sidebarHashtags, sidebarTopics }, user] = await Promise.all([
+  const [posts, sidebarFallbackData, user] = await Promise.all([
     getPostFeed({
       db: adminDb,
       sortMode: FeedSortMode.Latest,
@@ -101,8 +94,7 @@ const getServerSidePropsFn = async ({
       fallback: {
         [userCacheKey]: user,
         [postFeedCacheKey]: posts,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
-        [sidebarTopicsCacheKey]: sidebarTopics,
+        ...sidebarFallbackData,
       },
       key: postFeedCacheKey,
     },

@@ -11,16 +11,12 @@ import {
   withAuthUserConfig,
   withAuthUserTokenSSRConfig,
 } from '../config/withAuthConfig'
-import {
-  createSidebarTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
-  createUserLikesCacheKey,
-} from '../utils/createCacheKeys'
+import { createUserLikesCacheKey } from '../utils/createCacheKeys'
 import getUserLikes from '../utils/data/userLikes/getUserLikes'
 import constants from '../constants'
 import isInternalRequest from '../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
-import fetchSidebarData from '../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../utils/data/sidebar/fetchSidebarData'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -52,26 +48,21 @@ const getServerSidePropsFn = async ({
 
   // @ts-expect-error: we know uid is defined
   const userLikesCacheKey = createUserLikesCacheKey(uid)
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
 
   if (isInternalRequest(req)) {
-    const { sidebarHashtags, sidebarTopics } = await sidebarDataPromise
+    const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
     return {
       props: {
         key: userLikesCacheKey,
-        fallback: {
-          [sidebarTopicsCacheKey]: sidebarTopics,
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
-        },
+        fallback: sidebarFallbackData,
       },
     }
   }
 
-  const [posts, { sidebarHashtags, sidebarTopics }] = await Promise.all([
+  const [posts, sidebarFallbackData] = await Promise.all([
     // @ts-expect-error: we know uid is defined
     getUserLikes(uid, { db: adminDb }),
     sidebarDataPromise,
@@ -82,8 +73,7 @@ const getServerSidePropsFn = async ({
     props: {
       key: userLikesCacheKey,
       fallback: {
-        [sidebarTopicsCacheKey]: sidebarTopics,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
+        ...sidebarFallbackData,
         [userLikesCacheKey]: posts,
       },
     },

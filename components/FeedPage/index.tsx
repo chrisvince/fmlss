@@ -7,6 +7,7 @@ import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
 import FakeInlineCreatePost from '../FakeInlineCreatePost'
 import Error from 'next/error'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { TOPICS_ENABLED } = constants
 
@@ -42,6 +43,7 @@ const FeedPage = ({ sortMode }: Props) => {
       renderPageTitle
       rightPanelChildren={
         <>
+          <SidebarPeopleSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
           <SidebarHashtagsSection />
         </>

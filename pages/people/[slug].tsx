@@ -6,14 +6,12 @@ import {
 import { SWRConfig } from 'swr'
 
 import {
-  createSidebarTopicsCacheKey,
-  createSidebarHashtagsCacheKey,
   createPersonCacheKey,
   createPersonPostsCacheKey,
 } from '../../utils/createCacheKeys'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { NextApiRequest } from 'next'
-import fetchSidebarData from '../../utils/data/sidebar/fetchSidebarData'
+import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
 import getPerson from '../../utils/data/person/getPerson'
 import PersonPage from '../../components/PersonPage'
 import getPersonPosts from '../../utils/data/posts/getPersonPosts'
@@ -43,13 +41,11 @@ const getServerSidePropsFn = async ({
   const adminDb = admin.firestore()
   const personCacheKey = createPersonCacheKey(slug)
   const personPostsCacheKey = createPersonPostsCacheKey(slug)
-  const sidebarHashtagsCacheKey = createSidebarHashtagsCacheKey()
-  const sidebarTopicsCacheKey = createSidebarTopicsCacheKey()
-  const sidebarDataPromise = fetchSidebarData({ db: adminDb })
+  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
   const getPersonPromise = getPerson(slug, { db: adminDb })
 
   if (isInternalRequest(req)) {
-    const [person, { sidebarHashtags, sidebarTopics }] = await Promise.all([
+    const [person, sidebarFallbackData] = await Promise.all([
       getPersonPromise,
       sidebarDataPromise,
     ])
@@ -58,8 +54,7 @@ const getServerSidePropsFn = async ({
       props: {
         fallback: {
           [personCacheKey]: person,
-          [sidebarHashtagsCacheKey]: sidebarHashtags,
-          [sidebarTopicsCacheKey]: sidebarTopics,
+          ...sidebarFallbackData,
         },
         slug,
         key: personCacheKey,
@@ -67,24 +62,21 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [person, posts, { sidebarHashtags, sidebarTopics }] = await Promise.all(
-    [
-      getPersonPromise,
-      getPersonPosts(slug, {
-        db: adminDb,
-        sortMode: PersonPostsSortMode.Popular,
-      }),
-      sidebarDataPromise,
-    ]
-  )
+  const [person, posts, sidebarFallbackData] = await Promise.all([
+    getPersonPromise,
+    getPersonPosts(slug, {
+      db: adminDb,
+      sortMode: PersonPostsSortMode.Popular,
+    }),
+    sidebarDataPromise,
+  ])
 
   return {
     props: {
       fallback: {
         [personCacheKey]: person,
         [personPostsCacheKey]: posts,
-        [sidebarHashtagsCacheKey]: sidebarHashtags,
-        [sidebarTopicsCacheKey]: sidebarTopics,
+        ...sidebarFallbackData,
       },
       slug,
       key: personCacheKey,

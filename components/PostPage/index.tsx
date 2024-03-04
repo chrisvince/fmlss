@@ -21,6 +21,7 @@ import {
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { TOPICS_ENABLED, POST_MAX_DEPTH } = constants
 
@@ -104,6 +105,7 @@ const PostPage = ({ slug }: PropTypes) => {
         description={post?.data.bodyText}
         rightPanelChildren={
           <>
+            <SidebarPeopleSection />
             {TOPICS_ENABLED && <SidebarTopicsSection />}
             <SidebarHashtagsSection />
           </>

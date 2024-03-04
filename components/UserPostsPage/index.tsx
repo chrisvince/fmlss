@@ -4,6 +4,7 @@ import useUserPosts from '../../utils/data/userPosts/useUserPosts'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { TOPICS_ENABLED } = constants
 
@@ -20,6 +21,7 @@ const UserPostsPage = () => {
       renderPageTitle
       rightPanelChildren={
         <>
+          <SidebarPeopleSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
           <SidebarHashtagsSection />
         </>

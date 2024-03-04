@@ -8,6 +8,7 @@ import NewPostForm from '../NewPostForm'
 import Page from '../Page'
 import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
+import SidebarPeopleSection from '../SidebarPeopleSection'
 
 const { TOPICS_ENABLED } = constants
 
@@ -28,6 +29,7 @@ const ReplyPage = ({ slug }: Props) => {
       pageTitle="Reply to Post"
       rightPanelChildren={
         <>
+          <SidebarPeopleSection />
           {TOPICS_ENABLED && <SidebarTopicsSection />}
           <SidebarHashtagsSection />
         </>
