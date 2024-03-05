@@ -2,16 +2,6 @@ import { Tooltip, Typography } from '@mui/material'
 import { ReactionId } from '../../types/Reaction'
 import reactions from '../../data/reactions'
 
-export enum PostReaction {
-  Adult,
-  Angry,
-  Funny,
-  Interesting,
-  Love,
-  Offended,
-  Sad,
-}
-
 const SERIOUS_REACTIONS = [
   ReactionId.AdultContent,
   ReactionId.Angry,
