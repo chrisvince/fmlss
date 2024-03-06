@@ -55,6 +55,7 @@ const MenuIcon = ({
         <div className="emoji">{emoji}</div>
         <HighlightOffRounded
           className="remove-reaction-icon"
+          color="action"
           sx={{ fontSize: '1.82rem !important' }}
         />
       </>
