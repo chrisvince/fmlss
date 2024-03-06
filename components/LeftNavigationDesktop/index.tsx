@@ -101,6 +101,7 @@ const LeftNavigationDesktop = () => {
   return (
     <Box
       sx={{
+        overflowY: 'auto',
         position: 'sticky',
         top: `calc(${TOP_NAVIGATION_HEIGHT} + ${navMarginBottomSm})`,
         height: `calc(100vh - ${TOP_NAVIGATION_HEIGHT} - ${navMarginBottomSm} - ${marginBottom})`,

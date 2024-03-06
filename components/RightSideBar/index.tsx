@@ -33,6 +33,7 @@ const RightSideBar = ({ children }: PropTypes) => {
           xs: `calc(100vh - ${TOP_NAVIGATION_HEIGHT} - ${naviMarginBottomXs})`,
           sm: `calc(100vh - ${TOP_NAVIGATION_HEIGHT} - ${naviMarginBottomSm})`,
         },
+        overflowY: 'auto',
         paddingBottom: bottomBuffer,
       }}
     >
