@@ -6,7 +6,9 @@ import PageBackButton from '../PageBackButton'
 const NamePage = () => (
   <Page
     aboveTitleContent={
-      <PageBackButton href="/settings">Settings</PageBackButton>
+      <MobileContainer>
+        <PageBackButton href="/settings">Settings</PageBackButton>
+      </MobileContainer>
     }
     pageTitle="Name"
     renderPageTitle

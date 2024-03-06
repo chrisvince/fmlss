@@ -8,12 +8,13 @@ import {
   RadioGroup,
 } from '@mui/material'
 import { ColorSchemeSetting } from '../../types'
+import PageBackButton from '../PageBackButton'
+import MobileContainer from '../MobileContainer'
 
 const LABEL_ID = 'appearance-label'
 
 const ColorModePage = () => {
-  const { value, update, setting } = useColorScheme()
-  console.log(value)
+  const { update, setting } = useColorScheme()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value as ColorSchemeSetting
@@ -21,7 +22,16 @@ const ColorModePage = () => {
   }
 
   return (
-    <Page pageTitle="Appearance" thinContainer renderPageTitle>
+    <Page
+      aboveTitleContent={
+        <MobileContainer>
+          <PageBackButton href="/settings">Settings</PageBackButton>
+        </MobileContainer>
+      }
+      pageTitle="Appearance"
+      renderPageTitle
+      thinContainer
+    >
       <FormControl>
         <FormLabel id={LABEL_ID} hidden>
           Appearance

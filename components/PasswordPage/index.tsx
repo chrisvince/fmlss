@@ -10,7 +10,9 @@ interface Props {
 const PasswordPage = ({ userHasPassword }: Props) => (
   <Page
     aboveTitleContent={
-      <PageBackButton href="/settings">Settings</PageBackButton>
+      <MobileContainer>
+        <PageBackButton href="/settings">Settings</PageBackButton>
+      </MobileContainer>
     }
     pageTitle={userHasPassword ? 'Password' : 'Create password'}
     renderPageTitle

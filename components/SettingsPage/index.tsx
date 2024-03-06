@@ -7,6 +7,15 @@ import { useAuthUser } from 'next-firebase-auth'
 import SettingsToggleListItem from '../SettingsToggleListItem'
 import useUser from '../../utils/data/user/useUser'
 import { useRouter } from 'next/router'
+import { ColorSchemeSetting } from '../../types/ColorSchemeSetting'
+
+const resolveColorSchemeName = (
+  colorSchemeId: ColorSchemeSetting | undefined
+) =>
+  Object.keys(ColorSchemeSetting).find(key => {
+    const value = ColorSchemeSetting[key as keyof typeof ColorSchemeSetting]
+    return value === colorSchemeId
+  })
 
 const SettingsPage = () => {
   const { displayName, signOut } = useAuthUser()
@@ -77,7 +86,9 @@ const SettingsPage = () => {
           <SettingsListItem
             href="/settings/appearance"
             primaryText="Appearance"
-            secondaryText={user?.data.settings.colorScheme}
+            secondaryText={resolveColorSchemeName(
+              user?.data.settings.colorScheme
+            )}
           />
         </SettingsList>
         <SettingsList heading="Content" id="content">
