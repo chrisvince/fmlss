@@ -5,6 +5,7 @@ import PageTitle from '../PageTitle'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
+import { Box } from '@mui/material'
 
 const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
 const URL = process.env.VERCEL_URL ?? APP_URL
@@ -118,7 +119,11 @@ const Page = ({
             <>
               {aboveTitleContent}
               {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
-              {children}
+              {!renderPageTitle ? (
+                <Box sx={{ mt: [1, 0] }}>{children}</Box>
+              ) : (
+                children
+              )}
             </>
           }
           rightPanelChildren={<RightSideBar>{rightPanelChildren}</RightSideBar>}
