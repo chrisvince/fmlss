@@ -1,5 +1,4 @@
 import {
-  Chip,
   ClickAwayListener,
   MenuItem,
   MenuList,
@@ -22,7 +21,7 @@ import constants from '../../constants'
 import { DraftHandleValue, Editor, EditorState, convertFromRaw } from 'draft-js'
 import { Box } from '@mui/system'
 import { WorkspacesRounded } from '@mui/icons-material'
-import { dropLast, last, remove, splitAt } from 'ramda'
+import { dropLast, last, splitAt } from 'ramda'
 import { SubtopicSegment } from '../../types'
 
 const { TOPIC_MAX_LENGTH, TOPIC_MAX_SUBTOPICS, TOPIC_MIN_LENGTH } = constants
@@ -281,10 +280,6 @@ const TopicSelect = ({ onChange }: Props) => {
     [divideIntoSubtopicsAtSelection]
   )
 
-  const handleSubtopicDelete = (index: number) => () => {
-    setSubtopics(remove(index, 1, subtopics))
-  }
-
   const handlePastedText = useCallback(
     (text: string, _: string, editorState: EditorState): DraftHandleValue => {
       const removedSpecialChars = text.replace(/[^a-zA-Z" "/]/g, '')
@@ -369,19 +364,12 @@ const TopicSelect = ({ onChange }: Props) => {
           >
             {subtopics.map((subtopic, index) => (
               <Fragment key={`${subtopic}}-${index}`}>
-                <Chip
-                  label={subtopic}
-                  onDelete={handleSubtopicDelete(index)}
-                  sx={{
-                    height: '25px',
-                    '.MuiSvgIcon-root': {
-                      marginRight: 0.25,
-                    },
-                    '.MuiChip-label': {
-                      px: 1,
-                    },
-                  }}
-                />
+                <Typography
+                  component="span"
+                  sx={{ px: 0.06 }} // this aligns text area version with fixed text version
+                >
+                  {subtopic}
+                </Typography>
                 <>&ensp;/&ensp;</>
               </Fragment>
             ))}
