@@ -23,6 +23,7 @@ import { Box } from '@mui/system'
 import { WorkspacesRounded } from '@mui/icons-material'
 import { dropLast, last, splitAt } from 'ramda'
 import { SubtopicSegment } from '../../types'
+import slugify from '../../utils/slugify'
 
 const { TOPIC_MAX_LENGTH, TOPIC_MAX_SUBTOPICS, TOPIC_MIN_LENGTH } = constants
 
@@ -74,24 +75,25 @@ interface Props {
 }
 
 const TopicSelect = ({ onChange }: Props) => {
-  const { topics, search, clear: clearSearch } = useTopicSearch()
+  const [searchString, setSearchString] = useState<string>()
+  const { topics } = useTopicSearch(searchString)
   const [autoCompleteOpen, setAutoCompleteOpen] = useState(false)
   const wrapperRef = useRef()
 
-  const debouncedSearch = useMemo(
+  const debouncedSetSearchString = useMemo(
     () =>
-      debounce(async (segmentTitles: string[]) => {
-        await search(segmentTitles)
+      debounce(async (nextSearchString: string) => {
         setAutoCompleteOpen(true)
+        setSearchString(nextSearchString)
       }, 500),
-    [search]
+    []
   )
 
   useEffect(() => {
     return () => {
-      debouncedSearch.cancel()
+      debouncedSetSearchString.cancel()
     }
-  }, [debouncedSearch])
+  }, [debouncedSetSearchString])
 
   const [editorState, setEditorState] = useState<EditorState>(() =>
     EditorState.createWithContent(createStateFromText())
@@ -126,20 +128,23 @@ const TopicSelect = ({ onChange }: Props) => {
     }
 
   const onEditorStateChange = useCallback(
-    (editorState: EditorState) => {
-      const text = editorState.getCurrentContent().getPlainText()
-      setEditorState(editorState)
-      const completeSubtopics = [...subtopics, ...(text ? [text] : [])]
+    (nextEditorState: EditorState) => {
+      const nextText = nextEditorState.getCurrentContent().getPlainText()
+      const currentText = editorState.getCurrentContent().getPlainText()
+      const completeSubtopics = [...subtopics, ...(nextText ? [nextText] : [])]
       onChange?.(completeSubtopics)
 
-      if (subtopics.length === 0 && text.length < 3) {
-        clearSearch()
-        return
+      if (subtopics.length === 0 && nextText.length < 3) {
+        setSearchString(undefined)
       }
 
-      debouncedSearch(completeSubtopics)
+      if (nextText !== currentText) {
+        debouncedSetSearchString(completeSubtopics.map(slugify).join('--'))
+      }
+
+      setEditorState(nextEditorState)
     },
-    [clearSearch, debouncedSearch, onChange, subtopics]
+    [debouncedSetSearchString, editorState, onChange, subtopics]
   )
 
   useEffect(() => {
