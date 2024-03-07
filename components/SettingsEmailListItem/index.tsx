@@ -8,6 +8,7 @@ import { useAuthUser } from 'next-firebase-auth'
 import Link from 'next/link'
 import EmailVerificationLink from '../EmailVerificationLink'
 import { KeyboardArrowRightRounded } from '@mui/icons-material'
+import MobileContainer from '../MobileContainer'
 
 const SettingsEmailListItem = () => {
   const authUser = useAuthUser()
@@ -32,7 +33,9 @@ const SettingsEmailListItem = () => {
           sx={{ borderBottom: '0 !important', textAlign: 'right' }}
         >
           <ListItemText>
-            <EmailVerificationLink />
+            <MobileContainer>
+              <EmailVerificationLink />
+            </MobileContainer>
           </ListItemText>
         </ListItem>
       )}
