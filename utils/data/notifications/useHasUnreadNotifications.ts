@@ -24,7 +24,7 @@ const useHasUnreadNotifications: UseHasUnreadNotifications = ({
   const { id: uid } = useAuthUser()
 
   const { data, error, isLoading, isValidating } = useSWR(
-    createHasUnreadNotificationsCacheKey(uid!),
+    uid ? createHasUnreadNotificationsCacheKey(uid) : null,
     async () => {
       const notifications = await getNotifications(uid!, {
         limit: 1,
