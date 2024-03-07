@@ -9,6 +9,7 @@ import Page from '../Page'
 import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
+import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
 const { TOPICS_ENABLED } = constants
 
@@ -39,7 +40,7 @@ const ReplyPage = ({ slug }: Props) => {
         <PageSpinner />
       ) : (
         <MobileContainer>
-          <NewPostForm slug={slug} />
+          <NewPostForm postType={PostType.Reply} slug={slug} />
         </MobileContainer>
       )}
     </Page>
