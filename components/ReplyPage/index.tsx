@@ -28,6 +28,7 @@ const ReplyPage = ({ slug }: Props) => {
     <Page
       description="Reply to a post on Fameless."
       pageTitle="Reply to Post"
+      renderPageTitle
       rightPanelChildren={
         <>
           <SidebarPeopleSection />

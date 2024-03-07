@@ -1,5 +1,5 @@
-import { Typography, useMediaQuery } from '@mui/material'
-import { Box, useTheme } from '@mui/system'
+import { Typography } from '@mui/material'
+import { Box } from '@mui/system'
 import { useAuthUser } from 'next-firebase-auth'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
@@ -54,8 +54,6 @@ const PostActionBar = ({
   const isLoggedIn = !!user.id
   const formattedCreatedAt = formatDate(createdAt)
   const isoCreatedAt = new Date(createdAt).toISOString()
-  const { breakpoints } = useTheme()
-  const isMobileDevice = useMediaQuery(breakpoints.down('sm'))
 
   const [renderSignUpModal, setRenderSignUpModal] = useState(false)
   const [modalActionText, setModalActionText] = useState('')
@@ -175,12 +173,7 @@ const PostActionBar = ({
             onChange={handlePostReactionChange}
             postReaction={postReaction}
           />
-          {showReplyButton && (
-            <ReplyButton
-              onClick={!isMobileDevice ? handleReplyButtonClick : undefined}
-              href={isMobileDevice ? `/post/${slug}/reply` : undefined}
-            />
-          )}
+          {showReplyButton && <ReplyButton onClick={handleReplyButtonClick} />}
           {ENABLE_SAVING && <SaveButton onClick={handleSaveButtonClick} />}
           <ShareButton slug={slug} />
         </Box>

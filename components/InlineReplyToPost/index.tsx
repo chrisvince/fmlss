@@ -59,6 +59,7 @@ const InlineReplyToPost = ({ slug }: Props) => {
           <Box sx={{ pt: 2 }}>
             <PostBodyTextArea
               disabled={isLoading}
+              displayBorderBottom={false}
               editorState={editorState}
               isInlineReply
               onChange={setEditorState}

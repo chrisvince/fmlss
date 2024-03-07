@@ -7,13 +7,8 @@ interface Props {
   href?: string
 }
 
-const ReplyButton = ({ onClick, href }: Props) => (
-  <ActionButton
-    onClick={onClick}
-    href={href}
-    text="Reply"
-    icon={ReplyRounded}
-  />
+const ReplyButton = ({ onClick }: Props) => (
+  <ActionButton onClick={onClick} text="Reply" icon={ReplyRounded} />
 )
 
 export default ReplyButton

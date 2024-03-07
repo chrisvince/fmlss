@@ -1,8 +1,5 @@
-import Link from 'next/link'
 import Button from '@mui/material/Button'
-import { useTheme } from '@mui/system'
 import dynamic from 'next/dynamic'
-import { useMediaQuery } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useAuthUser } from 'next-firebase-auth'
@@ -12,8 +9,6 @@ const NewPostModal = dynamic(() => import('../NewPostModal'), { ssr: false })
 
 const NewPostButton = () => {
   const router = useRouter()
-  const { breakpoints } = useTheme()
-  const isMobileDevice = useMediaQuery(breakpoints.down('sm'))
   const [renderNewPostModal, setRenderNewPostModal] = useState(false)
   const [newPostModalOpen, setNewPostModalOpen] = useState(false)
   const [renderSignInModal, setRenderSignInModal] = useState(false)
@@ -45,10 +40,8 @@ const NewPostButton = () => {
 
   const button = (
     <Button
-      component={isMobileDevice ? Link : 'button'}
       fullWidth
-      href={isMobileDevice ? '/post/new' : undefined}
-      onClick={!isMobileDevice ? handleButtonClick : undefined}
+      onClick={handleButtonClick}
       size="large"
       sx={{ marginBottom: 2 }}
       variant="contained"

@@ -59,6 +59,8 @@ const NewPostForm = ({
   const [showCloseConfirmDialog, setShowCloseConfirmDialog] =
     useState<boolean>(false)
 
+  const isMobileDevice = useMediaQuery(theme.breakpoints.down('sm'))
+
   const submitPost = async () => {
     allowNavigation.current = true
 
@@ -119,7 +121,10 @@ const NewPostForm = ({
       type="button"
       onClick={submitPost}
       variant="contained"
-      fullWidth={buttonNotFullWidth ? false : true}
+      sx={{
+        height: buttonNotFullWidth ? 'auto' : '45px',
+        width: buttonNotFullWidth ? 'auto' : '100%',
+      }}
     >
       Post
     </LoadingButton>
@@ -136,14 +141,12 @@ const NewPostForm = ({
       }}
     >
       {replyingToPost && (
-        <Box sx={{ py: isInModal ? undefined : 1 }}>
-          <PostItem
-            bodySize={BodySize.Large}
-            hideActionBar
-            post={replyingToPost}
-            noCensoring
-          />
-        </Box>
+        <PostItem
+          bodySize={BodySize.Large}
+          hideActionBar
+          post={replyingToPost}
+          noCensoring
+        />
       )}
       <Box>
         <PostBodyTextArea
@@ -155,16 +158,13 @@ const NewPostForm = ({
           onPostAttachmentClose={closePostAttachment}
           postAttachments={postAttachments}
           postType={postType}
-          size={
-            replyingToPost
-              ? PostBodyTextAreaSize.Small
-              : PostBodyTextAreaSize.Large
-          }
+          size={PostBodyTextAreaSize.Large}
+          displayBorderBottom={!replyingToPost}
           textLength={textLength}
         />
       </Box>
       {TOPICS_ENABLED && !slug && <TopicSelect onChange={handleTopicChange} />}
-      {!isInModal && (
+      {(!isInModal || isMobileDevice) && (
         <Box
           sx={{
             display: 'flex',
@@ -184,8 +184,8 @@ const NewPostForm = ({
 
   return (
     <>
-      {isInModal ? <DialogContent sx={{ pb: 0 }}>{form}</DialogContent> : form}
-      {isInModal && (
+      {isInModal ? <DialogContent>{form}</DialogContent> : form}
+      {isInModal && !isMobileDevice && (
         <DialogActions
           sx={{
             visibility: isLoading ? 'hidden' : 'visible',

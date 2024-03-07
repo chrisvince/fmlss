@@ -51,6 +51,7 @@ export enum PostBodyTextAreaSize {
 
 type Props = {
   disabled?: boolean
+  displayBorderBottom?: boolean
   editorState: EditorState
   focusOnMount?: boolean
   isInlineReply?: boolean
@@ -65,6 +66,7 @@ type Props = {
 
 const PostBodyTextArea = ({
   disabled,
+  displayBorderBottom = true,
   editorState,
   focusOnMount,
   isInlineReply,
@@ -194,9 +196,11 @@ const PostBodyTextArea = ({
         </Box>
         <Box
           sx={{
-            borderBottomColor: large ? 'action.disabled' : undefined,
-            borderBottomStyle: large ? 'solid' : undefined,
-            borderBottomWidth: large ? '1px' : undefined,
+            borderBottomColor: displayBorderBottom
+              ? 'action.disabled'
+              : undefined,
+            borderBottomStyle: displayBorderBottom ? 'solid' : undefined,
+            borderBottomWidth: displayBorderBottom ? '1px' : undefined,
             pt: 1,
             pb: isInlineReply ? 3 : 1,
           }}
