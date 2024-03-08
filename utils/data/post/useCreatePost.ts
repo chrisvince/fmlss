@@ -26,11 +26,6 @@ const useCreatePost = (parentSlug?: string) => {
       return
     }
 
-    if (!parentSlug && subtopics.length === 0) {
-      setErrorMessage('Topic is required!')
-      return
-    }
-
     setIsLoading(true)
 
     try {

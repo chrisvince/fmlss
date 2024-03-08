@@ -78,8 +78,7 @@ const NewPostForm = ({
   const bodyOrSubtopicExists =
     hasText || (!slug && subtopics.length > 0) || postAttachments.length > 0
 
-  const disableButton =
-    (!slug && subtopics.length === 0) || !hasText || overMaxLength
+  const disableButton = !hasText || overMaxLength
 
   useEffect(() => {
     onContentExists?.(bodyOrSubtopicExists)
