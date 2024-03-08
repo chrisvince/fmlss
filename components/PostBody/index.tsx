@@ -8,7 +8,7 @@ import createMentionPlugin from '../../utils/draft-js/plugins/mention'
 
 const PLUGINS = [
   createMentionPlugin({ readOnly: true }),
-  createLinkifyPlugin(),
+  createLinkifyPlugin({ readOnly: true }),
   createHashtagPlugin({ readOnly: true }),
 ]
 

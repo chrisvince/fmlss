@@ -32,11 +32,11 @@ import debounce from 'lodash.debounce'
 import slugify from '../../utils/slugify'
 import PostBodyCounter from '../PostBodyCounter'
 
-const mentionPlugin = createMentionPlugin()
+const mentionPlugin = createMentionPlugin({ readOnly: false })
 
 const PLUGINS = [
   mentionPlugin,
-  createLinkifyPlugin(),
+  createLinkifyPlugin({ readOnly: false }),
   createHashtagPlugin({ readOnly: false }),
 ]
 

@@ -1,9 +1,15 @@
 import createLinkifyPluginOriginal from '@draft-js-plugins/linkify'
 import { ComponentProps } from '@draft-js-plugins/linkify/lib/Link/Link'
-import { Link as MuiLink } from '@mui/material'
+import { Link as MuiLink, Typography } from '@mui/material'
 import Link from 'next/link'
 
-const LinkReadOnly = ({ children, href }: ComponentProps) => (
+const EditComponent = ({ children }: ComponentProps) => (
+  <Typography color="secondary" component="span">
+    {children}
+  </Typography>
+)
+
+const ReadOnlyComponent = ({ children, href }: ComponentProps) => (
   <MuiLink
     color="secondary"
     component={Link}
@@ -16,9 +22,11 @@ const LinkReadOnly = ({ children, href }: ComponentProps) => (
   </MuiLink>
 )
 
-const createLinkifyPlugin = () =>
+const createLinkifyPlugin = (
+  { readOnly }: { readOnly: boolean } = { readOnly: false }
+) =>
   createLinkifyPluginOriginal({
-    component: LinkReadOnly,
+    component: readOnly ? ReadOnlyComponent : EditComponent,
   })
 
 export default createLinkifyPlugin
