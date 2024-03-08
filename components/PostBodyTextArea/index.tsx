@@ -10,7 +10,7 @@ import {
 import { EditorState } from 'draft-js'
 import Editor from '@draft-js-plugins/editor'
 import 'draft-js/dist/Draft.css'
-import { Typography } from '@mui/material'
+import { GlobalStyles, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 
 import PostBodyAttachments from '../PostBodyAttachments'
@@ -24,7 +24,9 @@ import createHashtagPlugin from '../../utils/draft-js/plugins/hashtag'
 import createLinkifyPlugin from '../../utils/draft-js/plugins/linkify'
 import '@draft-js-plugins/mention/lib/plugin.css'
 import { MentionData } from '@draft-js-plugins/mention'
-import createMentionPlugin from '../../utils/draft-js/plugins/mention'
+import createMentionPlugin, {
+  mentionStyles,
+} from '../../utils/draft-js/plugins/mention'
 import getPeopleSearch from '../../utils/data/people/getPeopleSearch'
 import debounce from 'lodash.debounce'
 import slugify from '../../utils/slugify'
@@ -175,105 +177,108 @@ const PostBodyTextArea = ({
   }
 
   return (
-    <Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'min-content 1fr',
-          alignItems: 'start',
-          gap: 2,
-        }}
-      >
+    <>
+      <GlobalStyles styles={mentionStyles} />
+      <Box>
         <Box
           sx={{
-            alignItems: 'center',
-            display: 'flex',
-            height: '40px',
-            justifyContent: 'center',
+            display: 'grid',
+            gridTemplateColumns: 'min-content 1fr',
+            alignItems: 'start',
+            gap: 2,
           }}
         >
-          <NotesRounded color="action" />
-        </Box>
-        <Box
-          sx={{
-            borderBottomColor: displayBorderBottom
-              ? 'action.disabled'
-              : undefined,
-            borderBottomStyle: displayBorderBottom ? 'solid' : undefined,
-            borderBottomWidth: displayBorderBottom ? '1px' : undefined,
-            pt: 1,
-            pb: isInlineReply ? 3 : 1,
-          }}
-        >
-          <Typography
-            component="div"
-            variant="body1"
+          <Box
             sx={{
-              opacity: disabled ? 'action.disabledOpacity' : 1,
-              '.public-DraftEditorPlaceholder-root, .public-DraftEditorPlaceholder-hasFocus':
-                {
-                  color: 'text.disabled',
-                },
-              ...(large
-                ? {
-                    '.public-DraftEditor-content': {
-                      minHeight: '80px',
-                    },
-                  }
-                : {}),
+              alignItems: 'center',
+              display: 'flex',
+              height: '40px',
+              justifyContent: 'center',
             }}
           >
-            <Editor
-              editorState={editorState}
-              handleReturn={handleReturn}
-              onBlur={handleEditorBlur}
-              onChange={handleEditorStateChange}
-              placeholder={placeholder}
-              plugins={PLUGINS}
-              preserveSelectionOnBlur
-              readOnly={disabled}
-              ref={editorRef as LegacyRef<PluginEditor>}
-              stripPastedStyles
-            />
-          </Typography>
-          <MentionSuggestions
-            onOpenChange={setMentionSuggestionsOpen}
-            onSearchChange={onSearchChange}
-            open={mentionSuggestionsOpen}
-            suggestions={mentionSuggestions}
-          />
-          {!isInlineReply && (
-            <Box
+            <NotesRounded color="action" />
+          </Box>
+          <Box
+            sx={{
+              borderBottomColor: displayBorderBottom
+                ? 'action.disabled'
+                : undefined,
+              borderBottomStyle: displayBorderBottom ? 'solid' : undefined,
+              borderBottomWidth: displayBorderBottom ? '1px' : undefined,
+              pt: 1,
+              pb: isInlineReply ? 3 : 1,
+            }}
+          >
+            <Typography
+              component="div"
+              variant="body1"
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-                pt: 1,
+                opacity: disabled ? 'action.disabledOpacity' : 1,
+                '.public-DraftEditorPlaceholder-root, .public-DraftEditorPlaceholder-hasFocus':
+                  {
+                    color: 'text.disabled',
+                  },
+                ...(large
+                  ? {
+                      '.public-DraftEditor-content': {
+                        minHeight: '80px',
+                      },
+                    }
+                  : {}),
               }}
             >
+              <Editor
+                editorState={editorState}
+                handleReturn={handleReturn}
+                onBlur={handleEditorBlur}
+                onChange={handleEditorStateChange}
+                placeholder={placeholder}
+                plugins={PLUGINS}
+                preserveSelectionOnBlur
+                readOnly={disabled}
+                ref={editorRef as LegacyRef<PluginEditor>}
+                stripPastedStyles
+              />
+            </Typography>
+            <MentionSuggestions
+              onOpenChange={setMentionSuggestionsOpen}
+              onSearchChange={onSearchChange}
+              open={mentionSuggestionsOpen}
+              suggestions={mentionSuggestions}
+            />
+            {!isInlineReply && (
               <Box
                 sx={{
-                  opacity: displayTagInstruction ? 1 : 0,
-                  transition: 'opacity 0.4s ease',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  pt: 1,
                 }}
               >
-                <Typography variant="caption" color="action.active">
-                  Use # for hashtags and @ to tag people.
-                </Typography>
+                <Box
+                  sx={{
+                    opacity: displayTagInstruction ? 1 : 0,
+                    transition: 'opacity 0.4s ease',
+                  }}
+                >
+                  <Typography variant="caption" color="action.active">
+                    Use # for hashtags and @ to tag people.
+                  </Typography>
+                </Box>
+                <Box>
+                  <PostBodyCounter textLength={textLength} />
+                </Box>
               </Box>
-              <Box>
-                <PostBodyCounter textLength={textLength} />
-              </Box>
-            </Box>
-          )}
-          <PostBodyAttachments
-            onClose={onPostAttachmentClose}
-            onError={onPostAttachmentClose}
-            postAttachments={postAttachments}
-          />
+            )}
+            <PostBodyAttachments
+              onClose={onPostAttachmentClose}
+              onError={onPostAttachmentClose}
+              postAttachments={postAttachments}
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   )
 }
 

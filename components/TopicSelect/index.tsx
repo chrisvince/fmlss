@@ -83,11 +83,18 @@ const TopicSelect = ({ onChange }: Props) => {
   const debouncedSetSearchString = useMemo(
     () =>
       debounce(async (nextSearchString: string) => {
-        setAutoCompleteOpen(true)
         setSearchString(nextSearchString)
       }, 500),
     []
   )
+
+  useEffect(() => {
+    if (topics.length > 0) {
+      setAutoCompleteOpen(true)
+    } else {
+      setAutoCompleteOpen(false)
+    }
+  }, [topics])
 
   useEffect(() => {
     return () => {
@@ -136,9 +143,7 @@ const TopicSelect = ({ onChange }: Props) => {
 
       if (subtopics.length === 0 && nextText.length < 3) {
         setSearchString(undefined)
-      }
-
-      if (nextText !== currentText) {
+      } else if (nextText !== currentText) {
         debouncedSetSearchString(completeSubtopics.map(slugify).join('--'))
       }
 
@@ -412,9 +417,10 @@ const TopicSelect = ({ onChange }: Props) => {
               open={autoCompleteOpen}
               anchorEl={wrapperRef.current}
               sx={{
-                zIndex: 'modal',
                 backgroundColor: 'background.paper',
                 boxShadow: 3,
+                minWidth: '200px',
+                zIndex: 'modal',
               }}
               placement="bottom-start"
             >
