@@ -11,6 +11,9 @@ const mapPostAttachmentInputToCreatePostAttachment = (
         url: trackedMatch.url,
       }
     case PostAttachmentType.Url:
+    case PostAttachmentType.Facebook:
+    case PostAttachmentType.Instagram:
+    case PostAttachmentType.Youtube:
       return {
         type: PostAttachmentType.Url,
         url: trackedMatch.url,
