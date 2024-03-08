@@ -27,7 +27,6 @@ const getLayoutFromImageDimensions = (
 
 interface Props {
   isAboveFold?: boolean
-  onClose?: () => void
   attachment: PostAttachmentUrl
 }
 

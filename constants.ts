@@ -90,6 +90,7 @@ const constants = {
   TOPICS_CACHE_TIME: secondsToMs(60),
   TOPICS_COLLECTION: 'topics',
   TOPICS_ENABLED: true,
+  TWITTER_ATTACHMENT_CACHE_TIME: hoursToMs(12),
   TWITTER_USERNAME: '@famelessnetwork',
   URL_META_CACHE_TIME: hoursToMs(12),
   USER_CACHE_TIME: secondsToMs(60),

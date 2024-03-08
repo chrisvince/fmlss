@@ -137,6 +137,9 @@ const createPersonPostsCacheKey = (
 const createPeopleSearchCacheKey = (searchString: string) =>
   `people/search/${searchString}`
 
+const createTwitterAttachmentCacheKey = (url: string) =>
+  `twitter-attachment/${url}`
+
 export {
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
@@ -159,6 +162,7 @@ export {
   createTopicPostsCacheKey,
   createTopicsCacheKey,
   createTopicsStartsWithCacheKey,
+  createTwitterAttachmentCacheKey,
   createUserCacheKey,
   createUserIsWatchingCacheKey,
   createUserLikesCacheKey,

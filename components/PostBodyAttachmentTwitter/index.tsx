@@ -1,9 +1,9 @@
 import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
 import CloseButtonWrapper from '../CloseButtonWrapper'
 import { PostAttachmentType } from '../../types'
-import useUrlMeta from '../../utils/data/urlMeta/useUrlMeta'
-import PostAttachmentUrl from '../PostAttachmentUrl'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
+import usePostBodyAttachmentTwitter from '../../utils/data/twitter/usePostBodyAttachmentTwitter'
+import PostAttachmentTwitter from '../PostAttachmentTwitter'
 
 interface Props {
   onClose?: () => void
@@ -11,25 +11,24 @@ interface Props {
   postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachmentUrl = ({ onClose, onError, postAttachment }: Props) => {
-  const isUrlLink =
+const PostBodyAttachmentTwitter = ({ onClose, postAttachment }: Props) => {
+  const isTwitterUrl =
     resolvePostAttachmentTypeFromUrl(postAttachment.url) ===
-    PostAttachmentType.Url
+    PostAttachmentType.Twitter
 
-  const { data, error, isLoading } = useUrlMeta(
-    isUrlLink ? postAttachment.url : null,
-    { onError }
+  const { data, error, isLoading } = usePostBodyAttachmentTwitter(
+    isTwitterUrl ? postAttachment.url : null
   )
 
-  if (!isUrlLink || isLoading || error || !data) {
+  if (!isTwitterUrl || isLoading || error || !data) {
     return null
   }
 
   return (
     <CloseButtonWrapper onClose={onClose}>
-      <PostAttachmentUrl attachment={data} />
+      <PostAttachmentTwitter attachment={data} />
     </CloseButtonWrapper>
   )
 }
 
-export default PostBodyAttachmentUrl
+export default PostBodyAttachmentTwitter

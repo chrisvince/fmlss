@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic'
 import { PostAttachmentType } from '../../types'
 import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
+import PostBodyAttachmentTwitter from '../PostBodyAttachmentTwitter'
 
 const PostBodyAttachmentTiktok = dynamic(
   () => import('../PostBodyAttachmentTiktok')
@@ -35,6 +36,16 @@ const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
   if (type === PostAttachmentType.Url) {
     return (
       <PostBodyAttachmentUrl
+        onClose={handleClose}
+        onError={onError}
+        postAttachment={postAttachment}
+      />
+    )
+  }
+
+  if (type === PostAttachmentType.Twitter) {
+    return (
+      <PostBodyAttachmentTwitter
         onClose={handleClose}
         onError={onError}
         postAttachment={postAttachment}

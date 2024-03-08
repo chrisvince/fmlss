@@ -27,6 +27,7 @@ export interface PostAttachmentUrl {
 export interface PostAttachmentTwitter {
   href: string
   type: PostAttachmentType.Twitter
+  body: string
 }
 
 export interface PostAttachmentFacebook {

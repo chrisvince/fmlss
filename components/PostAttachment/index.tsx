@@ -1,6 +1,7 @@
 import { type PostAttachment, PostAttachmentType } from '../../types'
 import PostAttachmentUrl from '../PostAttachmentUrl'
 import PostAttachmentTikTok from '../PostAttachmentTikTok'
+import PostAttachmentTwitter from '../PostAttachmentTwitter'
 
 interface Props {
   isAboveFold?: boolean
@@ -16,6 +17,10 @@ const PostAttachment = ({ isAboveFold = false, attachment }: Props) => {
     return (
       <PostAttachmentUrl isAboveFold={isAboveFold} attachment={attachment} />
     )
+  }
+
+  if (attachment.type === PostAttachmentType.Twitter) {
+    return <PostAttachmentTwitter attachment={attachment} />
   }
 
   return null

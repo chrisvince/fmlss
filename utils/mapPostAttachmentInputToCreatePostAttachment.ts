@@ -15,6 +15,11 @@ const mapPostAttachmentInputToCreatePostAttachment = (
         type: PostAttachmentType.Url,
         url: trackedMatch.url,
       }
+    case PostAttachmentType.Twitter:
+      return {
+        type: PostAttachmentType.Twitter,
+        url: trackedMatch.url,
+      }
   }
 
   throw new Error('Invalid attachment type')
