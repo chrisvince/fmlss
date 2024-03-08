@@ -1,20 +1,14 @@
-import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useAuthUser } from 'next-firebase-auth'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
-import formatDate from '../../utils/formatting/formatDate'
-import formatLikesCount from '../../utils/formatting/formatLikesCount'
-import formatReplyCount from '../../utils/formatting/formatReplyCount'
-import CaptionLink from '../CaptionLink'
 import LikeButton from '../LikeButton'
 import ReplyButton from '../ReplyButton'
 import ShareButton from '../ShareButton'
 import constants from '../../constants'
 import ReactButton from '../ReactButton'
-import ReactionSummary from '../ReactionSummary'
-import { MajorityReaction, ReactionId } from '../../types/Reaction'
+import { ReactionId } from '../../types/Reaction'
 
 const SaveButton = dynamic(() => import('../SaveButton'))
 const ReplyModal = dynamic(() => import('../ReplyModal'), { ssr: false })
@@ -23,10 +17,8 @@ const SignUpModal = dynamic(() => import('../SignUpModal'), { ssr: false })
 const { ENABLE_SAVING } = constants
 
 interface PropTypes {
-  createdAt: number
   like: boolean
   likesCount: number
-  majorityReaction?: MajorityReaction
   onLike: () => unknown
   onPostReaction?: (
     reaction: ReactionId | undefined,
@@ -39,10 +31,8 @@ interface PropTypes {
 }
 
 const PostActionBar = ({
-  createdAt,
   like,
   likesCount,
-  majorityReaction,
   onLike,
   onPostReaction,
   postReaction,
@@ -52,8 +42,6 @@ const PostActionBar = ({
 }: PropTypes) => {
   const user = useAuthUser()
   const isLoggedIn = !!user.id
-  const formattedCreatedAt = formatDate(createdAt)
-  const isoCreatedAt = new Date(createdAt).toISOString()
 
   const [renderSignUpModal, setRenderSignUpModal] = useState(false)
   const [modalActionText, setModalActionText] = useState('')
@@ -111,72 +99,30 @@ const PostActionBar = ({
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          justifyContent: 'flex-start',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           gap: 1,
+          mx: -1,
+          mb: -1,
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 4,
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: 2,
-            }}
-          >
-            <Typography variant="caption">
-              <time dateTime={isoCreatedAt}>{formattedCreatedAt}</time>
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: 2,
-            }}
-          >
-            {majorityReaction && (
-              <ReactionSummary
-                percentage={majorityReaction.percentage}
-                reactionId={majorityReaction.id}
-              />
-            )}
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {formatLikesCount(likesCount)}
-            </Typography>
-            <CaptionLink href={`/post/${encodeURIComponent(slug)}#replies`}>
-              {formatReplyCount(postsCount)}
-            </CaptionLink>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 1,
-            mx: -1,
-            mb: -1,
-          }}
-        >
-          <LikeButton like={like} onClick={handleLikeButtonClick} />
-          <ReactButton
-            onChange={handlePostReactionChange}
-            postReaction={postReaction}
+        <LikeButton
+          like={like}
+          likeCount={likesCount}
+          onClick={handleLikeButtonClick}
+        />
+        <ReactButton
+          onChange={handlePostReactionChange}
+          postReaction={postReaction}
+        />
+        {showReplyButton && (
+          <ReplyButton
+            onClick={handleReplyButtonClick}
+            replyCount={postsCount}
           />
-          {showReplyButton && <ReplyButton onClick={handleReplyButtonClick} />}
-          {ENABLE_SAVING && <SaveButton onClick={handleSaveButtonClick} />}
-          <ShareButton slug={slug} />
-        </Box>
+        )}
+        {ENABLE_SAVING && <SaveButton onClick={handleSaveButtonClick} />}
+        <ShareButton slug={slug} />
       </Box>
       {renderSignUpModal && (
         <SignUpModal

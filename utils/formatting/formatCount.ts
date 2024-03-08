@@ -1,7 +1,7 @@
 import numeral from 'numeral'
 
 const formatCount = (number: number) => {
-  if (number > 9999) {
+  if (number > 999) {
     return numeral(number).format('0[.]0a').toUpperCase()
   }
   return numeral(number).format('0,0')

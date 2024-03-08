@@ -14,7 +14,10 @@ import { ReactionId } from '../../types/Reaction'
 import PostCensorWrapper from '../PostCensorWrapper'
 import { CensorTypes } from '../../types/CensorTypes'
 import useUser from '../../utils/data/user/useUser'
-import Link from 'next/link'
+import MuiLink from 'next/link'
+import formatRelativeDate from '../../utils/formatting/formatRelativeDate'
+import { Link, Tooltip } from '@mui/material'
+import formatDate from '../../utils/formatting/formatDate'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -71,6 +74,10 @@ const PostItem = ({
     onWatchPost?.(post.data.slug)
   }
 
+  const isoCreatedAt = new Date(post.data.createdAt).toISOString()
+  const relativeCreatedAt = formatRelativeDate(post.data.createdAt)
+  const createdAt = formatDate(post.data.createdAt)
+
   const content = (
     <Box
       sx={{
@@ -91,30 +98,42 @@ const PostItem = ({
           alignItems: 'center',
           columnGap: 0.8,
           display: 'grid',
-          gridTemplateAreas: byUser
-            ? `"statusIcon topic watchStatus"`
-            : `"topic watchStatus"`,
-          gridTemplateColumns: byUser
-            ? 'min-content minmax(0, 1fr) min-content'
-            : 'minmax(0, 1fr) min-content',
+          gridTemplateAreas: '"statusIcons watchStatus"',
+          gridTemplateColumns: 'minmax(0, 1fr) min-content',
         }}
       >
-        {byUser && (
-          <Box sx={{ display: 'flex', gridArea: 'statusIcon' }}>
-            <Link href="/posts" style={{ display: 'contents' }}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            gap: 0.75,
+            gridArea: 'statusIcons',
+          }}
+        >
+          {byUser && (
+            <MuiLink href="/posts" style={{ display: 'contents' }}>
               <UserAuthoredIcon />
-            </Link>
-          </Box>
-        )}
-        {post.data.topic && (
-          <Box sx={{ display: 'flex', gridArea: 'topic' }}>
+            </MuiLink>
+          )}
+          {post.data.topic && (
             <TopicBadge
               pathTitle={post.data.topic.pathTitle}
               slug={post.data.topic.path}
               subtopicSegments={post.data.topic.subtopicSegments}
             />
-          </Box>
-        )}
+          )}
+          <Tooltip placement="bottom" title={createdAt}>
+            <Link
+              color="text.secondary"
+              component={MuiLink}
+              href={`/post/${encodeURIComponent(post.data.slug)}`}
+              underline="hover"
+              variant="caption"
+            >
+              <time dateTime={isoCreatedAt}>{relativeCreatedAt}</time>
+            </Link>
+          </Tooltip>
+        </Box>
         <Box
           sx={{
             display: 'flex',
@@ -131,10 +150,8 @@ const PostItem = ({
       <PostAttachments attachments={post.data.attachments} />
       {!hideActionBar && (
         <PostActionBar
-          createdAt={post.data.createdAt}
           like={like}
           likesCount={likesCount}
-          majorityReaction={post.data.majorityReaction}
           onLike={handleLikeButtonClick}
           onPostReaction={onPostReaction}
           postReaction={post.user?.reaction}

@@ -39,7 +39,7 @@ const ComponentReadOnly = (props: SubMentionComponentProps) => {
       color="secondary"
       component={Link}
       href={`/people/${slug}`}
-      underline="none"
+      underline="hover"
     >
       {props.children}
     </MuiLink>

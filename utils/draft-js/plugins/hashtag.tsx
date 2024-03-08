@@ -16,7 +16,7 @@ const HashtagReadOnly = ({ children, decoratedText }: HashtagProps) => (
     color="secondary"
     component={Link}
     href={`/hashtag/${decoratedText?.split('#')[1]}`}
-    underline="none"
+    underline="hover"
   >
     {children}
   </MuiLink>

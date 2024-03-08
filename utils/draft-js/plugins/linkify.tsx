@@ -10,7 +10,7 @@ const LinkReadOnly = ({ children, href }: ComponentProps) => (
     href={href}
     rel="noopener noreferrer"
     target="_blank"
-    underline="none"
+    underline="hover"
   >
     {children}
   </MuiLink>
