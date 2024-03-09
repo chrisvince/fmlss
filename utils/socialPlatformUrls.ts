@@ -16,7 +16,11 @@ export const isTikTokPostUrl = (url: string) =>
 export const isYouTubePostUrl = (url: string) =>
   ['youtube.com/watch', '?', 'v='].every(condition =>
     url.includes(condition)
-  ) || url.includes('youtu.be/')
+  ) ||
+  ['youtube.com/shorts', '?', 'si='].every(condition =>
+    url.includes(condition)
+  ) ||
+  url.includes('youtu.be/')
 
 export const isPinterestPostUrl = (url: string) =>
   [

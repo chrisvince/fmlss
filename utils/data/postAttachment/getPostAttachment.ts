@@ -9,6 +9,8 @@ import getTwitterAttachmentClient from '../twitter/getTwitterAttachmentClient'
 import getTwitterAttachmentServer from '../twitter/getTwitterAttachmentServer'
 import getUrlMetaClient from '../urlMeta/getUrlMetaClient'
 import getUrlMetaServer from '../urlMeta/getUrlMetaServer'
+import getYouTubeAttachmentClient from '../youtube/getYouTubeAttachmentClient'
+import getYouTubeAttachmentServer from '../youtube/getYouTubeAttachmentServer'
 
 const getPostAttachment = async (
   postAttachmentDb: PostAttachmentDb
@@ -24,20 +26,36 @@ const getPostAttachment = async (
   }
 
   if (postAttachmentDb.type === PostAttachmentType.Tiktok) {
-    const tiktokAttachment = getTiktokAttachment(postAttachmentDb.href)
+    const tiktokAttachment = await getTiktokAttachment(postAttachmentDb.href)
     return tiktokAttachment
   }
 
   if (postAttachmentDb.type === PostAttachmentType.Twitter) {
     if (isServer) {
-      const twitterAttachment = getTwitterAttachmentServer(
+      const twitterAttachment = await getTwitterAttachmentServer(
         postAttachmentDb.href
       )
       return twitterAttachment
     }
 
-    const twitterAttachment = getTwitterAttachmentClient(postAttachmentDb.href)
+    const twitterAttachment = await getTwitterAttachmentClient(
+      postAttachmentDb.href
+    )
     return twitterAttachment
+  }
+
+  if (postAttachmentDb.type === PostAttachmentType.Youtube) {
+    if (isServer) {
+      const youtubeAttachment = await getYouTubeAttachmentServer(
+        postAttachmentDb.href
+      )
+      return youtubeAttachment
+    }
+
+    const youtubeAttachment = await getYouTubeAttachmentClient(
+      postAttachmentDb.href
+    )
+    return youtubeAttachment
   }
 
   throw new Error('Invalid post attachment type')

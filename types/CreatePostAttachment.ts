@@ -19,7 +19,13 @@ export interface CreatePostAttachmentTwitter extends CreatePostAttachmentBase {
   url: string
 }
 
+export interface CreatePostAttachmentYouTube extends CreatePostAttachmentBase {
+  type: PostAttachmentType.Youtube
+  url: string
+}
+
 export type CreatePostAttachment =
   | CreatePostAttachmentTiktok
   | CreatePostAttachmentUrl
   | CreatePostAttachmentTwitter
+  | CreatePostAttachmentYouTube

@@ -100,6 +100,7 @@ const constants = {
   USERS_COLLECTION: 'users',
   VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
   WATCHED_POSTS_COLLECTION: 'watchedPosts',
+  YOUTUBE_ATTACHMENT_CACHE_TIME: hoursToMs(12),
 }
 
 export default constants

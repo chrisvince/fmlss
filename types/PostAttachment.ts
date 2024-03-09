@@ -49,7 +49,13 @@ export interface PostAttachmentTikTok {
 
 export interface PostAttachmentYouTube {
   href: string
+  image: Image
   type: PostAttachmentType.Youtube
+  author: {
+    href: string
+    name: string
+  }
+  title: string
 }
 
 export interface PostAttachmentPinterest {

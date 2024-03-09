@@ -13,7 +13,6 @@ const mapPostAttachmentInputToCreatePostAttachment = (
     case PostAttachmentType.Url:
     case PostAttachmentType.Facebook:
     case PostAttachmentType.Instagram:
-    case PostAttachmentType.Youtube:
       return {
         type: PostAttachmentType.Url,
         url: trackedMatch.url,
@@ -21,6 +20,11 @@ const mapPostAttachmentInputToCreatePostAttachment = (
     case PostAttachmentType.Twitter:
       return {
         type: PostAttachmentType.Twitter,
+        url: trackedMatch.url,
+      }
+    case PostAttachmentType.Youtube:
+      return {
+        type: PostAttachmentType.Youtube,
         url: trackedMatch.url,
       }
   }

@@ -140,6 +140,9 @@ const createPeopleSearchCacheKey = (searchString: string) =>
 const createTwitterAttachmentCacheKey = (url: string) =>
   `twitter-attachment/${url}`
 
+const createYouTubeAttachmentCacheKey = (url: string) =>
+  `youtube-attachment/${url}`
+
 export {
   createHashtagPostsCacheKey,
   createHashtagsCacheKey,
@@ -168,5 +171,6 @@ export {
   createUserLikesCacheKey,
   createUserPostsCacheKey,
   createUserRepliesCacheKey,
+  createYouTubeAttachmentCacheKey,
   getPageIndexFromCacheKey,
 }

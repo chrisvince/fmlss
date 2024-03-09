@@ -3,6 +3,7 @@ import { PostAttachmentType } from '../../types'
 import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 import PostBodyAttachmentTwitter from '../PostBodyAttachmentTwitter'
+import PostBodyAttachmentYouTube from '../PostBodyAttachmentYouTube'
 
 const PostBodyAttachmentTiktok = dynamic(
   () => import('../PostBodyAttachmentTiktok')
@@ -46,6 +47,16 @@ const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
   if (type === PostAttachmentType.Twitter) {
     return (
       <PostBodyAttachmentTwitter
+        onClose={handleClose}
+        onError={onError}
+        postAttachment={postAttachment}
+      />
+    )
+  }
+
+  if (type === PostAttachmentType.Youtube) {
+    return (
+      <PostBodyAttachmentYouTube
         onClose={handleClose}
         onError={onError}
         postAttachment={postAttachment}

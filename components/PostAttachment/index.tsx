@@ -2,6 +2,7 @@ import { type PostAttachment, PostAttachmentType } from '../../types'
 import PostAttachmentUrl from '../PostAttachmentUrl'
 import PostAttachmentTikTok from '../PostAttachmentTikTok'
 import PostAttachmentTwitter from '../PostAttachmentTwitter'
+import PostAttachmentYouTube from '../PostAttachmentYouTube'
 
 interface Props {
   isAboveFold?: boolean
@@ -21,6 +22,10 @@ const PostAttachment = ({ isAboveFold = false, attachment }: Props) => {
 
   if (attachment.type === PostAttachmentType.Twitter) {
     return <PostAttachmentTwitter attachment={attachment} />
+  }
+
+  if (attachment.type === PostAttachmentType.Youtube) {
+    return <PostAttachmentYouTube attachment={attachment} />
   }
 
   return null
