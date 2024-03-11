@@ -13,6 +13,7 @@ interface Props {
   confirmText: ReactNode
   content: ReactNode
   onCancel: () => void
+  onClose?: () => void
   onConfirm: () => void
   open: boolean
   title: ReactNode
@@ -23,6 +24,7 @@ const ConfirmDialog = ({
   confirmText,
   content,
   onCancel,
+  onClose,
   onConfirm,
   open,
   title,
@@ -30,7 +32,7 @@ const ConfirmDialog = ({
   return (
     <Dialog
       open={open}
-      onClose={onCancel}
+      onClose={onClose ?? onCancel}
       aria-labelledby="confirm-dialog-title"
     >
       <DialogTitle id="confirm-dialog-title">{title}</DialogTitle>

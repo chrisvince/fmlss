@@ -19,6 +19,7 @@ import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAtt
 import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 import { useRouter } from 'next/router'
 import DiscardPostConfirmDialog from '../DiscardPostConfirmDialog'
+import ConfirmNoTopicDialog from '../ConfirmNoTopicDialog'
 
 const { TOPICS_ENABLED } = constants
 
@@ -56,13 +57,24 @@ const NewPostForm = ({
   const router = useRouter()
   const routeChangeUrl = useRef<string>()
   const allowNavigation = useRef<boolean>(false)
+  const noTopicDialogShown = useRef<boolean>(false)
+
   const [showCloseConfirmDialog, setShowCloseConfirmDialog] =
+    useState<boolean>(false)
+
+  const [showConfirmNoTopicDialog, setShowConfirmNoTopicDialog] =
     useState<boolean>(false)
 
   const isMobileDevice = useMediaQuery(theme.breakpoints.down('sm'))
 
   const submitPost = async () => {
     allowNavigation.current = true
+
+    if (!noTopicDialogShown.current && !slug && subtopics.length === 0) {
+      setShowConfirmNoTopicDialog(true)
+      noTopicDialogShown.current = true
+      return
+    }
 
     await createPost({
       body: getRawEditorState(),
@@ -104,6 +116,10 @@ const NewPostForm = ({
     },
     [bodyOrSubtopicExists, router.events]
   )
+
+  const handleConfirmNoTopicDialogConfirm = () => {
+    setShowConfirmNoTopicDialog(false)
+  }
 
   useEffect(() => {
     router.events.on('routeChangeStart', handleRouteChangeStart)
@@ -198,6 +214,12 @@ const NewPostForm = ({
         onCancel={() => setShowCloseConfirmDialog(false)}
         onConfirm={handleConfirmDiscard}
         open={showCloseConfirmDialog}
+      />
+      <ConfirmNoTopicDialog
+        onCancel={submitPost}
+        onClose={handleConfirmNoTopicDialogConfirm}
+        onConfirm={handleConfirmNoTopicDialogConfirm}
+        open={showConfirmNoTopicDialog}
       />
     </>
   )
