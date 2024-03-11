@@ -8,8 +8,9 @@ import constants from '../../constants'
 import FakeInlineCreatePost from '../FakeInlineCreatePost'
 import Error from 'next/error'
 import SidebarPeopleSection from '../SidebarPeopleSection'
+import { CellMeasurerCache } from 'react-virtualized'
 
-const { TOPICS_ENABLED } = constants
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
 
 enum TITLE_MAP {
   latest = 'Feed',
@@ -20,7 +21,16 @@ interface Props {
   sortMode: FeedSortMode
 }
 
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+})
+
 const FeedPage = ({ sortMode }: Props) => {
+  const handlePostLoadSuccess = () => {
+    cellMeasurerCache.clearAll()
+  }
+
   const {
     isLoading,
     likePost,
@@ -29,7 +39,7 @@ const FeedPage = ({ sortMode }: Props) => {
     posts,
     reactToPost,
     watchPost,
-  } = usePostFeed({ sortMode })
+  } = usePostFeed({ sortMode, swrConfig: { onSuccess: handlePostLoadSuccess } })
 
   if (!sortMode) {
     return <Error statusCode={404} />
@@ -51,6 +61,7 @@ const FeedPage = ({ sortMode }: Props) => {
     >
       <FakeInlineCreatePost />
       <Feed
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}

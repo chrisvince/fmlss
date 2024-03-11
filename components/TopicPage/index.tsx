@@ -27,8 +27,18 @@ import {
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
+import { CellMeasurerCache } from 'react-virtualized'
 
-const { ENABLE_SORTING, SUBTOPICS_ON_TOPIC_PAGE_LIMIT } = constants
+const {
+  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+  ENABLE_SORTING,
+  SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
+} = constants
+
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+})
 
 type PropTypes = {
   path: string
@@ -65,6 +75,10 @@ const TopicPage = ({ path }: PropTypes) => {
       ? (sortModeParam as TopicSortMode)
       : TopicSortMode.Popular
 
+  const handlePostLoadSuccess = () => {
+    cellMeasurerCache.clearAll()
+  }
+
   const {
     isLoading: postsAreLoading,
     likePost,
@@ -72,7 +86,10 @@ const TopicPage = ({ path }: PropTypes) => {
     moreToLoad,
     posts,
     watchPost,
-  } = useTopicPosts(path, { sortMode })
+  } = useTopicPosts(path, {
+    sortMode,
+    swrConfig: { onSuccess: handlePostLoadSuccess },
+  })
 
   const { topics } = useTopics({
     limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
@@ -182,6 +199,7 @@ const TopicPage = ({ path }: PropTypes) => {
         </MobileContainer>
       )}
       <Feed
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={topicIsLoading || postsAreLoading}
         key={sortMode}
         moreToLoad={moreToLoad}

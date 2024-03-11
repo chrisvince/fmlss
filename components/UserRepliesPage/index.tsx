@@ -5,13 +5,24 @@ import SidebarTopicsSection from '../SidebarTopicsSection'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
+import { CellMeasurerCache } from 'react-virtualized'
 
-const { TOPICS_ENABLED } = constants
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
+
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+})
 
 const UserRepliesPage = () => {
+  const handlePostLoadSuccess = () => {
+    cellMeasurerCache.clearAll()
+  }
+
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
     useUserPosts({
       type: 'reply',
+      swrConfig: { onSuccess: handlePostLoadSuccess },
     })
 
   return (
@@ -28,6 +39,7 @@ const UserRepliesPage = () => {
       }
     >
       <Feed
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}

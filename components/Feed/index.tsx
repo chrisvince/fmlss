@@ -1,5 +1,4 @@
 import { CellMeasurerCache } from 'react-virtualized'
-import { useRef } from 'react'
 
 import { Post } from '../../types'
 import PostListItem from '../PostListItem'
@@ -7,12 +6,10 @@ import ContentList from '../ContentList'
 import CenteredMessage from '../CenteredMessage'
 import PageSpinner from '../PageSpinner'
 import BlockMessage from '../BlockMessage'
-import constants from '../../constants'
 import { ReactionId } from '../../types/Reaction'
 
-const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
-
 type PropTypes = {
+  cellMeasurerCache: CellMeasurerCache
   isLoading?: boolean
   isRepliesFeed?: boolean
   moreToLoad: boolean
@@ -27,6 +24,7 @@ type PropTypes = {
 }
 
 const Feed = ({
+  cellMeasurerCache,
   isLoading = false,
   isRepliesFeed = false,
   moreToLoad,
@@ -36,18 +34,11 @@ const Feed = ({
   onWatchPost,
   posts,
 }: PropTypes) => {
-  const cellMeasurerCache = useRef(
-    new CellMeasurerCache({
-      fixedWidth: true,
-      minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
-    })
-  )
-
   return posts.length === 0 && isLoading ? (
     <PageSpinner />
   ) : posts.length > 0 ? (
     <ContentList
-      cellMeasurerCache={cellMeasurerCache.current}
+      cellMeasurerCache={cellMeasurerCache}
       items={posts}
       moreToLoad={moreToLoad}
       onLoadMore={onLoadMore}

@@ -21,8 +21,14 @@ import {
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import SidebarPeopleSection from '../SidebarPeopleSection'
+import { CellMeasurerCache } from 'react-virtualized'
 
-const { ENABLE_SHOW_REPLIES, ENABLE_SORTING, TOPICS_ENABLED } = constants
+const {
+  CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+  ENABLE_SHOW_REPLIES,
+  ENABLE_SORTING,
+  TOPICS_ENABLED,
+} = constants
 
 type PropTypes = {
   slug: string
@@ -40,6 +46,11 @@ const generateSortOptions = (slug: string) => [
     sortMode: 'latest',
   },
 ]
+
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+})
 
 const HashtagPage = ({ slug }: PropTypes) => {
   const {
@@ -63,10 +74,15 @@ const HashtagPage = ({ slug }: PropTypes) => {
       ? (lowercaseSortMode as HashtagSortMode)
       : HashtagSortMode.Popular
 
+  const handlePostsLoadSuccess = () => {
+    cellMeasurerCache.clearAll()
+  }
+
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
     useHashtagPosts(slug, {
       showType,
       sortMode,
+      swrConfig: { onSuccess: handlePostsLoadSuccess },
     })
 
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
@@ -152,6 +168,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
         </MobileContainer>
       )}
       <Feed
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         key={sortMode}
         moreToLoad={moreToLoad}

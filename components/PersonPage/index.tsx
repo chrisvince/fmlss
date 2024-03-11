@@ -14,6 +14,15 @@ import {
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
 import { useAuthUser } from 'next-firebase-auth'
 import SidebarPeopleSection from '../SidebarPeopleSection'
+import { CellMeasurerCache } from 'react-virtualized'
+import constants from '../../constants'
+
+const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
+
+const cellMeasurerCache = new CellMeasurerCache({
+  fixedWidth: true,
+  minHeight: CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
+})
 
 type Props = {
   slug: string
@@ -24,8 +33,12 @@ const PersonPage = ({ slug }: Props) => {
   const { track } = useTracking()
   const { id: uid } = useAuthUser()
 
+  const handlePostLoadSuccess = () => {
+    cellMeasurerCache.clearAll()
+  }
+
   const { posts, isLoading, moreToLoad, loadMore, likePost, watchPost } =
-    usePersonPosts(slug)
+    usePersonPosts(slug, { swrConfig: { onSuccess: handlePostLoadSuccess } })
 
   useDelayedOnMount(() => {
     if (!uid || personIsLoading || (!personIsLoading && !person)) return
@@ -55,6 +68,7 @@ const PersonPage = ({ slug }: Props) => {
       }
     >
       <Feed
+        cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
         moreToLoad={moreToLoad}
         onLikePost={likePost}
