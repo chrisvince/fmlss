@@ -12,6 +12,9 @@ export interface UserDataRequest {
       hideAdultContent: boolean
       hideOffensiveContent: boolean
     }
+    dialogs: {
+      dontShowConfirmNoTopicAgain: boolean
+    }
     notifications: {
       email: {
         likes: boolean

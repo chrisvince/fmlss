@@ -20,6 +20,7 @@ import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 import { useRouter } from 'next/router'
 import DiscardPostConfirmDialog from '../DiscardPostConfirmDialog'
 import ConfirmNoTopicDialog from '../ConfirmNoTopicDialog'
+import useUser from '../../utils/data/user/useUser'
 
 const { TOPICS_ENABLED } = constants
 
@@ -37,6 +38,7 @@ const NewPostForm = ({
   slug,
 }: Props) => {
   const { post: replyingToPost } = usePost(slug)
+  const { user, update } = useUser()
 
   const {
     closePostAttachment,
@@ -65,12 +67,28 @@ const NewPostForm = ({
   const [showConfirmNoTopicDialog, setShowConfirmNoTopicDialog] =
     useState<boolean>(false)
 
+  const [dontShowAgainChecked, setDontShowAgainChecked] =
+    useState<boolean>(false)
+
+  const handleNoTopicDontShowAgainChange = () => {
+    const newValue = !dontShowAgainChecked
+    update({
+      ['settings.dialogs.dontShowConfirmNoTopicAgain']: newValue,
+    })
+    setDontShowAgainChecked(newValue)
+  }
+
   const isMobileDevice = useMediaQuery(theme.breakpoints.down('sm'))
 
   const submitPost = async () => {
     allowNavigation.current = true
 
-    if (!noTopicDialogShown.current && !slug && subtopics.length === 0) {
+    if (
+      !user?.data.settings.dialogs.dontShowConfirmNoTopicAgain &&
+      !noTopicDialogShown.current &&
+      !slug &&
+      subtopics.length === 0
+    ) {
       setShowConfirmNoTopicDialog(true)
       noTopicDialogShown.current = true
       return
@@ -216,9 +234,11 @@ const NewPostForm = ({
         open={showCloseConfirmDialog}
       />
       <ConfirmNoTopicDialog
+        dontShowAgainChecked={dontShowAgainChecked}
         onCancel={submitPost}
         onClose={handleConfirmNoTopicDialogConfirm}
         onConfirm={handleConfirmNoTopicDialogConfirm}
+        onDontShowAgainChange={handleNoTopicDontShowAgainChange}
         open={showConfirmNoTopicDialog}
       />
     </>
