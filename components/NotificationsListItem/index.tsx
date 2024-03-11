@@ -122,6 +122,11 @@ const NotificationsListItem = ({
     [NotificationListItemSize.Large]: '12px',
   }[size]
 
+  const lineClampNumber = {
+    [NotificationListItemSize.Small]: 2,
+    [NotificationListItemSize.Large]: 3,
+  }[size]
+
   return (
     <MenuItem
       sx={{
@@ -159,7 +164,13 @@ const NotificationsListItem = ({
         >
           <Typography
             component="div"
-            sx={{ whiteSpace: 'normal' }}
+            sx={{
+              display: '-webkit-box',
+              overflow: 'hidden',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: lineClampNumber,
+              whiteSpace: 'normal',
+            }}
             variant={textVariant}
           >
             <Box component="b" sx={{ fontWeight: 500 }}>

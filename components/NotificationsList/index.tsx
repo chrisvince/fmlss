@@ -1,7 +1,7 @@
 import { CellMeasurerCache } from 'react-virtualized'
 import { useMemo, useRef } from 'react'
 
-import { Notification, NotificationType } from '../../types'
+import { Notification } from '../../types'
 import CenteredMessage from '../CenteredMessage'
 import ContentList from '../ContentList'
 import constants from '../../constants'
