@@ -2,9 +2,11 @@ import {
   FirebaseDoc,
   NotificationData,
   NotificationDataLikeRequest,
+  NotificationDataReactRequest,
   NotificationDataReplyRequest,
   NotificationDataRequest,
   NotificationLikeData,
+  NotificationReactData,
   NotificationReplyData,
   NotificationType,
 } from '../../../types'
@@ -48,6 +50,26 @@ const mapNotificationLikeToData = (doc: FirebaseDoc): NotificationLikeData => {
   }
 }
 
+const mapNotificationReactToData = (
+  doc: FirebaseDoc
+): NotificationReactData => {
+  const data = doc.data() as NotificationDataReactRequest
+
+  return {
+    createdAt: data.createdAt.toMillis(),
+    eventCount: data.eventCount,
+    id: doc.id,
+    reaction: data.reaction,
+    readAt: data.readAt ? data.readAt.toMillis() : null,
+    rootPost: mapPostRelation(data.rootPost),
+    targetPost: mapPostRelation(data.targetPost),
+    targetPostBody: data.targetPostBody,
+    type: data.type,
+    uid: data.uid,
+    updatedAt: data.updatedAt.toMillis(),
+  }
+}
+
 const mapNotificationToData = (doc: FirebaseDoc): NotificationData => {
   const data = doc.data() as NotificationDataRequest
 
@@ -57,6 +79,10 @@ const mapNotificationToData = (doc: FirebaseDoc): NotificationData => {
 
   if (data.type === NotificationType.Like) {
     return mapNotificationLikeToData(doc)
+  }
+
+  if (data.type === NotificationType.React) {
+    return mapNotificationReactToData(doc)
   }
 
   throw new Error("Notification type doesn't exist")

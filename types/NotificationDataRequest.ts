@@ -1,9 +1,11 @@
 import { firestore } from 'firebase-admin'
 import { PostRelationRequest } from './PostRelationRequest'
+import { ReactionId } from './Reaction'
 
 export enum NotificationType {
-  Reply = 'reply',
   Like = 'like',
+  React = 'react',
+  Reply = 'reply',
 }
 
 interface NotificationDataRequestBase {
@@ -30,6 +32,13 @@ export interface NotificationDataLikeRequest
   type: NotificationType.Like
 }
 
+export interface NotificationDataReactRequest
+  extends NotificationDataRequestBase {
+  reaction: ReactionId
+  type: NotificationType.React
+}
+
 export type NotificationDataRequest =
   | NotificationDataReplyRequest
   | NotificationDataLikeRequest
+  | NotificationDataReactRequest

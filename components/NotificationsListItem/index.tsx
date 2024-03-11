@@ -22,7 +22,7 @@ const resolveActionText = (
   const formattedEventCount = eventCount > 99 ? '99+' : eventCount
 
   if (multiLevelActivity) {
-    return `${isOwnPost ? 'Your post' : 'A post your watching'} has activity`
+    return `${isOwnPost ? 'Your post' : "A post you're watching"} has activity`
   }
 
   switch (notificationType) {
@@ -34,8 +34,14 @@ const resolveActionText = (
 
     case NotificationType.Reply: {
       const commonText = `replied to ${
-        isOwnPost ? 'your post' : 'a post your watching'
+        isOwnPost ? 'your post' : "a post you're watching"
       }`
+      if (eventCount > 1) return `${formattedEventCount} people ${commonText}`
+      return `Someone ${commonText}`
+    }
+
+    case NotificationType.React: {
+      const commonText = 'reacted to your post'
       if (eventCount > 1) return `${formattedEventCount} people ${commonText}`
       return `Someone ${commonText}`
     }

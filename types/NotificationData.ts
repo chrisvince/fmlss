@@ -1,5 +1,6 @@
 import { NotificationType } from './NotificationDataRequest'
 import { PostRelation } from './PostRelation'
+import { ReactionId } from './Reaction'
 
 interface NotificationDataBase {
   createdAt: number
@@ -24,4 +25,12 @@ export interface NotificationLikeData extends NotificationDataBase {
   type: NotificationType.Like
 }
 
-export type NotificationData = NotificationReplyData | NotificationLikeData
+export interface NotificationReactData extends NotificationDataBase {
+  reaction: ReactionId
+  type: NotificationType.React
+}
+
+export type NotificationData =
+  | NotificationReplyData
+  | NotificationLikeData
+  | NotificationReactData
