@@ -3,6 +3,9 @@ import { ReactNode } from 'react'
 const relativeTime = new Intl.RelativeTimeFormat('en', { style: 'long' })
 
 const formatRelativeDate = (date: number): ReactNode => {
+  const oneMinuteAgo = new Date()
+  oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1)
+
   const oneHourAgo = new Date()
   oneHourAgo.setHours(oneHourAgo.getHours() - 1)
 
@@ -14,9 +17,13 @@ const formatRelativeDate = (date: number): ReactNode => {
 
   const dateObj = new Date(date)
 
+  if (dateObj > oneMinuteAgo) {
+    return 'Just now'
+  }
+
   if (dateObj > oneHourAgo) {
     return relativeTime.format(
-      Math.round(-(Date.now() - date) / 1000),
+      Math.round(-(Date.now() - date) / 1000 / 60),
       'minutes'
     )
   }
