@@ -125,6 +125,12 @@ const NotificationsListItem = ({
   return (
     <MenuItem
       sx={{
+        ...(size === NotificationListItemSize.Large
+          ? {
+              borderBottom: '1px solid',
+              borderBottomColor: 'divider',
+            }
+          : {}),
         py,
         '& .MuiListItemIcon-root': { minWidth: '20px' },
       }}
