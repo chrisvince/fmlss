@@ -3,6 +3,8 @@ import { MajorityReaction } from './Reaction'
 
 export interface PostData {
   attachments: PostAttachment[]
+  authorMarkedAdultContent: boolean
+  authorMarkedOffensiveContent: boolean
   body: string
   bodyText: string
   topic?: TopicRelation

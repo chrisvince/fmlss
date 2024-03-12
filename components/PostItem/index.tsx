@@ -1,6 +1,6 @@
 import { Box } from '@mui/system'
 
-import { Post } from '../../types'
+import { Post, User } from '../../types'
 import useLikeState from '../../utils/useLikeState'
 import TopicBadge from '../TopicBadge'
 import PostActionBar from '../PostActionBar'
@@ -12,18 +12,70 @@ import WatchButton from '../WatchButton'
 import useWatchingState from '../../utils/useWatchingState'
 import { ReactionId } from '../../types/Reaction'
 import PostCensorWrapper from '../PostCensorWrapper'
-import { CensorTypes } from '../../types/CensorTypes'
+import { CensorType } from '../../types/CensorType'
 import useUser from '../../utils/data/user/useUser'
 import MuiLink from 'next/link'
 import formatRelativeDate from '../../utils/formatting/formatRelativeDate'
 import { Link, Tooltip } from '@mui/material'
 import formatDate from '../../utils/formatting/formatDate'
+import { CensorSource } from '../../types/CensorSource'
 
 const { POST_MAX_DEPTH } = constants
 
 export enum BodySize {
   Small = 'small',
   Large = 'large',
+}
+
+const resolveCensorData = (
+  post: Post,
+  user: User | null | undefined
+): { type: CensorType; source: CensorSource } | null => {
+  if (post.data.majorityReaction?.id === ReactionId.AdultContent) {
+    if (!user?.data.settings.content.hideAdultContent ?? true) {
+      return null
+    }
+
+    return {
+      type: CensorType.AdultContent,
+      source: CensorSource.Community,
+    }
+  }
+
+  if (post.data.majorityReaction?.id === ReactionId.Offensive) {
+    if (!user?.data.settings.content.hideOffensiveContent ?? true) {
+      return null
+    }
+
+    return {
+      type: CensorType.Offensive,
+      source: CensorSource.Community,
+    }
+  }
+
+  if (post.data.authorMarkedAdultContent) {
+    if (!user?.data.settings.content.hideAdultContent ?? true) {
+      return null
+    }
+
+    return {
+      type: CensorType.AdultContent,
+      source: CensorSource.Author,
+    }
+  }
+
+  if (post.data.authorMarkedOffensiveContent) {
+    if (!user?.data.settings.content.hideOffensiveContent ?? true) {
+      return null
+    }
+
+    return {
+      type: CensorType.Offensive,
+      source: CensorSource.Author,
+    }
+  }
+
+  return null
 }
 
 type PropTypes = {
@@ -57,12 +109,7 @@ const PostItem = ({
   const allowReplying = post.data.documentDepth < POST_MAX_DEPTH
   const byUser = !!post.user?.created
   const { user } = useUser()
-  const censored = noCensoring
-    ? false
-    : (post.data.majorityReaction?.id === ReactionId.AdultContent &&
-        user?.data.settings.content.hideAdultContent) ||
-      (post.data.majorityReaction?.id === ReactionId.Offensive &&
-        user?.data.settings.content.hideOffensiveContent)
+  const censorData = noCensoring ? false : resolveCensorData(post, user)
 
   const handleLikeButtonClick = () => {
     toggleLike()
@@ -163,9 +210,12 @@ const PostItem = ({
     </Box>
   )
 
-  if (censored) {
+  if (censorData) {
     return (
-      <PostCensorWrapper censorType={CensorTypes.AdultContent}>
+      <PostCensorWrapper
+        censorSource={censorData.source}
+        censorType={censorData.type}
+      >
         {content}
       </PostCensorWrapper>
     )

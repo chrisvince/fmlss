@@ -5,9 +5,13 @@ import usePost from './usePost'
 import { CreatePostAttachment } from '../../../types'
 
 interface HandleCreatePostProps {
-  body: string
-  subtopics?: string[]
   attachments: CreatePostAttachment[]
+  body: string
+  options: {
+    offensiveContent: boolean
+    adultContent: boolean
+  }
+  subtopics?: string[]
 }
 
 const useCreatePost = (parentSlug?: string) => {
@@ -17,9 +21,10 @@ const useCreatePost = (parentSlug?: string) => {
   const { post } = usePost(parentSlug)
 
   const handleCreatePost = async ({
-    body,
-    subtopics = [],
     attachments,
+    body,
+    options,
+    subtopics = [],
   }: HandleCreatePostProps) => {
     if (!body) {
       setErrorMessage('Post is required!')
@@ -30,10 +35,11 @@ const useCreatePost = (parentSlug?: string) => {
 
     try {
       const { data } = await createPost({
-        body,
-        subtopics,
         attachments,
+        body,
+        options,
         parentRef: post?.data.reference,
+        subtopics,
       })
       await navigate(`/post/${data.slug}`)
       setIsLoading(false)

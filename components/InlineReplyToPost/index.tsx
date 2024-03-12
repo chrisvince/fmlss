@@ -32,10 +32,14 @@ const InlineReplyToPost = ({ slug }: Props) => {
 
   const submitPost = async () =>
     createPost({
-      body: getRawEditorState(),
       attachments: postAttachments.map(
         mapPostAttachmentInputToCreatePostAttachment
       ),
+      body: getRawEditorState(),
+      options: {
+        adultContent: false, // TODO: Add the ability for users to configure
+        offensiveContent: false, // TODO: Add the ability for users to configure
+      },
     })
 
   const handleSubmit = (event: SyntheticEvent) => {

@@ -2,20 +2,26 @@ import { Button, Link, Typography } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
 import { ReactNode, useState } from 'react'
 import NextLink from 'next/link'
-import { InfoOutlined } from '@mui/icons-material'
-import { CensorTypes } from '../../types/CensorTypes'
+import { CensorType } from '../../types/CensorType'
+import { CensorSource } from '../../types/CensorSource'
 
 interface Props {
-  censorType: CensorTypes
+  censorSource: CensorSource
+  censorType: CensorType
   children: ReactNode
 }
 
-const CENSOR_TYPE_COPY_MAP: Record<CensorTypes, string> = {
-  [CensorTypes.AdultContent]: 'adult content',
-  [CensorTypes.Offensive]: 'offensive',
+const CENSOR_TYPE_COPY_MAP: Record<CensorType, string> = {
+  [CensorType.AdultContent]: 'adult content',
+  [CensorType.Offensive]: 'offensive',
 }
 
-const PostCensorWrapper = ({ censorType, children }: Props) => {
+const CENSOR_SOURCE_COPY_MAP: Record<CensorSource, string> = {
+  [CensorSource.Community]: 'community',
+  [CensorSource.Author]: 'author',
+}
+
+const PostCensorWrapper = ({ censorSource, censorType, children }: Props) => {
   const [censorBypassed, setCensorBypassed] = useState(false)
   const theme = useTheme()
   const padding = theme.spacing(2)
@@ -43,15 +49,8 @@ const PostCensorWrapper = ({ censorType, children }: Props) => {
         >
           <Box>
             <Typography variant="body2" align="center">
-              This post was marked as {CENSOR_TYPE_COPY_MAP[censorType]} by the
-              community.
-              <Link
-                component={NextLink}
-                href="/settings"
-                sx={{ color: 'action.active' }}
-              >
-                <InfoOutlined sx={{ fontSize: '1rem' }} />
-              </Link>
+              This post was marked as {CENSOR_TYPE_COPY_MAP[censorType]} by the{' '}
+              {CENSOR_SOURCE_COPY_MAP[censorSource]}.
             </Typography>
             <Typography
               align="center"

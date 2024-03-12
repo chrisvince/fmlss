@@ -5,6 +5,8 @@ import { DocumentData, DocumentReference } from '@google-cloud/firestore'
 
 export interface PostDataRequest {
   attachments: PostAttachmentDb[]
+  authorMarkedAdultContent: boolean
+  authorMarkedOffensiveContent: boolean
   body: string
   bodyText: string
   topic?: TopicRelation

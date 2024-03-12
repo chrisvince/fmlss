@@ -6,6 +6,10 @@ import { CreatePostAttachment } from '../../types'
 interface Input {
   attachments: CreatePostAttachment[]
   body: string
+  options: {
+    offensiveContent: boolean
+    adultContent: boolean
+  }
   parentRef?: string
   subtopics: string[]
 }

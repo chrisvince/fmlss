@@ -1,7 +1,10 @@
 import { LoadingButton } from '@mui/lab'
 import {
+  Checkbox,
   DialogActions,
   DialogContent,
+  FormControlLabel,
+  FormGroup,
   Typography,
   useMediaQuery,
 } from '@mui/material'
@@ -61,6 +64,11 @@ const NewPostForm = ({
   const allowNavigation = useRef<boolean>(false)
   const noTopicDialogShown = useRef<boolean>(false)
 
+  const [offensiveContentChecked, setOffensiveContentChecked] =
+    useState<boolean>(false)
+
+  const [adultContentChecked, setAdultContentChecked] = useState<boolean>(false)
+
   const [showCloseConfirmDialog, setShowCloseConfirmDialog] =
     useState<boolean>(false)
 
@@ -69,6 +77,12 @@ const NewPostForm = ({
 
   const [dontShowAgainChecked, setDontShowAgainChecked] =
     useState<boolean>(false)
+
+  const handleOffensiveContentChange = () =>
+    setOffensiveContentChecked(!offensiveContentChecked)
+
+  const handleAdultContentChange = () =>
+    setAdultContentChecked(!adultContentChecked)
 
   const handleNoTopicDontShowAgainChange = () => {
     const newValue = !dontShowAgainChecked
@@ -95,11 +109,15 @@ const NewPostForm = ({
     }
 
     await createPost({
-      body: getRawEditorState(),
-      subtopics,
       attachments: postAttachments.map(
         mapPostAttachmentInputToCreatePostAttachment
       ),
+      body: getRawEditorState(),
+      options: {
+        offensiveContent: offensiveContentChecked,
+        adultContent: adultContentChecked,
+      },
+      subtopics,
     })
 
     allowNavigation.current = false
@@ -163,6 +181,39 @@ const NewPostForm = ({
     </LoadingButton>
   )
 
+  const contentOptions = (
+    <FormGroup
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 2,
+      }}
+    >
+      <FormControlLabel
+        componentsProps={{ typography: { variant: 'caption' } }}
+        control={
+          <Checkbox
+            onChange={handleOffensiveContentChange}
+            size="small"
+            value={offensiveContentChecked}
+          />
+        }
+        label="Contains offensive content"
+      />
+      <FormControlLabel
+        componentsProps={{ typography: { variant: 'caption' } }}
+        control={
+          <Checkbox
+            onChange={handleAdultContentChange}
+            size="small"
+            value={adultContentChecked}
+          />
+        }
+        label="Contains adult content"
+      />
+    </FormGroup>
+  )
+
   const form = (
     <Box
       sx={{
@@ -201,9 +252,11 @@ const NewPostForm = ({
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'flex-end',
+            flexDirection: 'column',
+            gap: 2,
           }}
         >
+          <Box sx={{ ml: -1.25 }}>{contentOptions}</Box>
           {button}
         </Box>
       )}
@@ -221,11 +274,22 @@ const NewPostForm = ({
       {isInModal && !isMobileDevice && (
         <DialogActions
           sx={{
-            visibility: isLoading ? 'hidden' : 'visible',
+            ml: -1.25,
             userSelect: isLoading ? 'none' : 'auto',
+            visibility: isLoading ? 'hidden' : 'visible',
           }}
         >
-          {button}
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          >
+            {contentOptions}
+            {button}
+          </Box>
         </DialogActions>
       )}
       <DiscardPostConfirmDialog

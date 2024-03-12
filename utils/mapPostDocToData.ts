@@ -13,6 +13,8 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
 
   return {
     attachments,
+    authorMarkedAdultContent: postData.authorMarkedAdultContent,
+    authorMarkedOffensiveContent: postData.authorMarkedOffensiveContent,
     body: postData.body,
     bodyText: postData.bodyText,
     createdAt: postData.createdAt.toMillis(),
