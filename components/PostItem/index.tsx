@@ -19,6 +19,8 @@ import formatRelativeDate from '../../utils/formatting/formatRelativeDate'
 import { Link, Tooltip } from '@mui/material'
 import formatDate from '../../utils/formatting/formatDate'
 import { CensorSource } from '../../types/CensorSource'
+import PostAttachmentsCensorWrapper from '../PostAttachmentsCensorWrapper'
+import { useState } from 'react'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -110,6 +112,7 @@ const PostItem = ({
   const byUser = !!post.user?.created
   const { user } = useUser()
   const censorData = noCensoring ? false : resolveCensorData(post, user)
+  const [censorBypassed, setCensorBypassed] = useState(false)
 
   const handleLikeButtonClick = () => {
     toggleLike()
@@ -194,7 +197,9 @@ const PostItem = ({
         </Box>
       </Box>
       <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
-      <PostAttachments attachments={post.data.attachments} />
+      <PostAttachmentsCensorWrapper censor={!!censorData && !censorBypassed}>
+        <PostAttachments attachments={post.data.attachments} />
+      </PostAttachmentsCensorWrapper>
       {!hideActionBar && (
         <PostActionBar
           like={like}
@@ -214,8 +219,10 @@ const PostItem = ({
   if (censorData) {
     return (
       <PostCensorWrapper
+        censorBypassed={censorBypassed}
         censorSource={censorData.source}
         censorType={censorData.type}
+        onCensorBypass={() => setCensorBypassed(true)}
       >
         {content}
       </PostCensorWrapper>

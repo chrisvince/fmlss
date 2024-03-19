@@ -1,14 +1,16 @@
 import { Button, Link, Typography } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 import NextLink from 'next/link'
 import { CensorType } from '../../types/CensorType'
 import { CensorSource } from '../../types/CensorSource'
 
 interface Props {
+  censorBypassed: boolean
   censorSource: CensorSource
   censorType: CensorType
   children: ReactNode
+  onCensorBypass: () => void
 }
 
 const CENSOR_TYPE_COPY_MAP: Record<CensorType, string> = {
@@ -21,11 +23,23 @@ const CENSOR_SOURCE_COPY_MAP: Record<CensorSource, string> = {
   [CensorSource.Author]: 'author',
 }
 
-const PostCensorWrapper = ({ censorSource, censorType, children }: Props) => {
-  const [censorBypassed, setCensorBypassed] = useState(false)
+const PostCensorWrapper = ({
+  censorBypassed,
+  censorSource,
+  censorType,
+  children,
+  onCensorBypass,
+}: Props) => {
   const theme = useTheme()
   const padding = theme.spacing(2)
-  const handleShowPostClick = () => setCensorBypassed(true)
+
+  const handleShowPostClick = () => {
+    if (censorBypassed) {
+      return
+    }
+
+    onCensorBypass()
+  }
 
   return (
     <Box sx={{ position: 'relative' }}>
