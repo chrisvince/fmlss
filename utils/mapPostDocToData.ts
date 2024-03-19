@@ -49,6 +49,7 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
         }
       : {}),
     postsCount: postData.postsCount,
+    reactionCount: postData.reactionCount,
     reference: postDoc.ref.path,
     slug: postData.slug,
     updatedAt: postData.updatedAt.toMillis(),

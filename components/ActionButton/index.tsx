@@ -1,7 +1,8 @@
-import { Button, SvgIconTypeMap, Typography } from '@mui/material'
+import { Box, Button, SvgIconTypeMap, Typography } from '@mui/material'
 import { OverridableComponent } from '@mui/material/OverridableComponent'
 import Link from 'next/link'
 import { ForwardedRef, forwardRef, useId } from 'react'
+import formatCount from '../../utils/formatting/formatCount'
 
 type Icon = OverridableComponent<SvgIconTypeMap<object, 'svg'>> & {
   muiName: string
@@ -10,12 +11,12 @@ type Icon = OverridableComponent<SvgIconTypeMap<object, 'svg'>> & {
 interface PropTypes {
   active?: boolean
   activeIcon?: Icon
+  count?: number
   href?: string
   icon: Icon | (() => JSX.Element)
   onClick?: () => void
   rotateIcon?: number
   text: string | number
-  textBold?: boolean
   textColor?: string
   activeColor?:
     | 'action'
@@ -35,12 +36,12 @@ const ActionButton = (
     active,
     activeColor,
     activeIcon: ActiveIcon,
+    count,
     href,
     icon: Icon,
     onClick,
     rotateIcon,
     text,
-    textBold,
     textColor,
   }: PropTypes,
   ref: ForwardedRef<HTMLButtonElement>
@@ -81,16 +82,32 @@ const ActionButton = (
           fontSize="small"
         />
       )}
-      <Typography
-        id={labelledById}
+      <Box
         sx={{
-          color: textColor ?? 'text.primary',
-          fontWeight: textBold ? 600 : undefined,
+          alignItems: 'baseline',
+          display: 'flex',
+          gap: 0.5,
         }}
-        variant="caption"
       >
-        {text}
-      </Typography>
+        <Typography
+          id={labelledById}
+          sx={{ color: textColor ?? 'text.primary' }}
+          variant="caption"
+        >
+          {text}
+        </Typography>
+        {!!count && count > 0 && (
+          <Typography
+            sx={{
+              color: textColor ?? 'text.primary',
+              fontWeight: 600,
+            }}
+            variant="caption"
+          >
+            {formatCount(count)}
+          </Typography>
+        )}
+      </Box>
     </Button>
   )
 }

@@ -26,6 +26,7 @@ interface PropTypes {
   ) => Promise<void>
   postReaction?: ReactionId | null
   postsCount: number
+  reactionCount: number
   showReplyButton: boolean
   slug: string
 }
@@ -37,6 +38,7 @@ const PostActionBar = ({
   onPostReaction,
   postReaction,
   postsCount,
+  reactionCount,
   showReplyButton = true,
   slug,
 }: PropTypes) => {
@@ -114,6 +116,7 @@ const PostActionBar = ({
         <ReactButton
           onChange={handlePostReactionChange}
           postReaction={postReaction}
+          reactionCount={reactionCount}
         />
         {showReplyButton && (
           <ReplyButton

@@ -1,7 +1,6 @@
 import { FavoriteBorderOutlined, FavoriteRounded } from '@mui/icons-material'
 
 import ActionButton from '../ActionButton'
-import formatCount from '../../utils/formatting/formatCount'
 
 interface PropTypes {
   like: boolean
@@ -15,9 +14,10 @@ const LikeButton = ({ like, likeCount, onClick: handleClick }: PropTypes) => (
     activeColor="error"
     activeIcon={FavoriteRounded}
     aria-label={`Like post. ${like ? 'Liked' : 'Not liked'}.`}
+    count={likeCount}
     icon={FavoriteBorderOutlined}
     onClick={handleClick}
-    text={`Like${likeCount > 0 ? ` (${formatCount(likeCount)})` : ''}`}
+    text="Like"
   />
 )
 

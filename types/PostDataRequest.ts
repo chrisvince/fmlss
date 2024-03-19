@@ -27,6 +27,7 @@ export interface PostDataRequest {
     slug: string
   }
   postsCount: number
+  reactionCount: number
   reference: string
   slug: string
   updatedAt: firestore.Timestamp

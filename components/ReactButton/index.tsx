@@ -74,9 +74,10 @@ const EmojiIcon = ({ emoji }: { emoji: ReactNode }) => (
 interface Props {
   onChange: (reaction: ReactionId | undefined) => void
   postReaction?: ReactionId | null
+  reactionCount: number
 }
 
-const ReactButton = ({ onChange, postReaction }: Props) => {
+const ReactButton = ({ onChange, postReaction, reactionCount }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const [reactionId, setReactionId] = useState<ReactionId | undefined>(
@@ -118,11 +119,11 @@ const ReactButton = ({ onChange, postReaction }: Props) => {
   return (
     <>
       <ActionButton
-        text="React"
-        textBold
+        count={reactionCount}
         icon={buttonIcon}
         onClick={handleClick}
         ref={buttonRef}
+        text="React"
       />
       <Menu
         anchorEl={buttonRef.current}

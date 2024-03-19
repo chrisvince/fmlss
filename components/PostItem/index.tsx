@@ -203,6 +203,7 @@ const PostItem = ({
           onPostReaction={onPostReaction}
           postReaction={post.user?.reaction}
           postsCount={post.data.postsCount}
+          reactionCount={post.data.reactionCount}
           showReplyButton={allowReplying}
           slug={post.data.slug}
         />

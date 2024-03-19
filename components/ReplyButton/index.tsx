@@ -1,5 +1,4 @@
 import { ReplyRounded } from '@mui/icons-material'
-import formatCount from '../../utils/formatting/formatCount'
 
 import ActionButton from '../ActionButton'
 
@@ -10,9 +9,10 @@ interface Props {
 
 const ReplyButton = ({ onClick, replyCount }: Props) => (
   <ActionButton
-    onClick={onClick}
-    text={`Reply${replyCount > 0 ? ` (${formatCount(replyCount)})` : ''}`}
+    count={replyCount}
     icon={ReplyRounded}
+    onClick={onClick}
+    text="Reply"
   />
 )
 

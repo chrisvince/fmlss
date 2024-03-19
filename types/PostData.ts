@@ -29,6 +29,7 @@ export interface PostData {
     slug: string
   }
   postsCount: number
+  reactionCount: number
   reference: string
   slug: string
   updatedAt: number
