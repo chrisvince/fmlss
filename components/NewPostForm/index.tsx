@@ -1,10 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import {
-  Checkbox,
   DialogActions,
   DialogContent,
-  FormControlLabel,
-  FormGroup,
   Typography,
   useMediaQuery,
 } from '@mui/material'
@@ -24,6 +21,7 @@ import { useRouter } from 'next/router'
 import DiscardPostConfirmDialog from '../DiscardPostConfirmDialog'
 import ConfirmNoTopicDialog from '../ConfirmNoTopicDialog'
 import useUser from '../../utils/data/user/useUser'
+import PostContentOptions from '../PostContentOptions'
 
 const { TOPICS_ENABLED } = constants
 
@@ -183,36 +181,12 @@ const NewPostForm = ({
   )
 
   const contentOptions = (
-    <FormGroup
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 2,
-      }}
-    >
-      <FormControlLabel
-        componentsProps={{ typography: { variant: 'caption' } }}
-        control={
-          <Checkbox
-            onChange={handleOffensiveContentChange}
-            size="small"
-            value={offensiveContentChecked}
-          />
-        }
-        label="Contains offensive content"
-      />
-      <FormControlLabel
-        componentsProps={{ typography: { variant: 'caption' } }}
-        control={
-          <Checkbox
-            onChange={handleAdultContentChange}
-            size="small"
-            value={adultContentChecked}
-          />
-        }
-        label="Contains adult content"
-      />
-    </FormGroup>
+    <PostContentOptions
+      adultContentChecked={adultContentChecked}
+      offensiveContentChecked={offensiveContentChecked}
+      onAdultContentChange={handleAdultContentChange}
+      onOffensiveContentChange={handleOffensiveContentChange}
+    />
   )
 
   const form = (

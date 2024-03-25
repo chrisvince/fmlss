@@ -12,6 +12,7 @@ import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 import PostBodyCounter from '../PostBodyCounter'
 import PostBodyActionBar from '../PostBodyActionBar'
 import constants from '../../constants'
+import PostContentOptions from '../PostContentOptions'
 
 const { POST_ATTACHMENTS_MAX_COUNT } = constants
 
@@ -35,6 +36,8 @@ const InlineReplyToPost = ({ slug }: Props) => {
   const [editorHasFocused, setEditorHasFocused] = useState(false)
   const disableButton = overMaxLength || !hasText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
+  const [adultContentChecked, setAdultContentChecked] = useState(false)
+  const [offensiveContentChecked, setOffensiveContentChecked] = useState(false)
 
   const submitPost = async () =>
     createPost({
@@ -43,8 +46,8 @@ const InlineReplyToPost = ({ slug }: Props) => {
       ),
       body: getRawEditorState(),
       options: {
-        adultContent: false, // TODO: Add the ability for users to configure
-        offensiveContent: false, // TODO: Add the ability for users to configure
+        adultContent: adultContentChecked,
+        offensiveContent: offensiveContentChecked,
       },
     })
 
@@ -144,7 +147,13 @@ const InlineReplyToPost = ({ slug }: Props) => {
         </Box>
       </Box>
       {editorHasFocused && (
-        <Box sx={{ pb: 1 }}>
+        <Box sx={{ pb: 1, display: 'flex', justifyContent: 'space-between' }}>
+          <PostContentOptions
+            adultContentChecked={adultContentChecked}
+            offensiveContentChecked={offensiveContentChecked}
+            onAdultContentChange={setAdultContentChecked}
+            onOffensiveContentChange={setOffensiveContentChecked}
+          />
           <PostBodyActionBar
             disableUrlButton={
               postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT
