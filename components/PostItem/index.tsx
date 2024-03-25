@@ -197,9 +197,11 @@ const PostItem = ({
         </Box>
       </Box>
       <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
-      <PostAttachmentsCensorWrapper censor={!!censorData && !censorBypassed}>
-        <PostAttachments attachments={post.data.attachments} />
-      </PostAttachmentsCensorWrapper>
+      {post.data.attachments.length > 0 && (
+        <PostAttachmentsCensorWrapper censor={!!censorData && !censorBypassed}>
+          <PostAttachments attachments={post.data.attachments} />
+        </PostAttachmentsCensorWrapper>
+      )}
       {!hideActionBar && (
         <PostActionBar
           like={like}
