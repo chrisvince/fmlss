@@ -1,6 +1,6 @@
 import { ImageRounded, LinkRounded } from '@mui/icons-material'
 import { Box, Button } from '@mui/material'
-import { ReactNode, useState } from 'react'
+import { LegacyRef, ReactNode, useRef, useState } from 'react'
 import UrlDialog from '../UrlDialog'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 
@@ -32,6 +32,7 @@ interface Props {
 }
 
 const PostBodyActionBar = ({ disableUrlButton, onUrlAdd }: Props) => {
+  const fileUploadRef = useRef<HTMLInputElement>()
   const [urlDialogOpen, setUrlDialogOpen] = useState(false)
 
   const handleConfirm = (postAttachmentInput: PostAttachmentInput) => {
@@ -46,6 +47,10 @@ const PostBodyActionBar = ({ disableUrlButton, onUrlAdd }: Props) => {
     setUrlDialogOpen(true)
   }
 
+  const handleFileUploadClick = () => {
+    fileUploadRef.current?.click()
+  }
+
   return (
     <>
       <Box
@@ -54,8 +59,14 @@ const PostBodyActionBar = ({ disableUrlButton, onUrlAdd }: Props) => {
         <ItemButton onClick={handleUrlButtonClick} disabled={disableUrlButton}>
           <LinkRounded fontSize="small" titleAccess="URL" />
         </ItemButton>
-        <ItemButton>
+        <ItemButton onClick={handleFileUploadClick}>
           <ImageRounded fontSize="small" />
+          <input
+            accept="image/*"
+            hidden
+            ref={fileUploadRef as LegacyRef<HTMLInputElement>}
+            type="file"
+          />
         </ItemButton>
       </Box>
       <UrlDialog
