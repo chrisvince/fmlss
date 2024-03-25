@@ -31,6 +31,10 @@ import getPeopleSearch from '../../utils/data/people/getPeopleSearch'
 import debounce from 'lodash.debounce'
 import slugify from '../../utils/slugify'
 import PostBodyCounter from '../PostBodyCounter'
+import PostBodyActionBar from '../PostBodyActionBar'
+import constants from '../../constants'
+
+const { POST_ATTACHMENTS_MAX_COUNT } = constants
 
 const mentionPlugin = createMentionPlugin({ readOnly: false })
 
@@ -59,7 +63,9 @@ type Props = {
   isInlineReply?: boolean
   onChange?: (text: EditorState) => void
   onCommandEnter?: () => void
+  onFocus?: () => void
   onPostAttachmentClose?: (url: string) => void
+  onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
   postAttachments?: PostAttachmentInput[]
   postType?: PostType
   size?: PostBodyTextAreaSize
@@ -74,7 +80,9 @@ const PostBodyTextArea = ({
   isInlineReply,
   onChange,
   onCommandEnter,
+  onFocus,
   onPostAttachmentClose,
+  onUrlAdd,
   postAttachments = [],
   postType = PostType.New,
   size = PostBodyTextAreaSize.Small,
@@ -176,6 +184,8 @@ const PostBodyTextArea = ({
     setDisplayTagInstruction(false)
   }
 
+  const shouldShowActionBar = !isInlineReply
+
   return (
     <>
       <GlobalStyles styles={mentionStyles} />
@@ -232,6 +242,7 @@ const PostBodyTextArea = ({
                 handleReturn={handleReturn}
                 onBlur={handleEditorBlur}
                 onChange={handleEditorStateChange}
+                onFocus={onFocus}
                 placeholder={placeholder}
                 plugins={PLUGINS}
                 preserveSelectionOnBlur
@@ -269,6 +280,14 @@ const PostBodyTextArea = ({
                   <PostBodyCounter textLength={textLength} />
                 </Box>
               </Box>
+            )}
+            {shouldShowActionBar && (
+              <PostBodyActionBar
+                disableUrlButton={
+                  postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT
+                }
+                onUrlAdd={onUrlAdd}
+              />
             )}
             <PostBodyAttachments
               onClose={onPostAttachmentClose}

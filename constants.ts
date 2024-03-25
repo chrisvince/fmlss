@@ -18,6 +18,8 @@ const constants = {
   CENTER_SECTION_CONTAINER_THIN_MAX_WIDTH: '420px',
   EMAIL_REGEX_PATTERN:
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
+  URL_REGEX_PATTERN:
+    /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi,
   ENABLE_SAVING: false,
   ENABLE_SHOW_REPLIES: false,
   ENABLE_SORTING: false,
@@ -56,7 +58,7 @@ const constants = {
   PEOPLE_SEARCH_CACHE_TIME: secondsToMs(60),
   PERSON_CACHE_TIME: secondsToMs(60),
   PERSON_POSTS_CACHE_TIME: secondsToMs(30),
-  POST_ATTACHMENTS_MAX: 2,
+  POST_ATTACHMENTS_MAX_COUNT: 2,
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever
   POST_CACHE_TIME: secondsToMs(30),
   POST_LIKES_CACHE_TIME: secondsToMs(10),

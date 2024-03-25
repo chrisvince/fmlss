@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import getTiktokAttachment from './getTiktokAttachment'
 
-const useTiktokAttachment = (url: string | null) => {
+const useTiktokAttachment = (url: string | null | undefined) => {
   const { data, error, isLoading } = useSWR(url, getTiktokAttachment, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,

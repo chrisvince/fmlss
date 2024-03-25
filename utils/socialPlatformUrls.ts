@@ -49,7 +49,9 @@ export const isPinterestPostUrl = (url: string) =>
     'ru.pinterest.com/pin',
   ].some(condition => url.includes(condition))
 
-export const resolvePostAttachmentTypeFromUrl = (url: string) => {
+export const resolvePostAttachmentTypeFromUrl = (
+  url: string
+): PostAttachmentType => {
   if (isTwitterPostUrl(url)) {
     return PostAttachmentType.Twitter
   }

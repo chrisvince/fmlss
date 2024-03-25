@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import getYouTubeAttachmentClient from './getYouTubeAttachmentClient'
 
-const usePostBodyAttachmentYouTube = (url: string | null) => {
+const usePostBodyAttachmentYouTube = (url: string | null | undefined) => {
   const { data, error, isLoading } = useSWR(url, getYouTubeAttachmentClient, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,

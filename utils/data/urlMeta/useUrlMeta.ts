@@ -1,7 +1,10 @@
 import useSWR, { SWRConfiguration } from 'swr'
 import getUrlMetaClient from './getUrlMetaClient'
 
-const useUrlMeta = (url: string | null, swrConfig: SWRConfiguration = {}) => {
+const useUrlMeta = (
+  url: string | null | undefined,
+  swrConfig: SWRConfiguration = {}
+) => {
   const { data, error, isLoading } = useSWR(url, getUrlMetaClient, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,

@@ -7,9 +7,9 @@ import { Match } from 'linkify-it'
 import debounce from 'lodash.debounce'
 import { pipe } from 'ramda'
 import { extractLinks as extractLinkifyItLinksFromText } from '@draft-js-plugins/linkify'
-import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
+import mapLinkifyItMatchToPostAttachment from '../mapLinkifyItMatchToPostAttachment'
 
-const { POST_MAX_LENGTH, POST_ATTACHMENTS_MAX } = constants
+const { POST_MAX_LENGTH, POST_ATTACHMENTS_MAX_COUNT } = constants
 
 export enum PostLengthStatusType {
   Warning = 'warning',
@@ -33,49 +33,71 @@ const removeDuplicateLinkifyItMatches = (links: Match[] | null): Match[] =>
     return existingLink ? acc : [...acc, link]
   }, [] as Match[]) ?? []
 
-const convertLinkifyItMatchToPostAttachment = (
-  match: Match
-): PostAttachmentInput => ({
-  closed: false,
-  match,
-  type: resolvePostAttachmentTypeFromUrl(match.url),
-  url: match.url,
-})
-
 const mergePostAttachments = (
   newPostAttachments: PostAttachmentInput[] = [],
-  existingPostAttachments: PostAttachmentInput[] = []
-) =>
-  newPostAttachments.map(newPostAttachment => {
+  existingPostAttachments: PostAttachmentInput[] = [],
+  otherPostAttachments: PostAttachmentInput[] = []
+): PostAttachmentInput[] =>
+  newPostAttachments.reduce<PostAttachmentInput[]>((acc, newPostAttachment) => {
     const existingPostAttachment = existingPostAttachments.find(
       ({ url }) => url === newPostAttachment.url
     )
 
     if (!existingPostAttachment) {
-      return newPostAttachment
+      const otherPostAttachmentExists = otherPostAttachments.some(
+        ({ url }) => url === newPostAttachment.url
+      )
+      if (otherPostAttachmentExists) {
+        return acc
+      }
+      return [...acc, newPostAttachment]
     }
 
-    return {
-      ...newPostAttachment,
-      closed: existingPostAttachment.closed,
-    }
-  })
+    return [
+      ...acc,
+      {
+        ...newPostAttachment,
+        closed: existingPostAttachment.closed,
+      },
+    ]
+  }, [])
 
 const removeUrlText = (text: string, urlTexts: string[]): string => {
   if (urlTexts.length === 0) {
     return text
   }
 
-  const pattern = urlTexts.join('|')
-  const regex = new RegExp(pattern, 'gi')
-  return text.replace(regex, '##########')
+  const newText = urlTexts.reduce(
+    (acc, urlText) => acc.split(urlText).join('##########'),
+    text
+  )
+
+  return newText
 }
+
+const postAttachmentRemover =
+  (url: string) => (postAttachments: PostAttachmentInput[]) =>
+    postAttachments.map(postAttachment => {
+      if (postAttachment.url !== url) {
+        return postAttachment
+      }
+
+      return {
+        ...postAttachment,
+        closed: true,
+      }
+    })
 
 const usePostBodyEditorState = () => {
   const [editorState, setEditorState] = useState(createEmptyEditorState)
-  const [postAttachments, setPostAttachments] = useState<PostAttachmentInput[]>(
-    []
-  )
+
+  const [bodyPostAttachments, setBodyPostAttachments] = useState<
+    PostAttachmentInput[]
+  >([])
+
+  const [otherPostAttachments, setOtherPostAttachments] = useState<
+    PostAttachmentInput[]
+  >([])
 
   const getRaw = (): string =>
     JSON.stringify(convertToRaw(editorState.getCurrentContent()))
@@ -88,33 +110,24 @@ const usePostBodyEditorState = () => {
             getPlainTextFromEditorState,
             extractLinkifyItLinksFromText,
             removeDuplicateLinkifyItMatches,
-            links => links.map(convertLinkifyItMatchToPostAttachment),
+            links => links.map(mapLinkifyItMatchToPostAttachment),
             newPostAttachments =>
-              setPostAttachments(existingPostAttachments =>
+              setBodyPostAttachments(existingPostAttachments =>
                 mergePostAttachments(
                   newPostAttachments,
-                  existingPostAttachments
+                  existingPostAttachments,
+                  otherPostAttachments
                 )
               )
           )(editorState),
         600
       ),
-    []
+    [otherPostAttachments]
   )
 
   const handlePostAttachmentClose = useCallback((url: string) => {
-    setPostAttachments(currentLinks =>
-      currentLinks.map(currentLink => {
-        if (currentLink.url !== url) {
-          return currentLink
-        }
-
-        return {
-          ...currentLink,
-          closed: true,
-        }
-      })
-    )
+    setBodyPostAttachments(postAttachmentRemover(url))
+    setOtherPostAttachments(postAttachmentRemover(url))
   }, [])
 
   const handleSetEditorState = (newEditorState: EditorState) => {
@@ -124,14 +137,16 @@ const usePostBodyEditorState = () => {
 
   const openPostAttachments = useMemo(
     () =>
-      postAttachments
+      [...bodyPostAttachments, ...otherPostAttachments]
         .filter(({ closed }) => !closed)
-        .slice(0, POST_ATTACHMENTS_MAX),
-    [postAttachments]
+        .slice(0, POST_ATTACHMENTS_MAX_COUNT),
+    [bodyPostAttachments, otherPostAttachments]
   )
 
   const textLength = useMemo(() => {
-    const attachmentUrlTexts = postAttachments.map(({ match }) => match.text)
+    const attachmentUrlTexts = bodyPostAttachments.map(
+      ({ match }) => match.text
+    )
 
     const textUrlsRemoved = removeUrlText(
       getPlainTextFromEditorState(editorState),
@@ -139,7 +154,7 @@ const usePostBodyEditorState = () => {
     )
 
     return textUrlsRemoved.length
-  }, [editorState, postAttachments])
+  }, [editorState, bodyPostAttachments])
 
   const overMaxLength = useMemo(
     () => textLength > POST_MAX_LENGTH,
@@ -148,11 +163,28 @@ const usePostBodyEditorState = () => {
 
   const hasText = textLength > 0
 
+  const handleUrlAdd = useCallback(
+    (postAttachmentInput: PostAttachmentInput) => {
+      const postAttachmentExists = [
+        ...bodyPostAttachments,
+        ...otherPostAttachments,
+      ].some(({ url }) => url === postAttachmentInput.url)
+
+      if (postAttachmentExists) {
+        return
+      }
+
+      setOtherPostAttachments([...otherPostAttachments, postAttachmentInput])
+    },
+    [bodyPostAttachments, otherPostAttachments]
+  )
+
   return {
     closePostAttachment: handlePostAttachmentClose,
     editorState,
     getRaw,
     hasText,
+    onUrlAdd: handleUrlAdd,
     overMaxLength,
     postAttachments: openPostAttachments,
     setEditorState: handleSetEditorState,

@@ -48,6 +48,7 @@ const NewPostForm = ({
     editorState,
     getRaw: getRawEditorState,
     hasText,
+    onUrlAdd,
     overMaxLength,
     postAttachments,
     setEditorState,
@@ -232,21 +233,20 @@ const NewPostForm = ({
           noCensoring
         />
       )}
-      <Box>
-        <PostBodyTextArea
-          disabled={isLoading}
-          editorState={editorState}
-          focusOnMount
-          onChange={setEditorState}
-          onCommandEnter={submitPost}
-          onPostAttachmentClose={closePostAttachment}
-          postAttachments={postAttachments}
-          postType={postType}
-          size={PostBodyTextAreaSize.Large}
-          displayBorderBottom={!replyingToPost}
-          textLength={textLength}
-        />
-      </Box>
+      <PostBodyTextArea
+        disabled={isLoading}
+        displayBorderBottom={!replyingToPost}
+        editorState={editorState}
+        focusOnMount
+        onChange={setEditorState}
+        onCommandEnter={submitPost}
+        onPostAttachmentClose={closePostAttachment}
+        onUrlAdd={onUrlAdd}
+        postAttachments={postAttachments}
+        postType={postType}
+        size={PostBodyTextAreaSize.Large}
+        textLength={textLength}
+      />
       {TOPICS_ENABLED && !slug && <TopicSelect onChange={handleTopicChange} />}
       {(!isInModal || isMobileDevice) && (
         <Box

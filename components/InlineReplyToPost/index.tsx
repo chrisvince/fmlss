@@ -1,15 +1,19 @@
 import { LoadingButton } from '@mui/lab'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { SyntheticEvent } from 'react'
+import { SyntheticEvent, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import MobileContainer from '../MobileContainer'
-import PostBodyTextArea from '../PostBodyTextArea'
+import PostBodyTextArea, { PostBodyTextAreaSize } from '../PostBodyTextArea'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAttachmentInputToCreatePostAttachment'
 import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 import PostBodyCounter from '../PostBodyCounter'
+import PostBodyActionBar from '../PostBodyActionBar'
+import constants from '../../constants'
+
+const { POST_ATTACHMENTS_MAX_COUNT } = constants
 
 interface Props {
   slug: string
@@ -21,12 +25,14 @@ const InlineReplyToPost = ({ slug }: Props) => {
     editorState,
     getRaw: getRawEditorState,
     hasText,
+    onUrlAdd,
     overMaxLength,
     postAttachments,
     setEditorState,
     textLength,
   } = usePostBodyEditorState()
 
+  const [editorHasFocused, setEditorHasFocused] = useState(false)
   const disableButton = overMaxLength || !hasText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
 
@@ -46,6 +52,8 @@ const InlineReplyToPost = ({ slug }: Props) => {
     event.preventDefault()
     submitPost()
   }
+
+  const handleEditorFocus = () => setEditorHasFocused(true)
 
   return (
     <MobileContainer>
@@ -68,10 +76,17 @@ const InlineReplyToPost = ({ slug }: Props) => {
               isInlineReply
               onChange={setEditorState}
               onCommandEnter={submitPost}
+              onFocus={handleEditorFocus}
               onPostAttachmentClose={closePostAttachment}
+              onUrlAdd={onUrlAdd}
               postAttachments={postAttachments}
               postType={PostType.Reply}
               textLength={textLength}
+              size={
+                editorHasFocused
+                  ? PostBodyTextAreaSize.Large
+                  : PostBodyTextAreaSize.Small
+              }
             />
           </Box>
           {errorMessage && (
@@ -128,6 +143,16 @@ const InlineReplyToPost = ({ slug }: Props) => {
           </Box>
         </Box>
       </Box>
+      {editorHasFocused && (
+        <Box sx={{ pb: 1 }}>
+          <PostBodyActionBar
+            disableUrlButton={
+              postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT
+            }
+            onUrlAdd={onUrlAdd}
+          />
+        </Box>
+      )}
     </MobileContainer>
   )
 }
