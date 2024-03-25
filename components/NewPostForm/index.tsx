@@ -154,7 +154,7 @@ const NewPostForm = ({
     [bodyOrSubtopicExists, router.events]
   )
 
-  const handleConfirmNoTopicDialogConfirm = () => {
+  const handleCancelNoTopicDialogConfirm = () => {
     setShowConfirmNoTopicDialog(false)
   }
 
@@ -299,9 +299,9 @@ const NewPostForm = ({
       />
       <ConfirmNoTopicDialog
         dontShowAgainChecked={dontShowAgainChecked}
-        onCancel={submitPost}
-        onClose={handleConfirmNoTopicDialogConfirm}
-        onConfirm={handleConfirmNoTopicDialogConfirm}
+        onCancel={handleCancelNoTopicDialogConfirm}
+        onClose={handleCancelNoTopicDialogConfirm}
+        onConfirm={submitPost}
         onDontShowAgainChange={handleNoTopicDontShowAgainChange}
         open={showConfirmNoTopicDialog}
       />

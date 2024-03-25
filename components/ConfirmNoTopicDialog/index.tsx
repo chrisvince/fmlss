@@ -36,8 +36,8 @@ const ConfirmNoTopicDialog: React.FC<Props> = ({
 
   return (
     <ConfirmDialog
-      cancelText="Post without topic"
-      confirmText="Add topic"
+      cancelText="Add a topic"
+      confirmText="Post without topic"
       content="Make your post easier to discover by adding a topic."
       dontShowAgainChecked={dontShowAgainChecked}
       onCancel={onCancel}
