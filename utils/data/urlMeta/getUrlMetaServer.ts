@@ -59,7 +59,7 @@ const getUrlMetaServer = async (url: string): Promise<PostAttachmentUrl> => {
         }
       : null
 
-  const mappedData = mapPostAttachmentUrl(meta, image)
+  const mappedData = mapPostAttachmentUrl(meta, image, url)
   put(cacheKey, mappedData, URL_META_CACHE_TIME)
   return mappedData
 }
