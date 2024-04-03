@@ -33,6 +33,8 @@ import slugify from '../../utils/slugify'
 import PostBodyCounter from '../PostBodyCounter'
 import PostBodyActionBar from '../PostBodyActionBar'
 import constants from '../../constants'
+import { MediaItem } from '../../utils/data/media/useFileUpload'
+import PostMedia from '../PostMedia'
 
 const { POST_ATTACHMENTS_MAX_COUNT } = constants
 
@@ -61,10 +63,13 @@ type Props = {
   editorState: EditorState
   focusOnMount?: boolean
   isInlineReply?: boolean
+  media: MediaItem[]
   onChange?: (text: EditorState) => void
   onCommandEnter?: () => void
+  onFileUploaded: (mediaItem: MediaItem) => void
   onFocus?: () => void
   onPostAttachmentClose?: (url: string) => void
+  onRemoveMedia: (id: string) => void
   onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
   postAttachments?: PostAttachmentInput[]
   postType?: PostType
@@ -78,10 +83,13 @@ const PostBodyTextArea = ({
   editorState,
   focusOnMount,
   isInlineReply,
+  media,
   onChange,
   onCommandEnter,
+  onFileUploaded,
   onFocus,
   onPostAttachmentClose,
+  onRemoveMedia,
   onUrlAdd,
   postAttachments = [],
   postType = PostType.New,
@@ -286,6 +294,7 @@ const PostBodyTextArea = ({
                 disableUrlButton={
                   postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT
                 }
+                onFileUploaded={onFileUploaded}
                 onUrlAdd={onUrlAdd}
               />
             )}
@@ -294,6 +303,9 @@ const PostBodyTextArea = ({
               onError={onPostAttachmentClose}
               postAttachments={postAttachments}
             />
+            {media.length > 0 && (
+              <PostMedia media={media} onClose={onRemoveMedia} />
+            )}
           </Box>
         </Box>
       </Box>

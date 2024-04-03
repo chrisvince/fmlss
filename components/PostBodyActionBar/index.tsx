@@ -3,6 +3,8 @@ import { Box, Button } from '@mui/material'
 import { LegacyRef, ReactNode, useRef, useState } from 'react'
 import UrlDialog from '../UrlDialog'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
+import useFileUpload, { MediaItem } from '../../utils/data/media/useFileUpload'
+import CircularProgressWithLabel from '../CircularProgressWithLabel'
 
 const ItemButton = ({
   children,
@@ -29,11 +31,19 @@ const ItemButton = ({
 interface Props {
   disableUrlButton: boolean
   onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
+  onFileUploaded: (mediaItem: MediaItem) => void
 }
 
-const PostBodyActionBar = ({ disableUrlButton, onUrlAdd }: Props) => {
+const PostBodyActionBar = ({
+  disableUrlButton,
+  onFileUploaded,
+  onUrlAdd,
+}: Props) => {
   const fileUploadRef = useRef<HTMLInputElement>()
   const [urlDialogOpen, setUrlDialogOpen] = useState(false)
+  const { uploadProgress, upload, uploadInProgress } = useFileUpload({
+    onFileUploaded,
+  })
 
   const handleConfirm = (postAttachmentInput: PostAttachmentInput) => {
     onUrlAdd(postAttachmentInput)
@@ -51,6 +61,18 @@ const PostBodyActionBar = ({ disableUrlButton, onUrlAdd }: Props) => {
     fileUploadRef.current?.click()
   }
 
+  const handleMediaChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+
+    if (!file) {
+      return
+    }
+
+    upload(file)
+  }
+
   return (
     <>
       <Box
@@ -59,15 +81,24 @@ const PostBodyActionBar = ({ disableUrlButton, onUrlAdd }: Props) => {
         <ItemButton onClick={handleUrlButtonClick} disabled={disableUrlButton}>
           <LinkRounded fontSize="small" titleAccess="URL" />
         </ItemButton>
-        <ItemButton onClick={handleFileUploadClick}>
-          <ImageRounded fontSize="small" />
-          <input
-            accept="image/*"
-            hidden
-            ref={fileUploadRef as LegacyRef<HTMLInputElement>}
-            type="file"
+        {!uploadInProgress ? (
+          <ItemButton onClick={handleFileUploadClick}>
+            <ImageRounded fontSize="small" />
+            <input
+              accept="image/*"
+              hidden
+              onChange={handleMediaChange}
+              ref={fileUploadRef as LegacyRef<HTMLInputElement>}
+              type="file"
+            />
+          </ItemButton>
+        ) : (
+          <CircularProgressWithLabel
+            value={uploadProgress}
+            size={34.22}
+            fontSize={10}
           />
-        </ItemButton>
+        )}
       </Box>
       <UrlDialog
         open={urlDialogOpen}

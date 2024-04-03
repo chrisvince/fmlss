@@ -70,7 +70,7 @@ const CloseButtonWrapper = ({ children, onClose }: Props) => (
         </Box>
       </ButtonBase>
     )}
-    <Box>{children}</Box>
+    <Box sx={{ display: 'flex', height: '100%' }}>{children}</Box>
   </Box>
 )
 

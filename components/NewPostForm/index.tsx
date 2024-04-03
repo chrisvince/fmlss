@@ -22,6 +22,7 @@ import DiscardPostConfirmDialog from '../DiscardPostConfirmDialog'
 import ConfirmNoTopicDialog from '../ConfirmNoTopicDialog'
 import useUser from '../../utils/data/user/useUser'
 import PostContentOptions from '../PostContentOptions'
+import usePostMedia from '../../utils/data/media/usePostMedia'
 
 const { TOPICS_ENABLED } = constants
 
@@ -53,6 +54,7 @@ const NewPostForm = ({
     textLength,
   } = usePostBodyEditorState()
 
+  const { media, onAddMedia, onRemoveMedia } = usePostMedia()
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
   const [subtopics, setSubtopics] = useState<string[]>([])
   const handleTopicChange = async (subtopic: string[]) => setSubtopics(subtopic)
@@ -212,9 +214,12 @@ const NewPostForm = ({
         displayBorderBottom={!replyingToPost}
         editorState={editorState}
         focusOnMount
+        media={media}
         onChange={setEditorState}
         onCommandEnter={submitPost}
+        onFileUploaded={onAddMedia}
         onPostAttachmentClose={closePostAttachment}
+        onRemoveMedia={onRemoveMedia}
         onUrlAdd={onUrlAdd}
         postAttachments={postAttachments}
         postType={postType}
