@@ -33,8 +33,8 @@ import slugify from '../../utils/slugify'
 import PostBodyCounter from '../PostBodyCounter'
 import PostBodyActionBar from '../PostBodyActionBar'
 import constants from '../../constants'
-import { MediaItem } from '../../utils/data/media/useFileUpload'
 import PostMedia from '../PostMedia'
+import { MediaItem } from '../../types/MediaItem'
 
 const { POST_ATTACHMENTS_MAX_COUNT } = constants
 

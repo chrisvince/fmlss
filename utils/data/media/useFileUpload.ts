@@ -3,13 +3,7 @@ import 'firebase/storage'
 import { useState } from 'react'
 import { v4 as uuidV4 } from 'uuid'
 import getImageDimensionsFromUrl from '../../getImageDimensionsFromUrl'
-
-export interface MediaItem {
-  height: number
-  id: string
-  url: string
-  width: number
-}
+import { MediaItem } from '../../../types/MediaItem'
 
 interface Options {
   onFileUploaded?: (mediaItem: MediaItem) => void

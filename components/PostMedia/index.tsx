@@ -1,8 +1,8 @@
 import { Box } from '@mui/material'
-import { MediaItem } from '../../utils/data/media/useFileUpload'
 import CloseButtonWrapper from '../CloseButtonWrapper'
 import PostAttachmentBorder from '../PostAttachmentBorder'
 import Image from 'next/image'
+import { MediaItem } from '../../types/MediaItem'
 
 interface Props {
   media: MediaItem[]

@@ -3,8 +3,9 @@ import { Box, Button } from '@mui/material'
 import { LegacyRef, ReactNode, useRef, useState } from 'react'
 import UrlDialog from '../UrlDialog'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
-import useFileUpload, { MediaItem } from '../../utils/data/media/useFileUpload'
+import useFileUpload from '../../utils/data/media/useFileUpload'
 import CircularProgressWithLabel from '../CircularProgressWithLabel'
+import { MediaItem } from '../../types/MediaItem'
 
 const ItemButton = ({
   children,
