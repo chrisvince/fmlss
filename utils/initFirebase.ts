@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/functions'
+import 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -20,6 +21,7 @@ const initFirebase = () => {
   if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true') {
     firebase.functions().useEmulator('127.0.0.1', 5001)
     firebase.firestore().useEmulator('127.0.0.1', 8080)
+    firebase.storage().useEmulator('127.0.0.1', 9199)
   }
 }
 
