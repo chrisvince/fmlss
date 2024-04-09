@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MediaItem } from './useFileUpload'
+import { MediaItem } from '../../../types/MediaItem'
 
 const usePostMedia = () => {
   const [media, setMedia] = useState<MediaItem[]>([])
