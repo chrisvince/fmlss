@@ -13,7 +13,6 @@ import PostBodyCounter from '../PostBodyCounter'
 import PostBodyActionBar from '../PostBodyActionBar'
 import constants from '../../constants'
 import PostContentOptions from '../PostContentOptions'
-import usePostMedia from '../../utils/data/media/usePostMedia'
 
 const { POST_ATTACHMENTS_MAX_COUNT } = constants
 
@@ -27,6 +26,9 @@ const InlineReplyToPost = ({ slug }: Props) => {
     editorState,
     getRaw: getRawEditorState,
     hasText,
+    media,
+    onAddMedia,
+    onRemoveMedia,
     onUrlAdd,
     overMaxLength,
     postAttachments,
@@ -34,7 +36,6 @@ const InlineReplyToPost = ({ slug }: Props) => {
     textLength,
   } = usePostBodyEditorState()
 
-  const { media, onAddMedia, onRemoveMedia } = usePostMedia()
   const [editorHasFocused, setEditorHasFocused] = useState(false)
   const disableButton = overMaxLength || !hasText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
