@@ -10,7 +10,8 @@ import { extractLinks as extractLinkifyItLinksFromText } from '@draft-js-plugins
 import mapLinkifyItMatchToPostAttachment from '../mapLinkifyItMatchToPostAttachment'
 import { MediaItem } from '../../types/MediaItem'
 
-const { POST_MAX_LENGTH, POST_ATTACHMENTS_MAX_COUNT } = constants
+const { MEDIA_ITEMS_MAX_COUNT, POST_ATTACHMENTS_MAX_COUNT, POST_MAX_LENGTH } =
+  constants
 
 export enum PostLengthStatusType {
   Warning = 'warning',
@@ -105,6 +106,9 @@ const usePostBodyEditorState = () => {
     JSON.stringify(convertToRaw(editorState.getCurrentContent()))
 
   const handleAddMedia = (mediaItem: MediaItem) => {
+    if (media.length >= MEDIA_ITEMS_MAX_COUNT) {
+      return
+    }
     setMedia([...media, mediaItem])
   }
 

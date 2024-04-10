@@ -36,7 +36,7 @@ import constants from '../../constants'
 import PostMedia from '../PostMedia'
 import { MediaItem } from '../../types/MediaItem'
 
-const { POST_ATTACHMENTS_MAX_COUNT } = constants
+const { MEDIA_ITEMS_MAX_COUNT, POST_ATTACHMENTS_MAX_COUNT } = constants
 
 const mentionPlugin = createMentionPlugin({ readOnly: false })
 
@@ -291,6 +291,7 @@ const PostBodyTextArea = ({
             )}
             {shouldShowActionBar && (
               <PostBodyActionBar
+                disableMediaButton={media.length >= MEDIA_ITEMS_MAX_COUNT}
                 disableUrlButton={
                   postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT
                 }

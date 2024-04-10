@@ -30,12 +30,14 @@ const ItemButton = ({
 )
 
 interface Props {
+  disableMediaButton: boolean
   disableUrlButton: boolean
   onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
   onFileUploaded: (mediaItem: MediaItem) => void
 }
 
 const PostBodyActionBar = ({
+  disableMediaButton,
   disableUrlButton,
   onFileUploaded,
   onUrlAdd,
@@ -83,7 +85,10 @@ const PostBodyActionBar = ({
           <LinkRounded fontSize="small" titleAccess="URL" />
         </ItemButton>
         {!uploadInProgress ? (
-          <ItemButton onClick={handleFileUploadClick}>
+          <ItemButton
+            disabled={disableMediaButton}
+            onClick={handleFileUploadClick}
+          >
             <ImageRounded fontSize="small" />
             <input
               accept="image/*"

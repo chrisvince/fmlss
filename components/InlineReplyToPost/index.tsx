@@ -14,7 +14,7 @@ import PostBodyActionBar from '../PostBodyActionBar'
 import constants from '../../constants'
 import PostContentOptions from '../PostContentOptions'
 
-const { POST_ATTACHMENTS_MAX_COUNT } = constants
+const { MEDIA_ITEMS_MAX_COUNT, POST_ATTACHMENTS_MAX_COUNT } = constants
 
 interface Props {
   slug: string
@@ -161,6 +161,7 @@ const InlineReplyToPost = ({ slug }: Props) => {
             onOffensiveContentChange={setOffensiveContentChecked}
           />
           <PostBodyActionBar
+            disableMediaButton={media.length >= MEDIA_ITEMS_MAX_COUNT}
             disableUrlButton={
               postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT
             }
