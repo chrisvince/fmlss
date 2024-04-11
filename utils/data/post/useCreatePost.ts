@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { createPost } from '../../callableFirebaseFunctions'
 import usePost from './usePost'
 import { CreatePostAttachment } from '../../../types'
-import { MediaInputItem } from '../../../firebase/functions/src/types/MediaInputItem'
+import { MediaInputItem } from '../../../types/MediaInputItem'
 
 interface HandleCreatePostProps {
   attachments: CreatePostAttachment[]
