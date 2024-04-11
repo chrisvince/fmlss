@@ -2,9 +2,9 @@ import firebase from 'firebase/app'
 import 'firebase/storage'
 import { useState } from 'react'
 import { v4 as uuidV4 } from 'uuid'
-import getImageDimensionsFromUrl from '../../getImageDimensionsFromUrl'
 import { MediaInputItem } from '../../../types/MediaInputItem'
 import constants from '../../../constants'
+import getImageDimensionsFromUrlClient from '../../getImageDimensionsFromUrlClient'
 
 const { POST_ASSETS_BUCKET, POST_ASSETS_MAX_FILE_SIZE_MB } = constants
 
@@ -53,7 +53,7 @@ const useFileUpload = ({ onFileUploaded }: Options = {}) => {
       },
       async () => {
         const downloadURL = await uploadTask.snapshot.ref.getDownloadURL()
-        const dimensions = await getImageDimensionsFromUrl(downloadURL)
+        const dimensions = await getImageDimensionsFromUrlClient(downloadURL)
 
         await fileRef.updateMetadata({
           customMetadata: {
