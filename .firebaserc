@@ -1,5 +1,24 @@
 {
   "projects": {
     "default": "fameless-prod"
+  },
+  "targets": {
+    "fameless-prod": {
+      "storage": {
+        "main": [
+          "fameless-prod.appspot.com"
+        ],
+        "post-assets": [
+          "post-assets"
+        ]
+      }
+    }
+  },
+  "etags": {
+    "fameless-prod": {
+      "extensionInstances": {
+        "storage-resize-images": "8591e51ec65648461049a27043688b77c382183481ecf806c866c3523310acf3"
+      }
+    }
   }
 }

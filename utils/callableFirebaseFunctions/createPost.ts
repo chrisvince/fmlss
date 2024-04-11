@@ -2,10 +2,12 @@ import firebase from 'firebase/app'
 import 'firebase/functions'
 import { isNil, reject } from 'ramda'
 import { CreatePostAttachment } from '../../types'
+import { MediaInputItem } from '../../types/MediaInputItem'
 
 interface Input {
   attachments: CreatePostAttachment[]
   body: string
+  media: MediaInputItem[]
   options: {
     offensiveContent: boolean
     adultContent: boolean

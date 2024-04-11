@@ -33,8 +33,8 @@ import slugify from '../../utils/slugify'
 import PostBodyCounter from '../PostBodyCounter'
 import PostBodyActionBar from '../PostBodyActionBar'
 import constants from '../../constants'
-import PostMedia from '../PostMedia'
-import { MediaItem } from '../../types/MediaItem'
+import PostMediaInput from '../PostMediaInput'
+import { MediaInputItem } from '../../types/MediaInputItem'
 
 const { MEDIA_ITEMS_MAX_COUNT, POST_ATTACHMENTS_MAX_COUNT } = constants
 
@@ -63,10 +63,10 @@ type Props = {
   editorState: EditorState
   focusOnMount?: boolean
   isInlineReply?: boolean
-  media: MediaItem[]
+  media: MediaInputItem[]
   onChange?: (text: EditorState) => void
   onCommandEnter?: () => void
-  onFileUploaded: (mediaItem: MediaItem) => void
+  onFileUploaded: (mediaItem: MediaInputItem) => void
   onFocus?: () => void
   onPostAttachmentClose?: (url: string) => void
   onRemoveMedia: (id: string) => void
@@ -305,7 +305,7 @@ const PostBodyTextArea = ({
               postAttachments={postAttachments}
             />
             {media.length > 0 && (
-              <PostMedia media={media} onClose={onRemoveMedia} />
+              <PostMediaInput media={media} onClose={onRemoveMedia} />
             )}
           </Box>
         </Box>

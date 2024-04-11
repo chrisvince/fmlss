@@ -1,4 +1,4 @@
-export interface MediaItem {
+export interface MediaInputItem {
   height: number
   id: string
   url: string

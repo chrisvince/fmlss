@@ -3,24 +3,39 @@ import 'firebase/storage'
 import { useState } from 'react'
 import { v4 as uuidV4 } from 'uuid'
 import getImageDimensionsFromUrl from '../../getImageDimensionsFromUrl'
-import { MediaItem } from '../../../types/MediaItem'
+import { MediaInputItem } from '../../../types/MediaInputItem'
+import constants from '../../../constants'
+
+const { POST_ASSETS_BUCKET, POST_ASSETS_MAX_FILE_SIZE_MB } = constants
+
+const storage = firebase.storage()
 
 interface Options {
-  onFileUploaded?: (mediaItem: MediaItem) => void
+  onFileUploaded?: (mediaItem: MediaInputItem) => void
 }
 
 const useFileUpload = ({ onFileUploaded }: Options = {}) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false)
-  const [isError, setIsError] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
+  const isError = !!error
 
-  const upload = (file: File) => {
-    const mediaId = uuidV4()
-    const storageRef = firebase.storage().ref()
-    const fileRef = storageRef.child(`post-assets/post/${mediaId}`)
-    const uploadTask = fileRef.put(file)
+  const handleUploadImage = (file: File) => {
+    if (file.size > POST_ASSETS_MAX_FILE_SIZE_MB * 1024 * 1024) {
+      setError(
+        `File size is too large. File must be less than ${POST_ASSETS_MAX_FILE_SIZE_MB}MB.`
+      )
+      return
+    }
+
+    setUploadProgress(0)
     setUploadInProgress(true)
-    setIsError(false)
+    setError(null)
+
+    const mediaId = uuidV4()
+    const storageRef = storage.refFromURL(`gs://${POST_ASSETS_BUCKET}`)
+    const fileRef = storageRef.child(`/${mediaId}.webp`)
+    const uploadTask = fileRef.put(file)
 
     uploadTask.on(
       'state_changed',
@@ -34,7 +49,7 @@ const useFileUpload = ({ onFileUploaded }: Options = {}) => {
       () => {
         setUploadProgress(0)
         setUploadInProgress(false)
-        setIsError(true)
+        setError('An error occurred while uploading the file')
       },
       async () => {
         const downloadURL = await uploadTask.snapshot.ref.getDownloadURL()
@@ -60,7 +75,18 @@ const useFileUpload = ({ onFileUploaded }: Options = {}) => {
     )
   }
 
+  const upload = (file: File) => {
+    if (file.type.startsWith('image/')) {
+      handleUploadImage(file)
+      return
+    }
+
+    setError('File type not supported.')
+    return
+  }
+
   return {
+    error,
     isError,
     upload,
     uploadInProgress,

@@ -34,6 +34,7 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
           },
         }
       : {}),
+    media: postData.media,
     originalPost: {
       id: postData.originalPost.id,
       ref: postData.originalPost.ref.path,

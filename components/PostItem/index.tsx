@@ -21,6 +21,7 @@ import formatDate from '../../utils/formatting/formatDate'
 import { CensorSource } from '../../types/CensorSource'
 import PostAttachmentsCensorWrapper from '../PostAttachmentsCensorWrapper'
 import { useState } from 'react'
+import PostMedia from '../PostMedia'
 
 const { POST_MAX_DEPTH } = constants
 
@@ -202,6 +203,7 @@ const PostItem = ({
           <PostAttachments attachments={post.data.attachments} />
         </PostAttachmentsCensorWrapper>
       )}
+      {post.data.media.length > 0 && <PostMedia media={post.data.media} />}
       {!hideActionBar && (
         <PostActionBar
           like={like}

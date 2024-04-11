@@ -1,11 +1,11 @@
 import { ImageRounded, LinkRounded } from '@mui/icons-material'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { LegacyRef, ReactNode, useRef, useState } from 'react'
 import UrlDialog from '../UrlDialog'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 import useFileUpload from '../../utils/data/media/useFileUpload'
 import CircularProgressWithLabel from '../CircularProgressWithLabel'
-import { MediaItem } from '../../types/MediaItem'
+import { MediaInputItem } from '../../types/MediaInputItem'
 
 const ItemButton = ({
   children,
@@ -33,7 +33,7 @@ interface Props {
   disableMediaButton: boolean
   disableUrlButton: boolean
   onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
-  onFileUploaded: (mediaItem: MediaItem) => void
+  onFileUploaded: (mediaItem: MediaInputItem) => void
 }
 
 const PostBodyActionBar = ({
@@ -44,9 +44,8 @@ const PostBodyActionBar = ({
 }: Props) => {
   const fileUploadRef = useRef<HTMLInputElement>()
   const [urlDialogOpen, setUrlDialogOpen] = useState(false)
-  const { uploadProgress, upload, uploadInProgress } = useFileUpload({
-    onFileUploaded,
-  })
+  const { error, isError, upload, uploadInProgress, uploadProgress } =
+    useFileUpload({ onFileUploaded })
 
   const handleConfirm = (postAttachmentInput: PostAttachmentInput) => {
     onUrlAdd(postAttachmentInput)
@@ -106,6 +105,11 @@ const PostBodyActionBar = ({
           />
         )}
       </Box>
+      {isError && (
+        <Typography color="error.main" variant="caption">
+          {error}
+        </Typography>
+      )}
       <UrlDialog
         open={urlDialogOpen}
         onClose={() => setUrlDialogOpen(false)}

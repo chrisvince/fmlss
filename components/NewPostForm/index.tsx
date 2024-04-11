@@ -115,6 +115,7 @@ const NewPostForm = ({
         mapPostAttachmentInputToCreatePostAttachment
       ),
       body: getRawEditorState(),
+      media,
       options: {
         offensiveContent: offensiveContentChecked,
         adultContent: adultContentChecked,

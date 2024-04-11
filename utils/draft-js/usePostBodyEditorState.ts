@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce'
 import { pipe } from 'ramda'
 import { extractLinks as extractLinkifyItLinksFromText } from '@draft-js-plugins/linkify'
 import mapLinkifyItMatchToPostAttachment from '../mapLinkifyItMatchToPostAttachment'
-import { MediaItem } from '../../types/MediaItem'
+import { MediaInputItem } from '../../types/MediaInputItem'
 
 const { MEDIA_ITEMS_MAX_COUNT, POST_ATTACHMENTS_MAX_COUNT, POST_MAX_LENGTH } =
   constants
@@ -92,7 +92,7 @@ const postAttachmentRemover =
 
 const usePostBodyEditorState = () => {
   const [editorState, setEditorState] = useState(createEmptyEditorState)
-  const [media, setMedia] = useState<MediaItem[]>([])
+  const [media, setMedia] = useState<MediaInputItem[]>([])
 
   const [bodyPostAttachments, setBodyPostAttachments] = useState<
     PostAttachmentInput[]
@@ -105,7 +105,7 @@ const usePostBodyEditorState = () => {
   const getRaw = (): string =>
     JSON.stringify(convertToRaw(editorState.getCurrentContent()))
 
-  const handleAddMedia = (mediaItem: MediaItem) => {
+  const handleAddMedia = (mediaItem: MediaInputItem) => {
     if (media.length >= MEDIA_ITEMS_MAX_COUNT) {
       return
     }

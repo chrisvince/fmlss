@@ -1,53 +1,39 @@
-import { Box } from '@mui/material'
-import CloseButtonWrapper from '../CloseButtonWrapper'
 import PostAttachmentBorder from '../PostAttachmentBorder'
-import Image from 'next/image'
-import { MediaItem } from '../../types/MediaItem'
+import MediaGrid from '../MediaGrid'
+import { Media } from '../../types/Media'
+
+const resolveSrcSet = (srcs: Media['srcs']) =>
+  srcs.map(({ url, width }) => `${url} ${width}w`).join(', ')
 
 interface Props {
-  media: MediaItem[]
-  onClose: (id: string) => void
+  media: Media[]
 }
 
-const PostMedia = ({ media, onClose }: Props) => {
-  const closeHandler = (id: string) => () => onClose(id)
-  const gridLayout = media.length >= 2
+const PostMedia = ({ media }: Props) => {
+  const renderAsGrid = media.length >= 2
 
   return (
-    <Box
-      sx={
-        gridLayout
-          ? {
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: 2,
-            }
-          : undefined
-      }
-    >
-      {media.map(({ id, url, height, width }) => (
-        <CloseButtonWrapper key={id} onClose={closeHandler(id)}>
-          <PostAttachmentBorder>
-            <Image
+    <MediaGrid gridLayout={renderAsGrid}>
+      {media.map(mediaItem => (
+        <PostAttachmentBorder key={mediaItem.id}>
+          <picture>
+            <source srcSet={resolveSrcSet(mediaItem.srcs)} type="image/webp" />
+            <img
               alt=""
-              height={height}
-              src={url}
-              style={{
-                maxWidth: '100%',
-                height: '100%',
-                display: 'block',
-                ...(gridLayout
-                  ? {
-                      objectFit: 'contain',
-                    }
-                  : {}),
-              }}
-              width={width}
+              height={mediaItem.height}
+              sizes={
+                renderAsGrid
+                  ? '(max-width: 550px) 46vw, (max-width: 599px) 249px, (max-width: 825px) 33vw, (max-width: 899px) 265px, (max-width: 1290px) 20vw, 265px'
+                  : '(max-width: 550px) 92vw, (max-width: 599px) 516px, (max-width: 825px) 66vw, (max-width: 899px) 548px, (max-width: 1290px) 33vw, 548px'
+              }
+              src={mediaItem.src}
+              style={{ maxWidth: '100%', height: '100%', display: 'block' }}
+              width={mediaItem.width}
             />
-          </PostAttachmentBorder>
-        </CloseButtonWrapper>
+          </picture>
+        </PostAttachmentBorder>
       ))}
-    </Box>
+    </MediaGrid>
   )
 }
 

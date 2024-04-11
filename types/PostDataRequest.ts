@@ -2,6 +2,7 @@ import { firestore } from 'firebase-admin'
 import { FirebaseDoc, TopicRelation, PostAttachmentDb } from '.'
 import { MajorityReaction } from './Reaction'
 import { DocumentData, DocumentReference } from '@google-cloud/firestore'
+import { Media } from './Media'
 
 export interface PostDataRequest {
   attachments: PostAttachmentDb[]
@@ -20,6 +21,7 @@ export interface PostDataRequest {
   id: string
   likesCount: number
   majorityReaction?: MajorityReaction
+  media: Media[]
   originalPost: FirebaseDoc & {
     slug: string
   }

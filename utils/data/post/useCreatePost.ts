@@ -3,10 +3,12 @@ import { useState } from 'react'
 import { createPost } from '../../callableFirebaseFunctions'
 import usePost from './usePost'
 import { CreatePostAttachment } from '../../../types'
+import { MediaInputItem } from '../../../firebase/functions/src/types/MediaInputItem'
 
 interface HandleCreatePostProps {
   attachments: CreatePostAttachment[]
   body: string
+  media: MediaInputItem[]
   options: {
     offensiveContent: boolean
     adultContent: boolean
@@ -21,8 +23,9 @@ const useCreatePost = (parentSlug?: string) => {
   const { post } = usePost(parentSlug)
 
   const handleCreatePost = async ({
-    attachments,
+    attachments = [],
     body,
+    media = [],
     options,
     subtopics = [],
   }: HandleCreatePostProps) => {
@@ -37,6 +40,7 @@ const useCreatePost = (parentSlug?: string) => {
       const { data } = await createPost({
         attachments,
         body,
+        media,
         options,
         parentRef: post?.data.reference,
         subtopics,

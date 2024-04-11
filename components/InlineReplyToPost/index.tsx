@@ -48,6 +48,7 @@ const InlineReplyToPost = ({ slug }: Props) => {
         mapPostAttachmentInputToCreatePostAttachment
       ),
       body: getRawEditorState(),
+      media,
       options: {
         adultContent: adultContentChecked,
         offensiveContent: offensiveContentChecked,

@@ -1,4 +1,5 @@
 import { PostAttachment, TopicRelation } from '.'
+import { Media } from './Media'
 import { MajorityReaction } from './Reaction'
 
 export interface PostData {
@@ -18,6 +19,7 @@ export interface PostData {
   id: string
   likesCount: number
   majorityReaction?: MajorityReaction
+  media: Media[]
   originalPost?: {
     id: string
     ref: string
