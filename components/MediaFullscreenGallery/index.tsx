@@ -181,6 +181,7 @@ const MediaFullscreenGallery = ({
             display: 'block',
             height: '100%',
             pointerEvents: 'auto',
+            touchAction: 'none',
             width: '80px',
             '& .MuiSvgIcon-root': {
               color: theme =>
@@ -196,6 +197,7 @@ const MediaFullscreenGallery = ({
             display: 'block',
             height: '100%',
             pointerEvents: 'auto',
+            touchAction: 'none',
             width: '80px',
             '& .MuiSvgIcon-root': {
               color: theme =>
@@ -217,6 +219,7 @@ const MediaFullscreenGallery = ({
           position: 'absolute',
           right: 10,
           top: 10,
+          touchAction: 'none',
         }}
       >
         <CloseRounded />
