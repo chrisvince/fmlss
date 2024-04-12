@@ -6,7 +6,32 @@ import {
 import { Box, ButtonBase, Dialog } from '@mui/material'
 import { Media } from '../../types/Media'
 import resolveSrcSetFromMediaSrcs from '../../utils/resolveSrcSetFromMediaSrcs'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
+
+const NavButton = ({
+  onClick,
+  children,
+}: {
+  onClick: () => void
+  children: ReactNode
+}) => (
+  <ButtonBase
+    onClick={onClick}
+    sx={{
+      display: 'block',
+      height: '100%',
+      pointerEvents: 'auto',
+      touchAction: 'none',
+      width: '80px',
+      '& .MuiSvgIcon-root': {
+        color: theme =>
+          theme.palette.getContrastText(theme.palette.action.active),
+      },
+    }}
+  >
+    {children}
+  </ButtonBase>
+)
 
 interface Props {
   currentIndex: number | undefined
@@ -137,9 +162,6 @@ const MediaFullscreenGallery = ({
               height: '100%',
               width: '100%',
               scrollSnapAlign: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
             }}
           >
             <picture style={{ display: 'contents' }}>
@@ -155,7 +177,8 @@ const MediaFullscreenGallery = ({
                 style={{
                   display: 'block',
                   height: '100%',
-                  maxWidth: '100%',
+                  objectFit: 'contain',
+                  width: '100%',
                 }}
                 width={mediaItem.width}
               />
@@ -163,51 +186,27 @@ const MediaFullscreenGallery = ({
           </Box>
         ))}
       </Box>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          height: '100%',
-          width: '100%',
-          pointerEvents: 'none',
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <ButtonBase
-          onClick={onPrevious}
+      {media.length > 1 && (
+        <Box
           sx={{
-            display: 'block',
+            display: 'flex',
             height: '100%',
-            pointerEvents: 'auto',
-            touchAction: 'none',
-            width: '80px',
-            '& .MuiSvgIcon-root': {
-              color: theme =>
-                theme.palette.getContrastText(theme.palette.action.active),
-            },
+            justifyContent: 'space-between',
+            left: 0,
+            pointerEvents: 'none',
+            position: 'absolute',
+            top: 0,
+            width: '100%',
           }}
         >
-          <ArrowBackRounded />
-        </ButtonBase>
-        <ButtonBase
-          onClick={onNext}
-          sx={{
-            display: 'block',
-            height: '100%',
-            pointerEvents: 'auto',
-            touchAction: 'none',
-            width: '80px',
-            '& .MuiSvgIcon-root': {
-              color: theme =>
-                theme.palette.getContrastText(theme.palette.action.active),
-            },
-          }}
-        >
-          <ArrowForwardRounded />
-        </ButtonBase>
-      </Box>
+          <NavButton onClick={onPrevious}>
+            <ArrowBackRounded />
+          </NavButton>
+          <NavButton onClick={onNext}>
+            <ArrowForwardRounded />
+          </NavButton>
+        </Box>
+      )}
       <ButtonBase
         onClick={onClose}
         sx={{
