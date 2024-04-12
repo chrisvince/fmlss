@@ -97,6 +97,7 @@ const NewPostForm = ({
   const isMobileDevice = useMediaQuery(theme.breakpoints.down('sm'))
 
   const submitPost = async () => {
+    setShowConfirmNoTopicDialog(false)
     allowNavigation.current = true
 
     if (
