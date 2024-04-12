@@ -21,7 +21,6 @@ const NavButton = ({
       display: 'block',
       height: '100%',
       pointerEvents: 'auto',
-      touchAction: 'none',
       width: '80px',
       '& .MuiSvgIcon-root': {
         color: theme =>
@@ -197,6 +196,9 @@ const MediaFullscreenGallery = ({
             position: 'absolute',
             top: 0,
             width: '100%',
+            '@media (hover: none)': {
+              display: 'none',
+            },
           }}
         >
           <NavButton onClick={onPrevious}>
