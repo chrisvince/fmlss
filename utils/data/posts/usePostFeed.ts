@@ -26,7 +26,7 @@ const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
-  revalidateOnFocus: false,
+  revalidateOnFocus: true,
   revalidateFirstPage: false,
   revalidateAll: true,
 }
@@ -187,6 +187,8 @@ const usePostFeed: UsePostFeed = ({
     },
     [mutate, uid]
   )
+
+  console.error('error!!!', error)
 
   return {
     error,
