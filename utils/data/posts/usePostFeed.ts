@@ -188,8 +188,6 @@ const usePostFeed: UsePostFeed = ({
     [mutate, uid]
   )
 
-  console.error('error!!!', error)
-
   return {
     error,
     isLoading,
