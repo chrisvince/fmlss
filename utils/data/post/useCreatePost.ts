@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { createPost } from '../../callableFirebaseFunctions'
 import usePost from './usePost'
 import { CreatePostAttachment } from '../../../types'
@@ -21,6 +21,7 @@ const useCreatePost = (parentSlug?: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { post } = usePost(parentSlug)
+  const createPostInProgressRef = useRef<boolean>(false)
 
   const handleCreatePost = async ({
     attachments = [],
@@ -29,8 +30,12 @@ const useCreatePost = (parentSlug?: string) => {
     options,
     subtopics = [],
   }: HandleCreatePostProps) => {
+    if (createPostInProgressRef.current) return
+    createPostInProgressRef.current = true
+
     if (!body) {
       setErrorMessage('Post is required!')
+      createPostInProgressRef.current = false
       return
     }
 
@@ -52,6 +57,8 @@ const useCreatePost = (parentSlug?: string) => {
       setErrorMessage('There was an error. Please try again later.')
       console.error('error', error)
     }
+
+    createPostInProgressRef.current = false
   }
 
   return {
