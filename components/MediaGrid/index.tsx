@@ -16,7 +16,7 @@ const MediaGrid = ({ children, gridLayout = false }: Props) => (
             gap: 2,
             '& img': {
               aspectRatio: '1 / 1',
-              objectFit: 'contain',
+              objectFit: 'cover',
             },
           }
         : undefined
