@@ -20,14 +20,19 @@ import { useRouter } from 'next/router'
 const NotificationsNavigationItem = () => {
   const notificationsButtonRef = useRef<HTMLButtonElement>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const handleNotificationsClose = () => setNotificationsOpen(false)
+  const { hasUnreadNotifications, clear } = useHasUnreadNotifications()
   const shouldLoadNotificationsRef = useRef(notificationsOpen)
-  const { hasUnreadNotifications } = useHasUnreadNotifications()
   const router = useRouter()
+
+  const handleNotificationsClose = () => {
+    setNotificationsOpen(false)
+    clear()
+  }
 
   useEffect(() => {
     const handleRouteChange = () => {
       setNotificationsOpen(false)
+      clear()
     }
 
     router.events.on('routeChangeStart', handleRouteChange)
@@ -35,7 +40,7 @@ const NotificationsNavigationItem = () => {
     return () => {
       router.events.off('routeChangeStart', handleRouteChange)
     }
-  }, [router])
+  }, [clear, router])
 
   if (notificationsOpen && !shouldLoadNotificationsRef.current) {
     shouldLoadNotificationsRef.current = true
@@ -101,7 +106,9 @@ const NotificationsNavigationItem = () => {
               {notifications.map(notification => (
                 <NotificationsListItem
                   key={notification.data.id}
-                  listHasUnreadNotifications={hasUnreadNotifications}
+                  listHasUnreadNotifications={notifications.some(
+                    notification => !notification.data.readAt
+                  )}
                   notification={notification.data}
                   size={NotificationListItemSize.Small}
                 />
