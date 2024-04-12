@@ -19,12 +19,8 @@ import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
 
-const {
-  AUTHORED_POSTS_COLLECTION,
-  POST_PAGINATION_COUNT,
-  USER_POSTS_CACHE_TIME,
-  USERS_COLLECTION,
-} = constants
+const { AUTHORS_COLLECTION, POST_PAGINATION_COUNT, USER_POSTS_CACHE_TIME } =
+  constants
 
 type GetUserPosts = (
   uid: string,
@@ -57,7 +53,8 @@ const getUserPosts: GetUserPosts = async (
     postDocs = await pipe(
       () =>
         db
-          .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
+          .collectionGroup(AUTHORS_COLLECTION)
+          .where('uid', '==', uid)
           .where('type', '==', type)
           .orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),

@@ -4,11 +4,7 @@ import { get, put } from '../../serverCache'
 import constants from '../../../constants'
 import { createUserIsWatchingCacheKey } from '../../createCacheKeys'
 
-const {
-  USERS_COLLECTION,
-  USER_IS_WATCHING_CACHE_TIME,
-  WATCHED_POSTS_COLLECTION,
-} = constants
+const { USER_IS_WATCHING_CACHE_TIME, WATCHERS_COLLECTION } = constants
 
 const checkUserIsWatching = async (
   slug: string,
@@ -31,7 +27,8 @@ const checkUserIsWatching = async (
     userIsWatching = serverCachedUserIsWatching
   } else {
     const postWatchersSnapshot = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${WATCHED_POSTS_COLLECTION}`)
+      .collectionGroup(WATCHERS_COLLECTION)
+      .where('uid', '==', uid)
       .where('slug', '==', slug)
       .limit(1)
       .get()

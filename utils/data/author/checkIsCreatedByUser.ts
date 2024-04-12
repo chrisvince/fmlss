@@ -5,8 +5,7 @@ import { get, put } from '../../serverCache'
 import { createPostAuthorCacheKey } from '../../createCacheKeys'
 import constants from '../../../constants'
 
-const { AUTHORED_POSTS_COLLECTION, POST_AUTHOR_CACHE_TIME, USERS_COLLECTION } =
-  constants
+const { AUTHORS_COLLECTION, POST_AUTHOR_CACHE_TIME } = constants
 
 const checkIsCreatedByUser = async (
   slug: string,
@@ -26,7 +25,8 @@ const checkIsCreatedByUser = async (
     createdByUser = uid === serverCachedAuthorUid
   } else {
     const authoredPostsRef = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${AUTHORED_POSTS_COLLECTION}`)
+      .collectionGroup(AUTHORS_COLLECTION)
+      .where('uid', '==', uid)
       .where('slug', '==', slug)
       .limit(1)
       .get()

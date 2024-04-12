@@ -5,11 +5,7 @@ import constants from '../../../constants'
 import { createPostReactionCacheKey } from '../../createCacheKeys'
 import { PostReaction, ReactionId } from '../../../types/Reaction'
 
-const {
-  POST_REACTIONS_CACHE_TIME,
-  POST_REACTIONS_COLLECTION,
-  USERS_COLLECTION,
-} = constants
+const { POST_REACTIONS_CACHE_TIME, REACTIONS_COLLECTION } = constants
 
 const getPostReaction = async (
   slug: string,
@@ -29,7 +25,8 @@ const getPostReaction = async (
     postReaction = serverCachedReaction
   } else {
     const postReactionsRef = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${POST_REACTIONS_COLLECTION}`)
+      .collectionGroup(REACTIONS_COLLECTION)
+      .where('uid', '==', uid)
       .where('slug', '==', slug)
       .limit(1)
       .get()

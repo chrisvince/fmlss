@@ -6,7 +6,7 @@ const PASSWORD_MIN_LENGTH = 8
 const constants = {
   ALLOWED_HOSTS: ['localhost:3000', 'fameless.net', 'www.fameless.net'],
   APP_URL: 'https://fameless.net',
-  AUTHORED_POSTS_COLLECTION: 'authoredPosts',
+  AUTHORS_COLLECTION: 'authors',
   AUTOCOMPLETE_LENGTH: 5,
   BRAND_NAME: 'Fameless',
   CELL_CACHE_MEASURER_HASHTAG_ITEM_MIN_HEIGHT: 55.67,
@@ -45,6 +45,7 @@ const constants = {
   INFINITY_LOADING_THRESHOLD: 10,
   LAST_NAME_MAX_LENGTH: 80,
   LEFT_NAVIGATION_PADDING_BOTTOM: 1,
+  LIKES_COLLECTION: 'likes',
   MEDIA_ITEMS_MAX_COUNT: 4,
   NESTED_POST_MARGIN_LEFT: 4,
   NOTIFICATION_PAGINATION_COUNT: 25,
@@ -65,14 +66,13 @@ const constants = {
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever
   POST_CACHE_TIME: secondsToMs(30),
   POST_LIKES_CACHE_TIME: secondsToMs(10),
-  POST_LIKES_COLLECTION: 'postLikes',
   POST_MAX_DEPTH: 50,
   POST_MAX_LENGTH: 320,
   POST_PAGINATION_COUNT: 25,
   POST_REACTIONS_CACHE_TIME: secondsToMs(10),
-  POST_REACTIONS_COLLECTION: 'postReactions',
   POST_REPLIES_SSR: true,
   POSTS_COLLECTION: 'posts',
+  REACTIONS_COLLECTION: 'reactions',
   REPLIES_CACHE_TIME: secondsToMs(10),
   SIDEBAR_GAP_MD: 8,
   SIDEBAR_GAP_SM: 6,
@@ -104,7 +104,7 @@ const constants = {
   USER_POSTS_CACHE_TIME: secondsToMs(10),
   USERS_COLLECTION: 'users',
   VIRTUALIZED_OVERSCAN_ROW_COUNT: 5,
-  WATCHED_POSTS_COLLECTION: 'watchedPosts',
+  WATCHERS_COLLECTION: 'watchers',
   YOUTUBE_ATTACHMENT_CACHE_TIME: hoursToMs(12),
 }
 

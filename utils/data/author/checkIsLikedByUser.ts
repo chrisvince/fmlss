@@ -4,8 +4,7 @@ import { get, put } from '../../serverCache'
 import constants from '../../../constants'
 import { createPostLikeCacheKey } from '../../createCacheKeys'
 
-const { POST_LIKES_COLLECTION, USERS_COLLECTION, POST_LIKES_CACHE_TIME } =
-  constants
+const { LIKES_COLLECTION, POST_LIKES_CACHE_TIME } = constants
 
 const checkIsLikedByUser = async (
   slug: string,
@@ -25,7 +24,8 @@ const checkIsLikedByUser = async (
     likedByUser = serverCachedLike
   } else {
     const postLikesRef = await db
-      .collection(`${USERS_COLLECTION}/${uid}/${POST_LIKES_COLLECTION}`)
+      .collectionGroup(LIKES_COLLECTION)
+      .where('uid', '==', uid)
       .where('slug', '==', slug)
       .limit(1)
       .get()

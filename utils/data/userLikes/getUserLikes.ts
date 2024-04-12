@@ -19,12 +19,8 @@ import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
 
-const {
-  POST_PAGINATION_COUNT,
-  POST_LIKES_COLLECTION,
-  USER_LIKES_CACHE_TIME,
-  USERS_COLLECTION,
-} = constants
+const { LIKES_COLLECTION, POST_PAGINATION_COUNT, USER_LIKES_CACHE_TIME } =
+  constants
 
 type GetUserLikes = (
   uid: string,
@@ -56,7 +52,8 @@ const getUserLikes: GetUserLikes = async (
     postDocs = await pipe(
       () =>
         db
-          .collection(`${USERS_COLLECTION}/${uid}/${POST_LIKES_COLLECTION}`)
+          .collectionGroup(LIKES_COLLECTION)
+          .where('uid', '==', uid)
           .orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(POST_PAGINATION_COUNT).get()
