@@ -132,6 +132,9 @@ const MediaFullscreenGallery = ({
       fullScreen
       open={open}
       sx={{
+        '& .MuiBackdrop-root': {
+          backgroundColor: 'rgba(0, 0, 0, 0.92)',
+        },
         '& .MuiDialog-paper': {
           backgroundColor: 'transparent',
         },
