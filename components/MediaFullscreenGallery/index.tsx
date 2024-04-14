@@ -23,8 +23,7 @@ const NavButton = ({
       pointerEvents: 'auto',
       width: '80px',
       '& .MuiSvgIcon-root': {
-        color: theme =>
-          theme.palette.getContrastText(theme.palette.action.active),
+        color: 'common.white',
       },
     }}
   >
@@ -137,6 +136,7 @@ const MediaFullscreenGallery = ({
         },
         '& .MuiDialog-paper': {
           backgroundColor: 'transparent',
+          backgroundImage: 'unset',
         },
       }}
       onClose={onClose}
@@ -216,8 +216,7 @@ const MediaFullscreenGallery = ({
         onClick={onClose}
         sx={{
           borderRadius: '50%',
-          color: theme =>
-            theme.palette.getContrastText(theme.palette.action.active),
+          color: 'common.white',
           fontSize: '2rem',
           padding: 0.8,
           position: 'absolute',
