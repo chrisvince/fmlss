@@ -148,7 +148,7 @@ const NotificationsListItem = ({
     >
       <MuiLink
         component={Link}
-        href={`/post/${notification.targetPost.slug}`}
+        href={`/post/${notification.post.slug}`}
         sx={{ display: 'contents' }}
       >
         {(listHasUnreadNotifications || !notification.readAt) && (
@@ -193,7 +193,7 @@ const NotificationsListItem = ({
             </Box>
             :{' '}
             <Box component="span" sx={{ fontWeight: 400 }}>
-              {notification.targetPostBody}
+              {notification.postBody}
             </Box>
           </Typography>
           <Typography

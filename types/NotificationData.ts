@@ -6,10 +6,10 @@ interface NotificationDataBase {
   createdAt: number
   eventCount: number
   id: string
+  post: PostRelation
+  postBody: string
   readAt: number | null
   rootPost: PostRelation
-  targetPost: PostRelation
-  targetPostBody: string
   type: NotificationType
   uid: string
   updatedAt: number

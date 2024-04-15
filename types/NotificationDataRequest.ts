@@ -11,10 +11,10 @@ export enum NotificationType {
 interface NotificationDataRequestBase {
   createdAt: firestore.Timestamp
   eventCount: number
+  post: PostRelationRequest
+  postBody: string
   readAt: firestore.Timestamp
   rootPost: PostRelationRequest
-  targetPost: PostRelationRequest
-  targetPostBody: string
   type: NotificationType
   uid: string
   updatedAt: firestore.Timestamp
