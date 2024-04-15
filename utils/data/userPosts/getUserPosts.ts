@@ -10,7 +10,10 @@ import {
   PostData,
   PostDocWithAttachments,
 } from '../../../types'
-import { createUserPostsCacheKey } from '../../createCacheKeys'
+import {
+  createUserPostsCacheKey,
+  createUserRepliesCacheKey,
+} from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import setCacheIsCreatedByUser from '../author/setCacheIsCreatedByUser'
@@ -37,20 +40,25 @@ const getUserPosts: GetUserPosts = async (
 ) => {
   const db = dbProp || firebase.firestore()
 
-  let postDocs:
+  let authorDocs:
     | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
     | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
     | null
   let postData: PostData[] = []
 
-  const userPostsCacheKey = createUserPostsCacheKey(uid)
+  const createCacheKey = {
+    post: createUserPostsCacheKey,
+    reply: createUserRepliesCacheKey,
+  }[type]
+
+  const userPostsCacheKey = createCacheKey(uid)
   const serverCachedData = get(userPostsCacheKey)
 
   if (serverCachedData) {
     postData = serverCachedData
-    postDocs = null
+    authorDocs = null
   } else {
-    postDocs = await pipe(
+    authorDocs = await pipe(
       () =>
         db
           .collectionGroup(AUTHORS_COLLECTION)
@@ -61,16 +69,15 @@ const getUserPosts: GetUserPosts = async (
       query => query.limit(POST_PAGINATION_COUNT).get()
     )()
 
-    if (postDocs.empty) return []
+    if (authorDocs.empty) return []
 
-    const originPostDocsPromise = postDocs.docs.map(doc =>
-      doc.data().origin.ref.get()
+    const postDocsPromise = authorDocs.docs.map(doc =>
+      doc.data().post.ref.get()
     )
-
-    const originPostDocs = await Promise.all(originPostDocsPromise)
+    const postDocs = await Promise.all(postDocsPromise)
 
     const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
-      originPostDocs.map(getPostDocWithAttachmentsFromPostDoc)
+      postDocs.map(getPostDocWithAttachmentsFromPostDoc)
     )
 
     postData = postDocsWithAttachments.map(mapPostDocToData)
@@ -78,7 +85,7 @@ const getUserPosts: GetUserPosts = async (
   }
 
   const postsPromise = postData.map(async (postDataItem, index) => {
-    const postDoc = postDocs?.docs[index] ?? null
+    const postDoc = authorDocs?.docs[index] ?? null
 
     setCacheIsCreatedByUser(postDataItem.slug, uid)
 
