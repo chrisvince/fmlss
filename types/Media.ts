@@ -1,4 +1,8 @@
-export interface Media {
+enum MediaType {
+  Image = 'image',
+}
+
+interface MediaImage {
   height: number
   id: string
   src: string
@@ -6,5 +10,8 @@ export interface Media {
     url: string
     width: number
   }[]
+  type: MediaType.Image
   width: number
 }
+
+export type Media = MediaImage
