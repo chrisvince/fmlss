@@ -6,6 +6,7 @@ export interface UserDataInput {
   ['settings.content.hideOffensiveContent']?: boolean
   ['settings.dialogs.dontShowConfirmNoTopicAgain']?: boolean
   ['settings.notifications.email.likes']?: boolean
+  ['settings.notifications.email.reactions']?: boolean
   ['settings.notifications.email.replies']?: boolean
   shownFirstPostMessage?: boolean
 }

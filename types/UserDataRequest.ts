@@ -18,6 +18,7 @@ export interface UserDataRequest {
     notifications: {
       email: {
         likes: boolean
+        reactions: boolean
         replies: boolean
       }
     }

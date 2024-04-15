@@ -30,6 +30,9 @@ const SettingsPage = () => {
   const emailNotificationsLikes =
     user?.data.settings.notifications.email.likes ?? false
 
+  const emailNotificationsReactions =
+    user?.data.settings.notifications.email.reactions ?? false
+
   const emailNotificationsReplies =
     user?.data.settings.notifications.email.replies
 
@@ -38,6 +41,12 @@ const SettingsPage = () => {
 
   const handleEmailNotificationsLikesClick = () => {
     update({ ['settings.notifications.email.likes']: !emailNotificationsLikes })
+  }
+
+  const handleEmailNotificationsReactionsClick = () => {
+    update({
+      ['settings.notifications.email.reactions']: !emailNotificationsReactions,
+    })
   }
 
   const handleEmailNotificationsRepliesClick = () => {
@@ -74,6 +83,12 @@ const SettingsPage = () => {
             onClick={handleEmailNotificationsLikesClick}
           >
             Likes
+          </SettingsToggleListItem>
+          <SettingsToggleListItem
+            checked={emailNotificationsReactions}
+            onClick={handleEmailNotificationsReactionsClick}
+          >
+            Reactions
           </SettingsToggleListItem>
           <SettingsToggleListItem
             checked={emailNotificationsReplies}

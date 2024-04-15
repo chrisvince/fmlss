@@ -16,6 +16,7 @@ export interface UserData {
     notifications: {
       email: {
         likes: boolean
+        reactions: boolean
         replies: boolean
       }
     }
