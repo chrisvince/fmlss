@@ -129,7 +129,6 @@ const PostBodyTextArea = ({
           ...resultMentions,
         ]
 
-        setMentionSuggestionsOpen(true)
         setMentionSuggestions(mentions)
       }, 500),
     []
