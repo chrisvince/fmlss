@@ -25,7 +25,7 @@ export interface PostDataRequest {
   rootPost: FirebaseDoc & {
     slug: string
   }
-  parent?: FirebaseDoc & {
+  parentPost?: FirebaseDoc & {
     slug: string
   }
   postsCount: number

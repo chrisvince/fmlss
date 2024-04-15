@@ -25,7 +25,7 @@ export interface PostData {
     ref: string
     slug: string
   }
-  parent?: {
+  parentPost?: {
     id: string
     ref: string
     slug: string

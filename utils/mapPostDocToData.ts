@@ -40,12 +40,12 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
       ref: postData.rootPost.ref.path,
       slug: postData.rootPost.slug,
     },
-    ...(postData.parent
+    ...(postData.parentPost
       ? {
-          parent: {
-            id: postData.parent.id,
-            ref: postData.parent.ref.path,
-            slug: postData.parent.slug,
+          parentPost: {
+            id: postData.parentPost.id,
+            ref: postData.parentPost.ref.path,
+            slug: postData.parentPost.slug,
           },
         }
       : {}),
