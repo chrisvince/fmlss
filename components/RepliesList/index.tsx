@@ -1,6 +1,6 @@
 import usePostReplies from '../../utils/data/postReplies/usePostReplies'
 import ScrollLink from '../ScrollLink'
-import InlineReplyToPost from '../InlineReplyToPost'
+import InlineCreatePost from '../InlineCreatePost'
 import ContentSpinner from '../ContentSpinner'
 import { Box, useTheme } from '@mui/system'
 import { useRef } from 'react'
@@ -11,6 +11,7 @@ import MapLineSegment from '../MapLineSegment'
 import PostListItem from '../PostListItem'
 import RepliesListSubReplies from '../RepliesListSubReplies'
 import { Post } from '../../types'
+import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, NESTED_POST_MARGIN_LEFT } =
   constants
@@ -46,7 +47,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
         <ContentSpinner />
       ) : (
         <>
-          <InlineReplyToPost slug={slug} />
+          <InlineCreatePost slug={slug} postType={PostType.Reply} />
           <Box sx={{ borderTop: '1px solid', borderTopColor: 'divider' }}>
             <ContentList
               cellMeasurerCache={cellMeasurerCache.current}

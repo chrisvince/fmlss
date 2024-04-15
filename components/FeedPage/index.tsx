@@ -5,10 +5,10 @@ import { FeedSortMode } from '../../types'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
-import FakeInlineCreatePost from '../FakeInlineCreatePost'
 import Error from 'next/error'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
+import InlineCreatePost from '../InlineCreatePost'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
 
@@ -59,7 +59,7 @@ const FeedPage = ({ sortMode }: Props) => {
         </>
       }
     >
-      <FakeInlineCreatePost />
+      <InlineCreatePost showBottomBorderOnFocus />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}
