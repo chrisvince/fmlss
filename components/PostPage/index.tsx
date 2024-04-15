@@ -119,7 +119,7 @@ const PostPage = ({ slug }: PropTypes) => {
               <PostPageParentPostsReference
                 documentDepth={post.data.documentDepth}
                 onLoad={handleParentPostLoad}
-                originalPostSlug={post.data.originalPost?.slug}
+                rootPostSlug={post.data.rootPost?.slug}
                 slug={post.data.parent.slug}
               />
             )}

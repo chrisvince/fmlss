@@ -20,7 +20,7 @@ export interface PostData {
   likesCount: number
   majorityReaction?: MajorityReaction
   media: Media[]
-  originalPost?: {
+  rootPost?: {
     id: string
     ref: string
     slug: string

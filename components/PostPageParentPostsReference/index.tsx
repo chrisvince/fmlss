@@ -14,14 +14,14 @@ const { NESTED_POST_MARGIN_LEFT, TOP_NAVIGATION_MARGIN_BOTTOM_SM } = constants
 interface Props {
   documentDepth: number
   onLoad?: () => void
-  originalPostSlug?: string
+  rootPostSlug?: string
   slug: string
 }
 
 const PostPageParentPostsReference = ({
   documentDepth,
   onLoad,
-  originalPostSlug,
+  rootPostSlug,
   slug,
 }: Props) => {
   const innerRef = useRef<HTMLDivElement>(null)
@@ -36,8 +36,8 @@ const PostPageParentPostsReference = ({
     watchPost: watchParentPost,
   } = usePost(slug)
 
-  const { isLoading: originalPostIsLoading, post: originalPost } = usePost(
-    documentDepth >= 2 ? originalPostSlug : undefined
+  const { isLoading: rootPostIsLoading, post: rootPost } = usePost(
+    documentDepth >= 2 ? rootPostSlug : undefined
   )
 
   const theme = useTheme()
@@ -52,7 +52,7 @@ const PostPageParentPostsReference = ({
     if (
       hasDisplayedPost.current ||
       parentPostIsLoading ||
-      originalPostIsLoading ||
+      rootPostIsLoading ||
       !innerRef.current
     ) {
       return
@@ -61,7 +61,7 @@ const PostPageParentPostsReference = ({
     hasDisplayedPost.current = true
     const { height: innerHeight } = innerRef.current.getBoundingClientRect()
     setHeight(Math.ceil(innerHeight))
-  }, [originalPostIsLoading, parentPostIsLoading])
+  }, [rootPostIsLoading, parentPostIsLoading])
 
   useLayoutEffect(() => {
     if (hasAddedOffsetScroll.current || height === 0 || height === undefined) {
@@ -107,7 +107,7 @@ const PostPageParentPostsReference = ({
       }}
     >
       <Box ref={innerRef}>
-        {originalPost && (
+        {rootPost && (
           <>
             <Box
               sx={{
@@ -123,7 +123,7 @@ const PostPageParentPostsReference = ({
               <Box sx={{ p: 2 }}>
                 <MuiLink
                   component={Link}
-                  href={`/post/${originalPost.data.slug}`}
+                  href={`/post/${rootPost.data.slug}`}
                   sx={{
                     color: 'text.secondary',
                     display: 'block',
@@ -134,7 +134,7 @@ const PostPageParentPostsReference = ({
                   }}
                   variant="caption"
                 >
-                  {originalPost.data.bodyText}
+                  {rootPost.data.bodyText}
                 </MuiLink>
               </Box>
             </Box>
@@ -186,7 +186,7 @@ const PostPageParentPostsReference = ({
         >
           <Box sx={{ gridArea: 'line' }}>
             <MapLineSegment
-              lineType={originalPost ? 'middle' : 'start'}
+              lineType={rootPost ? 'middle' : 'start'}
               dotPosition="top"
             />
           </Box>

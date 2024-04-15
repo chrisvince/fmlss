@@ -22,7 +22,7 @@ export interface PostDataRequest {
   likesCount: number
   majorityReaction?: MajorityReaction
   media: Media[]
-  originalPost: FirebaseDoc & {
+  rootPost: FirebaseDoc & {
     slug: string
   }
   parent?: FirebaseDoc & {
