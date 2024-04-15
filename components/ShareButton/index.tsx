@@ -2,6 +2,7 @@ import {
   Facebook,
   LinkRounded,
   LogoutRounded,
+  Reddit,
   Twitter,
 } from '@mui/icons-material'
 import {
@@ -18,6 +19,7 @@ import generateFacebookPostLink from '../../utils/generateFacebookPostLink'
 import generateTweetPostLink from '../../utils/generateTweetPostLink'
 import ActionButton from '../ActionButton'
 import { postShared } from '../../utils/callableFirebaseFunctions/postShared'
+import generateRedditPostLink from '../../utils/generateRedditPostLink'
 
 interface Props {
   slug: string
@@ -145,6 +147,22 @@ const ShareButton = ({ slug }: Props) => {
                 <Facebook />
               </ListItemIcon>
               <ListItemText primary="Facebook" />
+            </ListItem>
+          </Link>
+        </MenuItem>
+        <MenuItem disableGutters>
+          <Link
+            href={generateRedditPostLink(slug)}
+            onClick={handleShareLinkClick}
+            rel="noopener noreferrer"
+            target="_blank"
+            underline="none"
+          >
+            <ListItem>
+              <ListItemIcon>
+                <Reddit />
+              </ListItemIcon>
+              <ListItemText primary="Reddit" />
             </ListItem>
           </Link>
         </MenuItem>
