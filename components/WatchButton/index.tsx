@@ -45,7 +45,10 @@ const WatchButton = ({ onClick: handleClick, watching = false }: PropTypes) => {
   }
 
   return (
-    <Tooltip placement="left" title="Get activity notifications">
+    <Tooltip
+      placement="left"
+      title="Get notified when people respond to this post"
+    >
       <ButtonBase
         aria-label={`Activity notifications. ${
           watching ? 'Enabled' : 'Disabled'
