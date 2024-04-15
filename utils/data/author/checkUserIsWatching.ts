@@ -29,7 +29,7 @@ const checkUserIsWatching = async (
     const postWatchersSnapshot = await db
       .collectionGroup(WATCHERS_COLLECTION)
       .where('uid', '==', uid)
-      .where('slug', '==', slug)
+      .where('post.slug', '==', slug)
       .limit(1)
       .get()
 

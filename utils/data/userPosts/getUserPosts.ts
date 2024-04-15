@@ -55,7 +55,7 @@ const getUserPosts: GetUserPosts = async (
         db
           .collectionGroup(AUTHORS_COLLECTION)
           .where('uid', '==', uid)
-          .where('type', '==', type)
+          .where('post.type', '==', type)
           .orderBy('createdAt', 'desc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
       query => query.limit(POST_PAGINATION_COUNT).get()

@@ -27,7 +27,7 @@ const getPostReaction = async (
     const postReactionsRef = await db
       .collectionGroup(REACTIONS_COLLECTION)
       .where('uid', '==', uid)
-      .where('slug', '==', slug)
+      .where('post.slug', '==', slug)
       .limit(1)
       .get()
 

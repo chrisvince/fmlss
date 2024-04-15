@@ -27,7 +27,7 @@ const checkIsCreatedByUser = async (
     const authoredPostsRef = await db
       .collectionGroup(AUTHORS_COLLECTION)
       .where('uid', '==', uid)
-      .where('slug', '==', slug)
+      .where('post.slug', '==', slug)
       .limit(1)
       .get()
 

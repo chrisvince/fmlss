@@ -26,7 +26,7 @@ const checkIsLikedByUser = async (
     const postLikesRef = await db
       .collectionGroup(LIKES_COLLECTION)
       .where('uid', '==', uid)
-      .where('slug', '==', slug)
+      .where('post.slug', '==', slug)
       .limit(1)
       .get()
 
