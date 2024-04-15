@@ -119,11 +119,7 @@ const Page = ({
             <>
               {aboveTitleContent}
               {renderPageTitle && <PageTitle>{pageTitle}</PageTitle>}
-              {!renderPageTitle ? (
-                <Box sx={{ mt: [1, 0] }}>{children}</Box>
-              ) : (
-                children
-              )}
+              {children}
             </>
           }
           rightPanelChildren={<RightSideBar>{rightPanelChildren}</RightSideBar>}
