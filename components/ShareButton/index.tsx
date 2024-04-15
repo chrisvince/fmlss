@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from 'react'
 import generateFacebookPostLink from '../../utils/generateFacebookPostLink'
 import generateTweetPostLink from '../../utils/generateTweetPostLink'
 import ActionButton from '../ActionButton'
+import { postShared } from '../../utils/callableFirebaseFunctions/postShared'
 
 interface Props {
   slug: string
@@ -35,6 +36,7 @@ const ShareButton = ({ slug }: Props) => {
   const handleCopyUrlButton = () => {
     navigator.clipboard.writeText(url)
     setShowCopiedText(true)
+    postShared({ slug })
   }
 
   useEffect(() => {
@@ -66,15 +68,23 @@ const ShareButton = ({ slug }: Props) => {
 
   const handleShareClick = async () => {
     setMenuOpen(false)
+
     try {
       await global.navigator.share({
         title: 'Fameless - Post',
         text: 'Check out this post on Fameless!',
         url,
       })
+
+      postShared({ slug })
     } catch (error) {
       // no handle
     }
+  }
+
+  const handleShareLinkClick = () => {
+    setMenuOpen(false)
+    postShared({ slug })
   }
 
   return (
@@ -109,8 +119,9 @@ const ShareButton = ({ slug }: Props) => {
         <MenuItem disableGutters>
           <Link
             href={generateTweetPostLink(slug)}
-            target="_blank"
+            onClick={handleShareLinkClick}
             rel="noopener noreferrer"
+            target="_blank"
             underline="none"
           >
             <ListItem>
@@ -124,8 +135,9 @@ const ShareButton = ({ slug }: Props) => {
         <MenuItem disableGutters>
           <Link
             href={generateFacebookPostLink(slug)}
-            target="_blank"
+            onClick={handleShareLinkClick}
             rel="noopener noreferrer"
+            target="_blank"
             underline="none"
           >
             <ListItem>
