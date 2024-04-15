@@ -15,9 +15,9 @@ const PostContentOptions = ({
 }: Props) => (
   <FormGroup
     sx={{
+      columnGap: 2,
       display: 'flex',
       flexDirection: 'row',
-      gap: 2,
     }}
   >
     <FormControlLabel

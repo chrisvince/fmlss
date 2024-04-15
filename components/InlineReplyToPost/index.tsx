@@ -154,7 +154,14 @@ const InlineReplyToPost = ({ slug }: Props) => {
         </Box>
       </Box>
       {editorHasFocused && (
-        <Box sx={{ pb: 1, display: 'flex', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            justifyContent: 'space-between',
+            pb: 1,
+          }}
+        >
           <PostContentOptions
             adultContentChecked={adultContentChecked}
             offensiveContentChecked={offensiveContentChecked}
