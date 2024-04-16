@@ -1,4 +1,5 @@
 import getUrlMetaServer from '../../../utils/data/urlMeta/getUrlMetaServer'
+import mapPostAttachmentUrl from '../../../utils/data/urlMeta/mapPostAttachmentUrl'
 
 export const GET = async (request: Request) => {
   const url = new URL(request.url).searchParams.get('url')
@@ -15,7 +16,13 @@ export const GET = async (request: Request) => {
     return Response.json(data)
   } catch (error: any) {
     if (error.code === 'ENOTFOUND') {
-      return Response.json({ error: 'URL not found' }, { status: 404 })
+      const notFoundPostAttachment = mapPostAttachmentUrl(
+        { meta: { url, title: url }, og: {} },
+        null,
+        url
+      )
+
+      return Response.json(notFoundPostAttachment)
     }
 
     return Response.json({ error: error.message }, { status: 500 })
