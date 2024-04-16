@@ -4,7 +4,6 @@ const secondsToMs = (seconds: number) => seconds * 1000
 const PASSWORD_MIN_LENGTH = 8
 
 const constants = {
-  ALLOWED_HOSTS: ['localhost:3000', 'fameless.net', 'www.fameless.net'],
   APP_URL: 'https://fameless.net',
   AUTHORS_COLLECTION: 'authors',
   AUTOCOMPLETE_LENGTH: 5,
