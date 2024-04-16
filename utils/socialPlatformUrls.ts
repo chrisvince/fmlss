@@ -1,7 +1,8 @@
 import { PostAttachmentType } from '../types'
 
 export const isTwitterPostUrl = (url: string) =>
-  ['twitter.com/', '/status/'].every(condition => url.includes(condition))
+  ['twitter.com/', 'x.com/'].some(condition => url.includes(condition)) &&
+  url.includes('/status/')
 
 export const isFacebookPostUrl = (url: string) =>
   ['facebook.com/', '/posts/'].every(condition => url.includes(condition))
