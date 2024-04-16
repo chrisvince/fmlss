@@ -1,5 +1,4 @@
-import { PostAttachmentTikTok } from '../../types'
-import NextImage from 'next/image'
+import { type PostAttachmentTikTok } from '../../types'
 import { Box } from '@mui/system'
 import { Typography, Link } from '@mui/material'
 import PostAttachmentLayout, {

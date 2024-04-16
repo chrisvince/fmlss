@@ -1,5 +1,5 @@
 import { Link, Typography } from '@mui/material'
-import { PostAttachmentUrl } from '../../types'
+import { type PostAttachmentUrl } from '../../types'
 
 import truncateString from '../../utils/truncateString'
 import PostAttachmentLayout, {

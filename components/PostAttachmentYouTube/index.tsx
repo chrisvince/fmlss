@@ -1,5 +1,5 @@
 import { Box, Link, Typography } from '@mui/material'
-import { PostAttachmentYouTube } from '../../types'
+import { type PostAttachmentYouTube } from '../../types'
 
 import PostAttachmentLayout, {
   PostAttachmentLayoutLayout,

@@ -1,5 +1,5 @@
 import { Box, Link, Typography } from '@mui/material'
-import { PostAttachmentTwitter } from '../../types'
+import { type PostAttachmentTwitter } from '../../types'
 
 import PostAttachmentLayout from '../PostAttachmentLayout'
 import PostAttachmentBorder from '../PostAttachmentBorder'
