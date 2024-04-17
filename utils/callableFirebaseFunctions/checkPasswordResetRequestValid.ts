@@ -1,16 +1,13 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface Input {
   passwordResetRequestId: string
 }
 
-type CheckPasswordResetRequestValid = (
-  data: Input
-) => Promise<{ data: boolean }>
-
-export const checkPasswordResetRequestValid: CheckPasswordResetRequestValid =
-  data => {
-    const functions = firebase.functions()
-    return functions.httpsCallable('auth-password-resetRequestValid')(data)
-  }
+export const checkPasswordResetRequestValid = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, boolean>(
+    functions,
+    'auth-password-resetRequestValid'
+  )(data)
+}

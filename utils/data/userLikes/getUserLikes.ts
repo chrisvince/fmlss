@@ -1,90 +1,71 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
-
 import constants from '../../../constants'
-import {
-  FirebaseDoc,
-  Post,
-  PostData,
-  PostDocWithAttachments,
-} from '../../../types'
-import { createUserLikesCacheKey } from '../../createCacheKeys'
+import { FirebaseDoc, Post, PostDocWithAttachments } from '../../../types'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
-import setCacheIsLikedByUser from '../author/setCacheIsLikedByUser'
 import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
+import {
+  DocumentData,
+  collectionGroup,
+  getDoc,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from 'firebase/firestore'
+import { Like } from '../../../types/Like'
 
-const { LIKES_COLLECTION, POST_PAGINATION_COUNT, USER_LIKES_CACHE_TIME } =
-  constants
+const { LIKES_COLLECTION, POST_PAGINATION_COUNT } = constants
 
 type GetUserLikes = (
   uid: string,
   options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
     startAfter?: FirebaseDoc
   }
 ) => Promise<Post[]>
 
 const getUserLikes: GetUserLikes = async (
   uid,
-  { db: dbProp, startAfter } = {}
+  { startAfter: startAfterProp } = {}
 ) => {
-  const db = dbProp || firebase.firestore()
+  const db = getFirestore()
+  const collectionGroupRef = collectionGroup(db, LIKES_COLLECTION)
 
-  let postDocs:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let postData: PostData[] = []
+  const dbRef = pipe(
+    ref => query(ref, where('uid', '==', uid), orderBy('createdAt', 'desc')),
+    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
+    ref => query(ref, limit(POST_PAGINATION_COUNT))
+  )(collectionGroupRef)
 
-  const userLikesCacheKey = createUserLikesCacheKey(uid)
-  const serverCachedData = get(userLikesCacheKey)
+  const postDocs = await getDocs(dbRef)
+  if (postDocs.empty) return []
 
-  if (serverCachedData) {
-    postData = serverCachedData
-    postDocs = null
-  } else {
-    postDocs = await pipe(
-      () =>
-        db
-          .collectionGroup(LIKES_COLLECTION)
-          .where('uid', '==', uid)
-          .orderBy('createdAt', 'desc'),
-      query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(POST_PAGINATION_COUNT).get()
-    )()
+  const originPostDocsPromise = postDocs.docs.map(doc =>
+    getDoc((doc.data() as Like).post.ref)
+  )
 
-    if (postDocs.empty) return []
+  const originPostDocs = await Promise.all(originPostDocsPromise)
 
-    const originPostDocsPromise = postDocs.docs.map(doc =>
-      doc.data().post.ref.get()
-    )
+  const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+    originPostDocs.map(getPostDocWithAttachmentsFromPostDoc)
+  )
 
-    const originPostDocs = await Promise.all(originPostDocsPromise)
-
-    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
-      originPostDocs.map(getPostDocWithAttachmentsFromPostDoc)
-    )
-
-    postData = postDocsWithAttachments.map(mapPostDocToData)
-    put(userLikesCacheKey, postData, USER_LIKES_CACHE_TIME)
-  }
+  const postData = postDocsWithAttachments.map(mapPostDocToData)
 
   const postsPromise = postData.map(async (postDataItem, index) => {
     const postDoc = postDocs?.docs[index] ?? null
 
     const [createdByUser, userIsWatching, reaction] = await Promise.all([
-      checkIsCreatedByUser(postDataItem.slug, uid, { db }),
-      checkUserIsWatching(postDataItem.slug, uid, { db }),
-      getPostReaction(postDataItem.slug, uid, { db }),
+      checkIsCreatedByUser(postDataItem.slug, uid),
+      checkUserIsWatching(postDataItem.slug, uid),
+      getPostReaction(postDataItem.slug, uid),
     ])
-
-    setCacheIsLikedByUser(postDataItem.slug, uid)
 
     return {
       data: postDataItem,

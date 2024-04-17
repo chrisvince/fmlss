@@ -1,13 +1,10 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface Input {
   email: string
 }
 
-type ForgotPassword = (data: Input) => Promise<{ data: void }>
-
-export const forgotPassword: ForgotPassword = data => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('auth-password-forgot')(data)
+export const forgotPassword = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, void>(functions, 'auth-password-forgot')(data)
 }

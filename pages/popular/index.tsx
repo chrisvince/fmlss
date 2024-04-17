@@ -1,11 +1,5 @@
-import {
-  AuthUser,
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
-import { NextApiRequest } from 'next'
 
 import FeedPage from '../../components/FeedPage'
 import { FeedSortMode } from '../../types'
@@ -13,19 +7,14 @@ import {
   createPostFeedCacheKey,
   createUserCacheKey,
 } from '../../utils/createCacheKeys'
-import getPostFeed from '../../utils/data/posts/getPostFeed'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
-import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
-import getUser from '../../utils/data/user/getUser'
+import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
+import PageSpinner from '../../components/PageSpinner'
+import getPostFeedServer from '../../utils/data/posts/getPostFeedServer'
+import getUserDataServer from '../../utils/data/user/getUserDataServer'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
-
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface PropTypes {
   fallback: {
@@ -39,15 +28,12 @@ const Popular = ({ fallback }: PropTypes) => (
   </SWRConfig>
 )
 
-const getServerSidePropsFn = async ({
-  AuthUser,
-  req,
-}: {
-  AuthUser: AuthUser
-  req: NextApiRequest
-}) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ user, req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const uid = AuthUser.id
+  const uid = user?.id
 
   if (!uid) {
     return {
@@ -58,12 +44,12 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const postFeedCacheKey = createPostFeedCacheKey(FeedSortMode.Popular)
-  const userCacheKey = createUserCacheKey(uid)
+  const postFeedCacheKey = createPostFeedCacheKey({
+    sortMode: FeedSortMode.Popular,
+  })
 
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
-  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
+  const userCacheKey = createUserCacheKey(uid)
+  const sidebarDataPromise = getSidebarDataServer()
 
   if (isInternalRequest(req)) {
     const sidebarFallbackData = await sidebarDataPromise
@@ -77,14 +63,13 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const [posts, sidebarFallbackData, user] = await Promise.all([
-    getPostFeed({
-      db: adminDb,
+  const [posts, sidebarFallbackData, userData] = await Promise.all([
+    getPostFeedServer({
       sortMode: FeedSortMode.Popular,
       uid,
     }),
     sidebarDataPromise,
-    getUser(uid, { db: adminDb }),
+    getUserDataServer(uid),
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -92,19 +77,18 @@ const getServerSidePropsFn = async ({
   return {
     props: {
       fallback: {
-        [userCacheKey]: user,
+        [userCacheKey]: userData,
         [postFeedCacheKey]: posts,
         ...sidebarFallbackData,
       },
       key: postFeedCacheKey,
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-)(getServerSidePropsFn as any)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Popular as any)
+export default withUser<PropTypes>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(Popular)

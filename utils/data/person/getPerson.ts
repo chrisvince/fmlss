@@ -1,59 +1,31 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
-
 import constants from '../../../constants'
-import { createPersonCacheKey } from '../../createCacheKeys'
-import isServer from '../../isServer'
-import { PersonData } from '../../../types/PersonData'
 import mapPersonDocToData from '../../mapPersonDocToData'
 import { Person } from '../../../types/Person'
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  query,
+  where,
+} from 'firebase/firestore'
 
-const { PEOPLE_COLLECTION, PERSON_CACHE_TIME } = constants
+const { PEOPLE_COLLECTION } = constants
 
-type GetPerson = (
-  slug: string,
-  options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-  }
-) => Promise<Person | null>
+const getPerson = async (slug: string): Promise<Person | null> => {
+  const db = getFirestore()
 
-const getPerson: GetPerson = async (slug, { db: dbProp } = {}) => {
-  const db = dbProp || firebase.firestore()
+  const collectionRef = collection(db, PEOPLE_COLLECTION)
+  const dbRef = query(collectionRef, where('slug', '==', slug), limit(1))
+  const peopleRef = await getDocs(dbRef)
 
-  let doc:
-    | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
-    | null
-
-  let data: PersonData
-
-  const personCacheKey = createPersonCacheKey(slug)
-  const serverCachedData = get(personCacheKey)
-
-  if (serverCachedData) {
-    data = serverCachedData
-    doc = null
-  } else {
-    const peopleRef = await db
-      .collection(PEOPLE_COLLECTION)
-      .where('slug', '==', slug)
-      .limit(1)
-      .get()
-
-    if (peopleRef.empty) {
-      return null
-    }
-
-    doc = peopleRef.docs[0]
-    data = mapPersonDocToData(doc)
-    put(personCacheKey, data, PERSON_CACHE_TIME)
+  if (peopleRef.empty) {
+    return null
   }
 
-  return {
-    data,
-    doc: !isServer ? doc : null,
-  }
+  const doc = peopleRef.docs[0]
+  const data = mapPersonDocToData(doc)
+  return { data }
 }
 
 export default getPerson

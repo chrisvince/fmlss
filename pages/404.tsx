@@ -1,9 +1,8 @@
-import { getFirebaseAdmin } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 import NotFoundPage from '../components/NotFoundPage'
 import constants from '../constants'
 import msToSeconds from '../utils/msToSeconds'
-import fetchSidebarFallbackData from '../utils/data/sidebar/fetchSidebarData'
+import getSidebarDataServer from '../utils/data/sidebar/getSidebarDataServer'
 
 const { SIDEBAR_LIST_CACHE_TIME } = constants
 
@@ -20,18 +19,17 @@ const NotFound = ({ fallback }: Props) => (
 )
 
 export const getStaticProps = async () => {
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
+  try {
+    const sidebarFallbackData = await getSidebarDataServer()
 
-  const sidebarFallbackData = await fetchSidebarFallbackData({
-    db: adminDb,
-  })
-
-  return {
-    props: {
-      fallback: sidebarFallbackData,
-    },
-    revalidate: msToSeconds(SIDEBAR_LIST_CACHE_TIME),
+    return {
+      props: {
+        fallback: sidebarFallbackData,
+      },
+      revalidate: msToSeconds(SIDEBAR_LIST_CACHE_TIME),
+    }
+  } catch (error) {
+    console.error('Error fetching sidebar data:', error)
   }
 }
 

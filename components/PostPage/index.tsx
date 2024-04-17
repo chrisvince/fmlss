@@ -10,8 +10,7 @@ import usePost from '../../utils/data/post/usePost'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import PageSpinner from '../PageSpinner'
-import useUser from '../../utils/data/user/useUser'
-import Error from 'next/error'
+import useUserData from '../../utils/data/user/useUserData'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
@@ -22,6 +21,7 @@ import {
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
 import SidebarPeopleSection from '../SidebarPeopleSection'
+import NotFoundPage from '../NotFoundPage'
 
 const { TOPICS_ENABLED, POST_MAX_DEPTH } = constants
 
@@ -35,7 +35,7 @@ type PropTypes = {
 
 const PostPage = ({ slug }: PropTypes) => {
   const { isLoading, likePost, post, watchPost, reactToPost } = usePost(slug)
-  const { user, update: updateUser, isLoading: userIsLoading } = useUser()
+  const { user, update: updateUser, isLoading: userIsLoading } = useUserData()
   const [firstPostModalOpen, setFirstPostModalOpen] = useState(false)
   const [parentPostLoaded, setParentPostLoaded] = useState(false)
   const { shownFirstPostMessage } = user?.data ?? {}
@@ -81,7 +81,7 @@ const PostPage = ({ slug }: PropTypes) => {
   }, [])
 
   if (!isLoading && !post) {
-    return <Error statusCode={404} />
+    return <NotFoundPage />
   }
 
   const createdAt =

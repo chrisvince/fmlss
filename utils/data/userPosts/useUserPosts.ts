@@ -1,9 +1,9 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
 
-import { FirebaseDoc, Post } from '../../../types'
+import { FirebaseDoc, Post, PostType } from '../../../types'
 import {
   createUserPostsCacheKey,
   createUserRepliesCacheKey,
@@ -29,10 +29,13 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateAll: true,
 }
 
-type UseUserPosts = (options?: {
-  type?: 'post' | 'reply'
+const useUserPosts = ({
+  type = PostType.Post,
+  swrConfig = {},
+}: {
+  type?: PostType
   swrConfig?: SWRInfiniteConfiguration
-}) => {
+} = {}): {
   error: unknown
   isLoading: boolean
   isValidating: boolean
@@ -41,14 +44,12 @@ type UseUserPosts = (options?: {
   moreToLoad: boolean
   posts: Post[]
   watchPost: (documentPath: string) => Promise<void>
-}
-
-const useUserPosts: UseUserPosts = ({ type = 'post', swrConfig = {} } = {}) => {
+} => {
   const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
     [key: string]: FirebaseDoc
   }>({})
 
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
   const { fallback } = useSWRConfig()
 
   const createCacheKey = {

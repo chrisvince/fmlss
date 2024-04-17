@@ -1,5 +1,5 @@
 import firebase from 'firebase/app'
-import 'firebase/firestore'
+
 import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
@@ -14,90 +14,71 @@ import mapPostDocToData from '../../mapPostDocToData'
 import { createPostRepliesCacheKey } from '../../createCacheKeys'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
-import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+} from 'firebase/firestore'
 
 const { POST_PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
-type GetPostReplies = (
+const getPostReplies = async (
   reference: string,
   slug: string,
-  options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+  {
+    startAfter: startAfterProp,
+    uid,
+    viewMode = 'start',
+  }: {
     startAfter?: FirebaseDoc
     uid?: string | null
     viewMode?: 'start' | 'end'
-  }
-) => Promise<Post[]>
+  } = {}
+): Promise<Post[]> => {
+  const db = getFirestore()
+  const collectionPath = `${reference}/posts`
+  const collectionRef = collection(db, collectionPath)
 
-const getPostReplies: GetPostReplies = async (
-  reference,
-  slug,
-  { db: dbProp, startAfter, uid, viewMode = 'start' } = {}
-) => {
-  const db = dbProp || firebase.firestore()
+  const dbRef = pipe(
+    ref =>
+      query(ref, orderBy('createdAt', viewMode === 'end' ? 'desc' : 'asc')),
+    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
+    ref => query(ref, limit(POST_PAGINATION_COUNT))
+  )(collectionRef)
 
-  let replyDocs:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let replyData: PostData[] = []
+  const replyDocs = await getDocs(dbRef)
+  if (replyDocs.empty) return []
 
-  const postRepliesCacheKey = createPostRepliesCacheKey(slug)
-  const collection = `${reference}/posts`
-  const serverCachedData = get(postRepliesCacheKey)
+  const replyDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+    replyDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
+  )
 
-  if (serverCachedData) {
-    replyData = serverCachedData
-    replyDocs = null
-  } else {
-    replyDocs = await pipe(
-      () =>
-        db
-          .collection(collection)
-          .orderBy('createdAt', viewMode === 'end' ? 'desc' : 'asc'),
-      query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(POST_PAGINATION_COUNT).get()
-    )()
+  const replyData = replyDocsWithAttachments.map(mapPostDocToData)
 
-    if (replyDocs.empty) return []
-
-    const replyDocsWithAttachments: PostDocWithAttachments[] =
-      await Promise.all(
-        replyDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
-      )
-
-    replyData = replyDocsWithAttachments.map(mapPostDocToData)
-
-    const cacheTime =
-      replyData.length < POST_PAGINATION_COUNT ? REPLIES_CACHE_TIME : undefined
-
-    put(postRepliesCacheKey, replyData, cacheTime)
-  }
-
-  const repliesPromise = replyData.map(async (replyDataItem, index) => {
-    const replyDoc = replyDocs?.docs[index] ?? null
-
+  const repliesPromise = replyData.map(async replyDataItem => {
     if (!uid) {
       return {
         data: replyDataItem,
-        doc: !isServer ? replyDoc : null,
       }
     }
 
     const [createdByUser, likedByUser, userIsWatching, reaction] =
       await Promise.all([
-        checkIsCreatedByUser(replyDataItem.slug, uid, { db }),
-        checkIsLikedByUser(replyDataItem.slug, uid, { db }),
-        checkUserIsWatching(replyDataItem.slug, uid, { db }),
-        getPostReaction(replyDataItem.slug, uid, { db }),
+        checkIsCreatedByUser(replyDataItem.slug, uid),
+        checkIsLikedByUser(replyDataItem.slug, uid),
+        checkUserIsWatching(replyDataItem.slug, uid),
+        getPostReaction(replyDataItem.slug, uid),
       ])
 
     return {
       data: replyDataItem,
-      doc: !isServer ? replyDoc : null,
       user: {
         created: createdByUser,
         like: likedByUser,
@@ -106,8 +87,8 @@ const getPostReplies: GetPostReplies = async (
       },
     }
   })
-  const replies = await Promise.all(repliesPromise)
 
+  const replies = await Promise.all(repliesPromise)
   return replies
 }
 

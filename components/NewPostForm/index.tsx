@@ -20,7 +20,7 @@ import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 import { useRouter } from 'next/router'
 import DiscardPostConfirmDialog from '../DiscardPostConfirmDialog'
 import ConfirmNoTopicDialog from '../ConfirmNoTopicDialog'
-import useUser from '../../utils/data/user/useUser'
+import useUserData from '../../utils/data/user/useUserData'
 import PostContentOptions from '../PostContentOptions'
 
 const { TOPICS_ENABLED } = constants
@@ -39,7 +39,7 @@ const NewPostForm = ({
   slug,
 }: Props) => {
   const { post: replyingToPost } = usePost(slug)
-  const { user, update } = useUser()
+  const { user, update } = useUserData()
 
   const {
     closePostAttachment,

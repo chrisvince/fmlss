@@ -13,7 +13,7 @@ import useWatchingState from '../../utils/useWatchingState'
 import { ReactionId } from '../../types/Reaction'
 import PostCensorWrapper from '../PostCensorWrapper'
 import { CensorType } from '../../types/CensorType'
-import useUser from '../../utils/data/user/useUser'
+import useUserData from '../../utils/data/user/useUserData'
 import MuiLink from 'next/link'
 import formatRelativeDate from '../../utils/formatting/formatRelativeDate'
 import { Link, Tooltip } from '@mui/material'
@@ -111,7 +111,7 @@ const PostItem = ({
   const { toggleWatching, watching } = useWatchingState(!!post.user?.watching)
   const allowReplying = post.data.documentDepth < POST_MAX_DEPTH
   const byUser = !!post.user?.created
-  const { user } = useUser()
+  const { user } = useUserData()
   const censorData = noCensoring ? false : resolveCensorData(post, user)
   const [censorBypassed, setCensorBypassed] = useState(false)
 

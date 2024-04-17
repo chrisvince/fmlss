@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { Box } from '@mui/system'
 import { TextField, Typography, Link as MuiLink } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
@@ -10,6 +8,7 @@ import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import { changePassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 const { PASSWORD_MIN_LENGTH, PASSWORD_REGEX_PATTERN, FORM_MESSAGING } =
   constants
@@ -25,11 +24,11 @@ interface PropTypes {
 }
 
 const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
-  const auth = firebase.auth()
+  const auth = getAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
-  const authUser = useAuthUser()
+  const authUser = useUser()
 
   const { handleSubmit, control, setError, getValues } = useForm()
 
@@ -48,7 +47,8 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
         newPassword,
         confirmNewPassword,
       })
-      await auth.signInWithEmailAndPassword(
+      await signInWithEmailAndPassword(
+        auth,
         email as string,
         newPassword as string
       )

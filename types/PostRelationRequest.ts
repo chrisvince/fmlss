@@ -1,8 +1,8 @@
-import { firestore } from 'firebase-admin'
+import { DocumentReference } from 'firebase/firestore'
 
 export interface PostRelationRequest {
   depth: number
   id: string
-  ref: firestore.DocumentReference
+  ref: DocumentReference
   slug: string
 }

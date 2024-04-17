@@ -1,9 +1,4 @@
-import {
-  AuthUser,
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import TopicPage from '../../components/TopicPage'
@@ -13,20 +8,17 @@ import {
   createTopicPostsCacheKey,
   createTopicsCacheKey,
 } from '../../utils/createCacheKeys'
-import getTopicPosts from '../../utils/data/posts/getTopicPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
-import { NextApiRequest } from 'next'
-import getTopic from '../../utils/data/topic/getTopic'
-import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
+import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
 import slugify from '../../utils/slugify'
-import getTopics from '../../utils/data/topics/getTopics'
+import PageSpinner from '../../components/PageSpinner'
+import getTopicServer from '../../utils/data/topic/getTopicServer'
+import getTopicsServer from '../../utils/data/topics/getTopicsServer'
+import getTopicPostsServer from '../../utils/data/posts/getTopicPostsServer'
 
-const {
-  GET_SERVER_SIDE_PROPS_TIME_LABEL,
-  SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
-  TOPICS_ENABLED,
-} = constants
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL, SUBTOPICS_ON_TOPIC_PAGE_LIMIT } =
+  constants
 
 interface PropTypes {
   fallback: {
@@ -48,35 +40,33 @@ const SORT_MODE_MAP: {
   popular: TopicSortMode.Popular,
 }
 
-const getServerSidePropsFn = async ({
-  AuthUser,
-  params: { slugs = [] },
-  query: { sort = TopicSortMode.Latest },
-  req,
-}: {
-  AuthUser: AuthUser
-  params: { slugs: string[] }
-  query: { sort: TopicSortMode }
-  req: NextApiRequest
-}) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ user, params, query, req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+  const slugs = (params?.slugs as string[] | undefined) ?? []
+  const sort = (query?.sort as string | undefined) ?? TopicSortMode.Popular
   const path = slugs.map(slugify).join('/')
+  const uid = user?.id
 
-  if (!TOPICS_ENABLED) {
-    console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+  if (!uid) {
     return {
-      notFound: true,
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
     }
   }
 
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
-  const uid = AuthUser.id
   const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Popular
+  console.log('sortMode', sortMode)
   const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
+
+  console.log('topicPostsCacheKey', topicPostsCacheKey)
   const topicCacheKey = createTopicCacheKey(path)
-  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
-  const topic = await getTopic(path, { db: adminDb })
+  const sidebarDataPromise = getSidebarDataServer()
+  const topic = await getTopicServer(path)
 
   if (!topic) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -92,12 +82,13 @@ const getServerSidePropsFn = async ({
     sortMode: TopicsSortMode.Popular,
   })
 
-  const topics = await getTopics({
-    db: adminDb,
+  const topics = await getTopicsServer({
     limit: SUBTOPICS_ON_TOPIC_PAGE_LIMIT,
     parentTopicRef: topic.data.ref,
     sortMode: TopicsSortMode.Popular,
   })
+
+  console.log('topics', topics)
 
   if (isInternalRequest(req)) {
     const sidebarFallbackData = await sidebarDataPromise
@@ -116,14 +107,16 @@ const getServerSidePropsFn = async ({
     }
   }
 
+  console.log('path', path)
   const [posts, sidebarFallbackData] = await Promise.all([
-    getTopicPosts(path, {
-      db: adminDb,
+    getTopicPostsServer(path, {
       uid,
       sortMode,
     }),
     sidebarDataPromise,
   ])
+
+  console.log('postsNEW', posts)
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {
@@ -138,12 +131,11 @@ const getServerSidePropsFn = async ({
       key: topicCacheKey,
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getServerSidePropsFn as any
-)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser()(Topic as any)
+export default withUser<PropTypes>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(Topic)

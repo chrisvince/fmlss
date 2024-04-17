@@ -15,7 +15,7 @@ import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
 import { HashtagShowType } from '../../utils/data/posts/getHashtagPosts'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
-import useUser from '../../utils/data/user/useUser'
+import useUserData from '../../utils/data/user/useUserData'
 import {
   ResourceType,
   resourceViewed,
@@ -62,7 +62,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
   )
 
   const { track } = useTracking()
-  const { user } = useUser()
+  const { user } = useUserData()
 
   const lowercaseSortMode =
     sort && typeof sort === 'string' ? sort.toLowerCase() : undefined

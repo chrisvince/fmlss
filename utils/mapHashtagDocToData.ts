@@ -1,8 +1,6 @@
 import type { FirebaseDoc, HashtagData, HashtagDataRequest } from '../types'
 
-type MapHashtagDocToData = (postDoc: FirebaseDoc) => HashtagData
-
-const mapHashtagDocToData: MapHashtagDocToData = doc => {
+const mapHashtagDocToData = (doc: FirebaseDoc): HashtagData => {
   const data = doc.data() as HashtagDataRequest
   return {
     createdAt: data.createdAt.toMillis(),

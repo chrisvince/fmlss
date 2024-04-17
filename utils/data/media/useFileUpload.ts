@@ -1,20 +1,25 @@
-import firebase from 'firebase/app'
-import 'firebase/storage'
 import { useState } from 'react'
 import { v4 as uuidV4 } from 'uuid'
 import { MediaInputItem } from '../../../types/MediaInputItem'
 import constants from '../../../constants'
 import getImageDimensionsFromUrlClient from '../../getImageDimensionsFromUrlClient'
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  updateMetadata,
+  uploadBytes,
+  uploadBytesResumable,
+} from 'firebase/storage'
 
 const { POST_ASSETS_BUCKET, POST_ASSETS_MAX_FILE_SIZE_MB } = constants
-
-const storage = firebase.storage()
 
 interface Options {
   onFileUploaded?: (mediaItem: MediaInputItem) => void
 }
 
 const useFileUpload = ({ onFileUploaded }: Options = {}) => {
+  const storage = getStorage(undefined, POST_ASSETS_BUCKET)
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -33,9 +38,12 @@ const useFileUpload = ({ onFileUploaded }: Options = {}) => {
     setError(null)
 
     const mediaId = uuidV4()
-    const storageRef = storage.refFromURL(`gs://${POST_ASSETS_BUCKET}`)
-    const fileRef = storageRef.child(`/${mediaId}.webp`)
-    const uploadTask = fileRef.put(file)
+    const storageRef = ref(storage, `/${mediaId}.webp`)
+    const uploadTask = uploadBytesResumable(storageRef, file)
+
+    // const storageRef = storage.refFromURL(`gs://${POST_ASSETS_BUCKET}`)
+    // const fileRef = storageRef.child(`/${mediaId}.webp`)
+    // const uploadTask = fileRef.put(file)
 
     uploadTask.on(
       'state_changed',
@@ -52,10 +60,10 @@ const useFileUpload = ({ onFileUploaded }: Options = {}) => {
         setError('An error occurred while uploading the file')
       },
       async () => {
-        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL()
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
         const dimensions = await getImageDimensionsFromUrlClient(downloadURL)
 
-        await fileRef.updateMetadata({
+        await updateMetadata(storageRef, {
           customMetadata: {
             height: `${dimensions.height}`,
             width: `${dimensions.width}`,

@@ -17,7 +17,7 @@ import {
   ViewStreamRounded,
   WorkspacesRounded,
 } from '@mui/icons-material'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 
 import NewPostButton from '../NewPostButton'
 import constants from '../../constants'
@@ -93,7 +93,7 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationDesktop = () => {
-  const { email, id: uid, displayName } = useAuthUser()
+  const { email, id: uid, displayName } = useUser()
   const theme = useTheme()
   const navMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
   const marginBottom = theme.spacing(LEFT_NAVIGATION_PADDING_BOTTOM)

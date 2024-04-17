@@ -25,10 +25,8 @@ const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 
 const createPostCacheKey = (slug: string) => `post/${slug}`
 
-const createPostFeedCacheKey = (
-  sortMode: FeedSortMode,
-  { pageIndex = 0 }: { pageIndex?: number | null } = {}
-) => `post/feed/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
+const createPostFeedCacheKey = ({ sortMode }: { sortMode: FeedSortMode }) =>
+  `post/feed/${sortMode}`
 
 const getPageIndexFromCacheKey = (cacheKey: string) =>
   cacheKey.split('-').at(-1) as string

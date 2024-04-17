@@ -3,7 +3,7 @@ import isServer from './isServer'
 
 const get = (key: string) => {
   if (!isServer) {
-    return null
+    throw new Error('get must be called on the server')
   }
 
   return getMemoryCache(key)
@@ -11,7 +11,7 @@ const get = (key: string) => {
 
 const put = (key: string, value: any, time?: number) => {
   if (!isServer) {
-    return
+    throw new Error('put must be called on the server')
   }
 
   putMemoryCache(key, value, time)

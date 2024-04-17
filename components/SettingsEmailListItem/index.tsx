@@ -4,14 +4,14 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import Link from 'next/link'
 import EmailVerificationLink from '../EmailVerificationLink'
 import { KeyboardArrowRightRounded } from '@mui/icons-material'
 import MobileContainer from '../MobileContainer'
 
 const SettingsEmailListItem = () => {
-  const authUser = useAuthUser()
+  const authUser = useUser()
 
   return (
     <>

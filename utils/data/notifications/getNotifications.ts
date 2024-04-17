@@ -1,11 +1,19 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
 import constants from '../../../constants'
 import mapNotificationToData from './mapNotificationToData'
 import { pipe } from 'ramda'
-import { FirebaseDoc } from '../../../types'
+import { FirebaseDoc, NotificationDataRequest } from '../../../types'
 import { Notification } from '../../../types/Notification'
 import isServer from '../../isServer'
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from 'firebase/firestore'
 
 const {
   NOTIFICATIONS_COLLECTION,
@@ -13,40 +21,34 @@ const {
   NOTIFICATION_PAGINATION_COUNT,
 } = constants
 
-type GetNotifications = (
+const getNotifications = async (
   uid: string,
-  options: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+  {
+    startAfter: startAfterProp,
+    limit: limitProp = NOTIFICATION_PAGINATION_COUNT,
+    unreadOnly = false,
+  }: {
     limit?: number
     startAfter?: FirebaseDoc
     unreadOnly?: boolean
   }
-) => Promise<Notification[]>
+): Promise<Notification[]> => {
+  const db = getFirestore()
 
-const getNotifications: GetNotifications = async (
-  uid: string,
-  {
-    db: dbProp,
-    startAfter,
-    limit = NOTIFICATION_PAGINATION_COUNT,
-    unreadOnly = false,
-  } = {}
-) => {
-  const db = dbProp ?? firebase.firestore()
+  const collectionPath = `${USERS_COLLECTION}/${uid}/${NOTIFICATIONS_COLLECTION}`
+  const collectionRef = collection(db, collectionPath)
 
-  const snapshot = await pipe(
-    () =>
-      db
-        .collection(`${USERS_COLLECTION}/${uid}/${NOTIFICATIONS_COLLECTION}`)
-        .orderBy('createdAt', 'desc'),
-    query => (unreadOnly ? query.where('readAt', '==', null) : query),
-    query => (startAfter ? query.startAfter(startAfter) : query),
-    query => query.limit(limit).get()
-  )()
+  const dbRef = pipe(
+    ref => query(ref, orderBy('createdAt', 'desc')),
+    ref => (unreadOnly ? query(ref, where('readAt', '==', null)) : ref),
+    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
+    ref => query(ref, limit(limitProp))
+  )(collectionRef)
 
-  const data = snapshot.docs.map(notificationDoc => ({
+  const docsRef = await getDocs(dbRef)
+
+  const data = docsRef.docs.map(notificationDoc => ({
     data: mapNotificationToData(notificationDoc),
-    doc: !isServer ? notificationDoc : null,
   }))
 
   return data

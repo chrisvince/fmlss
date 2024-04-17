@@ -1,11 +1,16 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import useSWR, { SWRConfiguration } from 'swr'
 import { User, UserDataInput } from '../../../types'
 import { createUserCacheKey } from '../../createCacheKeys'
-import getUser from './getUser'
+import getUserData from './getUserData'
 import constants from '../../../constants'
+import {
+  collection,
+  doc,
+  getFirestore,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore'
 
 const { USERS_COLLECTION } = constants
 
@@ -21,13 +26,13 @@ type UseUser = (options?: { swrConfig?: SWRConfiguration; skip?: boolean }) => {
   user: User | null | undefined
 }
 
-const useUser: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
-  const { id: uid } = useAuthUser()
+const useUserData: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
+  const { id: uid } = useUser()
   const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
     !skip ? userCacheKey : undefined,
-    () => getUser(uid),
+    () => (uid ? getUserData(uid) : null),
     {
       ...DEFAULT_SWR_CONFIG,
       ...swrConfig,
@@ -39,15 +44,13 @@ const useUser: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
       throw new Error('User is not authenticated')
     }
 
-    const db = firebase.firestore()
-
-    await db
-      .collection(USERS_COLLECTION)
-      .doc(uid)
-      .update({
-        ...data,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      })
+    const db = getFirestore()
+    const collectionRef = collection(db, USERS_COLLECTION)
+    const dbRef = doc(collectionRef, uid)
+    await updateDoc(dbRef, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    })
 
     await mutate()
   }
@@ -61,4 +64,4 @@ const useUser: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
   }
 }
 
-export default useUser
+export default useUserData

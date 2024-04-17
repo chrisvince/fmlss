@@ -6,6 +6,7 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
+import { PostType } from '../../types'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
 
@@ -21,7 +22,7 @@ const UserRepliesPage = () => {
 
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
     useUserPosts({
-      type: 'reply',
+      type: PostType.Reply,
       swrConfig: { onSuccess: handlePostLoadSuccess },
     })
 

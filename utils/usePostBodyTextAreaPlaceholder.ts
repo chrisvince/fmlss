@@ -1,4 +1,4 @@
-import useUser from './data/user/useUser'
+import useUserData from './data/user/useUserData'
 
 export enum PostType {
   New = 'new',
@@ -12,7 +12,7 @@ interface Props {
 const usePostBodyTextAreaPlaceholder = ({
   postType = PostType.New,
 }: Props = {}) => {
-  const { user } = useUser({ skip: postType === PostType.Reply })
+  const { user } = useUserData({ skip: postType === PostType.Reply })
   const userFirstName = user?.data.firstName
 
   const newPost = `${

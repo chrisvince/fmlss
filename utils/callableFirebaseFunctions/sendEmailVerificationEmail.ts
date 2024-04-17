@@ -1,9 +1,9 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
-type SendEmailVerificationEmail = () => Promise<{ data: void }>
-
-export const sendEmailVerificationEmail: SendEmailVerificationEmail = () => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('auth-email-requestVerification')()
+export const sendEmailVerificationEmail = () => {
+  const functions = getFunctions()
+  return httpsCallable<never, void>(
+    functions,
+    'auth-email-requestVerification'
+  )()
 }

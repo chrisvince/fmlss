@@ -1,7 +1,6 @@
-import firebase from 'firebase/app'
+import { QueryDocumentSnapshot } from 'firebase/firestore'
 
 export type FirebaseDoc =
-  | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
+  | QueryDocumentSnapshot<unknown>
   | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
-  | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
   | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>

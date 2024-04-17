@@ -1,4 +1,4 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { Box, List, SwipeableDrawer, SwipeableDrawerProps } from '@mui/material'
 import {
   AlternateEmailRounded,
@@ -94,7 +94,7 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
-  const { displayName, email, id: uid } = useAuthUser()
+  const { displayName, email, id: uid } = useUser()
   const theme = useTheme()
   const navMarginBottomXs = theme.spacing(4)
 

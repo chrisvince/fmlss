@@ -1,13 +1,10 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface Input {
   slug: string
 }
 
-type CreateWatchedPost = (data: Input) => Promise<{ data: void }>
-
-export const createWatchedPost: CreateWatchedPost = data => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('watchedPost-create')(data)
+export const createWatchedPost = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, void>(functions, 'watchedPost-create')(data)
 }

@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 import Link from 'next/link'
 import { Box } from '@mui/system'
 import { Divider, TextField, Typography, Button } from '@mui/material'
@@ -10,6 +8,7 @@ import GoogleAuthButton from '../GoogleAuthButton'
 import { createUser } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
 import { LoadingButton } from '@mui/lab'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 const {
   EMAIL_REGEX_PATTERN,
@@ -31,7 +30,7 @@ interface Props {
 }
 
 const SignUpForm = ({ onSuccess }: Props) => {
-  const auth = firebase.auth()
+  const auth = getAuth()
   const [formError, setFormError] = useState<{ message: string } | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { control, handleSubmit, setError } = useForm()
@@ -45,7 +44,7 @@ const SignUpForm = ({ onSuccess }: Props) => {
     setIsLoading(true)
     try {
       await createUser({ email, password })
-      await auth.signInWithEmailAndPassword(email, password)
+      await signInWithEmailAndPassword(auth, email, password)
       onSuccess?.()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

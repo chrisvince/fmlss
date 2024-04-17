@@ -3,9 +3,9 @@ import Page from '../Page'
 import SettingsEmailListItem from '../SettingsEmailListItem'
 import SettingsList from '../SettingsList'
 import SettingsListItem from '../SettingsListItem'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import SettingsToggleListItem from '../SettingsToggleListItem'
-import useUser from '../../utils/data/user/useUser'
+import useUserData from '../../utils/data/user/useUserData'
 import { useRouter } from 'next/router'
 import { ColorSchemeSetting } from '../../types/ColorSchemeSetting'
 
@@ -18,9 +18,9 @@ const resolveColorSchemeName = (
   })
 
 const SettingsPage = () => {
-  const { displayName, signOut } = useAuthUser()
+  const { displayName, signOut } = useUser()
   const { push } = useRouter()
-  const { update, user } = useUser()
+  const { update, user } = useUserData()
 
   const handleSignOutButtonClick = async () => {
     signOut()

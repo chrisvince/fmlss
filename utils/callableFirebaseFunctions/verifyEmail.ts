@@ -1,13 +1,10 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface Input {
   confirmationCode: string
 }
 
-type VerifyEmail = (data: Input) => Promise<{ data: void }>
-
-export const verifyEmail: VerifyEmail = data => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('auth-email-verify')(data)
+export const verifyEmail = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, void>(functions, 'auth-email-verify')(data)
 }

@@ -1,18 +1,14 @@
-import {
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
-import getPeople from '../../utils/data/people/getPeople'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { createPeopleCacheKey } from '../../utils/createCacheKeys'
-import fetchSidebarFallbackData, {
+import getSidebarDataServer, {
   SidebarResourceKey,
-} from '../../utils/data/sidebar/fetchSidebarData'
+} from '../../utils/data/sidebar/getSidebarDataServer'
 import { SWRConfig } from 'swr'
 import PeoplePage from '../../components/PeoplePage'
-import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { PeopleSortMode } from '../../types/PeopleSortMode'
+import PageSpinner from '../../components/PageSpinner'
+import getPeopleServer from '../../utils/data/people/getPeopleServer'
 
 const SORT_MODE_MAP: {
   [key: string]: PeopleSortMode
@@ -35,19 +31,15 @@ const PeopleIndex = ({ fallback }: Props) => {
   )
 }
 
-const getServerSidePropsFn = async ({
-  req,
-  query: { sort = PeopleSortMode.Popular },
-}: {
-  req: NextApiRequest
-  query: { sort: string }
-}) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ req, query }) => {
+  const sort = (query.sort as string) || PeopleSortMode.Popular
   const sortMode = SORT_MODE_MAP[sort] ?? PeopleSortMode.Popular
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
   const peopleCacheKey = createPeopleCacheKey({ sortMode })
-  const sidebarDataPromise = fetchSidebarFallbackData({
-    db: adminDb,
+
+  const sidebarDataPromise = getSidebarDataServer({
     exclude: [SidebarResourceKey.People],
   })
 
@@ -57,13 +49,12 @@ const getServerSidePropsFn = async ({
     return {
       props: {
         fallback: sidebarFallbackData,
-        key: peopleCacheKey,
       },
     }
   }
 
   const [people, sidebarFallbackData] = await Promise.all([
-    getPeople({ db: adminDb, sortMode }),
+    getPeopleServer({ sortMode }),
     sidebarDataPromise,
   ])
 
@@ -75,12 +66,11 @@ const getServerSidePropsFn = async ({
       },
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getServerSidePropsFn as any
-)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser()(PeopleIndex as any)
+export default withUser<Props>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(PeopleIndex)

@@ -1,4 +1,4 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
@@ -44,7 +44,7 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
     [key: string]: FirebaseDoc
   }>({})
 
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createUserLikesCacheKey(uid!)]
 
@@ -75,6 +75,8 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
         ...swrConfig,
       }
     )
+
+  console.error(error)
 
   const lastPageLastDoc = getLastDocOfLastPage(data)
   useEffect(() => {

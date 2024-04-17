@@ -1,75 +1,52 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
-
 import constants from '../../../constants'
 import {
   FirebaseDoc,
   Hashtag,
-  HashtagData,
+  HashtagDataRequest,
   HashtagsSortMode,
 } from '../../../types'
-import { createHashtagsCacheKey } from '../../createCacheKeys'
 import mapHashtagDocToData from '../../mapHashtagDocToData'
-import isServer from '../../isServer'
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+} from 'firebase/firestore'
 
-const { HASHTAGS_CACHE_TIME, POST_PAGINATION_COUNT, HASHTAGS_COLLECTION } =
-  constants
+const { POST_PAGINATION_COUNT, HASHTAGS_COLLECTION } = constants
 
-type GetHashtags = (options?: {
+const getHashtags = async ({
+  sortMode = HashtagsSortMode.Popular,
+  limit: limitProp = POST_PAGINATION_COUNT,
+  startAfter: startAfterProp,
+}: {
   cacheKey?: string
   cacheTime?: number
-  db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
   limit?: number
   sortMode?: HashtagsSortMode
   startAfter?: FirebaseDoc
-}) => Promise<Hashtag[]>
+} = {}): Promise<Hashtag[]> => {
+  const db = getFirestore()
+  const collectionRef = collection(db, HASHTAGS_COLLECTION)
 
-const getHashtags: GetHashtags = async ({
-  sortMode = HashtagsSortMode.Popular,
-  cacheKey = createHashtagsCacheKey(sortMode),
-  cacheTime = HASHTAGS_CACHE_TIME,
-  db: dbProp,
-  limit = POST_PAGINATION_COUNT,
-  startAfter,
-} = {}) => {
-  const db = dbProp || firebase.firestore()
+  const dbRef = pipe(
+    ref =>
+      sortMode === HashtagsSortMode.Popular
+        ? query(ref, orderBy('popularityScoreRecent', 'desc'))
+        : ref,
+    ref => query(ref, orderBy('createdAt', 'desc')),
+    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
+    ref => query(ref, limit(limitProp))
+  )(collectionRef)
 
-  let hashtagDocs:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let hashtagData: HashtagData[] = []
-
-  const serverCachedData = get(cacheKey)
-
-  if (serverCachedData) {
-    hashtagData = serverCachedData
-    hashtagDocs = null
-  } else {
-    hashtagDocs = await pipe(
-      () => db.collection(HASHTAGS_COLLECTION),
-      query =>
-        sortMode === HashtagsSortMode.Popular
-          ? query.orderBy('popularityScoreRecent', 'desc')
-          : query,
-      query => query.orderBy('createdAt', 'desc'),
-      query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(limit).get()
-    )()
-
-    if (hashtagDocs.empty) return []
-
-    hashtagData = hashtagDocs.docs.map(doc => mapHashtagDocToData(doc))
-    put(cacheKey, hashtagData, cacheTime)
-  }
-
-  const hashtags = hashtagData.map((data, index) => ({
-    data,
-    doc: !isServer ? hashtagDocs?.docs[index] ?? null : null,
-  }))
-
+  const hashtagDocs = await getDocs(dbRef)
+  if (hashtagDocs.empty) return []
+  const hashtagData = hashtagDocs.docs.map(mapHashtagDocToData)
+  const hashtags = hashtagData.map(data => ({ data }))
   return hashtags
 }
 

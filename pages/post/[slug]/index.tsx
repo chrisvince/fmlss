@@ -1,17 +1,7 @@
-import {
-  AuthUser,
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
-import { NextApiRequest } from 'next'
-import Error from 'next/error'
-
-import getPost from '../../../utils/data/post/getPost'
 import PostPage from '../../../components/PostPage'
-import getPostReplies from '../../../utils/data/postReplies/getPostReplies'
 import {
   createPostCacheKey,
   createPostRepliesCacheKey,
@@ -19,11 +9,12 @@ import {
 } from '../../../utils/createCacheKeys'
 import constants from '../../../constants'
 import isInternalRequest from '../../../utils/isInternalRequest'
-import usePost from '../../../utils/data/post/usePost'
-import fetchSidebarFallbackData from '../../../utils/data/sidebar/fetchSidebarData'
+import getSidebarDataServer from '../../../utils/data/sidebar/getSidebarDataServer'
 import Layout from '../../../components/Layout'
 import { ReactElement } from 'react'
-import getUser from '../../../utils/data/user/getUser'
+import getUserDataServer from '../../../utils/data/user/getUserDataServer'
+import getPostRepliesServer from '../../../utils/data/postReplies/getPostRepliesServer'
+import getPostServer from '../../../utils/data/post/getPostServer'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, POST_REPLIES_SSR } = constants
 
@@ -36,11 +27,6 @@ interface PropTypes {
 const Post = ({ fallback }: PropTypes) => {
   const router = useRouter()
   const { slug } = router.query as { slug: string }
-  const { post, isLoading } = usePost(slug)
-
-  if (!isLoading && !post) {
-    return <Error statusCode={404} />
-  }
 
   return (
     <SWRConfig value={{ fallback }}>
@@ -53,25 +39,16 @@ Post.getLayout = function getLayout(page: ReactElement) {
   return <Layout disableNavBottomPaddingXs>{page}</Layout>
 }
 
-const getServerSidePropsFn = async ({
-  AuthUser,
-  params: { slug: encodedSlug },
-  req,
-}: {
-  AuthUser: AuthUser
-  params: {
-    slug: string
-  }
-  req: NextApiRequest
-}) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.RENDER,
+})(async ({ user, params, req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
-  const slug = decodeURIComponent(encodedSlug)
-  const uid = AuthUser.id
+  const slug = params?.slug as string
+  const uid = user?.id
   const postCacheKey = createPostCacheKey(slug)
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
-  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
+  const sidebarDataPromise = getSidebarDataServer()
   const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   if (isInternalRequest(req)) {
@@ -86,25 +63,19 @@ const getServerSidePropsFn = async ({
     }
   }
 
-  const post = await getPost(slug, {
-    uid,
-    db: adminDb,
-  })
+  const post = await getPostServer(slug, { uid })
 
   if (!post) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
     return { notFound: true }
   }
 
-  const [replies, sidebarFallbackData, user] = await Promise.all([
+  const [replies, sidebarFallbackData, userData] = await Promise.all([
     POST_REPLIES_SSR
-      ? getPostReplies(post.data.reference, slug, {
-          uid,
-          db: adminDb,
-        })
+      ? getPostRepliesServer(post.data.reference, slug, { uid })
       : null,
     sidebarDataPromise,
-    userCacheKey ? getUser(uid, { db: adminDb }) : null,
+    userCacheKey && uid ? getUserDataServer(uid) : null,
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -114,17 +85,15 @@ const getServerSidePropsFn = async ({
         [postCacheKey]: post,
         [postRepliesCacheKey]: replies,
         ...sidebarFallbackData,
-        ...(userCacheKey ? { [userCacheKey]: user } : {}),
+        ...(userCacheKey ? { [userCacheKey]: userData } : {}),
       },
       key: postCacheKey,
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getServerSidePropsFn as any
-)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser()(Post as any)
+export default withUser<PropTypes>({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.RENDER,
+  whenUnauthedBeforeInit: AuthAction.RENDER,
+})(Post)

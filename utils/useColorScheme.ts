@@ -1,13 +1,13 @@
 import { useMediaQuery } from '@mui/material'
 import useCookie from './useCookie'
-import useUser from './data/user/useUser'
+import useUserData from './data/user/useUserData'
 import { ColorScheme } from '../styles/theme'
 import { ColorSchemeSetting } from '../types'
 
 const useColorScheme = ({
   ssrValue,
 }: { ssrValue?: ColorSchemeSetting } = {}) => {
-  const { user, update: updateUser } = useUser()
+  const { user, update: updateUser } = useUserData()
   const userSetting = user?.data?.settings.colorScheme
   const systemIsDark = useMediaQuery('(prefers-color-scheme: dark)')
   const systemColorScheme = systemIsDark ? ColorScheme.Dark : ColorScheme.Light

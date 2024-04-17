@@ -1,84 +1,59 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
-
 import constants from '../../../constants'
-import { Post, PostData } from '../../../types'
-import { createPostCacheKey } from '../../createCacheKeys'
+import { Post } from '../../../types'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
-import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
+import {
+  collectionGroup,
+  getDocs,
+  getFirestore,
+  limit,
+  query,
+  where,
+} from 'firebase/firestore'
 
-const { POST_CACHE_TIME, POSTS_COLLECTION } = constants
+const { POSTS_COLLECTION } = constants
 
-type GetPost = (
-  slug?: string | null,
-  options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+const getPost = async (
+  slug: string,
+  {
+    uid,
+  }: {
     uid?: string | null
+  } = {}
+): Promise<Post | null> => {
+  const db = getFirestore()
+  const collectionGroupRef = collectionGroup(db, POSTS_COLLECTION)
+  const dbRef = query(collectionGroupRef, where('slug', '==', slug), limit(1))
+  const postsRef = await getDocs(dbRef)
+
+  if (postsRef.empty) {
+    return null
   }
-) => Promise<Post | null>
 
-const getPost: GetPost = async (slug, { db: dbProp, uid } = {}) => {
-  if (!slug) return null
+  const postDocWithAttachments = await getPostDocWithAttachmentsFromPostDoc(
+    postsRef.docs[0]
+  )
 
-  const db = dbProp || firebase.firestore()
-
-  let doc:
-    | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let data: PostData
-
-  const postCacheKey = createPostCacheKey(slug)
-  const serverCachedPostData = get(postCacheKey)
-
-  if (serverCachedPostData) {
-    data = serverCachedPostData
-    doc = null
-  } else {
-    const postsRef = await db
-      .collectionGroup(POSTS_COLLECTION)
-      .where('slug', '==', slug)
-      .limit(1)
-      .get()
-
-    if (postsRef.empty) {
-      return null
-    }
-
-    doc = postsRef.docs[0]
-
-    const postDocWithAttachments = await getPostDocWithAttachmentsFromPostDoc(
-      doc
-    )
-
-    data = mapPostDocToData(postDocWithAttachments)
-    put(postCacheKey, data, POST_CACHE_TIME)
-  }
+  const data = mapPostDocToData(postDocWithAttachments)
 
   if (!uid) {
-    return {
-      data,
-      doc: !isServer ? doc : null,
-    }
+    return { data }
   }
 
   const [createdByUser, likedByUser, userIsWatching, reaction] =
     await Promise.all([
-      checkIsCreatedByUser(data.slug, uid, { db }),
-      checkIsLikedByUser(data.slug, uid, { db }),
-      checkUserIsWatching(data.slug, uid, { db }),
-      getPostReaction(data.slug, uid, { db }),
+      checkIsCreatedByUser(data.slug, uid),
+      checkIsLikedByUser(data.slug, uid),
+      checkUserIsWatching(data.slug, uid),
+      getPostReaction(data.slug, uid),
     ])
 
   return {
     data,
-    doc: !isServer ? doc : null,
     user: {
       created: createdByUser,
       like: likedByUser,

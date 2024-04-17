@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import firebase from 'firebase/app'
-import 'firebase/auth'
+
 import Link from 'next/link'
 import {
   Divider,
@@ -15,6 +15,7 @@ import { LoadingButton } from '@mui/lab'
 
 import GoogleAuthButton from '../GoogleAuthButton'
 import constants from '../../constants'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 const {
   EMAIL_REGEX_PATTERN,
@@ -34,7 +35,7 @@ const GENERIC_ERROR_MESSAGE =
   'There was an error signing you in. Please try again later.'
 
 const SignInForm = () => {
-  const auth = firebase.auth()
+  const auth = getAuth()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
 
@@ -47,7 +48,7 @@ const SignInForm = () => {
     setFormError(null)
     setIsLoading(true)
     try {
-      await auth.signInWithEmailAndPassword(email as string, password as string)
+      await signInWithEmailAndPassword(auth, email, password)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (CREDENTIAL_ERRORS.includes(error.code)) {

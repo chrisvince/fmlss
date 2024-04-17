@@ -1,3 +1,4 @@
+export * from './Author'
 export * from './ColorSchemeSetting'
 export * from './CreatePostAttachment'
 export * from './FeedSortMode'

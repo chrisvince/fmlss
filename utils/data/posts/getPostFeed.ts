@@ -1,97 +1,67 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
-import {
-  FeedSortMode,
-  FirebaseDoc,
-  Post,
-  PostData,
-  PostDocWithAttachments,
-} from '../../../types'
-import { createPostFeedCacheKey } from '../../createCacheKeys'
+import { FeedSortMode, Post, PostDocWithAttachments } from '../../../types'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
-import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
-
-const { FEED_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } = constants
-
-type GetPosts = (options?: {
-  db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-  startAfter?: FirebaseDoc
-  uid?: string | null
-  sortMode?: FeedSortMode
-}) => Promise<Post[]>
-
-const getPostFeed: GetPosts = async ({
-  db: dbProp,
+import {
+  collection,
+  getFirestore,
+  orderBy,
   startAfter,
+  query,
+  limit,
+  getDocs,
+} from 'firebase/firestore'
+
+const { POST_PAGINATION_COUNT, POSTS_COLLECTION } = constants
+
+const getPostFeed = async ({
+  startAfter: startAfterProp,
   uid,
   sortMode = FeedSortMode.Latest,
-} = {}) => {
-  const db = dbProp || firebase.firestore()
+}: {
+  startAfter?: number
+  uid: string
+  sortMode?: FeedSortMode
+}): Promise<Post[]> => {
+  const db = getFirestore()
 
-  let postDocs:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let postData: PostData[] = []
+  const dbRef = pipe(
+    () => collection(db, POSTS_COLLECTION),
+    ref =>
+      sortMode === FeedSortMode.Popular
+        ? query(ref, orderBy('popularityScoreRecent', 'desc'))
+        : ref,
+    ref => query(ref, orderBy('createdAt', 'desc')),
+    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
+    ref => query(ref, limit(POST_PAGINATION_COUNT))
+  )()
 
-  const postFeedCacheKey = createPostFeedCacheKey(sortMode)
-  const serverCachedData = get(postFeedCacheKey)
+  const postDocs = await getDocs(dbRef)
+  if (postDocs.empty) return []
 
-  if (serverCachedData) {
-    postData = serverCachedData
-    postDocs = null
-  } else {
-    postDocs = await pipe(
-      () => db.collection(POSTS_COLLECTION),
-      query =>
-        sortMode === FeedSortMode.Popular
-          ? query.orderBy('popularityScoreRecent', 'desc')
-          : query,
-      query => query.orderBy('createdAt', 'desc'),
-      query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(POST_PAGINATION_COUNT).get()
-    )()
+  const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+    postDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
+  )
 
-    if (postDocs.empty) return []
+  const postData = postDocsWithAttachments.map(mapPostDocToData)
 
-    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
-      postDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
-    )
-
-    postData = postDocsWithAttachments.map(mapPostDocToData)
-    put(postFeedCacheKey, postData, FEED_CACHE_TIME)
-  }
-
-  const postsPromise = postData.map(async (postDataItem, index) => {
-    const postDoc = postDocs?.docs[index] ?? null
-
-    if (!uid) {
-      return {
-        data: postDataItem,
-        doc: !isServer ? postDoc : null,
-      }
-    }
-
-    const [createdByUser, likedByUser, userIsWatching, reaction] =
+  const postsPromise = postData.map(async postDataItem => {
+    const [createdByUser, likedByUser, reaction, userIsWatching] =
       await Promise.all([
-        checkIsCreatedByUser(postDataItem.slug, uid, { db }),
-        checkIsLikedByUser(postDataItem.slug, uid, { db }),
-        checkUserIsWatching(postDataItem.slug, uid, { db }),
-        getPostReaction(postDataItem.slug, uid, { db }),
+        checkIsCreatedByUser(postDataItem.slug, uid),
+        checkIsLikedByUser(postDataItem.slug, uid),
+        getPostReaction(postDataItem.slug, uid),
+        checkUserIsWatching(postDataItem.slug, uid),
       ])
 
     return {
       data: postDataItem,
-      doc: !isServer ? postDoc : null,
       user: {
         created: createdByUser,
         like: likedByUser,
@@ -100,6 +70,7 @@ const getPostFeed: GetPosts = async ({
       },
     }
   })
+
   const posts = await Promise.all(postsPromise)
   return posts
 }

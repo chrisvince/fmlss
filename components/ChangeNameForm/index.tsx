@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import 'firebase/auth'
+
 import { Box } from '@mui/system'
 import { TextField, Typography } from '@mui/material'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
@@ -7,7 +7,7 @@ import { Controller, FieldValues, useForm } from 'react-hook-form'
 import { updateName } from '../../utils/callableFirebaseFunctions/updateName'
 import constants from '../../constants'
 import { LoadingButton } from '@mui/lab'
-import useUser from '../../utils/data/user/useUser'
+import useUserData from '../../utils/data/user/useUserData'
 import PageSpinner from '../PageSpinner'
 
 const { FIRST_NAME_MAX_LENGTH, FORM_MESSAGING, LAST_NAME_MAX_LENGTH } =
@@ -23,7 +23,7 @@ const ChangeNameForm = () => {
   const [submitted, setSubmitted] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
   const { control, handleSubmit } = useForm()
-  const { isLoading: userIsLoading, user } = useUser()
+  const { isLoading: userIsLoading, user } = useUserData()
 
   if (userIsLoading) {
     return <PageSpinner />

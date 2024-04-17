@@ -1,5 +1,4 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface Input {
   confirmNewPassword: string
@@ -7,9 +6,7 @@ interface Input {
   requestId: string
 }
 
-type ResetPassword = (data: Input) => Promise<{ data: void }>
-
-export const resetPassword: ResetPassword = data => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('auth-password-reset')(data)
+export const resetPassword = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, void>(functions, 'auth-password-reset')(data)
 }

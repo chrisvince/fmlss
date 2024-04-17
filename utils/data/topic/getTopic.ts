@@ -1,57 +1,30 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
-
 import constants from '../../../constants'
-import { Topic, TopicData } from '../../../types'
-import { createTopicCacheKey } from '../../createCacheKeys'
+import { Topic } from '../../../types'
 import mapTopicDocToData from '../../mapTopicDocToData'
-import isServer from '../../isServer'
+import {
+  collectionGroup,
+  getDocs,
+  getFirestore,
+  limit,
+  query,
+  where,
+} from 'firebase/firestore'
 
-const { TOPICS_COLLECTION, TOPIC_CACHE_TIME } = constants
+const { TOPICS_COLLECTION } = constants
 
-type GetTopic = (
-  path: string,
-  options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-  }
-) => Promise<Topic | null>
+const getTopic = async (path: string): Promise<Topic | null> => {
+  const db = getFirestore()
+  const collectionGroupRef = collectionGroup(db, TOPICS_COLLECTION)
+  const dbRef = query(collectionGroupRef, where('path', '==', path), limit(1))
+  const topicsRef = await getDocs(dbRef)
 
-const getTopic: GetTopic = async (path, { db: dbProp } = {}) => {
-  const db = dbProp || firebase.firestore()
-
-  let doc:
-    | firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let data: TopicData
-
-  const topicCacheKey = createTopicCacheKey(path)
-  const serverCachedData = get(topicCacheKey)
-
-  if (serverCachedData) {
-    data = serverCachedData
-    doc = null
-  } else {
-    const topicsRef = await db
-      .collectionGroup(TOPICS_COLLECTION)
-      .where('path', '==', path)
-      .limit(1)
-      .get()
-
-    if (topicsRef.empty) {
-      return null
-    }
-
-    doc = topicsRef.docs[0]
-    data = mapTopicDocToData(doc)
-    put(topicCacheKey, data, TOPIC_CACHE_TIME)
+  if (topicsRef.empty) {
+    return null
   }
 
-  return {
-    data,
-    doc: !isServer ? doc : null,
-  }
+  const doc = topicsRef.docs[0]
+  const data = mapTopicDocToData(doc)
+  return { data }
 }
 
 export default getTopic

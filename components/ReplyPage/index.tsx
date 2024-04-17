@@ -1,5 +1,3 @@
-import Error from 'next/error'
-
 import usePost from '../../utils/data/post/usePost'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
@@ -10,6 +8,7 @@ import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
+import NotFoundPage from '../NotFoundPage'
 
 const { TOPICS_ENABLED } = constants
 
@@ -21,7 +20,7 @@ const ReplyPage = ({ slug }: Props) => {
   const { isLoading, post } = usePost(slug)
 
   if (!isLoading && !post) {
-    return <Error statusCode={404} />
+    return <NotFoundPage />
   }
 
   return (

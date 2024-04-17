@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 import { Box } from '@mui/system'
 import { TextField, Typography } from '@mui/material'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import { changeEmail } from '../../utils/callableFirebaseFunctions/changeEmail'
 import constants from '../../constants'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { LoadingButton } from '@mui/lab'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 const {
   EMAIL_REGEX_PATTERN,
@@ -23,8 +22,8 @@ const FORM_IDS = {
 }
 
 const ChangeEmailForm = () => {
-  const auth = firebase.auth()
-  const authUser = useAuthUser()
+  const auth = getAuth()
+  const authUser = useUser()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [submitted, setSubmitted] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
@@ -47,7 +46,7 @@ const ChangeEmailForm = () => {
 
     try {
       await changeEmail({ email, password })
-      await auth.signInWithEmailAndPassword(email, password)
+      await signInWithEmailAndPassword(auth, email, password)
       setSubmitted(true)
       setIsLoading(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

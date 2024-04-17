@@ -1,15 +1,15 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
 import { ReactionId } from '../../types/Reaction'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface Input {
   reaction: ReactionId | undefined
   slug: string
 }
 
-type UpdatePostReaction = (data: Input) => Promise<{ data: void }>
-
-export const updatePostReaction: UpdatePostReaction = data => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('postReaction-createOrUpdate')(data)
+export const updatePostReaction = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, void>(
+    functions,
+    'postReaction-createOrUpdate'
+  )(data)
 }

@@ -1,19 +1,13 @@
-import { NextApiRequest } from 'next'
-import {
-  AuthUser,
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
-
 import ReplyPage from '../../../components/ReplyPage'
 import { createPostCacheKey } from '../../../utils/createCacheKeys'
-import getPost from '../../../utils/data/post/getPost'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import constants from '../../../constants'
-import fetchSidebarFallbackData from '../../../utils/data/sidebar/fetchSidebarData'
+import getSidebarDataServer from '../../../utils/data/sidebar/getSidebarDataServer'
+import PageSpinner from '../../../components/PageSpinner'
+import getPostServer from '../../../utils/data/post/getPostServer'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -34,24 +28,15 @@ const ReplyToPost = ({ fallback }: Props) => {
   )
 }
 
-const getServerSidePropsFn = async ({
-  AuthUser,
-  params: { slug: encodedSlug },
-  req,
-}: {
-  AuthUser: AuthUser
-  params: {
-    slug: string
-  }
-  req: NextApiRequest
-}) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ user, params, req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
-  const slug = decodeURIComponent(encodedSlug)
-  const uid = AuthUser.id
+  const slug = params?.slug as string
+  const uid = user?.id
   const postCacheKey = createPostCacheKey(slug)
-  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
+  const sidebarDataPromise = getSidebarDataServer()
 
   if (isInternalRequest(req)) {
     const sidebarFallbackData = await sidebarDataPromise
@@ -66,10 +51,7 @@ const getServerSidePropsFn = async ({
   }
 
   const [post, sidebarFallbackData] = await Promise.all([
-    getPost(slug, {
-      uid,
-      db: adminDb,
-    }),
+    getPostServer(slug, { uid }),
     sidebarDataPromise,
   ])
 
@@ -88,12 +70,11 @@ const getServerSidePropsFn = async ({
       key: postCacheKey,
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getServerSidePropsFn as any
-)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser()(ReplyToPost as any)
+export default withUser<Props>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(ReplyToPost)

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import {
   Box,
   IconButton,
@@ -46,7 +46,7 @@ interface Props {
   disableBottomPaddingXs?: boolean
 }
 const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
-  const { displayName, email, id: uid, signOut } = useAuthUser()
+  const { displayName, email, id: uid, signOut } = useUser()
   const router = useRouter()
   const settingsMenuButtonRef = useRef<HTMLButtonElement>(null)
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)

@@ -5,17 +5,17 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import usePerson from '../../utils/data/person/usePerson'
 import usePersonPosts from '../../utils/data/posts/usePersonPosts'
 import PageSpinner from '../PageSpinner'
-import Error from 'next/error'
 import useTracking from '../../utils/tracking/useTracking'
 import {
   ResourceType,
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import constants from '../../constants'
+import NotFoundPage from '../NotFoundPage'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -31,7 +31,7 @@ type Props = {
 const PersonPage = ({ slug }: Props) => {
   const { person, isLoading: personIsLoading } = usePerson(slug)
   const { track } = useTracking()
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
 
   const handlePostLoadSuccess = () => {
     cellMeasurerCache.clearAll()
@@ -51,7 +51,7 @@ const PersonPage = ({ slug }: Props) => {
   }
 
   if (!person) {
-    return <Error statusCode={404} />
+    return <NotFoundPage />
   }
 
   return (

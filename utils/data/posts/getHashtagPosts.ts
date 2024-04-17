@@ -1,121 +1,86 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
 import {
   HashtagSortMode,
   FirebaseDoc,
-  Post,
-  PostData,
   PostDocWithAttachments,
 } from '../../../types'
-import { createHashtagPostsCacheKey } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
-import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
+import {
+  collectionGroup,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from 'firebase/firestore'
 
-const { HASHTAG_LIST_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
-  constants
+const { POST_PAGINATION_COUNT, POSTS_COLLECTION } = constants
 
 export enum HashtagShowType {
   Post = 'post',
   Both = 'both',
 }
 
-type GetHashtagPosts = (
+const getHashtagPosts = async (
   slug: string,
-  options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-    startAfter?: FirebaseDoc
-    uid?: string | null
-    showType?: HashtagShowType
-    sortMode?: HashtagSortMode
-  }
-) => Promise<Post[]>
-
-const getHashtagPosts: GetHashtagPosts = async (
-  slug,
   {
-    db: dbProp,
-    startAfter,
+    startAfter: startAfterProp,
     uid,
     showType = HashtagShowType.Post,
     sortMode = HashtagSortMode.Latest,
-  } = {}
-) => {
-  const db = dbProp || firebase.firestore()
-
-  let postDocs:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let postData: PostData[] = []
-
-  const lowerCaseSlug = slug.toLowerCase()
-  const hashtagPostsCacheKey = createHashtagPostsCacheKey(
-    lowerCaseSlug,
-    showType,
-    sortMode
-  )
-  const serverCachedData = get(hashtagPostsCacheKey)
-
-  if (serverCachedData) {
-    postData = serverCachedData
-    postDocs = null
-  } else {
-    postDocs = await pipe(
-      () =>
-        db
-          .collectionGroup(POSTS_COLLECTION)
-          .where('hashtagSlugs', 'array-contains', lowerCaseSlug),
-      query =>
-        showType !== 'both' ? query.where('type', '==', showType) : query,
-      query =>
-        sortMode === HashtagSortMode.Popular
-          ? query.orderBy('popularityScoreRecent', 'desc')
-          : query,
-      query => query.orderBy('createdAt', 'desc'),
-      query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(POST_PAGINATION_COUNT).get()
-    )()
-
-    if (postDocs.empty) return []
-
-    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
-      postDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
-    )
-
-    postData = postDocsWithAttachments.map(mapPostDocToData)
-    put(hashtagPostsCacheKey, postData, HASHTAG_LIST_CACHE_TIME)
+  }: {
+    startAfter?: FirebaseDoc
+    uid: string
+    showType?: HashtagShowType
+    sortMode?: HashtagSortMode
   }
+) => {
+  const db = getFirestore()
+  const collectionGroupRef = collectionGroup(db, POSTS_COLLECTION)
 
-  const postsPromise = postData.map(async (postDataItem, index) => {
-    const postDoc = postDocs?.docs[index] ?? null
+  const dbRef = pipe(
+    ref =>
+      query(ref, where('hashtagSlugs', 'array-contains', slug.toLowerCase())),
+    ref =>
+      showType !== 'both' ? query(ref, where('type', '==', showType)) : ref,
+    ref =>
+      sortMode === HashtagSortMode.Popular
+        ? query(ref, orderBy('popularityScoreRecent', 'desc'))
+        : ref,
+    ref => query(ref, orderBy('createdAt', 'desc')),
+    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
+    ref => query(ref, limit(POST_PAGINATION_COUNT))
+  )(collectionGroupRef)
 
-    if (!uid) {
-      return {
-        data: postDataItem,
-        doc: !isServer ? postDoc : null,
-      }
-    }
+  const postDocs = await getDocs(dbRef)
+  if (postDocs.empty) return []
 
+  const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+    postDocs.docs.map(getPostDocWithAttachmentsFromPostDoc)
+  )
+
+  const postData = postDocsWithAttachments.map(mapPostDocToData)
+
+  const postsPromise = postData.map(async postDataItem => {
     const [createdByUser, likedByUser, userIsWatching, reaction] =
       await Promise.all([
-        checkIsCreatedByUser(postDataItem.slug, uid, { db }),
-        checkIsLikedByUser(postDataItem.slug, uid, { db }),
-        checkUserIsWatching(postDataItem.slug, uid, { db }),
-        getPostReaction(postDataItem.slug, uid, { db }),
+        checkIsCreatedByUser(postDataItem.slug, uid),
+        checkIsLikedByUser(postDataItem.slug, uid),
+        checkUserIsWatching(postDataItem.slug, uid),
+        getPostReaction(postDataItem.slug, uid),
       ])
 
     return {
       data: postDataItem,
-      doc: !isServer ? postDoc : null,
       user: {
         created: createdByUser,
         like: likedByUser,

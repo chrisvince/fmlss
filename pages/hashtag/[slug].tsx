@@ -1,21 +1,14 @@
-import {
-  AuthUser,
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
-
 import HashtagPage from '../../components/HashtagPage'
 import { HashtagSortMode } from '../../types'
 import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
-import getHashtagPosts, {
-  HashtagShowType,
-} from '../../utils/data/posts/getHashtagPosts'
+import { HashtagShowType } from '../../utils/data/posts/getHashtagPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
-import { NextApiRequest } from 'next'
-import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
+import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
+import PageSpinner from '../../components/PageSpinner'
+import getHashtagPostsServer from '../../utils/data/posts/getHashtagPostsServer'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -41,21 +34,24 @@ const SORT_MODE_MAP: {
   [HashtagSortMode.Popular]: HashtagSortMode.Popular,
 }
 
-const getServerSidePropsFn = async ({
-  AuthUser,
-  params: { slug },
-  query: { sort = HashtagSortMode.Popular },
-  req,
-}: {
-  AuthUser: AuthUser
-  params: { slug: string }
-  query: { sort: HashtagSortMode }
-  req: NextApiRequest
-}) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ user, params, query, req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
-  const uid = AuthUser.id
+  const slug = params?.slug as string
+  const sort = (query?.sort as string | undefined) ?? HashtagSortMode.Popular
+  const uid = user?.id
+
+  if (!uid) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
   const sortMode = (SORT_MODE_MAP[sort] ??
     HashtagSortMode.Popular) as HashtagSortMode
 
@@ -65,7 +61,7 @@ const getServerSidePropsFn = async ({
     sortMode
   )
 
-  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
+  const sidebarDataPromise = getSidebarDataServer()
 
   if (isInternalRequest(req)) {
     const sidebarFallbackData = await sidebarDataPromise
@@ -81,8 +77,7 @@ const getServerSidePropsFn = async ({
   }
 
   const [posts, sidebarFallbackData] = await Promise.all([
-    getHashtagPosts(slug, {
-      db: adminDb,
+    getHashtagPostsServer(slug, {
       uid,
       showType: DEFAULT_POST_TYPE,
       sortMode,
@@ -101,12 +96,11 @@ const getServerSidePropsFn = async ({
       key: hashtagPostsCacheKey,
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getServerSidePropsFn as any
-)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser()(Hashtag as any)
+export default withUser<PropTypes>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(Hashtag)

@@ -1,17 +1,11 @@
-import { GetServerSidePropsContext } from 'next'
 import { ReactElement } from 'react'
-import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import constants from '../../constants'
 import { checkPasswordResetRequestValid } from '../../utils/callableFirebaseFunctions'
 import LayoutBasicSlimBranded from '../../components/LayoutBasicSlimBranded'
 import ResetPasswordPage from '../../components/ResetPasswordPage'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
-const ROUTE_MODE = 'SEND_AUTHED_TO_APP'
 
 export enum RequestIdStatus {
   UNKNOWN_ERROR = 'error',
@@ -22,23 +16,30 @@ export enum RequestIdStatus {
 
 export type RequestIdStatuses = `${RequestIdStatus}`
 
-const ResetPassword = ({
-  requestId,
-  requestIdStatus,
-}: {
+interface Props {
   requestId: string
   requestIdStatus: RequestIdStatuses
-}) => (
+}
+
+const ResetPassword = ({ requestId, requestIdStatus }: Props) => (
   <ResetPasswordPage requestId={requestId} requestIdStatus={requestIdStatus} />
 )
 
-const getServerSidePropsFn = async ({
-  params: { passwordResetRequestId: encodedPasswordResetRequestId } = {},
-}: GetServerSidePropsContext<{ passwordResetRequestId?: string }>) => {
+ResetPassword.getLayout = (page: ReactElement) => (
+  <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
+)
+
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.RENDER,
+})(async ({ params }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+  const encodedPasswordResetRequestId = params?.passwordResetRequestId as
+    | string
+    | undefined
 
   if (!encodedPasswordResetRequestId) {
-    return { notFound: true, props: {} }
+    return { notFound: true }
   }
 
   const passwordResetRequestId = decodeURIComponent(
@@ -89,17 +90,10 @@ const getServerSidePropsFn = async ({
       requestIdStatus: RequestIdStatus.VALID,
     },
   }
-}
+})
 
-ResetPassword.getLayout = (page: ReactElement) => (
-  <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
-)
-
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-)(getServerSidePropsFn)
-
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ResetPassword as any
-)
+export default withUser<Props>({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.RENDER,
+  whenUnauthedBeforeInit: AuthAction.RENDER,
+})(ResetPassword)

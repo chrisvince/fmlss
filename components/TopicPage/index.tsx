@@ -11,7 +11,6 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import useTracking from '../../utils/tracking/useTracking'
 import { useEffect } from 'react'
 import useTopic from '../../utils/data/topic/useTopic'
-import Error from 'next/error'
 import useTopics from '../../utils/data/topics/useTopics'
 import TopicSubtopicsList from '../TopicSubtopicsList'
 import constants from '../../constants'
@@ -20,7 +19,7 @@ import { Box } from '@mui/system'
 import TopicBreadcrumbs from '../TopicBreadcrumbs'
 import PageSpinner from '../PageSpinner'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
-import useUser from '../../utils/data/user/useUser'
+import useUserData from '../../utils/data/user/useUserData'
 import {
   ResourceType,
   resourceViewed,
@@ -28,6 +27,7 @@ import {
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import { CellMeasurerCache } from 'react-virtualized'
+import NotFoundPage from '../NotFoundPage'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -60,7 +60,7 @@ const generateSortOptions = (path: string) => [
 const TopicPage = ({ path }: PropTypes) => {
   const { topic, isLoading: topicIsLoading } = useTopic(path)
   const { track } = useTracking()
-  const { user } = useUser()
+  const { user } = useUserData()
   const {
     query: { sort },
   } = useRouter()
@@ -123,7 +123,7 @@ const TopicPage = ({ path }: PropTypes) => {
   }
 
   if (!topicIsLoading && !topic) {
-    return <Error statusCode={404} />
+    return <NotFoundPage />
   }
 
   const isTopics = topics.length > 0

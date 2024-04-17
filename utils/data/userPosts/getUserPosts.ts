@@ -1,14 +1,15 @@
 import firebase from 'firebase/app'
-import 'firebase/firestore'
 import { get, put } from '../../serverCache'
 import { pipe } from 'ramda'
 
 import constants from '../../../constants'
 import {
+  Author,
   FirebaseDoc,
   Post,
   PostData,
   PostDocWithAttachments,
+  PostType,
 } from '../../../types'
 import {
   createUserPostsCacheKey,
@@ -21,83 +22,70 @@ import isServer from '../../isServer'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
+import {
+  collectionGroup,
+  getDoc,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from 'firebase/firestore'
 
 const { AUTHORS_COLLECTION, POST_PAGINATION_COUNT, USER_POSTS_CACHE_TIME } =
   constants
 
-type GetUserPosts = (
+const getUserPosts = async (
   uid: string,
-  options?: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
+  {
+    startAfter: startAfterProp,
+    type = PostType.Post,
+  }: {
     startAfter?: FirebaseDoc
-    type?: 'post' | 'reply'
+    type?: PostType
   }
-) => Promise<Post[]>
+): Promise<Post[]> => {
+  const db = getFirestore()
+  const collectionGroupRef = collectionGroup(db, AUTHORS_COLLECTION)
 
-const getUserPosts: GetUserPosts = async (
-  uid,
-  { db: dbProp, startAfter, type = 'post' } = {}
-) => {
-  const db = dbProp || firebase.firestore()
+  const dbRef = pipe(
+    ref =>
+      query(
+        ref,
+        where('uid', '==', uid),
+        where('post.type', '==', type),
+        orderBy('createdAt', 'desc')
+      ),
+    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
+    ref => query(ref, limit(POST_PAGINATION_COUNT))
+  )(collectionGroupRef)
 
-  let authorDocs:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-    | null
-  let postData: PostData[] = []
+  const authorDocs = await getDocs(dbRef)
+  if (authorDocs.empty) return []
 
-  const createCacheKey = {
-    post: createUserPostsCacheKey,
-    reply: createUserRepliesCacheKey,
-  }[type]
+  const postDocsPromise = authorDocs.docs.map(doc =>
+    getDoc((doc.data() as Author).post.ref)
+  )
 
-  const userPostsCacheKey = createCacheKey(uid)
-  const serverCachedData = get(userPostsCacheKey)
+  const postDocs = await Promise.all(postDocsPromise)
 
-  if (serverCachedData) {
-    postData = serverCachedData
-    authorDocs = null
-  } else {
-    authorDocs = await pipe(
-      () =>
-        db
-          .collectionGroup(AUTHORS_COLLECTION)
-          .where('uid', '==', uid)
-          .where('post.type', '==', type)
-          .orderBy('createdAt', 'desc'),
-      query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(POST_PAGINATION_COUNT).get()
-    )()
+  const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
+    postDocs.map(getPostDocWithAttachmentsFromPostDoc)
+  )
 
-    if (authorDocs.empty) return []
+  const postData = postDocsWithAttachments.map(mapPostDocToData)
 
-    const postDocsPromise = authorDocs.docs.map(doc =>
-      doc.data().post.ref.get()
-    )
-    const postDocs = await Promise.all(postDocsPromise)
-
-    const postDocsWithAttachments: PostDocWithAttachments[] = await Promise.all(
-      postDocs.map(getPostDocWithAttachmentsFromPostDoc)
-    )
-
-    postData = postDocsWithAttachments.map(mapPostDocToData)
-    put(userPostsCacheKey, postData, USER_POSTS_CACHE_TIME)
-  }
-
-  const postsPromise = postData.map(async (postDataItem, index) => {
-    const postDoc = authorDocs?.docs[index] ?? null
-
-    setCacheIsCreatedByUser(postDataItem.slug, uid)
-
+  const postsPromise = postData.map(async postDataItem => {
     const [likedByUser, userIsWatching, reaction] = await Promise.all([
-      checkIsLikedByUser(postDataItem.slug, uid, { db }),
-      checkUserIsWatching(postDataItem.slug, uid, { db }),
-      getPostReaction(postDataItem.slug, uid, { db }),
+      checkIsLikedByUser(postDataItem.slug, uid),
+      checkUserIsWatching(postDataItem.slug, uid),
+      getPostReaction(postDataItem.slug, uid),
     ])
 
     return {
       data: postDataItem,
-      doc: !isServer ? postDoc : null,
       user: {
         created: true,
         like: likedByUser,
@@ -106,6 +94,7 @@ const getUserPosts: GetUserPosts = async (
       },
     }
   })
+
   const posts = await Promise.all(postsPromise)
   return posts
 }

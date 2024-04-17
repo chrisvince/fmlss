@@ -1,23 +1,12 @@
-import {
-  AuthUser,
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
-
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import constants from '../../constants'
-import getUser from '../../utils/data/user/getUser'
 import { createUserCacheKey } from '../../utils/createCacheKeys'
 import { SWRConfig } from 'swr/_internal'
 import ColorModePage from '../../components/ColorModePage'
+import PageSpinner from '../../components/PageSpinner'
+import getUserDataServer from '../../utils/data/user/getUserDataServer'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
-
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface Props {
   fallback: {
@@ -31,30 +20,38 @@ const ColorMode = ({ fallback }: Props) => (
   </SWRConfig>
 )
 
-const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ user }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
-  const uid = AuthUser.id
+  const uid = user?.id
 
-  // @ts-expect-error: we know uid is defined
+  if (!uid) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
   const userCacheKey = createUserCacheKey(uid)
-  const user = await getUser(uid, { db: adminDb })
+  const userData = await getUserDataServer(uid)
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
   return {
     props: {
       fallback: {
-        [userCacheKey]: user,
+        [userCacheKey]: userData,
       },
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-)(getServerSidePropsFn as any)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(ColorMode as any)
+export default withUser<Props>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(ColorMode)

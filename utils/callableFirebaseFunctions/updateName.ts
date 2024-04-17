@@ -1,14 +1,11 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface Input {
   firstName: string
   lastName: string
 }
 
-type UpdateName = (data: Input) => Promise<{ data: void }>
-
-export const updateName: UpdateName = data => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('auth-name-update')(data)
+export const updateName = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, void>(functions, 'auth-name-update')(data)
 }

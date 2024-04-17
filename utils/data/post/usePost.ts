@@ -1,4 +1,4 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { useCallback } from 'react'
 import useSWR, { MutatorCallback, SWRConfiguration } from 'swr'
 import { Post } from '../../../types'
@@ -31,12 +31,15 @@ type UsePost = (
 }
 
 const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
   const postCacheKey = slug ? createPostCacheKey(slug) : undefined
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(
     postCacheKey,
-    () => getPost(slug, { uid }),
+    () => {
+      if (!slug) return null
+      return getPost(slug, { uid })
+    },
     {
       ...DEFAULT_SWR_CONFIG,
       ...swrConfig,

@@ -1,48 +1,31 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
 import constants from '../../../constants'
-import { createUserIsWatchingCacheKey } from '../../createCacheKeys'
+import {
+  collectionGroup,
+  getDocs,
+  getFirestore,
+  limit,
+  query,
+  where,
+} from 'firebase/firestore'
 
-const { USER_IS_WATCHING_CACHE_TIME, WATCHERS_COLLECTION } = constants
+const { WATCHERS_COLLECTION } = constants
 
 const checkUserIsWatching = async (
   slug: string,
-  uid: string,
-  {
-    db: dbProp,
-  }: {
-    db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-  } = {}
-) => {
-  const db = dbProp || firebase.firestore()
-  let userIsWatching = false
-  const userIsWatchingCacheKey = createUserIsWatchingCacheKey(slug, uid)
+  uid: string
+): Promise<boolean> => {
+  const db = getFirestore()
+  const collectionGroupRef = collectionGroup(db, WATCHERS_COLLECTION)
 
-  const serverCachedUserIsWatching = get(userIsWatchingCacheKey) as
-    | boolean
-    | null
+  const dbRef = query(
+    collectionGroupRef,
+    where('uid', '==', uid),
+    where('post.slug', '==', slug),
+    limit(1)
+  )
 
-  if (serverCachedUserIsWatching !== null) {
-    userIsWatching = serverCachedUserIsWatching
-  } else {
-    const postWatchersSnapshot = await db
-      .collectionGroup(WATCHERS_COLLECTION)
-      .where('uid', '==', uid)
-      .where('post.slug', '==', slug)
-      .limit(1)
-      .get()
-
-    if (postWatchersSnapshot.empty) {
-      userIsWatching = false
-    } else {
-      userIsWatching = true
-    }
-
-    put(userIsWatchingCacheKey, userIsWatching, USER_IS_WATCHING_CACHE_TIME)
-  }
-
-  return userIsWatching
+  const postWatchersRef = await getDocs(dbRef)
+  return !postWatchersRef.empty
 }
 
 export default checkUserIsWatching

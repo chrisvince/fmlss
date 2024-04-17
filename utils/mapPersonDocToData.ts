@@ -1,13 +1,13 @@
-import type { FirebaseDoc } from '../types'
 import { PersonData } from '../types/PersonData'
 import { PersonDataRequest } from '../types/PersonDataRequest'
+import { FirebaseDoc } from '../types'
 
-const mapPersonDocToData = (personDoc: FirebaseDoc): PersonData => {
-  const personData = personDoc.data() as PersonDataRequest
+const mapPersonDocToData = (doc: FirebaseDoc): PersonData => {
+  const personData = doc.data() as PersonDataRequest
 
   return {
     createdAt: personData.createdAt.toMillis(),
-    id: personDoc.id,
+    id: doc.id,
     name: personData.name,
     postCount: personData.postCount,
     slug: personData.slug,

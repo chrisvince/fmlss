@@ -1,9 +1,4 @@
-import {
-  AuthUser,
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import TopicsPage from '../../components/TopicsPage'
@@ -12,30 +7,24 @@ import {
   createTopicsCacheKey,
   createTopicCacheKey,
 } from '../../utils/createCacheKeys'
-import getTopics from '../../utils/data/topics/getTopics'
 import constants from '../../constants'
-import { NextApiRequest } from 'next'
 import isInternalRequest from '../../utils/isInternalRequest'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
-import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
-import { SidebarResourceKey } from '../../utils/data/sidebar/fetchSidebarData'
-import getTopic from '../../utils/data/topic/getTopic'
+import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
+import { SidebarResourceKey } from '../../utils/data/sidebar/getSidebarDataServer'
+import PageSpinner from '../../components/PageSpinner'
+import getTopicsServer from '../../utils/data/topics/getTopicsServer'
+import getTopicServer from '../../utils/data/topic/getTopicServer'
 
 const { TOPICS_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
-
-interface PropTypes {
+interface Props {
   fallback: {
     [key: string]: unknown
   }
   parentTopicPath: string | null
 }
 
-const Topics = ({ fallback, parentTopicPath }: PropTypes) => (
+const Topics = ({ fallback, parentTopicPath }: Props) => (
   <SWRConfig value={{ fallback }}>
     <TopicsPage parentTopicPath={parentTopicPath} />
   </SWRConfig>
@@ -48,17 +37,13 @@ const SORT_MODE_MAP: {
   popular: TopicsSortMode.Popular,
 }
 
-const getServerSidePropsFn = async ({
-  params: { slugs = [] },
-  req,
-  query: { sort = TopicsSortMode.Popular },
-}: {
-  AuthUser: AuthUser
-  params: { slugs: string[] }
-  query: { sort: string }
-  req: NextApiRequest
-}) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ params, req, query }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
+  const slugs = (params?.slugs as string[] | undefined) ?? []
+  const sort = (query?.sort as string | undefined) ?? TopicsSortMode.Popular
 
   if (!TOPICS_ENABLED) {
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -69,17 +54,12 @@ const getServerSidePropsFn = async ({
 
   const sortMode = SORT_MODE_MAP[sort] ?? TopicsSortMode.Popular
   const parentTopicPath = slugs.join('/') || null
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
 
   const parentTopicPromise = parentTopicPath
-    ? getTopic(parentTopicPath, {
-        db: adminDb,
-      })
+    ? getTopicServer(parentTopicPath)
     : null
 
-  const sidebarDataPromise = fetchSidebarFallbackData({
-    db: adminDb,
+  const sidebarDataPromise = getSidebarDataServer({
     exclude: [SidebarResourceKey.Topics],
   })
 
@@ -128,7 +108,7 @@ const getServerSidePropsFn = async ({
   })
 
   const [topics, sidebarFallbackData] = await Promise.all([
-    getTopics({ db: adminDb, sortMode, parentTopicRef: parentTopic?.data.ref }),
+    getTopicsServer({ sortMode, parentTopicRef: parentTopic?.data.ref }),
     sidebarDataPromise,
   ])
 
@@ -156,12 +136,12 @@ const getServerSidePropsFn = async ({
       parentTopicPath,
     },
   }
-}
-
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-)(getServerSidePropsFn as any)
+})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(Topics as any)
+export default withUser<Props>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(Topics)

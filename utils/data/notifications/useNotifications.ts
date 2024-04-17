@@ -1,4 +1,4 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import {
   createNotificationCacheKey,
@@ -11,8 +11,9 @@ import { useEffect, useMemo, useRef } from 'react'
 import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import checkPossibleMoreToLoad from '../../checkPossibleMoreToLoad'
 import { useSWRConfig } from 'swr'
+import { doc, getFirestore, updateDoc } from 'firebase/firestore'
 
-const { NOTIFICATION_PAGINATION_COUNT } = constants
+const { NOTIFICATION_PAGINATION_COUNT, NOTIFICATIONS_COLLECTION } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   initialSize: 1,
@@ -43,8 +44,9 @@ const useNotifications: UseNotifications = ({
   skip,
   swrConfig,
 } = {}) => {
+  const db = getFirestore()
   const pageStartAfterTraceRef = useRef<{ [key: string]: FirebaseDoc }>({})
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
 
   const { fallback } = useSWRConfig()
 
@@ -86,6 +88,7 @@ const useNotifications: UseNotifications = ({
       }
     )
 
+  console.log('data', data)
   const lastPageLastDoc = getLastDocOfLastPage(data)
   const moreToLoad = checkPossibleMoreToLoad(data, limit)
   const notifications = useMemo(() => data?.flat() ?? [], [data])
@@ -101,8 +104,9 @@ const useNotifications: UseNotifications = ({
     const unreadNotifications = notifications.filter(({ data }) => !data.readAt)
     if (!unreadNotifications.length) return
 
-    unreadNotifications.forEach(({ doc }) => {
-      doc.ref.update({ readAt: new Date() })
+    unreadNotifications.forEach(({ data }) => {
+      const docRef = doc(db, NOTIFICATIONS_COLLECTION, data.id)
+      updateDoc(docRef, { readAt: new Date() })
     })
   }, [markRead, notifications])
 

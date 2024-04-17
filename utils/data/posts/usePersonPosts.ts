@@ -1,4 +1,4 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
@@ -56,14 +56,14 @@ const usePersonPosts: UsePersonPosts = (
 
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createPersonPostsCacheKey(slug, { sortMode })]
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (pageIndex, previousPageData) => {
         if (
-          previousPageData &&
-          previousPageData.length < POST_PAGINATION_COUNT
+          !uid ||
+          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
         ) {
           return null
         }
@@ -71,6 +71,8 @@ const usePersonPosts: UsePersonPosts = (
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
+        if (!uid) return []
+
         return getPersonPosts(slug, {
           sortMode,
           startAfter: pageStartAfterTrace[pageIndex],

@@ -5,10 +5,11 @@ import { FeedSortMode } from '../../types'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
-import Error from 'next/error'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import InlineCreatePost from '../InlineCreatePost'
+import useUserData from '../../utils/data/user/useUserData'
+import NotFoundPage from '../NotFoundPage'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
 
@@ -41,8 +42,11 @@ const FeedPage = ({ sortMode }: Props) => {
     watchPost,
   } = usePostFeed({ sortMode, swrConfig: { onSuccess: handlePostLoadSuccess } })
 
+  const user = useUserData()
+  console.log('user', user)
+
   if (!sortMode) {
-    return <Error statusCode={404} />
+    return <NotFoundPage />
   }
 
   const pageTitle = TITLE_MAP[sortMode]

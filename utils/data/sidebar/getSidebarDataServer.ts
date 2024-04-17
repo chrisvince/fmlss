@@ -4,15 +4,15 @@ import {
   createSidebarHashtagsCacheKey,
   createSidebarPeopleCacheKey,
 } from '../../createCacheKeys'
-import getTopics from '../topics/getTopics'
-import getHashtags from '../hashtags/getHashtags'
-import firebase from 'firebase/app'
 import {
   HashtagsSortMode,
   PeopleSortMode,
   TopicsSortMode,
 } from '../../../types'
-import getPeople from '../people/getPeople'
+import isServer from '../../isServer'
+import getHashtagsServer from '../hashtags/getHashtagsServer'
+import getTopicsServer from '../topics/getTopicsServer'
+import getPeopleServer from '../people/getPeopleServer'
 
 const { SIDEBAR_LIST_CACHE_TIME, SIDEBAR_LIST_COUNT } = constants
 
@@ -22,13 +22,15 @@ export enum SidebarResourceKey {
   Topics = 'topics',
 }
 
-const fetchSidebarFallbackData = async ({
-  db,
+const getSidebarDataServer = async ({
   exclude = [],
 }: {
-  db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
   exclude?: SidebarResourceKey[]
-}) => {
+} = {}) => {
+  if (!isServer) {
+    throw new Error('getPostFeedServer must be called on the server')
+  }
+
   const hashtagsCacheKey = !exclude.includes(SidebarResourceKey.Hashtags)
     ? createSidebarHashtagsCacheKey()
     : null
@@ -43,10 +45,9 @@ const fetchSidebarFallbackData = async ({
 
   const getSidebarHashtags = () =>
     hashtagsCacheKey
-      ? getHashtags({
+      ? getHashtagsServer({
           cacheKey: hashtagsCacheKey,
           cacheTime: SIDEBAR_LIST_CACHE_TIME,
-          db,
           limit: SIDEBAR_LIST_COUNT,
           sortMode: HashtagsSortMode.Popular,
         })
@@ -54,10 +55,9 @@ const fetchSidebarFallbackData = async ({
 
   const getSidebarTopics = () =>
     sidebarTopicsCacheKey
-      ? getTopics({
+      ? getTopicsServer({
           cacheKey: sidebarTopicsCacheKey,
           cacheTime: SIDEBAR_LIST_CACHE_TIME,
-          db,
           limit: SIDEBAR_LIST_COUNT,
           sortMode: TopicsSortMode.Popular,
         })
@@ -65,10 +65,9 @@ const fetchSidebarFallbackData = async ({
 
   const getSidebarPeople = () =>
     sidebarPeopleCacheKey
-      ? getPeople({
+      ? getPeopleServer({
           cacheKey: sidebarPeopleCacheKey,
           cacheTime: SIDEBAR_LIST_CACHE_TIME,
-          db,
           limit: SIDEBAR_LIST_COUNT,
           sortMode: PeopleSortMode.Popular,
         })
@@ -91,4 +90,4 @@ const fetchSidebarFallbackData = async ({
   }
 }
 
-export default fetchSidebarFallbackData
+export default getSidebarDataServer

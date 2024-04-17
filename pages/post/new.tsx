@@ -1,18 +1,17 @@
-import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
-
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import NewPostPage from '../../components/NewPostPage'
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
-
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
+import PageSpinner from '../../components/PageSpinner'
 
 const NewPost = () => <NewPostPage />
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-)()
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})()
 
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(NewPost)
+export default withUser({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(NewPost)

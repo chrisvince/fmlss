@@ -1,3 +1,4 @@
+import { QueryDocumentSnapshot } from 'firebase/firestore'
 import {
   FirebaseDoc,
   NotificationData,

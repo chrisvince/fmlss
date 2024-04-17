@@ -1,8 +1,4 @@
-import {
-  getFirebaseAdmin,
-  withAuthUser,
-  withAuthUserTokenSSR,
-} from 'next-firebase-auth'
+import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import {
@@ -10,39 +6,46 @@ import {
   createPersonPostsCacheKey,
 } from '../../utils/createCacheKeys'
 import isInternalRequest from '../../utils/isInternalRequest'
-import { NextApiRequest } from 'next'
-import fetchSidebarFallbackData from '../../utils/data/sidebar/fetchSidebarData'
-import getPerson from '../../utils/data/person/getPerson'
+import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
 import PersonPage from '../../components/PersonPage'
-import getPersonPosts from '../../utils/data/posts/getPersonPosts'
 import { PersonPostsSortMode } from '../../types/PersonPostsSortMode'
+import PageSpinner from '../../components/PageSpinner'
+import getPersonPostsServer from '../../utils/data/posts/getPersonPostsServer'
+import getPersonServer from '../../utils/data/person/getPersonServer'
 
-interface PropTypes {
+interface Props {
   fallback: {
     [key: string]: unknown
   }
   slug: string
 }
 
-const Person = ({ fallback, slug }: PropTypes) => (
+const Person = ({ fallback, slug }: Props) => (
   <SWRConfig value={{ fallback }}>
     <PersonPage slug={slug} />
   </SWRConfig>
 )
 
-const getServerSidePropsFn = async ({
-  params: { slug },
-  req,
-}: {
-  params: { slug: string }
-  req: NextApiRequest
-}) => {
-  const admin = getFirebaseAdmin()
-  const adminDb = admin.firestore()
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ params, req, user }) => {
+  const uid = user?.id
+
+  if (!uid) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  const slug = params?.slug as string
   const personCacheKey = createPersonCacheKey(slug)
   const personPostsCacheKey = createPersonPostsCacheKey(slug)
-  const sidebarDataPromise = fetchSidebarFallbackData({ db: adminDb })
-  const getPersonPromise = getPerson(slug, { db: adminDb })
+  const sidebarDataPromise = getSidebarDataServer()
+  const getPersonPromise = getPersonServer(slug)
 
   if (isInternalRequest(req)) {
     const [person, sidebarFallbackData] = await Promise.all([
@@ -64,9 +67,9 @@ const getServerSidePropsFn = async ({
 
   const [person, posts, sidebarFallbackData] = await Promise.all([
     getPersonPromise,
-    getPersonPosts(slug, {
-      db: adminDb,
+    getPersonPostsServer(slug, {
       sortMode: PersonPostsSortMode.Popular,
+      uid,
     }),
     sidebarDataPromise,
   ])
@@ -82,12 +85,11 @@ const getServerSidePropsFn = async ({
       key: personCacheKey,
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR()(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getServerSidePropsFn as any
-)
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withAuthUser()(Person as any)
+export default withUser<Props>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(Person)

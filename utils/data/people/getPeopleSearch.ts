@@ -1,59 +1,34 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { get, put } from '../../serverCache'
-
-import { createPeopleSearchCacheKey } from '../../createCacheKeys'
 import constants from '../../../constants'
-import isServer from '../../isServer'
-import { PersonData } from '../../../types/PersonData'
 import mapPersonDocToData from '../../mapPersonDocToData'
 import slugify from '../../slugify'
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  query,
+  where,
+} from 'firebase/firestore'
+import { Person } from '../../../types'
 
-const { AUTOCOMPLETE_LENGTH, PEOPLE_COLLECTION, PEOPLE_SEARCH_CACHE_TIME } =
-  constants
+const { AUTOCOMPLETE_LENGTH, PEOPLE_COLLECTION } = constants
 
-interface Options {
-  db?: firebase.firestore.Firestore | FirebaseFirestore.Firestore
-}
-
-const getPeopleSearch = async (
-  searchString: string,
-  { db: dbProp }: Options = {}
-) => {
-  const db = dbProp || firebase.firestore()
+const getPeopleSearch = async (searchString: string): Promise<Person[]> => {
+  const db = getFirestore()
   const slug = slugify(searchString)
-  const cacheKey = createPeopleSearchCacheKey(slug)
+  const collectionRef = collection(db, PEOPLE_COLLECTION)
 
-  let personDocs:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
-    | null
+  const dbRef = query(
+    collectionRef,
+    where('slug', '>=', slug),
+    where('slug', '<=', slug + '\uf8ff'),
+    limit(AUTOCOMPLETE_LENGTH)
+  )
 
-  let personData: PersonData[] = []
-  const serverCachedData = get(cacheKey)
-
-  if (serverCachedData) {
-    personData = serverCachedData
-    personDocs = null
-  } else {
-    personDocs = await db
-      .collection(PEOPLE_COLLECTION)
-      .where('slug', '>=', slug)
-      .where('slug', '<=', slug + '\uf8ff')
-      .limit(AUTOCOMPLETE_LENGTH)
-      .get()
-
-    if (personDocs.empty) return []
-
-    personData = personDocs.docs.map(doc => mapPersonDocToData(doc))
-    put(cacheKey, personData, PEOPLE_SEARCH_CACHE_TIME)
-  }
-
-  const people = personData.map((data, index) => ({
-    data,
-    doc: !isServer ? personDocs?.docs[index] ?? null : null,
-  }))
-
+  const personDocs = await getDocs(dbRef)
+  if (personDocs.empty) return []
+  const personData = personDocs.docs.map(mapPersonDocToData)
+  const people = personData.map(data => ({ data }))
   return people
 }
 

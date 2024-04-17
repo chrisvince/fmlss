@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
 import { reverse } from 'ramda'
@@ -60,7 +60,7 @@ const usePostReplies: UsePostReplies = (
   const fallbackData = slug
     ? fallback[createPostRepliesCacheKey(slug, { pageIndex: 0, viewMode })]
     : undefined
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
   const { post, isValidating: postIsValidating } = usePost(slug)
 
   const {

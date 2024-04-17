@@ -1,4 +1,4 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import { MutatorCallback, useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
@@ -26,9 +26,9 @@ const { POST_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
-  revalidateOnFocus: true,
+  revalidateOnFocus: false,
   revalidateFirstPage: false,
-  revalidateAll: true,
+  revalidateAll: false,
 }
 
 type UsePostFeed = (options?: {
@@ -50,30 +50,27 @@ const usePostFeed: UsePostFeed = ({
   sortMode = FeedSortMode.Latest,
   swrConfig = {},
 } = {}) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPostFeedCacheKey(sortMode)]
-  const { id: uid } = useAuthUser()
+  const fallbackData = fallback[createPostFeedCacheKey({ sortMode })]
+  const { id: uid } = useUser()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (index, previousPageData) => {
         if (
-          previousPageData &&
-          previousPageData.length < POST_PAGINATION_COUNT
+          !uid ||
+          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
         ) {
           return null
         }
-        return createPostFeedCacheKey(sortMode, { pageIndex: index })
+        return { cacheKey: createPostFeedCacheKey({ sortMode }), index }
       },
-      key => {
-        const pageIndex = getPageIndexFromCacheKey(key)
+      ({ index }) => {
+        if (!uid) return null
+
         return getPostFeed({
           sortMode,
-          startAfter: pageStartAfterTrace[pageIndex],
+          startAfter: POST_PAGINATION_COUNT * index,
           uid,
         })
       },
@@ -83,15 +80,6 @@ const usePostFeed: UsePostFeed = ({
         ...swrConfig,
       }
     )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -187,6 +175,8 @@ const usePostFeed: UsePostFeed = ({
     },
     [mutate, uid]
   )
+
+  console.log('error', error)
 
   return {
     error,

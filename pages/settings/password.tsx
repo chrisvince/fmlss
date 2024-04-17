@@ -1,20 +1,10 @@
-import {
-  withAuthUser,
-  withAuthUserTokenSSR,
-  AuthUser,
-} from 'next-firebase-auth'
-
-import {
-  withAuthUserConfig,
-  withAuthUserTokenSSRConfig,
-} from '../../config/withAuthConfig'
-import { checkUserHasPassword } from '../../utils/callableFirebaseFunctions'
+import { withUser, withUserTokenSSR, AuthAction } from 'next-firebase-auth'
 import constants from '../../constants'
 import PasswordPage from '../../components/PasswordPage'
+import PageSpinner from '../../components/PageSpinner'
+import { checkUserHasPasswordServer } from '../../utils/data/user/checkUserHasPasswordServer'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
-
-const ROUTE_MODE = 'SEND_UNAUTHED_TO_LOGIN'
 
 interface Props {
   userHasPassword: boolean
@@ -24,15 +14,23 @@ const Password = ({ userHasPassword }: Props) => (
   <PasswordPage userHasPassword={userHasPassword} />
 )
 
-const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
+export const getServerSideProps = withUserTokenSSR({
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+})(async ({ user }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const uid = AuthUser.id
+  const uid = user?.id
 
-  const { data: userHasPassword } = await checkUserHasPassword({
-    // @ts-expect-error: we know uid is defined
-    uid,
-  })
+  if (!uid) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
 
+  const userHasPassword = await checkUserHasPasswordServer(uid)
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
 
   return {
@@ -40,14 +38,11 @@ const getServerSidePropsFn = async ({ AuthUser }: { AuthUser: AuthUser }) => {
       userHasPassword,
     },
   }
-}
+})
 
-export const getServerSideProps = withAuthUserTokenSSR(
-  withAuthUserTokenSSRConfig(ROUTE_MODE)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-)(getServerSidePropsFn as any)
-
-export default withAuthUser(withAuthUserConfig(ROUTE_MODE))(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Password as any
-)
+export default withUser<Props>({
+  LoaderComponent: PageSpinner,
+  whenAuthed: AuthAction.RENDER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+})(Password)

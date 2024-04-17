@@ -1,4 +1,4 @@
-import { useAuthUser } from 'next-firebase-auth'
+import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
@@ -55,14 +55,14 @@ const useTopicPosts: UseTopicPosts = (
 
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createTopicPostsCacheKey(path, { sortMode })]
-  const { id: uid } = useAuthUser()
+  const { id: uid } = useUser()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
       (index, previousPageData) => {
         if (
-          previousPageData &&
-          previousPageData.length < POST_PAGINATION_COUNT
+          !uid ||
+          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
         ) {
           return null
         }
@@ -70,6 +70,8 @@ const useTopicPosts: UseTopicPosts = (
       },
       key => {
         const pageIndex = getPageIndexFromCacheKey(key)
+        if (!uid) return []
+
         return getTopicPosts(path, {
           sortMode,
           startAfter: pageStartAfterTrace[pageIndex],

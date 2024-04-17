@@ -1,5 +1,4 @@
-import firebase from 'firebase/app'
-import 'firebase/functions'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 export enum ResourceType {
   Hashtag = 'hashtag',
@@ -13,9 +12,7 @@ interface Input {
   slug: string
 }
 
-type ResourceViewed = (data: Input) => Promise<{ data: void }>
-
-export const resourceViewed: ResourceViewed = data => {
-  const functions = firebase.functions()
-  return functions.httpsCallable('userEvent-resourceViewed')(data)
+export const resourceViewed = (data: Input) => {
+  const functions = getFunctions()
+  return httpsCallable<Input, void>(functions, 'userEvent-resourceViewed')(data)
 }
