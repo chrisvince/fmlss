@@ -21,6 +21,7 @@ export const getServerSideProps = withUserTokenSSR({
 export default withUser({
   LoaderComponent: PageSpinner,
   whenAuthed: AuthAction.REDIRECT_TO_APP,
+  whenAuthedBeforeRedirect: AuthAction.RENDER,
   whenUnauthedAfterInit: AuthAction.RENDER,
   whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
 })(SignIn)
