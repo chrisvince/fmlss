@@ -4,7 +4,6 @@ import {
   redirectToHome,
   redirectToLogin,
 } from 'next-firebase-auth-edge'
-import daysToMiliseconds from './firebase/functions/src/util/daysToMilliseconds'
 import constants from './constants'
 
 const { AUTH_API_LOGIN_PATH, AUTH_API_LOGOUT_PATH } = constants
@@ -46,7 +45,7 @@ export const middleware = async (request: NextRequest) => {
       httpOnly: true,
       secure: true,
       sameSite: 'lax' as const,
-      maxAge: daysToMiliseconds(12),
+      maxAge: 14 * 60 * 60 * 24,
     },
     serviceAccount: {
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID as string,
