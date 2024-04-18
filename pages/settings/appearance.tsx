@@ -1,10 +1,10 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import constants from '../../constants'
 import { createUserCacheKey } from '../../utils/createCacheKeys'
 import { SWRConfig } from 'swr/_internal'
 import ColorModePage from '../../components/ColorModePage'
-import PageSpinner from '../../components/PageSpinner'
 import getUserDataServer from '../../utils/data/user/getUserDataServer'
+import { GetServerSideProps } from 'next'
+import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -14,18 +14,15 @@ interface Props {
   }
 }
 
-const ColorMode = ({ fallback }: Props) => (
+const Appearance = ({ fallback }: Props) => (
   <SWRConfig value={{ fallback }}>
     <ColorModePage />
   </SWRConfig>
 )
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ user }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const uid = user?.id
+  const uid = await getUidFromCookies(req.cookies)
 
   if (!uid) {
     return {
@@ -47,11 +44,6 @@ export const getServerSideProps = withUserTokenSSR({
       },
     },
   }
-})
+}
 
-export default withUser<Props>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(ColorMode)
+export default Appearance

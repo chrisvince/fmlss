@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import {
@@ -9,9 +8,10 @@ import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
 import PersonPage from '../../components/PersonPage'
 import { PersonPostsSortMode } from '../../types/PersonPostsSortMode'
-import PageSpinner from '../../components/PageSpinner'
 import getPersonPostsServer from '../../utils/data/posts/getPersonPostsServer'
 import getPersonServer from '../../utils/data/person/getPersonServer'
+import getUidFromCookies from '../../utils/auth/getUidFromCookies'
+import { GetServerSideProps } from 'next'
 
 interface Props {
   fallback: {
@@ -26,21 +26,11 @@ const Person = ({ fallback, slug }: Props) => (
   </SWRConfig>
 )
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ params, req, user }) => {
-  const uid = user?.id
-
-  if (!uid) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  req,
+}) => {
+  const uid = await getUidFromCookies(req.cookies)
   const slug = params?.slug as string
   const personCacheKey = createPersonCacheKey(slug)
   const personPostsCacheKey = createPersonPostsCacheKey(slug)
@@ -85,11 +75,6 @@ export const getServerSideProps = withUserTokenSSR({
       key: personCacheKey,
     },
   }
-})
+}
 
-export default withUser<Props>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(Person)
+export default Person

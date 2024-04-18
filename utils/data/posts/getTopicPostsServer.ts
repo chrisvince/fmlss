@@ -28,7 +28,7 @@ const getTopicPostsServer = async (
     sortMode = TopicSortMode.Popular,
   }: {
     startAfter?: FirebaseDoc
-    uid: string
+    uid: string | null
     sortMode?: TopicSortMode
   }
 ) => {
@@ -74,6 +74,18 @@ const getTopicPostsServer = async (
   }
 
   const postsPromise = postData.map(async postDataItem => {
+    if (!uid) {
+      return {
+        data: postDataItem,
+        user: {
+          created: false,
+          like: false,
+          reaction: null,
+          watching: false,
+        },
+      }
+    }
+
     const [createdByUser, likedByUser, userIsWatching, reaction] =
       await Promise.all([
         checkIsCreatedByUserServer(postDataItem.slug, uid),

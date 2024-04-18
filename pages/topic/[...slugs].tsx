@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import TopicPage from '../../components/TopicPage'
@@ -12,10 +11,11 @@ import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
 import slugify from '../../utils/slugify'
-import PageSpinner from '../../components/PageSpinner'
 import getTopicServer from '../../utils/data/topic/getTopicServer'
 import getTopicsServer from '../../utils/data/topics/getTopicsServer'
 import getTopicPostsServer from '../../utils/data/posts/getTopicPostsServer'
+import { GetServerSideProps } from 'next'
+import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, SUBTOPICS_ON_TOPIC_PAGE_LIMIT } =
   constants
@@ -40,25 +40,16 @@ const SORT_MODE_MAP: {
   popular: TopicSortMode.Popular,
 }
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ user, params, query, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  query,
+  req,
+}) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const slugs = (params?.slugs as string[] | undefined) ?? []
   const sort = (query?.sort as string | undefined) ?? TopicSortMode.Popular
   const path = slugs.map(slugify).join('/')
-  const uid = user?.id
-
-  if (!uid) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
-
+  const uid = await getUidFromCookies(req.cookies)
   const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Popular
   console.log('sortMode', sortMode)
   const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
@@ -131,11 +122,6 @@ export const getServerSideProps = withUserTokenSSR({
       key: topicCacheKey,
     },
   }
-})
+}
 
-export default withUser<PropTypes>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(Topic)
+export default Topic

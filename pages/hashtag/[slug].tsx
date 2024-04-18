@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 import HashtagPage from '../../components/HashtagPage'
 import { HashtagSortMode } from '../../types'
@@ -7,8 +6,9 @@ import { HashtagShowType } from '../../utils/data/posts/getHashtagPosts'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
-import PageSpinner from '../../components/PageSpinner'
 import getHashtagPostsServer from '../../utils/data/posts/getHashtagPostsServer'
+import { GetServerSideProps } from 'next'
+import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -34,23 +34,15 @@ const SORT_MODE_MAP: {
   [HashtagSortMode.Popular]: HashtagSortMode.Popular,
 }
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ user, params, query, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  query,
+  req,
+}) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const slug = params?.slug as string
   const sort = (query?.sort as string | undefined) ?? HashtagSortMode.Popular
-  const uid = user?.id
-
-  if (!uid) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    }
-  }
+  const uid = await getUidFromCookies(req.cookies)
 
   const sortMode = (SORT_MODE_MAP[sort] ??
     HashtagSortMode.Popular) as HashtagSortMode
@@ -96,11 +88,6 @@ export const getServerSideProps = withUserTokenSSR({
       key: hashtagPostsCacheKey,
     },
   }
-})
+}
 
-export default withUser<PropTypes>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(Hashtag)
+export default Hashtag

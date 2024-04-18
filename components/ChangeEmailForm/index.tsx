@@ -5,9 +5,10 @@ import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 import { changeEmail } from '../../utils/callableFirebaseFunctions/changeEmail'
 import constants from '../../constants'
-import { useUser } from 'next-firebase-auth'
 import { LoadingButton } from '@mui/lab'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { useRouter } from 'next/router'
+import signInWithEmailAndPassword from '../../utils/auth/signInWithEmailAndPassword'
+import useAuth from '../../utils/auth/useAuth'
 
 const {
   EMAIL_REGEX_PATTERN,
@@ -22,19 +23,18 @@ const FORM_IDS = {
 }
 
 const ChangeEmailForm = () => {
-  const auth = getAuth()
-  const authUser = useUser()
+  const router = useRouter()
+  const { email: currentEmail } = useAuth() ?? {}
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [submitted, setSubmitted] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
-
   const { control, handleSubmit, setError } = useForm()
 
   const onSubmit = async (data: FieldValues) => {
     const email = data[FORM_IDS.EMAIL] as string
     const password = data[FORM_IDS.PASSWORD] as string
 
-    if (email === authUser.email) {
+    if (email === currentEmail) {
       setError(FORM_IDS.EMAIL, {
         message: 'The email must be different from the current email.',
       })
@@ -46,9 +46,10 @@ const ChangeEmailForm = () => {
 
     try {
       await changeEmail({ email, password })
-      await signInWithEmailAndPassword(auth, email, password)
+      await signInWithEmailAndPassword(email, password)
       setSubmitted(true)
       setIsLoading(false)
+      router.reload()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (

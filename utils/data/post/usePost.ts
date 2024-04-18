@@ -1,4 +1,3 @@
-import { useUser } from 'next-firebase-auth'
 import { useCallback } from 'react'
 import useSWR, { MutatorCallback, SWRConfiguration } from 'swr'
 import { Post } from '../../../types'
@@ -10,6 +9,7 @@ import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import { mutateWatchedPost } from '../utils/mutateWatchedPost'
 import { ReactionId } from '../../../types/Reaction'
 import updatePostReactionInServer from '../utils/updatePostReactionInServer'
+import useAuth from '../../auth/useAuth'
 
 const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
@@ -31,7 +31,7 @@ type UsePost = (
 }
 
 const usePost: UsePost = (slug, { swrConfig = {} } = {}) => {
-  const { id: uid } = useUser()
+  const { uid } = useAuth() ?? {}
   const postCacheKey = slug ? createPostCacheKey(slug) : undefined
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(

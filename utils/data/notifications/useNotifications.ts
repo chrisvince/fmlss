@@ -1,4 +1,3 @@
-import { useUser } from 'next-firebase-auth'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import {
   createNotificationCacheKey,
@@ -12,6 +11,7 @@ import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import checkPossibleMoreToLoad from '../../checkPossibleMoreToLoad'
 import { useSWRConfig } from 'swr'
 import { doc, getFirestore, updateDoc } from 'firebase/firestore'
+import useAuth from '../../auth/useAuth'
 
 const { NOTIFICATION_PAGINATION_COUNT, NOTIFICATIONS_COLLECTION } = constants
 
@@ -46,17 +46,19 @@ const useNotifications: UseNotifications = ({
 } = {}) => {
   const db = getFirestore()
   const pageStartAfterTraceRef = useRef<{ [key: string]: FirebaseDoc }>({})
-  const { id: uid } = useUser()
+  const hasMarkedReadRef = useRef(false)
+  const { uid } = useAuth() ?? {}
 
   const { fallback } = useSWRConfig()
 
-  const fallbackData =
-    fallback[
-      createNotificationCacheKey(uid!, {
-        pageIndex: 0,
-        limit,
-      })
-    ]
+  const fallbackData = uid
+    ? fallback[
+        createNotificationCacheKey(uid, {
+          pageIndex: 0,
+          limit,
+        })
+      ]
+    : null
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
@@ -75,8 +77,10 @@ const useNotifications: UseNotifications = ({
         })
       },
       key => {
+        if (!uid) return null
         const pageIndex = getPageIndexFromCacheKey(key)
-        return getNotifications(uid!, {
+
+        return getNotifications(uid, {
           startAfter: pageStartAfterTraceRef.current[pageIndex],
           limit,
         })
@@ -100,7 +104,7 @@ const useNotifications: UseNotifications = ({
   }
 
   useEffect(() => {
-    if (!markRead) return
+    if (!markRead || hasMarkedReadRef.current) return
     const unreadNotifications = notifications.filter(({ data }) => !data.readAt)
     if (!unreadNotifications.length) return
 
@@ -108,7 +112,8 @@ const useNotifications: UseNotifications = ({
       const docRef = doc(db, NOTIFICATIONS_COLLECTION, data.id)
       updateDoc(docRef, { readAt: new Date() })
     })
-  }, [markRead, notifications])
+    hasMarkedReadRef.current = true
+  }, [db, markRead, notifications])
 
   useEffect(() => {
     if (!lastPageLastDoc) return

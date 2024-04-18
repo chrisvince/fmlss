@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import { useUser } from 'next-firebase-auth'
 import { Box } from '@mui/system'
 import { TextField, Typography, Link as MuiLink } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import Link from 'next/link'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
-
 import { changePassword } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import signInWithEmailAndPassword from '../../utils/auth/signInWithEmailAndPassword'
+import { useRouter } from 'next/router'
+import useAuth from '../../utils/auth/useAuth'
 
 const { PASSWORD_MIN_LENGTH, PASSWORD_REGEX_PATTERN, FORM_MESSAGING } =
   constants
@@ -24,19 +24,18 @@ interface PropTypes {
 }
 
 const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
-  const auth = getAuth()
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
-  const authUser = useUser()
-
+  const user = useAuth()
   const { handleSubmit, control, setError, getValues } = useForm()
 
   const onSubmit = async (data: FieldValues) => {
+    if (!user || !user?.email) return
     const currentPassword = data[FORM_IDS.CURRENT_PASSWORD]
     const newPassword = data[FORM_IDS.NEW_PASSWORD]
     const confirmNewPassword = data[FORM_IDS.CONFIRM_NEW_PASSWORD]
-    const { email } = authUser
 
     setFormError(null)
     setIsLoading(true)
@@ -47,13 +46,10 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
         newPassword,
         confirmNewPassword,
       })
-      await signInWithEmailAndPassword(
-        auth,
-        email as string,
-        newPassword as string
-      )
+      await signInWithEmailAndPassword(user.email, newPassword)
       setSubmitted(true)
       setIsLoading(false)
+      router.reload()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (

@@ -4,14 +4,14 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material'
-import { useUser } from 'next-firebase-auth'
 import Link from 'next/link'
 import EmailVerificationLink from '../EmailVerificationLink'
 import { KeyboardArrowRightRounded } from '@mui/icons-material'
 import MobileContainer from '../MobileContainer'
+import useAuth from '../../utils/auth/useAuth'
 
 const SettingsEmailListItem = () => {
-  const authUser = useUser()
+  const user = useAuth()
 
   return (
     <>
@@ -21,13 +21,13 @@ const SettingsEmailListItem = () => {
           href="/settings/email"
           sx={{ borderTop: 0 }}
         >
-          <ListItemText secondary={authUser.email}>Email</ListItemText>
+          <ListItemText secondary={user?.email}>Email</ListItemText>
           <ListItemIcon sx={{ minWidth: 'unset' }}>
             <KeyboardArrowRightRounded />
           </ListItemIcon>
         </ListItemButton>
       </ListItem>
-      {!authUser.emailVerified && (
+      {!user?.emailVerified && (
         <ListItem
           disableGutters
           sx={{ borderBottom: '0 !important', textAlign: 'right' }}

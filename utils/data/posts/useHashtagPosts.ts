@@ -1,4 +1,3 @@
-import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
@@ -18,6 +17,7 @@ import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
 import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
+import useAuth from '../../auth/useAuth'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -59,11 +59,10 @@ const useHashtagPosts: UsePostFeed = (
   }>({})
 
   const { fallback } = useSWRConfig()
+  const { uid } = useAuth() ?? {}
 
   const fallbackData =
     fallback[createHashtagPostsCacheKey(slug, showType, sortMode)]
-
-  const { id: uid } = useUser()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(

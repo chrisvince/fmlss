@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import firebase from 'firebase/app'
-
 import Link from 'next/link'
 import {
   Divider,
@@ -15,7 +13,8 @@ import { LoadingButton } from '@mui/lab'
 
 import GoogleAuthButton from '../GoogleAuthButton'
 import constants from '../../constants'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { useRouter } from 'next/router'
+import signInWithEmailAndPassword from '../../utils/auth/signInWithEmailAndPassword'
 
 const {
   EMAIL_REGEX_PATTERN,
@@ -35,20 +34,21 @@ const GENERIC_ERROR_MESSAGE =
   'There was an error signing you in. Please try again later.'
 
 const SignInForm = () => {
-  const auth = getAuth()
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
-
   const { control, handleSubmit } = useForm()
 
   const onSubmit = async (data: FieldValues) => {
     const email = data[FORM_IDS.EMAIL] as string
     const password = data[FORM_IDS.PASSWORD] as string
-
     setFormError(null)
     setIsLoading(true)
+
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      await signInWithEmailAndPassword(email, password)
+      router.reload()
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (CREDENTIAL_ERRORS.includes(error.code)) {

@@ -35,7 +35,7 @@ const getHashtagPostsServer = async (
     sortMode = HashtagSortMode.Latest,
   }: {
     startAfter?: FirebaseDoc
-    uid: string
+    uid: string | null
     showType?: HashtagShowType
     sortMode?: HashtagSortMode
   }
@@ -89,6 +89,18 @@ const getHashtagPostsServer = async (
   }
 
   const postsPromise = postData.map(async postDataItem => {
+    if (!uid) {
+      return {
+        data: postDataItem,
+        user: {
+          created: false,
+          like: false,
+          reaction: null,
+          watching: false,
+        },
+      }
+    }
+
     const [createdByUser, likedByUser, userIsWatching, reaction] =
       await Promise.all([
         checkIsCreatedByUserServer(postDataItem.slug, uid),

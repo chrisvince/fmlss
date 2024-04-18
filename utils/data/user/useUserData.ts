@@ -1,4 +1,3 @@
-import { useUser } from 'next-firebase-auth'
 import useSWR, { SWRConfiguration } from 'swr'
 import { User, UserDataInput } from '../../../types'
 import { createUserCacheKey } from '../../createCacheKeys'
@@ -11,6 +10,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore'
+import useAuth from '../../auth/useAuth'
 
 const { USERS_COLLECTION } = constants
 
@@ -27,7 +27,7 @@ type UseUser = (options?: { swrConfig?: SWRConfiguration; skip?: boolean }) => {
 }
 
 const useUserData: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
-  const { id: uid } = useUser()
+  const { uid } = useAuth() ?? {}
   const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(

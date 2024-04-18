@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
 import PostPage from '../../../components/PostPage'
@@ -15,6 +14,8 @@ import { ReactElement } from 'react'
 import getUserDataServer from '../../../utils/data/user/getUserDataServer'
 import getPostRepliesServer from '../../../utils/data/postReplies/getPostRepliesServer'
 import getPostServer from '../../../utils/data/post/getPostServer'
+import { GetServerSideProps } from 'next'
+import getUidFromCookies from '../../../utils/auth/getUidFromCookies'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, POST_REPLIES_SSR } = constants
 
@@ -39,13 +40,13 @@ Post.getLayout = function getLayout(page: ReactElement) {
   return <Layout disableNavBottomPaddingXs>{page}</Layout>
 }
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.RENDER,
-})(async ({ user, params, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  req,
+}) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const slug = params?.slug as string
-  const uid = user?.id
+  const uid = await getUidFromCookies(req.cookies)
   const postCacheKey = createPostCacheKey(slug)
   const postRepliesCacheKey = createPostRepliesCacheKey(slug)
   const sidebarDataPromise = getSidebarDataServer()
@@ -90,10 +91,6 @@ export const getServerSideProps = withUserTokenSSR({
       key: postCacheKey,
     },
   }
-})
+}
 
-export default withUser<PropTypes>({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.RENDER,
-  whenUnauthedBeforeInit: AuthAction.RENDER,
-})(Post)
+export default Post

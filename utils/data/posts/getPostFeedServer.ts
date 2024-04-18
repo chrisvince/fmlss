@@ -64,8 +64,6 @@ const getPostFeedServer = async ({
     put(postFeedCacheKey, postData, FEED_CACHE_TIME)
   }
 
-  console.log('postData', postData)
-
   const postsPromise = postData.map(async postDataItem => {
     const [createdByUser, likedByUser, userIsWatching, reaction] =
       await Promise.all([
@@ -87,7 +85,6 @@ const getPostFeedServer = async ({
   })
 
   const posts = await Promise.all(postsPromise)
-  console.log('posts', posts)
   return posts
 }
 

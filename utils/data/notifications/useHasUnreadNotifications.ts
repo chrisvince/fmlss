@@ -1,8 +1,8 @@
-import { useUser } from 'next-firebase-auth'
 import { createHasUnreadNotificationsCacheKey } from '../../createCacheKeys'
 import getNotifications from './getNotifications'
 import useSWR, { SWRConfiguration } from 'swr'
 import { useState } from 'react'
+import useAuth from '../../auth/useAuth'
 
 const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: true,
@@ -23,13 +23,15 @@ type UseHasUnreadNotifications = (options?: {
 const useHasUnreadNotifications: UseHasUnreadNotifications = ({
   swrConfig,
 } = {}) => {
+  const { uid } = useAuth() ?? {}
   const [cleared, setCleared] = useState(false)
-  const { id: uid } = useUser()
 
   const { data, error, isLoading, isValidating } = useSWR(
     uid ? createHasUnreadNotificationsCacheKey(uid) : null,
     async () => {
-      const notifications = await getNotifications(uid!, {
+      if (!uid) return null
+
+      const notifications = await getNotifications(uid, {
         limit: 1,
         unreadOnly: true,
       })

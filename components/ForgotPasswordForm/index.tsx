@@ -8,8 +8,8 @@ import { Button, Divider, TextField, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import Link from 'next/link'
 import TextAndCta from '../TextAndCta'
-import { useUser } from 'next-firebase-auth'
 import PageSpinner from '../PageSpinner'
+import useAuth from '../../utils/auth/useAuth'
 
 const { FORM_MESSAGING, EMAIL_REGEX_PATTERN } = constants
 
@@ -21,7 +21,8 @@ const ForgotPasswordForm = () => {
   const [submitted, setSubmitted] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
   const { control, handleSubmit } = useForm()
-  const { email: authEmail } = useUser()
+  const user = useAuth()
+  const { email: authEmail } = user ?? {}
 
   const performRequest = async ({ email }: { email: string }) => {
     try {

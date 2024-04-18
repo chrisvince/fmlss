@@ -1,4 +1,3 @@
-import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
@@ -18,6 +17,7 @@ import { InfiniteData } from '../types'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
+import useAuth from '../../auth/useAuth'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -44,9 +44,9 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
     [key: string]: FirebaseDoc
   }>({})
 
-  const { id: uid } = useUser()
+  const { uid } = useAuth() ?? {}
   const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createUserLikesCacheKey(uid!)]
+  const fallbackData = uid ? fallback[createUserLikesCacheKey(uid)] : null
 
   if (!uid) {
     console.error('uid must be set.')
@@ -56,16 +56,17 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
     useSWRInfinite(
       (index, previousPageData) => {
         if (
-          previousPageData &&
-          previousPageData.length < POST_PAGINATION_COUNT
+          !uid ||
+          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
         ) {
           return null
         }
-        return createUserLikesCacheKey(uid!, { pageIndex: index })
+        return createUserLikesCacheKey(uid, { pageIndex: index })
       },
       key => {
+        if (!uid) return null
         const pageIndex = getPageIndexFromCacheKey(key)
-        return getUserLikes(uid!, {
+        return getUserLikes(uid, {
           startAfter: pageStartAfterTrace[pageIndex],
         })
       },

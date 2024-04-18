@@ -11,11 +11,11 @@ import {
   resourceViewed,
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
-import { useUser } from 'next-firebase-auth'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import constants from '../../constants'
 import NotFoundPage from '../NotFoundPage'
+import useAuth from '../../utils/auth/useAuth'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -31,7 +31,7 @@ type Props = {
 const PersonPage = ({ slug }: Props) => {
   const { person, isLoading: personIsLoading } = usePerson(slug)
   const { track } = useTracking()
-  const { id: uid } = useUser()
+  const { uid } = useAuth() ?? {}
 
   const handlePostLoadSuccess = () => {
     cellMeasurerCache.clearAll()

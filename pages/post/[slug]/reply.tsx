@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
 import { SWRConfig } from 'swr'
 import ReplyPage from '../../../components/ReplyPage'
@@ -6,8 +5,9 @@ import { createPostCacheKey } from '../../../utils/createCacheKeys'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import constants from '../../../constants'
 import getSidebarDataServer from '../../../utils/data/sidebar/getSidebarDataServer'
-import PageSpinner from '../../../components/PageSpinner'
 import getPostServer from '../../../utils/data/post/getPostServer'
+import { GetServerSideProps } from 'next'
+import getUidFromCookies from '../../../utils/auth/getUidFromCookies'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -28,13 +28,13 @@ const ReplyToPost = ({ fallback }: Props) => {
   )
 }
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ user, params, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  req,
+}) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const slug = params?.slug as string
-  const uid = user?.id
+  const uid = await getUidFromCookies(req.cookies)
   const postCacheKey = createPostCacheKey(slug)
   const sidebarDataPromise = getSidebarDataServer()
 
@@ -70,11 +70,6 @@ export const getServerSideProps = withUserTokenSSR({
       key: postCacheKey,
     },
   }
-})
+}
 
-export default withUser<Props>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(ReplyToPost)
+export default ReplyToPost

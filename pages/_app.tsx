@@ -2,7 +2,6 @@ import Head from 'next/head'
 import { ReactElement, ReactNode, useMemo } from 'react'
 import type { AppContext, AppProps } from 'next/app'
 import { CssBaseline } from '@mui/material'
-import { withUser } from 'next-firebase-auth'
 import Script from 'next/script'
 import { NextPage } from 'next'
 import { store } from '../store'
@@ -10,7 +9,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter'
 import qs from 'querystring'
 
-import initAuth from '../utils/initAuth'
+import initFirebaseClient from '../utils/initFirebaseClient'
 import Layout from '../components/Layout'
 import resolveTheme from '../styles/theme'
 import isDevelopment from '../utils/isDevelopment'
@@ -18,7 +17,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import useColorScheme from '../utils/useColorScheme'
 import { ColorSchemeSetting } from '../types'
 
-initAuth()
+initFirebaseClient()
 
 const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
@@ -79,5 +78,4 @@ App.getInitialProps = async ({ ctx }: AppContext) => {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withUser()(App as any)
+export default App

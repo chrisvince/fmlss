@@ -1,4 +1,3 @@
-import { useUser } from 'next-firebase-auth'
 import { useCallback, useEffect, useState } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 import { MutatorCallback, useSWRConfig } from 'swr'
@@ -19,6 +18,7 @@ import { InfiniteData } from '../types'
 import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
+import useAuth from '../../auth/useAuth'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -49,7 +49,7 @@ const useUserPosts = ({
     [key: string]: FirebaseDoc
   }>({})
 
-  const { id: uid } = useUser()
+  const { uid } = useAuth() ?? {}
   const { fallback } = useSWRConfig()
 
   const createCacheKey = {

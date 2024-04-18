@@ -17,11 +17,11 @@ import {
   ViewStreamRounded,
   WorkspacesRounded,
 } from '@mui/icons-material'
-import { useUser } from 'next-firebase-auth'
 
 import NewPostButton from '../NewPostButton'
 import constants from '../../constants'
 import LeftNavigationListItem from '../LeftNavigaionListItem'
+import useAuth from '../../utils/auth/useAuth'
 
 const {
   TOPICS_ENABLED,
@@ -33,7 +33,7 @@ const {
 const NAVIGATION_ITEMS = [
   {
     exact: true,
-    href: '/feed',
+    href: '/',
     icon: ViewStreamOutlined,
     iconCurrent: ViewStreamRounded,
     label: 'Feed',
@@ -93,7 +93,8 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationDesktop = () => {
-  const { email, id: uid, displayName } = useUser()
+  const user = useAuth()
+  const { email, uid, displayName } = user ?? {}
   const theme = useTheme()
   const navMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
   const marginBottom = theme.spacing(LEFT_NAVIGATION_PADDING_BOTTOM)

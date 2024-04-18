@@ -3,11 +3,12 @@ import Page from '../Page'
 import SettingsEmailListItem from '../SettingsEmailListItem'
 import SettingsList from '../SettingsList'
 import SettingsListItem from '../SettingsListItem'
-import { useUser } from 'next-firebase-auth'
 import SettingsToggleListItem from '../SettingsToggleListItem'
 import useUserData from '../../utils/data/user/useUserData'
 import { useRouter } from 'next/router'
 import { ColorSchemeSetting } from '../../types/ColorSchemeSetting'
+import signOut from '../../utils/auth/signOut'
+import useAuth from '../../utils/auth/useAuth'
 
 const resolveColorSchemeName = (
   colorSchemeId: ColorSchemeSetting | undefined
@@ -18,13 +19,13 @@ const resolveColorSchemeName = (
   })
 
 const SettingsPage = () => {
-  const { displayName, signOut } = useUser()
-  const { push } = useRouter()
+  const { displayName } = useAuth() ?? {}
+  const router = useRouter()
   const { update, user } = useUserData()
 
   const handleSignOutButtonClick = async () => {
-    signOut()
-    push('/')
+    await signOut()
+    router.reload()
   }
 
   const emailNotificationsLikes =

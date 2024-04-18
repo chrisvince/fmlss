@@ -1,12 +1,12 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 import UserLikesPage from '../components/UserLikesPage'
 import { createUserLikesCacheKey } from '../utils/createCacheKeys'
 import constants from '../constants'
 import isInternalRequest from '../utils/isInternalRequest'
 import getSidebarDataServer from '../utils/data/sidebar/getSidebarDataServer'
-import PageSpinner from '../components/PageSpinner'
 import getUserLikesServer from '../utils/data/userLikes/getUserLikesServer'
+import { GetServerSideProps } from 'next'
+import getUidFromCookies from '../utils/auth/getUidFromCookies'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -22,12 +22,9 @@ const UserLikes = ({ fallback }: PropTypes) => (
   </SWRConfig>
 )
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ user, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const uid = user?.id
+  const uid = await getUidFromCookies(req.cookies)
 
   if (!uid) {
     return {
@@ -68,11 +65,6 @@ export const getServerSideProps = withUserTokenSSR({
       },
     },
   }
-})
+}
 
-export default withUser<PropTypes>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(UserLikes)
+export default UserLikes

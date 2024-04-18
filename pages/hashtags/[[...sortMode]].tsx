@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import HashtagsPage from '../../components/HashtagsPage'
@@ -9,8 +8,8 @@ import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer, {
   SidebarResourceKey,
 } from '../../utils/data/sidebar/getSidebarDataServer'
-import PageSpinner from '../../components/PageSpinner'
 import getHashtagsServer from '../../utils/data/hashtags/getHashtagsServer'
+import { GetServerSideProps } from 'next'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -33,10 +32,10 @@ const SORT_MODE_MAP: {
   popular: 'popular',
 }
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ params, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  req,
+}) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const sortModeArray = (params?.sortModeArray as string[] | undefined) ?? []
 
@@ -84,11 +83,6 @@ export const getServerSideProps = withUserTokenSSR({
       key: hashtagsCacheKey,
     },
   }
-})
+}
 
-export default withUser<PropTypes>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(Hashtags)
+export default Hashtags

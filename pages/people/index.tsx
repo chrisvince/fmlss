@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { createPeopleCacheKey } from '../../utils/createCacheKeys'
 import getSidebarDataServer, {
   SidebarResourceKey,
@@ -7,8 +6,8 @@ import { SWRConfig } from 'swr'
 import PeoplePage from '../../components/PeoplePage'
 import isInternalRequest from '../../utils/isInternalRequest'
 import { PeopleSortMode } from '../../types/PeopleSortMode'
-import PageSpinner from '../../components/PageSpinner'
 import getPeopleServer from '../../utils/data/people/getPeopleServer'
+import { GetServerSideProps } from 'next'
 
 const SORT_MODE_MAP: {
   [key: string]: PeopleSortMode
@@ -31,10 +30,10 @@ const PeopleIndex = ({ fallback }: Props) => {
   )
 }
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ req, query }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
   const sort = (query.sort as string) || PeopleSortMode.Popular
   const sortMode = SORT_MODE_MAP[sort] ?? PeopleSortMode.Popular
   const peopleCacheKey = createPeopleCacheKey({ sortMode })
@@ -66,11 +65,6 @@ export const getServerSideProps = withUserTokenSSR({
       },
     },
   }
-})
+}
 
-export default withUser<Props>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(PeopleIndex)
+export default PeopleIndex

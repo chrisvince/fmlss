@@ -2,8 +2,8 @@ import Button from '@mui/material/Button'
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useUser } from 'next-firebase-auth'
 import SignUpModal from '../SignUpModal'
+import useAuth from '../../utils/auth/useAuth'
 
 const NewPostModal = dynamic(() => import('../NewPostModal'), { ssr: false })
 
@@ -13,10 +13,9 @@ const NewPostButton = () => {
   const [newPostModalOpen, setNewPostModalOpen] = useState(false)
   const [renderSignInModal, setRenderSignInModal] = useState(false)
   const [showSignInModal, setShowSignInModal] = useState(false)
-  const user = useUser()
-  const isLoggedIn = !!user.id
   const handleSignInModalClose = () => setShowSignInModal(false)
   const handleNewPostModalClose = () => setNewPostModalOpen(false)
+  const isLoggedIn = !!useAuth()
 
   const handleButtonClick = () => {
     if (!isLoggedIn) {

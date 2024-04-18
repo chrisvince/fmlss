@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import FeedPage from '../../components/FeedPage'
@@ -10,9 +9,10 @@ import {
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
-import PageSpinner from '../../components/PageSpinner'
 import getPostFeedServer from '../../utils/data/posts/getPostFeedServer'
 import getUserDataServer from '../../utils/data/user/getUserDataServer'
+import { GetServerSideProps } from 'next'
+import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -28,12 +28,9 @@ const Popular = ({ fallback }: PropTypes) => (
   </SWRConfig>
 )
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ user, req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const uid = user?.id
+  const uid = await getUidFromCookies(req.cookies)
 
   if (!uid) {
     return {
@@ -84,11 +81,6 @@ export const getServerSideProps = withUserTokenSSR({
       key: postFeedCacheKey,
     },
   }
-})
+}
 
-export default withUser<PropTypes>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(Popular)
+export default Popular

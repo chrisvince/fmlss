@@ -1,9 +1,9 @@
 import { ReactElement } from 'react'
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import constants from '../../constants'
 import { checkPasswordResetRequestValid } from '../../utils/callableFirebaseFunctions'
 import LayoutBasicSlimBranded from '../../components/LayoutBasicSlimBranded'
 import ResetPasswordPage from '../../components/ResetPasswordPage'
+import { GetServerSideProps } from 'next'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -29,10 +29,7 @@ ResetPassword.getLayout = (page: ReactElement) => (
   <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
 )
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.RENDER,
-})(async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const encodedPasswordResetRequestId = params?.passwordResetRequestId as
     | string
@@ -90,10 +87,6 @@ export const getServerSideProps = withUserTokenSSR({
       requestIdStatus: RequestIdStatus.VALID,
     },
   }
-})
+}
 
-export default withUser<Props>({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.RENDER,
-  whenUnauthedBeforeInit: AuthAction.RENDER,
-})(ResetPassword)
+export default ResetPassword

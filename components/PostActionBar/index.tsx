@@ -1,5 +1,4 @@
 import { Box } from '@mui/system'
-import { useUser } from 'next-firebase-auth'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
@@ -9,6 +8,7 @@ import ShareButton from '../ShareButton'
 import constants from '../../constants'
 import ReactButton from '../ReactButton'
 import { ReactionId } from '../../types/Reaction'
+import useAuth from '../../utils/auth/useAuth'
 
 const SaveButton = dynamic(() => import('../SaveButton'))
 const ReplyModal = dynamic(() => import('../ReplyModal'), { ssr: false })
@@ -42,9 +42,7 @@ const PostActionBar = ({
   showReplyButton = true,
   slug,
 }: PropTypes) => {
-  const user = useUser()
-  const isLoggedIn = !!user.id
-
+  const isLoggedIn = !!useAuth()
   const [renderSignUpModal, setRenderSignUpModal] = useState(false)
   const [modalActionText, setModalActionText] = useState('')
   const [renderReplyModal, setRenderReplyModal] = useState(false)

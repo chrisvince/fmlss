@@ -5,6 +5,8 @@ const PASSWORD_MIN_LENGTH = 8
 
 const constants = {
   APP_URL: 'https://fameless.net',
+  AUTH_API_LOGIN_PATH: '/api/sign-in',
+  AUTH_API_LOGOUT_PATH: '/api/sign-out',
   AUTHORS_COLLECTION: 'authors',
   AUTOCOMPLETE_LENGTH: 5,
   BRAND_NAME: 'Fameless',

@@ -1,4 +1,3 @@
-import { AuthAction, withUser, withUserTokenSSR } from 'next-firebase-auth'
 import { SWRConfig } from 'swr'
 
 import TopicsPage from '../../components/TopicsPage'
@@ -11,9 +10,9 @@ import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
 import { SidebarResourceKey } from '../../utils/data/sidebar/getSidebarDataServer'
-import PageSpinner from '../../components/PageSpinner'
 import getTopicsServer from '../../utils/data/topics/getTopicsServer'
 import getTopicServer from '../../utils/data/topic/getTopicServer'
+import { GetServerSideProps } from 'next'
 
 const { TOPICS_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -37,10 +36,11 @@ const SORT_MODE_MAP: {
   popular: TopicsSortMode.Popular,
 }
 
-export const getServerSideProps = withUserTokenSSR({
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
-})(async ({ params, req, query }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  query,
+  req,
+}) => {
   console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   const slugs = (params?.slugs as string[] | undefined) ?? []
   const sort = (query?.sort as string | undefined) ?? TopicsSortMode.Popular
@@ -136,12 +136,6 @@ export const getServerSideProps = withUserTokenSSR({
       parentTopicPath,
     },
   }
-})
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default withUser<Props>({
-  LoaderComponent: PageSpinner,
-  whenAuthed: AuthAction.RENDER,
-  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
-  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
-})(Topics)
+export default Topics

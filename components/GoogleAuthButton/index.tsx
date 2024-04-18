@@ -5,6 +5,9 @@ import {
   getAuth,
   signInWithPopup,
 } from 'firebase/auth'
+import constants from '../../constants'
+
+const { AUTH_API_LOGIN_PATH } = constants
 
 interface PropTypes {
   disabled?: boolean
@@ -19,13 +22,21 @@ const GoogleAuthButton = ({
   onAuthSuccess,
   onAuthError,
 }: PropTypes) => {
-  const auth = getAuth()
   const provider = new GoogleAuthProvider()
 
   const handleClick = async () => {
     try {
-      const response = await signInWithPopup(auth, provider)
-      onAuthSuccess?.(response)
+      const auth = getAuth()
+      const credential = await signInWithPopup(auth, provider)
+      const idToken = await credential.user.getIdToken()
+
+      await fetch(AUTH_API_LOGIN_PATH, {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      })
+
+      onAuthSuccess?.(credential)
     } catch (error: unknown) {
       onAuthError?.(error)
     }

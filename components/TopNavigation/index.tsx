@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useUser } from 'next-firebase-auth'
 import {
   Box,
   IconButton,
@@ -29,6 +28,8 @@ import Brand from '../Brand'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import NotificationsNavigationItem from '../NotificationsNavigationItem'
+import signOut from '../../utils/auth/signOut'
+import useAuth from '../../utils/auth/useAuth'
 
 const {
   SIDEBAR_GAP_MD,
@@ -46,7 +47,7 @@ interface Props {
   disableBottomPaddingXs?: boolean
 }
 const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
-  const { displayName, email, id: uid, signOut } = useUser()
+  const { displayName, email, uid } = useAuth() ?? {}
   const router = useRouter()
   const settingsMenuButtonRef = useRef<HTMLButtonElement>(null)
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)
@@ -61,9 +62,9 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
   const handleMobileMenuClose = () => setMobileNavigationOpen(false)
   const handleSettingsMenuClose = () => setSettingsMenuOpen(false)
 
-  const handleSignOutClick = () => {
-    signOut()
-    router.push('/')
+  const handleSignOutClick = async () => {
+    await signOut()
+    router.reload()
   }
 
   const handleSettingsMenuButtonClick = () =>

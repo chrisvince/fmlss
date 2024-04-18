@@ -31,7 +31,7 @@ const getPersonPostsServer = async (
   }: {
     sortMode?: PersonPostsSortMode
     startAfter?: FirebaseDoc
-    uid: string
+    uid: string | null
   }
 ): Promise<Post[]> => {
   if (!isServer) {
@@ -79,6 +79,18 @@ const getPersonPostsServer = async (
   }
 
   const postsPromise = postData.map(async postDataItem => {
+    if (!uid) {
+      return {
+        data: postDataItem,
+        user: {
+          created: false,
+          like: false,
+          reaction: null,
+          watching: false,
+        },
+      }
+    }
+
     const [createdByUser, likedByUser, userIsWatching, reaction] =
       await Promise.all([
         checkIsCreatedByUserServer(postDataItem.slug, uid),

@@ -1,4 +1,3 @@
-import { useUser } from 'next-firebase-auth'
 import { Box, List, SwipeableDrawer, SwipeableDrawerProps } from '@mui/material'
 import {
   AlternateEmailRounded,
@@ -22,6 +21,7 @@ import { useTheme } from '@mui/system'
 import constants from '../../constants'
 import LeftNavigationListItem from '../LeftNavigaionListItem'
 import NewPostButton from '../NewPostButton'
+import useAuth from '../../utils/auth/useAuth'
 
 const { TOPICS_ENABLED, TOP_NAVIGATION_HEIGHT } = constants
 
@@ -34,7 +34,7 @@ interface PropTypes {
 const NAVIGATION_ITEMS = [
   {
     exact: true,
-    href: '/feed',
+    href: '/',
     icon: ViewStreamOutlined,
     iconCurrent: ViewStreamRounded,
     label: 'Feed',
@@ -94,7 +94,8 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
-  const { displayName, email, id: uid } = useUser()
+  const user = useAuth()
+  const { displayName, email, uid } = user ?? {}
   const theme = useTheme()
   const navMarginBottomXs = theme.spacing(4)
 

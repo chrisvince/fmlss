@@ -8,7 +8,8 @@ import GoogleAuthButton from '../GoogleAuthButton'
 import { createUser } from '../../utils/callableFirebaseFunctions'
 import constants from '../../constants'
 import { LoadingButton } from '@mui/lab'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import signInWithEmailAndPassword from '../../utils/auth/signInWithEmailAndPassword'
+import { useRouter } from 'next/router'
 
 const {
   EMAIL_REGEX_PATTERN,
@@ -30,7 +31,7 @@ interface Props {
 }
 
 const SignUpForm = ({ onSuccess }: Props) => {
-  const auth = getAuth()
+  const router = useRouter()
   const [formError, setFormError] = useState<{ message: string } | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { control, handleSubmit, setError } = useForm()
@@ -44,8 +45,9 @@ const SignUpForm = ({ onSuccess }: Props) => {
     setIsLoading(true)
     try {
       await createUser({ email, password })
-      await signInWithEmailAndPassword(auth, email, password)
+      await signInWithEmailAndPassword(email, password)
       onSuccess?.()
+      router.reload()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.code === 'already-exists') {

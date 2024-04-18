@@ -8,7 +8,6 @@ import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import InlineCreatePost from '../InlineCreatePost'
-import useUserData from '../../utils/data/user/useUserData'
 import NotFoundPage from '../NotFoundPage'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
@@ -41,9 +40,6 @@ const FeedPage = ({ sortMode }: Props) => {
     reactToPost,
     watchPost,
   } = usePostFeed({ sortMode, swrConfig: { onSuccess: handlePostLoadSuccess } })
-
-  const user = useUserData()
-  console.log('user', user)
 
   if (!sortMode) {
     return <NotFoundPage />

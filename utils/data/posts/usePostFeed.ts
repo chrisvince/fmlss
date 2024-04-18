@@ -1,14 +1,9 @@
-import { useUser } from 'next-firebase-auth'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import { MutatorCallback, useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
-import { FeedSortMode, FirebaseDoc, Post } from '../../../types'
-import {
-  createPostFeedCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
+import { FeedSortMode, Post } from '../../../types'
+import { createPostFeedCacheKey } from '../../createCacheKeys'
 import getPostFeed from './getPostFeed'
 import constants from '../../../constants'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
@@ -21,6 +16,7 @@ import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import { ReactionId } from '../../../types/Reaction'
 import updatePostReactionInServer from '../utils/updatePostReactionInServer'
 import getPost from '../post/getPost'
+import useAuth from '../../auth/useAuth'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -52,7 +48,7 @@ const usePostFeed: UsePostFeed = ({
 } = {}) => {
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createPostFeedCacheKey({ sortMode })]
-  const { id: uid } = useUser()
+  const { uid } = useAuth() ?? {}
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(
@@ -176,11 +172,9 @@ const usePostFeed: UsePostFeed = ({
     [mutate, uid]
   )
 
-  console.log('error', error)
-
   return {
     error,
-    isLoading,
+    isLoading: isLoading || !uid, // Since this is only used on authenticated routes, we can show loading state until we have a uid
     isValidating,
     likePost,
     loadMore,
