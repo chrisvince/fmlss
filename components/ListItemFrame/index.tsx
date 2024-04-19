@@ -45,7 +45,7 @@ const ListItemFrame = ({
     <Box
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
-      component={isLink ? Link : 'div'}
+      component={isLink ? Link : 'article'}
       onClick={handleClick}
       ref={ref}
       href={isLink ? href : undefined}

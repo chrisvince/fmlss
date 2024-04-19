@@ -26,7 +26,6 @@ const PostListItem = ({
   return (
     <ListItemFrame
       aria-labelledby={ariaLabelledById}
-      component="article"
       href={`/post/${encodeURIComponent(post.data.slug)}`}
     >
       <PostItem
