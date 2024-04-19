@@ -15,7 +15,10 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
   const viewCount = formatViewCount(hashtag.data.viewCount)
 
   return (
-    <ListItemFrame href={`/hashtag/${encodeURIComponent(hashtag.data.slug)}`}>
+    <ListItemFrame
+      href={`/hashtag/${encodeURIComponent(hashtag.data.slug)}`}
+      isLink
+    >
       <Box
         sx={{
           display: 'flex',

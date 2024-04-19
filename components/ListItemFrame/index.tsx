@@ -1,14 +1,15 @@
 import { Box } from '@mui/system'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { ElementType, SyntheticEvent, useEffect, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 interface PropTypes {
   'aria-label'?: string
   'aria-labelledby'?: string
   children: React.ReactNode
-  component?: ElementType<any> & (ElementType<any> | undefined)
   href: string
+  isLink?: boolean
   isSidebar?: boolean
 }
 
@@ -16,8 +17,8 @@ const ListItemFrame = ({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   children,
-  component,
   href,
+  isLink = false,
   isSidebar = false,
 }: PropTypes) => {
   const [highlight, setHighlight] = useState(false)
@@ -25,6 +26,7 @@ const ListItemFrame = ({
   const [ref, inView] = useInView({ triggerOnce: true })
 
   const handleClick = (event: SyntheticEvent) => {
+    if (isLink) return
     const isClickableElement = (event.target as HTMLAnchorElement).closest(
       'a, button, [role="presentation"]'
     )
@@ -35,25 +37,29 @@ const ListItemFrame = ({
   }
 
   useEffect(() => {
-    if (!inView) return
+    if (!inView || isLink) return
     prefetch(href)
-  }, [href, inView, prefetch])
+  }, [href, inView, isLink, prefetch])
 
   return (
     <Box
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
-      component={component}
+      component={isLink ? Link : 'div'}
       onClick={handleClick}
       ref={ref}
+      href={isLink ? href : undefined}
       sx={{
-        cursor: 'pointer',
+        backgroundColor: highlight ? 'action.hover' : undefined,
         borderBottom: '1px solid',
         borderBottomColor: 'divider',
+        cursor: 'pointer',
+        display: 'block',
         padding: isSidebar ? 1 : 2,
         transition: 'ease-in-out 200ms',
         transitionProperty: 'background-color',
-        backgroundColor: highlight ? 'action.hover' : undefined,
+        textDecoration: 'none',
+        color: 'inherit',
         '@media (hover: hover)': {
           '&:hover': {
             backgroundColor: 'action.hover',

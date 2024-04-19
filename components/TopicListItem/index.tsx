@@ -5,15 +5,13 @@ import { Topic } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
 import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
-import { ElementType } from 'react'
 import formatSubtopicsCount from '../../utils/formatting/formatSubtopicsCount'
 
 type PropTypes = {
-  component?: ElementType<any> & (ElementType<any> | undefined)
   topic: Topic
 }
 
-const TopicListItem = ({ component, topic }: PropTypes) => {
+const TopicListItem = ({ topic }: PropTypes) => {
   const recursivePostCount = formatPostCount(topic.data.recursivePostCount)
 
   const recursiveSubtopicCount = formatSubtopicsCount(
@@ -29,7 +27,7 @@ const TopicListItem = ({ component, topic }: PropTypes) => {
   )
 
   return (
-    <ListItemFrame component={component} href={`/topic/${topic.data.path}`}>
+    <ListItemFrame isLink href={`/topic/${topic.data.path}`}>
       <Box
         sx={{
           display: 'flex',

@@ -10,6 +10,7 @@ type PropTypes = {
 const SidebarPersonListItem = ({ person }: PropTypes) => (
   <ListItemFrame
     href={`/people/${encodeURIComponent(person.data.slug)}`}
+    isLink
     isSidebar
   >
     <SidebarListItem

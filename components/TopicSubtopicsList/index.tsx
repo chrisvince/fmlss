@@ -13,7 +13,7 @@ const TopicSubtopicsList = ({ topics }: PropTypes) => (
     sx={{ padding: 0, margin: 0, '& li': { listStyle: 'none' } }}
   >
     {topics.map(topic => (
-      <TopicListItem component="li" topic={topic} key={topic.data.id} />
+      <TopicListItem topic={topic} key={topic.data.id} />
     ))}
   </Box>
 )

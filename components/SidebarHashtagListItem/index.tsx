@@ -10,6 +10,7 @@ type PropTypes = {
 const SidebarHashtagListItem = ({ hashtag }: PropTypes) => (
   <ListItemFrame
     href={`/hashtag/${encodeURIComponent(hashtag.data.slug)}`}
+    isLink
     isSidebar
   >
     <SidebarListItem

@@ -3,19 +3,17 @@ import { Box } from '@mui/system'
 
 import formatPostCount from '../../utils/formatting/formatPostCount'
 import ListItemFrame from '../ListItemFrame'
-import { ElementType } from 'react'
 import { Person } from '../../types/Person'
 
 type PropTypes = {
-  component?: ElementType<any> & (ElementType<any> | undefined)
   person: Person
 }
 
-const PersonListItem = ({ component, person }: PropTypes) => {
+const PersonListItem = ({ person }: PropTypes) => {
   const postCount = formatPostCount(person.data.postCount)
 
   return (
-    <ListItemFrame component={component} href={`/people/${person.data.slug}`}>
+    <ListItemFrame isLink href={`/people/${person.data.slug}`}>
       <Box
         sx={{
           display: 'flex',
