@@ -14,7 +14,7 @@ export interface TopicDataRequest {
   pathTitle: string
   postCount: number
   postCountRecursive: number
-  recursiveSubtopicCount: number
+  subtopicCountRecursive: number
   subtopicSegments: SubtopicSegmentRequest[]
   slug: string
   subtopicCount: number

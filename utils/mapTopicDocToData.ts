@@ -12,7 +12,7 @@ const mapTopicDocToData: MapTopicDocToData = doc => {
     pathTitle: data.pathTitle,
     postCount: data.postCount,
     postCountRecursive: data.postCountRecursive,
-    recursiveSubtopicCount: data.recursiveSubtopicCount,
+    subtopicCountRecursive: data.subtopicCountRecursive,
     ref: doc.ref.path,
     subtopicSegments: data.subtopicSegments,
     slug: data.slug,

@@ -14,8 +14,8 @@ type PropTypes = {
 const TopicListItem = ({ topic }: PropTypes) => {
   const postCountRecursive = formatPostCount(topic.data.postCountRecursive)
 
-  const recursiveSubtopicCount = formatSubtopicsCount(
-    topic.data.recursiveSubtopicCount
+  const subtopicCountRecursive = formatSubtopicsCount(
+    topic.data.subtopicCountRecursive
   )
 
   const viewCount = formatViewCount(topic.data.viewCount)
@@ -56,9 +56,9 @@ const TopicListItem = ({ topic }: PropTypes) => {
           <Typography variant="caption" component="div" align="right">
             {postCountRecursive}
           </Typography>
-          {topic.data.recursiveSubtopicCount > 0 && (
+          {topic.data.subtopicCountRecursive > 0 && (
             <Typography variant="caption" component="div" align="right">
-              {recursiveSubtopicCount}
+              {subtopicCountRecursive}
             </Typography>
           )}
           {viewCount && (
