@@ -34,7 +34,7 @@ const resolveCensorData = (
   post: Post,
   user: User | null | undefined
 ): { type: CensorType; source: CensorSource } | null => {
-  if (post.data.majorityReaction?.id === ReactionId.AdultContent) {
+  if (post.data.reactionMajority?.id === ReactionId.AdultContent) {
     if (!user?.data.settings.content.hideAdultContent ?? true) {
       return null
     }
@@ -45,7 +45,7 @@ const resolveCensorData = (
     }
   }
 
-  if (post.data.majorityReaction?.id === ReactionId.Offensive) {
+  if (post.data.reactionMajority?.id === ReactionId.Offensive) {
     if (!user?.data.settings.content.hideOffensiveContent ?? true) {
       return null
     }

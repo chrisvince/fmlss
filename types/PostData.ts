@@ -1,6 +1,6 @@
 import { PostAttachment, TopicRelation } from '.'
 import { Media } from './Media'
-import { MajorityReaction } from './Reaction'
+import { ReactionMajority } from './Reaction'
 
 export interface PostData {
   attachments: PostAttachment[]
@@ -18,7 +18,7 @@ export interface PostData {
   }[]
   id: string
   likesCount: number
-  majorityReaction?: MajorityReaction
+  reactionMajority?: ReactionMajority
   media: Media[]
   rootPost?: {
     id: string

@@ -26,11 +26,11 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
     })),
     id: postDoc.id,
     likesCount: postData.likesCount,
-    ...(postData.majorityReaction
+    ...(postData.reactionMajority
       ? {
-          majorityReaction: {
-            id: postData.majorityReaction.id,
-            percentage: postData.majorityReaction.percentage,
+          reactionMajority: {
+            id: postData.reactionMajority.id,
+            percentage: postData.reactionMajority.percentage,
           },
         }
       : {}),

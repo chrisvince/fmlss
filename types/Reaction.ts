@@ -23,7 +23,7 @@ export interface PostReaction {
   updatedAt: string
 }
 
-export interface MajorityReaction {
+export interface ReactionMajority {
   id: ReactionId
   percentage: number
 }
