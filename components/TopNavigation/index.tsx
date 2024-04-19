@@ -64,7 +64,7 @@ const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
 
   const handleSignOutClick = async () => {
     await signOut()
-    router.reload()
+    router.push('/')
   }
 
   const handleSettingsMenuButtonClick = () =>
