@@ -20,6 +20,7 @@ import generateTweetPostLink from '../../utils/generateTweetPostLink'
 import ActionButton from '../ActionButton'
 import { postShared } from '../../utils/callableFirebaseFunctions/postShared'
 import generateRedditPostLink from '../../utils/generateRedditPostLink'
+import { ShareMedium } from '../../types/ShareMedium'
 
 interface Props {
   slug: string
@@ -38,7 +39,7 @@ const ShareButton = ({ slug }: Props) => {
   const handleCopyUrlButton = () => {
     navigator.clipboard.writeText(url)
     setShowCopiedText(true)
-    postShared({ slug })
+    postShared({ medium: ShareMedium.Link, slug })
   }
 
   useEffect(() => {
@@ -78,15 +79,25 @@ const ShareButton = ({ slug }: Props) => {
         url,
       })
 
-      postShared({ slug })
+      postShared({ medium: ShareMedium.Link, slug })
     } catch (error) {
       // no handle
     }
   }
 
-  const handleShareLinkClick = () => {
+  const handleFacebookShareLinkClick = () => {
     setMenuOpen(false)
-    postShared({ slug })
+    postShared({ medium: ShareMedium.Facebook, slug })
+  }
+
+  const handleTwitterShareLinkClick = () => {
+    setMenuOpen(false)
+    postShared({ medium: ShareMedium.Twitter, slug })
+  }
+
+  const handleRedditShareLinkClick = () => {
+    setMenuOpen(false)
+    postShared({ medium: ShareMedium.Reddit, slug })
   }
 
   return (
@@ -121,7 +132,7 @@ const ShareButton = ({ slug }: Props) => {
         <MenuItem disableGutters>
           <Link
             href={generateTweetPostLink(slug)}
-            onClick={handleShareLinkClick}
+            onClick={handleTwitterShareLinkClick}
             rel="noopener noreferrer"
             target="_blank"
             underline="none"
@@ -137,7 +148,7 @@ const ShareButton = ({ slug }: Props) => {
         <MenuItem disableGutters>
           <Link
             href={generateFacebookPostLink(slug)}
-            onClick={handleShareLinkClick}
+            onClick={handleFacebookShareLinkClick}
             rel="noopener noreferrer"
             target="_blank"
             underline="none"
@@ -153,7 +164,7 @@ const ShareButton = ({ slug }: Props) => {
         <MenuItem disableGutters>
           <Link
             href={generateRedditPostLink(slug)}
-            onClick={handleShareLinkClick}
+            onClick={handleRedditShareLinkClick}
             rel="noopener noreferrer"
             target="_blank"
             underline="none"

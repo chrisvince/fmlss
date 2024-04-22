@@ -1,6 +1,8 @@
 import { getFunctions, httpsCallable } from 'firebase/functions'
+import { ShareMedium } from '../../types/ShareMedium'
 
 interface Input {
+  medium: ShareMedium
   slug: string
 }
 
