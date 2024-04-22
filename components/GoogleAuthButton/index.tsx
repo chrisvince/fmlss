@@ -6,6 +6,7 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 import constants from '../../constants'
+import { useTheme } from '@mui/system'
 
 const { AUTH_API_LOGIN_PATH } = constants
 
@@ -23,6 +24,7 @@ const GoogleAuthButton = ({
   onAuthError,
 }: PropTypes) => {
   const provider = new GoogleAuthProvider()
+  const theme = useTheme()
 
   const handleClick = async () => {
     try {
@@ -49,7 +51,10 @@ const GoogleAuthButton = ({
 
   return (
     <GoogleButton
-      style={{ width: '100%' }}
+      style={{
+        backgroundColor: theme.palette.common.white,
+        width: '100%',
+      }}
       disabled={disabled}
       label={label}
       onClick={handleClick}
