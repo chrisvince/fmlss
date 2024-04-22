@@ -14,5 +14,5 @@ interface Input {
 
 export const resourceViewed = (data: Input) => {
   const functions = getFunctions()
-  return httpsCallable<Input, void>(functions, 'userEvent-resourceViewed')(data)
+  return httpsCallable<Input, void>(functions, 'event-resourceViewed')(data)
 }

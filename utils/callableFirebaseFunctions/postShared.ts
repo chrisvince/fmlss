@@ -6,5 +6,5 @@ interface Input {
 
 export const postShared = (data: Input) => {
   const functions = getFunctions()
-  return httpsCallable<Input, void>(functions, 'userEvent-postShared')(data)
+  return httpsCallable<Input, void>(functions, 'event-postShared')(data)
 }

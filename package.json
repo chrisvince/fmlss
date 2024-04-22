@@ -9,7 +9,7 @@
     "lint": "next lint",
     "emulators:start": "firebase emulators:start --import $INIT_CWD/firebase_emulator_export --export-on-exit $INIT_CWD/firebase_emulator_export",
     "deploy-functions:onPostCreate": "firebase deploy --only functions:onPostCreate0 && firebase deploy --only functions:onPostCreate1 && firebase deploy --only functions:onPostCreate2 && firebase deploy --only functions:onPostCreate3 && firebase deploy --only functions:onPostCreate4 && firebase deploy --only functions:onPostCreate5 && firebase deploy --only functions:onPostCreate6 && firebase deploy --only functions:onPostCreate7 && firebase deploy --only functions:onPostCreate8 && firebase deploy --only functions:onPostCreate9",
-    "deploy-functions": "firebase deploy --only functions:auth && firebase deploy --only functions:authoredPost && firebase deploy --only functions:post && firebase deploy --only functions:postLike && firebase deploy --only functions:watchedPost && firebase deploy --only functions:notification && firebase deploy --only functions:userEvent && firebase deploy --only functions:postReaction && firebase deploy --only functions:popularityScores && yarn deploy-functions:onPostCreate"
+    "deploy-functions": "firebase deploy --only functions:auth && firebase deploy --only functions:authoredPost && firebase deploy --only functions:post && firebase deploy --only functions:postLike && firebase deploy --only functions:watchedPost && firebase deploy --only functions:notification && firebase deploy --only functions:event && firebase deploy --only functions:postReaction && firebase deploy --only functions:popularityScores && yarn deploy-functions:onPostCreate"
   },
   "dependencies": {
     "@draft-js-plugins/editor": "^4.1.4",
