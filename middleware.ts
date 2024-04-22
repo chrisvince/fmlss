@@ -11,11 +11,12 @@ const PUBLIC_PATHS = ['/sign-in', '/sign-up', '/forgot-password']
 const PUBLIC_AND_PRIVATE_PATHS = ['/people', '/topics', '/hashtags']
 
 const PUBLIC_AND_PRIVATE_DYNAMIC_PATHS = [
+  '/confirm-email/[A-Za-z0-9]+$',
+  '/hashtag/[A-Za-z0-9]+$',
   '/people/[A-Za-z0-9]+$',
   '/post/[A-Za-z0-9]+$',
   '/reset-password/[A-Za-z0-9]+$',
   '/topic/[A-Za-z0-9]+$',
-  '/hashtag/[A-Za-z0-9]+$',
 ]
 
 const allStaticPublicPaths = [...PUBLIC_PATHS, ...PUBLIC_AND_PRIVATE_PATHS]
