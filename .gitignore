@@ -45,3 +45,6 @@ pubsub-debug.log
 .secret.local
 
 /firebase_emulator_export
+
+# Sentry Config File
+.sentryclirc
