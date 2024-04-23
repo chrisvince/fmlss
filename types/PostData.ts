@@ -30,6 +30,8 @@ export interface PostData {
     ref: string
     slug: string
   }
+  popularityScoreAllTime: number
+  popularityScoreRecent: number
   postsCount: number
   reactionCount: number
   reference: string

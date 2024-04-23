@@ -49,6 +49,8 @@ const mapPostDocToData: MapPostDocToData = ({ postDoc, attachments }) => {
           },
         }
       : {}),
+    popularityScoreAllTime: postData.popularityScoreAllTime,
+    popularityScoreRecent: postData.popularityScoreRecent,
     postsCount: postData.postsCount,
     reactionCount: postData.reactionCount,
     reference: postDoc.ref.path,

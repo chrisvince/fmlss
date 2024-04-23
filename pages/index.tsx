@@ -3,7 +3,7 @@ import { SWRConfig } from 'swr'
 import FeedPage from '../components/FeedPage'
 import { FeedSortMode } from '../types'
 import {
-  createPostFeedCacheKey,
+  createPostFeedSWRGetKey,
   createUserCacheKey,
 } from '../utils/createCacheKeys'
 import constants from '../constants'
@@ -13,6 +13,7 @@ import getPostFeedServer from '../utils/data/posts/getPostFeedServer'
 import getUserDataServer from '../utils/data/user/getUserDataServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../utils/auth/getUidFromCookies'
+import { unstable_serialize } from 'swr/infinite'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -41,8 +42,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   }
 
-  const postFeedCacheKey = createPostFeedCacheKey({
+  const postFeedCacheKey = createPostFeedSWRGetKey({
     sortMode: FeedSortMode.Latest,
+    uid,
   })
 
   const userCacheKey = createUserCacheKey(uid)
@@ -55,7 +57,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     return {
       props: {
         fallback: sidebarFallbackData,
-        key: postFeedCacheKey,
       },
     }
   }
@@ -74,11 +75,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
     props: {
       fallback: {
-        [postFeedCacheKey]: posts,
+        [unstable_serialize(postFeedCacheKey)]: [posts],
         [userCacheKey]: userData,
         ...sidebarFallbackData,
       },
-      key: postFeedCacheKey,
     },
   }
 }

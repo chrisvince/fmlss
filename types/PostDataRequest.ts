@@ -28,6 +28,8 @@ export interface PostDataRequest {
   parentPost?: FirebaseDoc & {
     slug: string
   }
+  popularityScoreAllTime: number
+  popularityScoreRecent: number
   postsCount: number
   reactionCount: number
   reference: string

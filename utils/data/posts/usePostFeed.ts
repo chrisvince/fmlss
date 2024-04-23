@@ -1,9 +1,8 @@
 import { useCallback } from 'react'
-import { MutatorCallback, useSWRConfig } from 'swr'
+import { MutatorCallback } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-
 import { FeedSortMode, Post } from '../../../types'
-import { createPostFeedCacheKey } from '../../createCacheKeys'
+import { createPostFeedSWRGetKey } from '../../createCacheKeys'
 import getPostFeed from './getPostFeed'
 import constants from '../../../constants'
 import { mutatePostLikeInfiniteData } from '../utils/mutatePostLike'
@@ -35,7 +34,7 @@ type UsePostFeed = (options?: {
   isLoading: boolean
   isValidating: boolean
   likePost: (slug: string) => Promise<void>
-  loadMore: () => Promise<Post[]>
+  loadMore: () => Promise<void>
   moreToLoad: boolean
   posts: Post[]
   reactToPost: (reaction: ReactionId | undefined, slug: string) => Promise<void>
@@ -46,47 +45,36 @@ const usePostFeed: UsePostFeed = ({
   sortMode = FeedSortMode.Latest,
   swrConfig = {},
 } = {}) => {
-  const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPostFeedCacheKey({ sortMode })]
   const { uid } = useAuth() ?? {}
 
-  const { data, error, isLoading, isValidating, mutate, setSize, size } =
-    useSWRInfinite(
-      (index, previousPageData) => {
-        if (
-          !uid ||
-          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
-        ) {
-          return null
-        }
-        return { cacheKey: createPostFeedCacheKey({ sortMode }), index }
-      },
-      ({ index }) => {
-        if (!uid) return null
-
-        return getPostFeed({
-          sortMode,
-          startAfter: POST_PAGINATION_COUNT * index,
-          uid,
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    setSize,
+  } = useSWRInfinite(
+    createPostFeedSWRGetKey({ sortMode, uid }),
+    ({ startAfter }) =>
+      getPostFeed({
+        sortMode,
+        startAfter,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        uid: uid!,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
   const loadMore = async () => {
-    const data = await setSize(size + 1)
-    return data?.flat() ?? []
+    await setSize(currentSize => currentSize + 1)
   }
 
-  const posts = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const posts = pages?.flat() ?? []
+  const moreToLoad = pages?.at?.(-1)?.length === POST_PAGINATION_COUNT
 
   const likePost = useCallback(
     async (slug: string) => {

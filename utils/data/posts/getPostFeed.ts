@@ -1,5 +1,3 @@
-import { pipe } from 'ramda'
-
 import constants from '../../../constants'
 import { FeedSortMode, Post, PostDocWithAttachments } from '../../../types'
 import mapPostDocToData from '../../mapPostDocToData'
@@ -10,12 +8,14 @@ import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWi
 import getPostReaction from '../author/getPostReaction'
 import {
   collection,
-  getFirestore,
-  orderBy,
-  startAfter,
-  query,
-  limit,
   getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  QueryConstraint,
+  startAfter,
+  Timestamp,
 } from 'firebase/firestore'
 
 const { POST_PAGINATION_COUNT, POSTS_COLLECTION } = constants
@@ -25,23 +25,28 @@ const getPostFeed = async ({
   uid,
   sortMode = FeedSortMode.Latest,
 }: {
-  startAfter?: number
+  startAfter?: Post
   uid: string
   sortMode?: FeedSortMode
 }): Promise<Post[]> => {
   const db = getFirestore()
+  const isPopularSortMode = sortMode === FeedSortMode.Popular
 
-  const dbRef = pipe(
-    () => collection(db, POSTS_COLLECTION),
-    ref =>
-      sortMode === FeedSortMode.Popular
-        ? query(ref, orderBy('popularityScoreRecent', 'desc'))
-        : ref,
-    ref => query(ref, orderBy('createdAt', 'desc')),
-    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
-    ref => query(ref, limit(POST_PAGINATION_COUNT))
-  )()
+  const startAfterValue = startAfterProp
+    ? [
+        isPopularSortMode && startAfterProp.data.popularityScoreRecent,
+        Timestamp.fromMillis(startAfterProp.data.createdAt),
+      ].filter(value => value !== false)
+    : null
 
+  const queryElements = [
+    isPopularSortMode && orderBy('popularityScoreRecent', 'desc'),
+    orderBy('createdAt', 'desc'),
+    startAfterValue && startAfter(...startAfterValue),
+    limit(POST_PAGINATION_COUNT),
+  ].filter(Boolean) as QueryConstraint[]
+
+  const dbRef = query(collection(db, POSTS_COLLECTION), ...queryElements)
   const postDocs = await getDocs(dbRef)
   if (postDocs.empty) return []
 

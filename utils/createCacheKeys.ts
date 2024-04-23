@@ -25,8 +25,35 @@ const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 
 const createPostCacheKey = (slug: string) => `post/${slug}`
 
-const createPostFeedCacheKey = ({ sortMode }: { sortMode: FeedSortMode }) =>
-  `post/feed/${sortMode}`
+const createPostFeedCacheKeyServer = ({
+  sortMode = FeedSortMode.Latest,
+}: {
+  sortMode: FeedSortMode
+}) => `post/feed?sortMode=${sortMode}`
+
+const createPostFeedSWRGetKey =
+  ({ uid, sortMode }: { uid: string | undefined; sortMode: FeedSortMode }) =>
+  (_: number, previousPageData: any) => {
+    if (!uid) return null
+
+    if (!previousPageData) {
+      return {
+        key: 'post/feed',
+        sortMode,
+        startAfter: null,
+      }
+    }
+
+    if (previousPageData.length < POST_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'post/feed',
+      sortMode,
+      startAfter: previousPageData.at(-1),
+    }
+  }
 
 const getPageIndexFromCacheKey = (cacheKey: string) =>
   cacheKey.split('-').at(-1) as string
@@ -152,7 +179,8 @@ export {
   createPersonPostsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
-  createPostFeedCacheKey,
+  createPostFeedCacheKeyServer as createPostFeedCacheKey,
+  createPostFeedSWRGetKey,
   createPostLikeCacheKey,
   createPostReactionCacheKey,
   createPostRepliesCacheKey,
