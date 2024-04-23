@@ -7,9 +7,7 @@ import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
 
 const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
-const URL = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` ?? APP_URL
 const DEFAULT_DESCRIPTION = `${BRAND_NAME}, the nameless, faceless networking platform.`
-
 const APPLE_ICON_SIZES = [16, 32, 64, 128, 256, 512, 1024]
 
 interface RenderTitle {
@@ -69,18 +67,25 @@ const Page = ({
         {type && <meta property="og:type" content={type} />}
         <meta property="twitter:site" content={TWITTER_USERNAME} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="og:url" content={`${URL}${urlPath ?? asPath}`} />
-        <meta property="og:image" content={`${URL}/og-image.png`} />
-        <meta property="og:image:secure_url" content={`${URL}/og-image.png`} />
+        <meta property="og:url" content={`${APP_URL}${urlPath ?? asPath}`} />
+        <meta property="og:image" content={`${APP_URL}/og-image.png`} />
+        <meta
+          property="og:image:secure_url"
+          content={`${APP_URL}/og-image.png`}
+        />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content={BRAND_NAME} />
-        <meta property="twitter:image" content={`${URL}/twitter-image.png`} />
+        <meta
+          property="twitter:image"
+          content={`${APP_URL}/twitter-image.png`}
+        />
         <meta property="twitter:image:alt" content={BRAND_NAME} />
         <meta name="description" content={description} />
         <meta name="og:description" content={description} />
         <meta name="twitter:description" content={description} />
+        <meta name="twitter:url" content={`${APP_URL}${urlPath ?? asPath}`} />
         {article.publishedTime && (
           <meta name="article:published_time" content={article.publishedTime} />
         )}
