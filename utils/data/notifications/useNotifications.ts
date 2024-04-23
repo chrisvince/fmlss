@@ -92,7 +92,6 @@ const useNotifications: UseNotifications = ({
       }
     )
 
-  console.log('data', data)
   const lastPageLastDoc = getLastDocOfLastPage(data)
   const moreToLoad = checkPossibleMoreToLoad(data, limit)
   const notifications = useMemo(() => data?.flat() ?? [], [data])

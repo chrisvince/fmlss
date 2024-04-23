@@ -4,7 +4,6 @@ import isServer from './isServer'
 import admin from 'firebase-admin'
 
 const initFirebaseAdmin = () => {
-  console.log('initFirebaseAdmin')
   if (!isServer) {
     throw new Error('initFirebaseAdmin must be called on the server')
   }
@@ -16,7 +15,7 @@ const initFirebaseAdmin = () => {
     return admin
   }
 
-  const newApp = initializeApp({
+  initializeApp({
     credential: credential.cert({
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -26,11 +25,10 @@ const initFirebaseAdmin = () => {
     }),
   })
 
-  console.log('newApp.name', newApp.name)
-
   if (!admin) {
     throw new Error('Firestore not initialized')
   }
+
   return admin
 }
 

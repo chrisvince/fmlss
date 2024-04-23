@@ -51,10 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const path = slugs.map(slugify).join('/')
   const uid = await getUidFromCookies(req.cookies)
   const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Popular
-  console.log('sortMode', sortMode)
   const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
-
-  console.log('topicPostsCacheKey', topicPostsCacheKey)
   const topicCacheKey = createTopicCacheKey(path)
   const sidebarDataPromise = getSidebarDataServer()
   const topic = await getTopicServer(path)
@@ -79,8 +76,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     sortMode: TopicsSortMode.Popular,
   })
 
-  console.log('topics', topics)
-
   if (isInternalRequest(req)) {
     const sidebarFallbackData = await sidebarDataPromise
     console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -98,7 +93,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   }
 
-  console.log('path', path)
   const [posts, sidebarFallbackData] = await Promise.all([
     getTopicPostsServer(path, {
       uid,
@@ -106,8 +100,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     }),
     sidebarDataPromise,
   ])
-
-  console.log('postsNEW', posts)
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
   return {

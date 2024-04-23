@@ -41,8 +41,6 @@ const getTopicsServer = async ({
     ? `${parentTopicRef}/${TOPICS_COLLECTION}`
     : TOPICS_COLLECTION
 
-  console.log('collectionPath', collectionPath)
-
   if (cachedData) {
     topicData = cachedData
     topicDocs = null
