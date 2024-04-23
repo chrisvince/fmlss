@@ -2,7 +2,7 @@ import { SWRConfig } from 'swr'
 
 import HashtagsPage from '../../components/HashtagsPage'
 import type { HashtagsSortMode } from '../../types'
-import { createHashtagsCacheKey } from '../../utils/createCacheKeys'
+import { createHashtagSWRGetKey } from '../../utils/createCacheKeys'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer, {
@@ -10,6 +10,7 @@ import getSidebarDataServer, {
 } from '../../utils/data/sidebar/getSidebarDataServer'
 import getHashtagsServer from '../../utils/data/hashtags/getHashtagsServer'
 import { GetServerSideProps } from 'next'
+import { unstable_serialize } from 'swr/infinite'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -50,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     return { notFound: true }
   }
 
-  const hashtagsCacheKey = createHashtagsCacheKey(sortMode)
+  const hashtagsCacheKey = createHashtagSWRGetKey({ sortMode })
 
   const sidebarDataPromise = getSidebarDataServer({
     exclude: [SidebarResourceKey.Hashtags],
@@ -63,7 +64,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     return {
       props: {
         fallback: sidebarFallbackData,
-        key: hashtagsCacheKey,
       },
     }
   }
@@ -78,9 +78,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       fallback: {
         ...sidebarFallbackData,
-        [hashtagsCacheKey]: hashtags,
+        [unstable_serialize(hashtagsCacheKey)]: [hashtags],
       },
-      key: hashtagsCacheKey,
     },
   }
 }

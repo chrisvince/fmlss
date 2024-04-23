@@ -2,6 +2,7 @@ import constants from '../constants'
 import {
   FeedSortMode,
   HashtagSortMode,
+  HashtagsSortMode,
   TopicSortMode,
   TopicsSortMode,
 } from '../types'
@@ -9,7 +10,7 @@ import { PeopleSortMode } from '../types/PeopleSortMode'
 import { PersonPostsSortMode } from '../types/PersonPostsSortMode'
 import { HashtagShowType } from './data/posts/getHashtagPosts'
 
-const { POST_PAGINATION_COUNT } = constants
+const { HASHTAGS_PAGINATION_COUNT, POST_PAGINATION_COUNT } = constants
 
 const createHashtagPostsCacheKey = (
   slug: string,
@@ -93,10 +94,30 @@ const createUserRepliesCacheKey = (
   { pageIndex = 0 }: { pageIndex?: number | null } = {}
 ) => `post/authored/reply/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
 
-const createHashtagsCacheKey = (
-  sortMode: string,
-  pageIndex: number | null = 0
-) => `hashtags/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
+const createHashtagsCacheKeyServer = (sortMode: HashtagsSortMode) =>
+  `hashtags/${sortMode}`
+
+const createHashtagSWRGetKey =
+  ({ sortMode }: { sortMode: HashtagsSortMode }) =>
+  (_: number, previousPageData: any) => {
+    if (!previousPageData) {
+      return {
+        key: 'hashtags',
+        sortMode,
+        startAfter: null,
+      }
+    }
+
+    if (previousPageData.length < HASHTAGS_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'hashtags',
+      sortMode,
+      startAfter: previousPageData.at(-1),
+    }
+  }
 
 const createTopicsCacheKey = ({
   limit = POST_PAGINATION_COUNT,
@@ -170,7 +191,8 @@ const createYouTubeAttachmentCacheKey = (url: string) =>
 
 export {
   createHashtagPostsCacheKey,
-  createHashtagsCacheKey,
+  createHashtagsCacheKeyServer,
+  createHashtagSWRGetKey,
   createHasUnreadNotificationsCacheKey,
   createNotificationCacheKey,
   createPeopleCacheKey,

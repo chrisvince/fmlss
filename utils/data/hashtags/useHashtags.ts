@@ -1,17 +1,11 @@
-import { useEffect, useState } from 'react'
-import { useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
-import { FirebaseDoc, Hashtag, HashtagsSortMode } from '../../../types'
-import {
-  createHashtagsCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
+import { Hashtag, HashtagsSortMode } from '../../../types'
+import { createHashtagSWRGetKey } from '../../createCacheKeys'
 import getHashtags from './getHashtags'
 import constants from '../../../constants'
 
-const { POST_PAGINATION_COUNT } = constants
+const { HASHTAGS_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
@@ -36,46 +30,19 @@ const useHashtags: UseHashtags = ({
   sortMode = HashtagsSortMode.Latest,
   swrConfig = {},
 } = {}) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
-  const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createHashtagsCacheKey(sortMode)]
-
   const { data, error, isLoading, isValidating, setSize, size } =
     useSWRInfinite(
-      (index, previousPageData) => {
-        if (
-          previousPageData &&
-          previousPageData.length < POST_PAGINATION_COUNT
-        ) {
-          return null
-        }
-        return createHashtagsCacheKey(sortMode, index)
-      },
-      key => {
-        const pageIndex = getPageIndexFromCacheKey(key)
-        return getHashtags({
+      createHashtagSWRGetKey({ sortMode }),
+      ({ startAfter }) =>
+        getHashtags({
           sortMode,
-          startAfter: pageStartAfterTrace[pageIndex],
-        })
-      },
+          startAfter,
+        }),
       {
-        fallbackData,
         ...DEFAULT_SWR_CONFIG,
         ...swrConfig,
       }
     )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -83,10 +50,7 @@ const useHashtags: UseHashtags = ({
   }
 
   const hashtags = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const moreToLoad = data?.at?.(-1)?.length >= HASHTAGS_PAGINATION_COUNT
 
   return {
     error,

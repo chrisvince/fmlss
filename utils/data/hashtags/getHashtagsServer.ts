@@ -3,19 +3,19 @@ import { pipe } from 'ramda'
 
 import constants from '../../../constants'
 import { Hashtag, HashtagData, HashtagsSortMode } from '../../../types'
-import { createHashtagsCacheKey } from '../../createCacheKeys'
+import { createHashtagsCacheKeyServer } from '../../createCacheKeys'
 import mapHashtagDocToData from '../../mapHashtagDocToData'
 import isServer from '../../isServer'
 import initFirebaseAdmin from '../../initFirebaseAdmin'
 
-const { HASHTAGS_CACHE_TIME, POST_PAGINATION_COUNT, HASHTAGS_COLLECTION } =
+const { HASHTAGS_CACHE_TIME, HASHTAGS_COLLECTION, HASHTAGS_PAGINATION_COUNT } =
   constants
 
 const getHashtagsServer = async ({
   sortMode = HashtagsSortMode.Popular,
-  cacheKey = createHashtagsCacheKey(sortMode),
+  cacheKey = createHashtagsCacheKeyServer(sortMode),
   cacheTime = HASHTAGS_CACHE_TIME,
-  limit = POST_PAGINATION_COUNT,
+  limit = HASHTAGS_PAGINATION_COUNT,
 }: {
   cacheKey?: string
   cacheTime?: number

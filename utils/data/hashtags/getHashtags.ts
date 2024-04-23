@@ -1,13 +1,9 @@
-import { pipe } from 'ramda'
 import constants from '../../../constants'
-import {
-  FirebaseDoc,
-  Hashtag,
-  HashtagDataRequest,
-  HashtagsSortMode,
-} from '../../../types'
+import { Hashtag, HashtagsSortMode } from '../../../types'
 import mapHashtagDocToData from '../../mapHashtagDocToData'
 import {
+  QueryConstraint,
+  Timestamp,
   collection,
   getDocs,
   getFirestore,
@@ -17,32 +13,37 @@ import {
   startAfter,
 } from 'firebase/firestore'
 
-const { POST_PAGINATION_COUNT, HASHTAGS_COLLECTION } = constants
+const { HASHTAGS_PAGINATION_COUNT, HASHTAGS_COLLECTION } = constants
 
 const getHashtags = async ({
   sortMode = HashtagsSortMode.Popular,
-  limit: limitProp = POST_PAGINATION_COUNT,
+  limit: limitProp = HASHTAGS_PAGINATION_COUNT,
   startAfter: startAfterProp,
 }: {
   cacheKey?: string
   cacheTime?: number
   limit?: number
   sortMode?: HashtagsSortMode
-  startAfter?: FirebaseDoc
+  startAfter?: Hashtag
 } = {}): Promise<Hashtag[]> => {
   const db = getFirestore()
-  const collectionRef = collection(db, HASHTAGS_COLLECTION)
+  const isPopularSortMode = sortMode === HashtagsSortMode.Popular
 
-  const dbRef = pipe(
-    ref =>
-      sortMode === HashtagsSortMode.Popular
-        ? query(ref, orderBy('popularityScoreRecent', 'desc'))
-        : ref,
-    ref => query(ref, orderBy('createdAt', 'desc')),
-    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
-    ref => query(ref, limit(limitProp))
-  )(collectionRef)
+  const startAfterValue = startAfterProp
+    ? [
+        isPopularSortMode && startAfterProp.data.popularityScoreRecent,
+        Timestamp.fromMillis(startAfterProp.data.createdAt),
+      ].filter(value => value !== false)
+    : null
 
+  const queryElements = [
+    isPopularSortMode && orderBy('popularityScoreRecent', 'desc'),
+    orderBy('createdAt', 'desc'),
+    startAfterValue && startAfter(...startAfterValue),
+    limit(limitProp),
+  ].filter(Boolean) as QueryConstraint[]
+
+  const dbRef = query(collection(db, HASHTAGS_COLLECTION), ...queryElements)
   const hashtagDocs = await getDocs(dbRef)
   if (hashtagDocs.empty) return []
   const hashtagData = hashtagDocs.docs.map(mapHashtagDocToData)

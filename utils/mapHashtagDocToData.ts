@@ -6,9 +6,11 @@ const mapHashtagDocToData = (doc: FirebaseDoc): HashtagData => {
     createdAt: data.createdAt.toMillis(),
     display: data.display,
     id: doc.id,
+    popularityScoreAllTime: data.popularityScoreAllTime,
+    popularityScoreRecent: data.popularityScoreRecent,
+    postCount: data.postCount,
     slug: data.slug,
     updatedAt: data.updatedAt.toMillis(),
-    postCount: data.postCount,
     viewCount: data.viewCount,
   }
 }
