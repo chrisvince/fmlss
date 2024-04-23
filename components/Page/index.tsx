@@ -5,10 +5,9 @@ import PageTitle from '../PageTitle'
 import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
-import { Box } from '@mui/material'
 
 const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
-const URL = process.env.VERCEL_URL ?? APP_URL
+const URL = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` ?? APP_URL
 const DEFAULT_DESCRIPTION = `${BRAND_NAME}, the nameless, faceless networking platform.`
 
 const APPLE_ICON_SIZES = [16, 32, 64, 128, 256, 512, 1024]
