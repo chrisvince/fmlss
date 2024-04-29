@@ -20,7 +20,7 @@ const LayoutBasicSlimBranded = ({ children }: PropTypes) => (
           flexDirection: 'column',
           pt: {
             xs: 5,
-            sm: '22vh',
+            sm: '15vh',
           },
           pb: 5,
           gap: 5,
@@ -32,9 +32,9 @@ const LayoutBasicSlimBranded = ({ children }: PropTypes) => (
             justifyContent: 'center',
           }}
         >
-          <Brand height={21} width={130} />
+          <Brand height={26} width={165} />
         </Box>
-        <Box>{children}</Box>
+        <Box sx={{ pt: 4 }}>{children}</Box>
       </Box>
     </Container>
     <FooterBasic />

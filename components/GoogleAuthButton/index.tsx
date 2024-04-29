@@ -46,7 +46,7 @@ const GoogleAuthButton = ({
 
   const label = {
     signIn: 'Sign in with Google',
-    signUp: 'Create account with Google',
+    signUp: 'Sign up with Google',
   }[mode ?? 'signIn']
 
   return (

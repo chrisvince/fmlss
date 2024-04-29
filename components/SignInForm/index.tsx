@@ -74,7 +74,6 @@ const SignInForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       noValidate
       sx={{
-        mt: 6,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
@@ -82,6 +81,9 @@ const SignInForm = () => {
         gap: 5,
       }}
     >
+      <Typography variant="h1" component="h1">
+        Sign in
+      </Typography>
       <Box
         sx={{
           display: 'flex',
@@ -211,7 +213,7 @@ const SignInForm = () => {
                 href="/sign-up"
                 variant="outlined"
               >
-                Create account
+                Sign up
               </Button>
             </Box>
           </Box>

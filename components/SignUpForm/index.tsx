@@ -78,6 +78,9 @@ const SignUpForm = ({ onSuccess }: Props) => {
         gap: 5,
       }}
     >
+      <Typography variant="h1" component="h1">
+        Sign up
+      </Typography>
       <Box
         sx={{
           display: 'flex',
@@ -177,7 +180,7 @@ const SignUpForm = ({ onSuccess }: Props) => {
                 type="submit"
                 variant="contained"
               >
-                Create account
+                Sign up
               </LoadingButton>
               {formError && (
                 <Typography variant="caption" color="error">
@@ -198,7 +201,12 @@ const SignUpForm = ({ onSuccess }: Props) => {
               <Typography variant="body1" component="h2">
                 Already have an account?{' '}
               </Typography>
-              <Button component={Link} fullWidth href="/" variant="outlined">
+              <Button
+                component={Link}
+                fullWidth
+                href="/sign-in"
+                variant="outlined"
+              >
                 Sign in
               </Button>
             </Box>

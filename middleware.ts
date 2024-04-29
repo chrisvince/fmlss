@@ -7,7 +7,7 @@ import {
 import constants from './constants'
 
 const { AUTH_API_LOGIN_PATH, AUTH_API_LOGOUT_PATH } = constants
-const PUBLIC_PATHS = ['/sign-in', '/sign-up', '/forgot-password']
+const PUBLIC_PATHS = ['/sign-in', '/sign-up', '/forgot-password', '/welcome']
 const PUBLIC_AND_PRIVATE_PATHS = ['/people', '/topics', '/hashtags']
 
 const PUBLIC_AND_PRIVATE_DYNAMIC_PATHS = [
@@ -70,13 +70,13 @@ export const middleware = async (request: NextRequest) => {
     },
     handleInvalidToken: async () => {
       return redirectToLogin(request, {
-        path: '/sign-in',
+        path: '/welcome',
         publicPaths,
       })
     },
     handleError: async () => {
       return redirectToLogin(request, {
-        path: '/sign-in',
+        path: '/welcome',
         publicPaths,
       })
     },
