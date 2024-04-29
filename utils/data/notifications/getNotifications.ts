@@ -1,9 +1,6 @@
 import constants from '../../../constants'
 import mapNotificationToData from './mapNotificationToData'
-import { pipe } from 'ramda'
-import { FirebaseDoc, NotificationDataRequest } from '../../../types'
 import { Notification } from '../../../types/Notification'
-import isServer from '../../isServer'
 import {
   collection,
   getDocs,
@@ -11,7 +8,9 @@ import {
   limit,
   orderBy,
   query,
+  QueryConstraint,
   startAfter,
+  Timestamp,
   where,
 } from 'firebase/firestore'
 
@@ -29,22 +28,24 @@ const getNotifications = async (
     unreadOnly = false,
   }: {
     limit?: number
-    startAfter?: FirebaseDoc
+    startAfter?: Notification
     unreadOnly?: boolean
   }
 ): Promise<Notification[]> => {
   const db = getFirestore()
+  console.log('uid', uid)
 
   const collectionPath = `${USERS_COLLECTION}/${uid}/${NOTIFICATIONS_COLLECTION}`
-  const collectionRef = collection(db, collectionPath)
 
-  const dbRef = pipe(
-    ref => query(ref, orderBy('createdAt', 'desc')),
-    ref => (unreadOnly ? query(ref, where('readAt', '==', null)) : ref),
-    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
-    ref => query(ref, limit(limitProp))
-  )(collectionRef)
+  const queryElements = [
+    orderBy('createdAt', 'desc'),
+    unreadOnly && where('readAt', '==', null),
+    startAfterProp &&
+      startAfter(Timestamp.fromMillis(startAfterProp.data.createdAt)),
+    limit(limitProp),
+  ].filter(Boolean) as QueryConstraint[]
 
+  const dbRef = query(collection(db, collectionPath), ...queryElements)
   const docsRef = await getDocs(dbRef)
 
   const data = docsRef.docs.map(notificationDoc => ({

@@ -10,7 +10,11 @@ import { PeopleSortMode } from '../types/PeopleSortMode'
 import { PersonPostsSortMode } from '../types/PersonPostsSortMode'
 import { HashtagShowType } from './data/posts/getHashtagPosts'
 
-const { HASHTAGS_PAGINATION_COUNT, POST_PAGINATION_COUNT } = constants
+const {
+  HASHTAGS_PAGINATION_COUNT,
+  NOTIFICATION_PAGINATION_COUNT,
+  POST_PAGINATION_COUNT,
+} = constants
 
 const createHashtagPostsCacheKey = (
   slug: string,
@@ -158,6 +162,28 @@ const createNotificationCacheKey = (
   { pageIndex = 0, limit }: { pageIndex: number; limit: number }
 ) => `notifications/${uid}/limit=${limit}-${pageIndex}`
 
+const createNotificationsSWRGetKey =
+  ({ skip = false, uid }: { skip?: boolean; uid: string | undefined }) =>
+  (_: number, previousPageData: any) => {
+    if (!uid || skip) return null
+
+    if (!previousPageData) {
+      return {
+        key: 'notifications',
+        startAfter: null,
+      }
+    }
+
+    if (previousPageData.length < NOTIFICATION_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'notifications',
+      startAfter: previousPageData.at(-1),
+    }
+  }
+
 const createHasUnreadNotificationsCacheKey = (uid: string) =>
   `has-unread-notifications/${uid}`
 
@@ -195,6 +221,7 @@ export {
   createHashtagSWRGetKey,
   createHasUnreadNotificationsCacheKey,
   createNotificationCacheKey,
+  createNotificationsSWRGetKey,
   createPeopleCacheKey,
   createPeopleSearchCacheKey,
   createPersonCacheKey,

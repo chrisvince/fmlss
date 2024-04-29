@@ -1,15 +1,15 @@
 import { SWRConfig } from 'swr'
 import NotificationsPage from '../components/NotificationsPage'
-import { createNotificationCacheKey } from '../utils/createCacheKeys'
+import { createNotificationsSWRGetKey } from '../utils/createCacheKeys'
 import constants from '../constants'
 import isInternalRequest from '../utils/isInternalRequest'
 import getSidebarDataServer from '../utils/data/sidebar/getSidebarDataServer'
 import getNotificationsServer from '../utils/data/notifications/getNotificationsServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../utils/auth/getUidFromCookies'
+import { unstable_serialize } from 'swr/infinite'
 
-const { GET_SERVER_SIDE_PROPS_TIME_LABEL, NOTIFICATION_PAGINATION_COUNT } =
-  constants
+const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
 interface Props {
   fallback: {
@@ -36,11 +36,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   }
 
-  const notificationsCacheKey = createNotificationCacheKey(uid, {
-    limit: NOTIFICATION_PAGINATION_COUNT,
-    pageIndex: 0,
-  })
-
+  const notificationsCacheKey = createNotificationsSWRGetKey({ uid })
   const sidebarDataPromise = getSidebarDataServer()
 
   if (isInternalRequest(req)) {
@@ -50,7 +46,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     return {
       props: {
         fallback: sidebarFallbackData,
-        key: notificationsCacheKey,
       },
     }
   }
@@ -66,9 +61,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     props: {
       fallback: {
         ...sidebarFallbackData,
-        [notificationsCacheKey]: notifications,
+        [unstable_serialize(notificationsCacheKey)]: notifications,
       },
-      key: notificationsCacheKey,
     },
   }
 }

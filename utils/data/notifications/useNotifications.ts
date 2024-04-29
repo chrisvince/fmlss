@@ -1,19 +1,17 @@
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import {
-  createNotificationCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
+import { createNotificationsSWRGetKey } from '../../createCacheKeys'
 import constants from '../../../constants'
 import getNotifications from './getNotifications'
-import { FirebaseDoc, Notification } from '../../../types'
+import { Notification } from '../../../types'
 import { useEffect, useMemo, useRef } from 'react'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
-import checkPossibleMoreToLoad from '../../checkPossibleMoreToLoad'
-import { useSWRConfig } from 'swr'
 import { doc, getFirestore, updateDoc } from 'firebase/firestore'
 import useAuth from '../../auth/useAuth'
 
-const { NOTIFICATION_PAGINATION_COUNT, NOTIFICATIONS_COLLECTION } = constants
+const {
+  NOTIFICATION_PAGINATION_COUNT,
+  NOTIFICATIONS_COLLECTION,
+  USERS_COLLECTION,
+} = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   initialSize: 1,
@@ -41,87 +39,64 @@ type UseNotifications = (options?: {
 const useNotifications: UseNotifications = ({
   limit = NOTIFICATION_PAGINATION_COUNT,
   markRead = true,
-  skip,
+  skip = false,
   swrConfig,
 } = {}) => {
   const db = getFirestore()
-  const pageStartAfterTraceRef = useRef<{ [key: string]: FirebaseDoc }>({})
-  const hasMarkedReadRef = useRef(false)
+  const markedReadTraceRef = useRef<string[]>([])
   const { uid } = useAuth() ?? {}
 
-  const { fallback } = useSWRConfig()
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    setSize,
+    size,
+  } = useSWRInfinite(
+    createNotificationsSWRGetKey({ skip, uid }),
+    ({ startAfter }) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return getNotifications(uid!, {
+        startAfter,
+        limit,
+      })
+    },
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
-  const fallbackData = uid
-    ? fallback[
-        createNotificationCacheKey(uid, {
-          pageIndex: 0,
-          limit,
-        })
-      ]
-    : null
-
-  const { data, error, isLoading, isValidating, mutate, setSize, size } =
-    useSWRInfinite(
-      (pageIndex, previousPageData) => {
-        if (
-          (previousPageData && previousPageData.length < limit) ||
-          skip ||
-          !uid
-        ) {
-          return null
-        }
-
-        return createNotificationCacheKey(uid, {
-          pageIndex,
-          limit,
-        })
-      },
-      key => {
-        if (!uid) return null
-        const pageIndex = getPageIndexFromCacheKey(key)
-
-        return getNotifications(uid, {
-          startAfter: pageStartAfterTraceRef.current[pageIndex],
-          limit,
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  const moreToLoad = checkPossibleMoreToLoad(data, limit)
-  const notifications = useMemo(() => data?.flat() ?? [], [data])
+  const moreToLoad = pages?.at?.(-1)?.length === NOTIFICATION_PAGINATION_COUNT
+  const notifications = useMemo(() => pages?.flat() ?? [], [pages])
 
   const loadMore = async () => {
-    if (!moreToLoad) return data?.flat() ?? []
+    if (!moreToLoad) return pages?.flat() ?? []
     const newData = await setSize(size + 1)
     return newData?.flat() ?? []
   }
 
   useEffect(() => {
-    if (!markRead || hasMarkedReadRef.current) return
-    const unreadNotifications = notifications.filter(({ data }) => !data.readAt)
+    if (!markRead) return
+
+    const unreadNotifications = notifications.filter(
+      ({ data }) =>
+        !data.readAt && !markedReadTraceRef.current.includes(data.id)
+    )
+
     if (!unreadNotifications.length) return
 
     unreadNotifications.forEach(({ data }) => {
-      const docRef = doc(db, NOTIFICATIONS_COLLECTION, data.id)
+      const docRef = doc(
+        db,
+        `${USERS_COLLECTION}/${uid}/${NOTIFICATIONS_COLLECTION}/${data.id}`
+      )
       updateDoc(docRef, { readAt: new Date() })
+      markedReadTraceRef.current.push(data.id)
     })
-    hasMarkedReadRef.current = true
-  }, [db, markRead, notifications])
-
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-
-    pageStartAfterTraceRef.current = {
-      ...pageStartAfterTraceRef.current,
-      [size]: lastPageLastDoc,
-    }
-  }, [lastPageLastDoc, size])
+  }, [db, markRead, notifications, uid])
 
   return {
     error,
