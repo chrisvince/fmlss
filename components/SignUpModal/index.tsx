@@ -33,7 +33,7 @@ const SignUpModal = ({ actionText, onClose, open }: Props) => {
             </>
           )}
         </Typography>
-        <SignUpForm onSuccess={handleSignUpSuccess} />
+        <SignUpForm onSuccess={handleSignUpSuccess} showHeading={false} />
       </Box>
     </Modal>
   )

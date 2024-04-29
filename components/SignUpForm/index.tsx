@@ -28,9 +28,10 @@ const GENERIC_ERROR_MESSAGE =
 
 interface Props {
   onSuccess?: () => unknown
+  showHeading?: boolean
 }
 
-const SignUpForm = ({ onSuccess }: Props) => {
+const SignUpForm = ({ onSuccess, showHeading = true }: Props) => {
   const router = useRouter()
   const [formError, setFormError] = useState<{ message: string } | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -78,9 +79,11 @@ const SignUpForm = ({ onSuccess }: Props) => {
         gap: 5,
       }}
     >
-      <Typography variant="h1" component="h1">
-        Sign up
-      </Typography>
+      {showHeading && (
+        <Typography variant="h1" component="h1">
+          Sign up
+        </Typography>
+      )}
       <Box
         sx={{
           display: 'flex',
