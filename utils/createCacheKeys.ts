@@ -13,6 +13,7 @@ import { HashtagShowType } from './data/posts/getHashtagPosts'
 const {
   HASHTAGS_PAGINATION_COUNT,
   NOTIFICATION_PAGINATION_COUNT,
+  PEOPLE_PAGINATION_COUNT,
   POST_PAGINATION_COUNT,
 } = constants
 
@@ -196,6 +197,28 @@ const createPeopleCacheKey = ({
 }: { pageIndex?: number; sortMode?: PeopleSortMode } = {}) =>
   `people/${sortMode}-${pageIndex}`
 
+const createPeopleSWRGetKey =
+  ({ sortMode }: { sortMode: PeopleSortMode }) =>
+  (_: number, previousPageData: any) => {
+    if (!previousPageData) {
+      return {
+        key: 'people',
+        sortMode,
+        startAfter: null,
+      }
+    }
+
+    if (previousPageData.length < PEOPLE_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'people',
+      sortMode,
+      startAfter: previousPageData.at(-1),
+    }
+  }
+
 const createPersonCacheKey = (slug: string) => `person/${slug}`
 
 const createPersonPostsCacheKey = (
@@ -224,6 +247,7 @@ export {
   createNotificationsSWRGetKey,
   createPeopleCacheKey,
   createPeopleSearchCacheKey,
+  createPeopleSWRGetKey,
   createPersonCacheKey,
   createPersonPostsCacheKey,
   createPostAuthorCacheKey,

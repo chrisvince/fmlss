@@ -1,4 +1,4 @@
-import { createPeopleCacheKey } from '../../utils/createCacheKeys'
+import { createPeopleSWRGetKey } from '../../utils/createCacheKeys'
 import getSidebarDataServer, {
   SidebarResourceKey,
 } from '../../utils/data/sidebar/getSidebarDataServer'
@@ -8,6 +8,7 @@ import isInternalRequest from '../../utils/isInternalRequest'
 import { PeopleSortMode } from '../../types/PeopleSortMode'
 import getPeopleServer from '../../utils/data/people/getPeopleServer'
 import { GetServerSideProps } from 'next'
+import { unstable_serialize } from 'swr/infinite'
 
 const SORT_MODE_MAP: {
   [key: string]: PeopleSortMode
@@ -36,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   const sort = (query.sort as string) || PeopleSortMode.Popular
   const sortMode = SORT_MODE_MAP[sort] ?? PeopleSortMode.Popular
-  const peopleCacheKey = createPeopleCacheKey({ sortMode })
+  const peopleCacheKey = createPeopleSWRGetKey({ sortMode })
 
   const sidebarDataPromise = getSidebarDataServer({
     exclude: [SidebarResourceKey.People],
@@ -60,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   return {
     props: {
       fallback: {
-        [peopleCacheKey]: people,
+        [unstable_serialize(peopleCacheKey)]: people,
         ...sidebarFallbackData,
       },
     },

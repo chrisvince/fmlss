@@ -1,13 +1,6 @@
-import { useEffect, useState } from 'react'
-import { useSWRConfig } from 'swr'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
 
-import { FirebaseDoc } from '../../../types'
-import {
-  createPeopleCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
+import { createPeopleSWRGetKey } from '../../createCacheKeys'
 import getPeople from './getPeople'
 import constants from '../../../constants'
 import { Person } from '../../../types/Person'
@@ -38,57 +31,33 @@ const usePeople: UsePeople = ({
   swrConfig = {},
   sortMode = PeopleSortMode.Popular,
 } = {}) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
-  const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPeopleCacheKey({ sortMode })]
-
-  const { data, error, isLoading, isValidating, setSize, size } =
-    useSWRInfinite(
-      (pageIndex, previousPageData) => {
-        if (
-          previousPageData &&
-          previousPageData.length < PEOPLE_PAGINATION_COUNT
-        ) {
-          return null
-        }
-        return createPeopleCacheKey({ pageIndex, sortMode })
-      },
-      key => {
-        const pageIndex = getPageIndexFromCacheKey(key)
-        return getPeople({
-          sortMode,
-          startAfter: pageStartAfterTrace[pageIndex],
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    setSize,
+    size,
+  } = useSWRInfinite(
+    createPeopleSWRGetKey({ sortMode }),
+    ({ startAfter }) =>
+      getPeople({
+        sortMode,
+        startAfter,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
     return data?.flat() ?? []
   }
 
-  const people = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= PEOPLE_PAGINATION_COUNT
+  const people = pages?.flat() ?? []
+  const moreToLoad = pages?.at?.(-1)?.length === PEOPLE_PAGINATION_COUNT
 
   return {
     people,

@@ -9,6 +9,8 @@ const mapPersonDocToData = (doc: FirebaseDoc): PersonData => {
     createdAt: personData.createdAt.toMillis(),
     id: doc.id,
     name: personData.name,
+    popularityScoreAllTime: personData.popularityScoreAllTime,
+    popularityScoreRecent: personData.popularityScoreRecent,
     postCount: personData.postCount,
     slug: personData.slug,
     updatedAt: personData.updatedAt.toMillis(),
