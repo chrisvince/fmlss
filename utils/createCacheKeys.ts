@@ -38,7 +38,7 @@ const createPostFeedCacheKeyServer = ({
 }) => `post/feed?sortMode=${sortMode}`
 
 const createPostFeedSWRGetKey =
-  ({ uid, sortMode }: { uid: string | undefined; sortMode: FeedSortMode }) =>
+  ({ uid, sortMode }: { uid: string | null; sortMode: FeedSortMode }) =>
   (_: number, previousPageData: any) => {
     if (!uid) return null
 
@@ -47,6 +47,7 @@ const createPostFeedSWRGetKey =
         key: 'post/feed',
         sortMode,
         startAfter: null,
+        uid,
       }
     }
 
@@ -58,6 +59,7 @@ const createPostFeedSWRGetKey =
       key: 'post/feed',
       sortMode,
       startAfter: previousPageData.at(-1),
+      uid,
     }
   }
 
@@ -164,7 +166,7 @@ const createNotificationCacheKey = (
 ) => `notifications/${uid}/limit=${limit}-${pageIndex}`
 
 const createNotificationsSWRGetKey =
-  ({ skip = false, uid }: { skip?: boolean; uid: string | undefined }) =>
+  ({ skip = false, uid }: { skip?: boolean; uid: string | null }) =>
   (_: number, previousPageData: any) => {
     if (!uid || skip) return null
 
@@ -172,6 +174,7 @@ const createNotificationsSWRGetKey =
       return {
         key: 'notifications',
         startAfter: null,
+        uid,
       }
     }
 
@@ -182,6 +185,7 @@ const createNotificationsSWRGetKey =
     return {
       key: 'notifications',
       startAfter: previousPageData.at(-1),
+      uid,
     }
   }
 
