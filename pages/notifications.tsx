@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     props: {
       fallback: {
         ...sidebarFallbackData,
-        [unstable_serialize(notificationsCacheKey)]: notifications,
+        [unstable_serialize(notificationsCacheKey)]: [notifications],
       },
     },
   }

@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   return {
     props: {
       fallback: {
-        [unstable_serialize(peopleCacheKey)]: people,
+        [unstable_serialize(peopleCacheKey)]: [people],
         ...sidebarFallbackData,
       },
     },
