@@ -3,8 +3,8 @@ import { SWRConfig } from 'swr'
 import TopicsPage from '../../components/TopicsPage'
 import { TopicsSortMode } from '../../types'
 import {
-  createTopicsCacheKey,
   createTopicCacheKey,
+  createTopicsSWRGetKey,
 } from '../../utils/createCacheKeys'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
@@ -13,6 +13,7 @@ import { SidebarResourceKey } from '../../utils/data/sidebar/getSidebarDataServe
 import getTopicsServer from '../../utils/data/topics/getTopicsServer'
 import getTopicServer from '../../utils/data/topic/getTopicServer'
 import { GetServerSideProps } from 'next'
+import { unstable_serialize } from 'swr/infinite'
 
 const { TOPICS_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -53,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   const sortMode = SORT_MODE_MAP[sort] ?? TopicsSortMode.Popular
-  const parentTopicPath = slugs.join('/') || null
+  const parentTopicPath = slugs.join('/')
 
   const parentTopicPromise = parentTopicPath
     ? getTopicServer(parentTopicPath)
@@ -68,11 +69,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       parentTopicPromise,
       sidebarDataPromise,
     ])
-
-    const topicsCacheKey = createTopicsCacheKey({
-      sortMode,
-      parentTopicRef: parentTopic?.data.ref,
-    })
 
     if (parentTopicPath && !parentTopic) {
       console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -94,7 +90,6 @@ export const getServerSideProps: GetServerSideProps = async ({
             : {}),
           ...sidebarFallbackData,
         },
-        key: topicsCacheKey,
         parentTopicPath,
       },
     }
@@ -102,9 +97,9 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const parentTopic = await parentTopicPromise
 
-  const topicsCacheKey = createTopicsCacheKey({
-    sortMode,
+  const topicsCacheKey = createTopicsSWRGetKey({
     parentTopicRef: parentTopic?.data.ref,
+    sortMode,
   })
 
   const [topics, sidebarFallbackData] = await Promise.all([
@@ -130,9 +125,8 @@ export const getServerSideProps: GetServerSideProps = async ({
             }
           : {}),
         ...sidebarFallbackData,
-        [topicsCacheKey]: topics,
+        [unstable_serialize(topicsCacheKey)]: topics,
       },
-      key: topicsCacheKey,
       parentTopicPath,
     },
   }

@@ -7,6 +7,7 @@ import {
   Person,
   Post,
   PostTypeQuery,
+  Topic,
   TopicSortMode,
   TopicsSortMode,
 } from '../types'
@@ -19,6 +20,7 @@ const {
   PEOPLE_PAGINATION_COUNT,
   POST_PAGINATION_COUNT,
   POST_REPLIES_PAGINATION_COUNT,
+  TOPICS_PAGINATION_COUNT,
 } = constants
 
 const createHashtagPostsCacheKey = (
@@ -215,6 +217,44 @@ const createTopicsCacheKey = ({
     parentTopicRef ? `${parentTopicRef}/` : ''
   }${sortMode}/limit=${limit}-${pageIndex}`
 
+const createTopicsSWRGetKey =
+  ({
+    limit = POST_PAGINATION_COUNT,
+    parentTopicRef,
+    skip = false,
+    sortMode,
+  }: {
+    limit?: number
+    parentTopicRef?: string
+    skip?: boolean
+    sortMode: TopicsSortMode
+  }) =>
+  (_: number, previousPageData: Topic[]) => {
+    if (!previousPageData) {
+      return {
+        key: 'topics',
+        limit,
+        parentTopicRef,
+        skip,
+        sortMode,
+        startAfter: null,
+      }
+    }
+
+    if (previousPageData.length < TOPICS_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'topics',
+      limit,
+      parentTopicRef,
+      skip,
+      sortMode,
+      startAfter: previousPageData.at(-1),
+    }
+  }
+
 const createTopicPostsCacheKey = (
   slug: string,
   {
@@ -259,7 +299,6 @@ const createTopicPostsSWRGetKey =
   }
 
 const createTopicCacheKey = (slug: string) => `topic/${slug}`
-
 const createSidebarHashtagsCacheKey = () => 'sidebar/hashtags'
 const createSidebarPeopleCacheKey = () => 'sidebar/people'
 const createSidebarTopicsCacheKey = () => 'sidebar/topics'
@@ -414,6 +453,7 @@ export {
   createTopicPostsSWRGetKey,
   createTopicsCacheKey,
   createTopicsStartsWithCacheKey,
+  createTopicsSWRGetKey,
   createTwitterAttachmentCacheKey,
   createUserCacheKey,
   createUserIsWatchingCacheKey,

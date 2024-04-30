@@ -11,13 +11,15 @@ export interface TopicData {
   id: string
   path: string
   pathTitle: string
+  popularityScoreAllTime: number
+  popularityScoreRecent: number
   postCount: number
   postCountRecursive: number
-  subtopicCountRecursive: number
   ref: string
-  subtopicSegments: SubtopicSegment[]
   slug: string
   subtopicCount: number
+  subtopicCountRecursive: number
+  subtopicSegments: SubtopicSegment[]
   title: string
   updatedAt: number
   viewCount: number
