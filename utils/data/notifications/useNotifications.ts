@@ -44,7 +44,7 @@ const useNotifications: UseNotifications = ({
 } = {}) => {
   const db = getFirestore()
   const markedReadTraceRef = useRef<string[]>([])
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
 
   const {
     data: pages,

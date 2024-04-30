@@ -55,7 +55,7 @@ const useTopicPosts: UseTopicPosts = (
 
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createTopicPostsCacheKey(path, { sortMode })]
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(

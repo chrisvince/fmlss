@@ -23,7 +23,7 @@ type UseHasUnreadNotifications = (options?: {
 const useHasUnreadNotifications: UseHasUnreadNotifications = ({
   swrConfig,
 } = {}) => {
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
   const [cleared, setCleared] = useState(false)
 
   const { data, error, isLoading, isValidating } = useSWR(

@@ -19,7 +19,7 @@ const resolveColorSchemeName = (
   })
 
 const SettingsPage = () => {
-  const { displayName } = useAuth() ?? {}
+  const { displayName } = useAuth()
   const router = useRouter()
   const { update, user } = useUserData()
 

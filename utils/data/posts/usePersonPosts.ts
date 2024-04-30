@@ -56,7 +56,7 @@ const usePersonPosts: UsePersonPosts = (
 
   const { fallback } = useSWRConfig()
   const fallbackData = fallback[createPersonPostsCacheKey(slug, { sortMode })]
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
 
   const { data, error, isLoading, isValidating, mutate, setSize, size } =
     useSWRInfinite(

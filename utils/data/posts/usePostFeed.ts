@@ -45,7 +45,7 @@ const usePostFeed: UsePostFeed = ({
   sortMode = FeedSortMode.Latest,
   swrConfig = {},
 } = {}) => {
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
 
   const {
     data: pages,

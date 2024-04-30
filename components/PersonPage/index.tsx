@@ -31,7 +31,7 @@ type Props = {
 const PersonPage = ({ slug }: Props) => {
   const { person, isLoading: personIsLoading } = usePerson(slug)
   const { track } = useTracking()
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
 
   const handlePostLoadSuccess = () => {
     cellMeasurerCache.clearAll()

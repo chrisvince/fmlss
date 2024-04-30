@@ -44,7 +44,7 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
     [key: string]: FirebaseDoc
   }>({})
 
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
   const { fallback } = useSWRConfig()
   const fallbackData = uid ? fallback[createUserLikesCacheKey(uid)] : null
 

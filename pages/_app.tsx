@@ -16,6 +16,9 @@ import isDevelopment from '../utils/isDevelopment'
 import { ThemeProvider } from '@mui/material/styles'
 import useColorScheme from '../utils/useColorScheme'
 import { ColorSchemeSetting } from '../types'
+import { AuthProvider } from '../utils/auth/AuthContext'
+import getAuthFromCookies from '../utils/auth/getAuthFromCookies'
+import { Auth } from '../types/Auth'
 
 initFirebaseClient()
 
@@ -28,10 +31,11 @@ type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<P, IP> & {
 type Props = AppProps & {
   Component: NextPageWithLayout
   colorSchemeCookie?: ColorSchemeSetting
+  auth: Auth
 }
 
 const App = (props: Props) => {
-  const { Component, pageProps, colorSchemeCookie } = props
+  const { Component, pageProps, colorSchemeCookie, auth } = props
 
   const { value: colorScheme } = useColorScheme({
     ssrValue: colorSchemeCookie,
@@ -56,12 +60,14 @@ const App = (props: Props) => {
         `}
         </Script>
       )}
-      <ReduxProvider store={store}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {getLayout(<Component {...pageProps} />)}
-        </ThemeProvider>
-      </ReduxProvider>
+      <AuthProvider auth={auth}>
+        <ReduxProvider store={store}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {getLayout(<Component {...pageProps} />)}
+          </ThemeProvider>
+        </ReduxProvider>
+      </AuthProvider>
     </AppCacheProvider>
   )
 }
@@ -72,9 +78,11 @@ App.getInitialProps = async ({ ctx }: AppContext) => {
   }
 
   const cookies = qs.decode(ctx.req.headers.cookie, '; ')
+  const auth = await getAuthFromCookies(cookies as Record<string, string>)
 
   return {
     colorSchemeCookie: cookies.colorScheme,
+    auth,
   }
 }
 

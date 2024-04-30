@@ -49,7 +49,7 @@ const useUserPosts = ({
     [key: string]: FirebaseDoc
   }>({})
 
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
   const { fallback } = useSWRConfig()
 
   const createCacheKey = {

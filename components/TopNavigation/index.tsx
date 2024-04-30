@@ -47,7 +47,7 @@ interface Props {
   disableBottomPaddingXs?: boolean
 }
 const TopNavigation = ({ disableBottomPaddingXs = false }: Props) => {
-  const { displayName, email, uid } = useAuth() ?? {}
+  const { displayName, email, uid } = useAuth()
   const router = useRouter()
   const settingsMenuButtonRef = useRef<HTMLButtonElement>(null)
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)

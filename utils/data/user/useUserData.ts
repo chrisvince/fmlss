@@ -27,7 +27,7 @@ type UseUser = (options?: { swrConfig?: SWRConfiguration; skip?: boolean }) => {
 }
 
 const useUserData: UseUser = ({ swrConfig = {}, skip = false } = {}) => {
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
   const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   const { data, error, isLoading, isValidating, mutate } = useSWR(

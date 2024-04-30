@@ -59,7 +59,7 @@ const useHashtagPosts: UsePostFeed = (
   }>({})
 
   const { fallback } = useSWRConfig()
-  const { uid } = useAuth() ?? {}
+  const { uid } = useAuth()
 
   const fallbackData =
     fallback[createHashtagPostsCacheKey(slug, showType, sortMode)]

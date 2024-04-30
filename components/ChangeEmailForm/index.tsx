@@ -24,7 +24,7 @@ const FORM_IDS = {
 
 const ChangeEmailForm = () => {
   const router = useRouter()
-  const { email: currentEmail } = useAuth() ?? {}
+  const { email: currentEmail } = useAuth()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [submitted, setSubmitted] = useState<boolean>(false)
   const [formError, setFormError] = useState<{ message: string } | null>(null)
