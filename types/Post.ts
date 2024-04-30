@@ -1,4 +1,4 @@
-import { PostData } from '.'
+import { Author, PostData } from '.'
 import { Like } from './Like'
 import { ReactionId } from './Reaction'
 
@@ -8,6 +8,7 @@ export enum PostType {
 }
 
 export interface Post {
+  author?: Author
   data: PostData
   like?: Like
   user?: {

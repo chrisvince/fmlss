@@ -196,6 +196,38 @@ const createUserPostsCacheKey = (
   { pageIndex = 0 }: { pageIndex?: number | null } = {}
 ) => `post/authored/post/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
 
+const createUserPostsSWRGetKey =
+  ({
+    type = PostTypeQuery.Both,
+    uid,
+  }: {
+    type: PostTypeQuery | undefined
+    uid: string | null
+  }) =>
+  (_: number, previousPageData: Post[]) => {
+    if (!uid) return null
+
+    if (!previousPageData) {
+      return {
+        key: 'user-posts',
+        startAfter: null,
+        type,
+        uid,
+      }
+    }
+
+    if (previousPageData.length < POST_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'user-posts',
+      startAfter: previousPageData.at(-1),
+      type,
+      uid,
+    }
+  }
+
 const createUserRepliesCacheKey = (
   uid: string,
   { pageIndex = 0 }: { pageIndex?: number | null } = {}

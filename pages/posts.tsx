@@ -1,13 +1,14 @@
 import { SWRConfig } from 'swr'
 import UserPostsPage from '../components/UserPostsPage'
-import { createUserPostsCacheKey } from '../utils/createCacheKeys'
+import { createUserPostsSWRGetKey } from '../utils/createCacheKeys'
 import constants from '../constants'
 import isInternalRequest from '../utils/isInternalRequest'
 import getSidebarDataServer from '../utils/data/sidebar/getSidebarDataServer'
 import getUserPostsServer from '../utils/data/userPosts/getUserPostsServer'
-import { PostType } from '../types'
+import { PostType, PostTypeQuery } from '../types'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../utils/auth/getUidFromCookies'
+import { unstable_serialize } from 'swr/infinite'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -36,7 +37,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   }
 
-  const userPostsCacheKey = createUserPostsCacheKey(uid)
+  const userPostsCacheKey = createUserPostsSWRGetKey({
+    uid,
+    type: PostTypeQuery.Post,
+  })
+
   const sidebarDataPromise = getSidebarDataServer()
 
   if (isInternalRequest(req)) {
@@ -46,7 +51,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     return {
       props: {
         fallback: sidebarFallbackData,
-        key: userPostsCacheKey,
       },
     }
   }
@@ -62,9 +66,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     props: {
       fallback: {
         ...sidebarFallbackData,
-        [userPostsCacheKey]: posts,
+        [unstable_serialize(userPostsCacheKey)]: posts,
       },
-      key: userPostsCacheKey,
     },
   }
 }

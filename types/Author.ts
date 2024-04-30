@@ -1,9 +1,8 @@
-import { FieldValue } from 'firebase-admin/firestore'
-import { PostRelationRequest } from './PostRelationRequest'
+import { PostRelation } from './PostRelation'
 
 export interface Author {
-  createdAt: FieldValue
-  post: PostRelationRequest
+  createdAt: number
+  post: PostRelation
   uid: string
-  updatedAt: FieldValue
+  updatedAt: number
 }

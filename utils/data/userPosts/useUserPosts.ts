@@ -1,15 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { MutatorCallback, useSWRConfig } from 'swr'
+import { MutatorCallback } from 'swr'
 
-import { FirebaseDoc, Post, PostType } from '../../../types'
-import {
-  createUserPostsCacheKey,
-  createUserRepliesCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
+import { Post, PostTypeQuery } from '../../../types'
 import getUserPosts from './getUserPosts'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
 import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
@@ -19,6 +13,7 @@ import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 import useAuth from '../../auth/useAuth'
+import { createUserPostsSWRGetKey } from '../../createCacheKeys'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -30,10 +25,10 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 }
 
 const useUserPosts = ({
-  type = PostType.Post,
+  type = PostTypeQuery.Post,
   swrConfig = {},
 }: {
-  type?: PostType
+  type?: PostTypeQuery
   swrConfig?: SWRInfiniteConfiguration
 } = {}): {
   error: unknown
@@ -45,61 +40,29 @@ const useUserPosts = ({
   posts: Post[]
   watchPost: (documentPath: string) => Promise<void>
 } => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
   const { uid } = useAuth()
-  const { fallback } = useSWRConfig()
 
-  const createCacheKey = {
-    post: createUserPostsCacheKey,
-    reply: createUserRepliesCacheKey,
-  }[type]
-  const fallbackData = uid ? fallback[createCacheKey(uid)] : null
-
-  if (!uid) {
-    console.error('uid must be set.')
-  }
-
-  const { data, error, isLoading, isValidating, mutate, setSize, size } =
-    useSWRInfinite(
-      (index, previousPageData) => {
-        if (
-          !uid ||
-          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
-        ) {
-          return null
-        }
-        return createCacheKey(uid, { pageIndex: index })
-      },
-      key => {
-        if (!uid) {
-          return null
-        }
-
-        const pageIndex = getPageIndexFromCacheKey(key)
-        return getUserPosts(uid, {
-          startAfter: pageStartAfterTrace[pageIndex],
-          type,
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    setSize,
+    size,
+  } = useSWRInfinite(
+    createUserPostsSWRGetKey({ uid, type }),
+    ({ startAfter }) =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      getUserPosts(uid!, {
+        startAfter,
+        type,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -153,11 +116,8 @@ const useUserPosts = ({
     [mutate]
   )
 
-  const posts = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const posts = pages?.flat() ?? []
+  const moreToLoad = pages?.at?.(-1)?.length === POST_PAGINATION_COUNT
 
   return {
     error,
