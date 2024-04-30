@@ -8,7 +8,7 @@ import {
   PostData,
   PostDocWithAttachments,
 } from '../../../types'
-import { createPostFeedCacheKey } from '../../createCacheKeys'
+import { createPostFeedCacheKeyServer } from '../../createCacheKeys'
 import mapPostDocToData from '../../mapPostDocToData'
 import isServer from '../../isServer'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
@@ -37,7 +37,7 @@ const getPostFeedServer = async ({
   let postDocs: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData> | null
   let postData: PostData[] = []
 
-  const postFeedCacheKey = createPostFeedCacheKey({ sortMode })
+  const postFeedCacheKey = createPostFeedCacheKeyServer({ sortMode })
   const cachedData = get(postFeedCacheKey)
 
   if (cachedData) {

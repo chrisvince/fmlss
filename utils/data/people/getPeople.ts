@@ -23,7 +23,7 @@ const getPeople = async ({
 }: {
   limit?: number
   sortMode?: PeopleSortMode
-  startAfter?: Person
+  startAfter?: Person | null
 } = {}): Promise<Person[]> => {
   const db = getFirestore()
   const isPopularSortMode = sortMode === PeopleSortMode.Popular

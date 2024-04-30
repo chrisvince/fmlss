@@ -8,7 +8,6 @@ import {
 } from '../types'
 import { PeopleSortMode } from '../types/PeopleSortMode'
 import { PersonPostsSortMode } from '../types/PersonPostsSortMode'
-import { HashtagShowType } from './data/posts/getHashtagPosts'
 
 const {
   HASHTAGS_PAGINATION_COUNT,
@@ -20,13 +19,51 @@ const {
 
 const createHashtagPostsCacheKey = (
   slug: string,
-  showType: HashtagShowType = HashtagShowType.Post,
+  showType: PostTypeQuery = PostTypeQuery.Post,
   sortMode: HashtagSortMode = HashtagSortMode.Latest,
   pageIndex: number | null = 0
 ) =>
   `hashtag/${slug}/posts/${showType}/${sortMode}${
     pageIndex === null ? '' : `-${pageIndex}`
   }`
+
+const createHashtagPostsSWRGetKey =
+  ({
+    showType,
+    slug,
+    sortMode,
+    uid,
+  }: {
+    showType: PostTypeQuery
+    slug: string
+    sortMode: HashtagSortMode
+    uid: string | null
+  }) =>
+  (_: number, previousPageData: Post[]) => {
+    if (!previousPageData) {
+      return {
+        key: 'hashtag-posts',
+        showType,
+        slug,
+        sortMode,
+        startAfter: null,
+        uid,
+      }
+    }
+
+    if (previousPageData.length < POST_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'hashtag-posts',
+      showType,
+      slug,
+      sortMode,
+      startAfter: previousPageData.at(-1),
+      uid,
+    }
+  }
 
 const createPostAuthorCacheKey = (slug: string) => `post/${slug}/author`
 
@@ -278,6 +315,7 @@ const createYouTubeAttachmentCacheKey = (url: string) =>
 
 export {
   createHashtagPostsCacheKey,
+  createHashtagPostsSWRGetKey,
   createHashtagsCacheKeyServer,
   createHashtagSWRGetKey,
   createHasUnreadNotificationsCacheKey,
@@ -290,7 +328,7 @@ export {
   createPersonPostsCacheKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
-  createPostFeedCacheKeyServer as createPostFeedCacheKey,
+  createPostFeedCacheKeyServer,
   createPostFeedSWRGetKey,
   createPostLikeCacheKey,
   createPostReactionCacheKey,

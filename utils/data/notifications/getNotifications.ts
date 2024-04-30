@@ -28,7 +28,7 @@ const getNotifications = async (
     unreadOnly = false,
   }: {
     limit?: number
-    startAfter?: Notification
+    startAfter?: Notification | null
     unreadOnly?: boolean
   }
 ): Promise<Notification[]> => {

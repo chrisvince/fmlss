@@ -24,7 +24,7 @@ const getHashtags = async ({
   cacheTime?: number
   limit?: number
   sortMode?: HashtagsSortMode
-  startAfter?: Hashtag
+  startAfter?: Hashtag | null
 } = {}): Promise<Hashtag[]> => {
   const db = getFirestore()
   const isPopularSortMode = sortMode === HashtagsSortMode.Popular

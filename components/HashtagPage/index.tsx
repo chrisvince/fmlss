@@ -13,7 +13,6 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import useTracking from '../../utils/tracking/useTracking'
-import { HashtagShowType } from '../../utils/data/posts/getHashtagPosts'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
 import useUserData from '../../utils/data/user/useUserData'
 import {
@@ -22,6 +21,7 @@ import {
 } from '../../utils/callableFirebaseFunctions/resourceViewed'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
+import { PostTypeQuery } from '../../types/PostTypeQuery'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -57,9 +57,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
     query: { sort },
   } = useRouter()
 
-  const [showType, setShowType] = useState<HashtagShowType>(
-    HashtagShowType.Post
-  )
+  const [showType, setShowType] = useState<PostTypeQuery>(PostTypeQuery.Post)
 
   const { track } = useTracking()
   const { user } = useUserData()
@@ -87,7 +85,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
 
   const handleIncludeRepliesChange = (event: SyntheticEvent) => {
     const { checked } = event.target as HTMLInputElement
-    setShowType(checked ? HashtagShowType.Both : HashtagShowType.Post)
+    setShowType(checked ? PostTypeQuery.Both : PostTypeQuery.Post)
   }
 
   const sortOptions = generateSortOptions(slug)

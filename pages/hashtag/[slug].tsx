@@ -1,18 +1,19 @@
 import { SWRConfig } from 'swr'
 import HashtagPage from '../../components/HashtagPage'
 import { HashtagSortMode } from '../../types'
-import { createHashtagPostsCacheKey } from '../../utils/createCacheKeys'
-import { HashtagShowType } from '../../utils/data/posts/getHashtagPosts'
+import { createHashtagPostsSWRGetKey } from '../../utils/createCacheKeys'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
 import getHashtagPostsServer from '../../utils/data/posts/getHashtagPostsServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../utils/auth/getUidFromCookies'
+import { PostTypeQuery } from '../../types'
+import { unstable_serialize } from 'swr/infinite'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
-const DEFAULT_POST_TYPE = HashtagShowType.Post
+const DEFAULT_POST_TYPE = PostTypeQuery.Post
 
 interface PropTypes {
   fallback: {
@@ -47,11 +48,12 @@ export const getServerSideProps: GetServerSideProps = async ({
   const sortMode = (SORT_MODE_MAP[sort] ??
     HashtagSortMode.Popular) as HashtagSortMode
 
-  const hashtagPostsCacheKey = createHashtagPostsCacheKey(
+  const hashtagPostsCacheKey = createHashtagPostsSWRGetKey({
+    showType: DEFAULT_POST_TYPE,
     slug,
-    DEFAULT_POST_TYPE,
-    sortMode
-  )
+    sortMode,
+    uid,
+  })
 
   const sidebarDataPromise = getSidebarDataServer()
 
@@ -63,7 +65,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       props: {
         fallback: sidebarFallbackData,
         slug,
-        key: hashtagPostsCacheKey,
       },
     }
   }
@@ -82,10 +83,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       fallback: {
         ...sidebarFallbackData,
-        [hashtagPostsCacheKey]: posts,
+        [unstable_serialize(hashtagPostsCacheKey)]: posts,
       },
       slug,
-      key: hashtagPostsCacheKey,
     },
   }
 }

@@ -25,7 +25,7 @@ const getPostFeed = async ({
   uid,
   sortMode = FeedSortMode.Latest,
 }: {
-  startAfter?: Post
+  startAfter?: Post | null
   uid: string
   sortMode?: FeedSortMode
 }): Promise<Post[]> => {

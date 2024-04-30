@@ -1,10 +1,9 @@
-import { pipe } from 'ramda'
-
 import constants from '../../../constants'
 import {
   HashtagSortMode,
-  FirebaseDoc,
   PostDocWithAttachments,
+  Post,
+  PostTypeQuery,
 } from '../../../types'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
@@ -13,6 +12,8 @@ import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
 import {
+  QueryConstraint,
+  Timestamp,
   collectionGroup,
   getDocs,
   getFirestore,
@@ -25,42 +26,40 @@ import {
 
 const { POST_PAGINATION_COUNT, POSTS_COLLECTION } = constants
 
-export enum HashtagShowType {
-  Post = 'post',
-  Both = 'both',
-}
-
 const getHashtagPosts = async (
   slug: string,
   {
     startAfter: startAfterProp,
     uid,
-    showType = HashtagShowType.Post,
+    showType = PostTypeQuery.Post,
     sortMode = HashtagSortMode.Latest,
   }: {
-    startAfter?: FirebaseDoc
+    startAfter?: Post | null
     uid: string
-    showType?: HashtagShowType
+    showType?: PostTypeQuery
     sortMode?: HashtagSortMode
   }
 ) => {
   const db = getFirestore()
-  const collectionGroupRef = collectionGroup(db, POSTS_COLLECTION)
+  const isPopularSortMode = sortMode === HashtagSortMode.Popular
 
-  const dbRef = pipe(
-    ref =>
-      query(ref, where('hashtagSlugs', 'array-contains', slug.toLowerCase())),
-    ref =>
-      showType !== 'both' ? query(ref, where('type', '==', showType)) : ref,
-    ref =>
-      sortMode === HashtagSortMode.Popular
-        ? query(ref, orderBy('popularityScoreRecent', 'desc'))
-        : ref,
-    ref => query(ref, orderBy('createdAt', 'desc')),
-    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
-    ref => query(ref, limit(POST_PAGINATION_COUNT))
-  )(collectionGroupRef)
+  const startAfterValue = startAfterProp
+    ? [
+        isPopularSortMode && startAfterProp.data.popularityScoreRecent,
+        Timestamp.fromMillis(startAfterProp.data.createdAt),
+      ].filter(value => value !== false)
+    : null
 
+  const queryElements = [
+    where('hashtagSlugs', 'array-contains', slug.toLowerCase()),
+    showType !== 'both' && where('type', '==', showType),
+    isPopularSortMode && orderBy('popularityScoreRecent', 'desc'),
+    orderBy('createdAt', 'desc'),
+    startAfterValue && startAfter(...startAfterValue),
+    limit(POST_PAGINATION_COUNT),
+  ].filter(Boolean) as QueryConstraint[]
+
+  const dbRef = query(collectionGroup(db, POSTS_COLLECTION), ...queryElements)
   const postDocs = await getDocs(dbRef)
   if (postDocs.empty) return []
 

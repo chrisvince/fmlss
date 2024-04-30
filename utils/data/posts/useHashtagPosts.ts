@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { MutatorCallback, useSWRConfig } from 'swr'
+import { MutatorCallback } from 'swr'
 
-import { HashtagSortMode, FirebaseDoc, Post } from '../../../types'
-import {
-  createHashtagPostsCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
-import getHashtagPosts, { HashtagShowType } from './getHashtagPosts'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
+import { HashtagSortMode, Post } from '../../../types'
+import { createHashtagPostsSWRGetKey } from '../../createCacheKeys'
+import getHashtagPosts from './getHashtagPosts'
 import constants from '../../../constants'
 import { InfiniteData } from '../types'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
@@ -18,6 +14,7 @@ import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import updateWatchedPostInServer from '../utils/updateWatchedPostInServer'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 import useAuth from '../../auth/useAuth'
+import { PostTypeQuery } from '../../../types/PostTypeQuery'
 
 const { POST_PAGINATION_COUNT } = constants
 
@@ -31,7 +28,7 @@ const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
 type UsePostFeed = (
   slug: string,
   options?: {
-    showType?: HashtagShowType
+    showType?: PostTypeQuery
     sortMode?: HashtagSortMode
     swrConfig?: SWRInfiniteConfiguration
   }
@@ -49,58 +46,41 @@ type UsePostFeed = (
 const useHashtagPosts: UsePostFeed = (
   slug,
   {
-    showType = HashtagShowType.Post,
+    showType = PostTypeQuery.Post,
     sortMode = HashtagSortMode.Latest,
     swrConfig = {},
   } = {}
 ) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
-  const { fallback } = useSWRConfig()
   const { uid } = useAuth()
 
-  const fallbackData =
-    fallback[createHashtagPostsCacheKey(slug, showType, sortMode)]
-
-  const { data, error, isLoading, isValidating, mutate, setSize, size } =
-    useSWRInfinite(
-      (index, previousPageData) => {
-        if (
-          !uid ||
-          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
-        ) {
-          return null
-        }
-        return createHashtagPostsCacheKey(slug, showType, sortMode, index)
-      },
-      key => {
-        const pageIndex = getPageIndexFromCacheKey(key)
-        if (!uid) return []
-
-        return getHashtagPosts(slug, {
-          sortMode,
-          startAfter: pageStartAfterTrace[pageIndex],
-          showType,
-          uid,
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    setSize,
+    size,
+  } = useSWRInfinite(
+    createHashtagPostsSWRGetKey({
+      showType,
+      slug,
+      sortMode,
+      uid,
+    }),
+    ({ startAfter }) =>
+      getHashtagPosts(slug, {
+        showType,
+        sortMode,
+        startAfter,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        uid: uid!,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -154,11 +134,8 @@ const useHashtagPosts: UsePostFeed = (
     [mutate]
   )
 
-  const posts = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length ?? 0
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const posts = pages?.flat() ?? []
+  const moreToLoad = pages?.at?.(-1)?.length === POST_PAGINATION_COUNT
 
   return {
     error,

@@ -26,7 +26,7 @@ const getPostReplies = async (
     startAfter: startAfterProp,
     uid,
   }: {
-    startAfter?: Post
+    startAfter?: Post | null
     uid?: string | null
   } = {}
 ): Promise<Post[]> => {

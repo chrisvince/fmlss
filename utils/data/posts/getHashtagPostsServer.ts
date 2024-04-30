@@ -17,26 +17,22 @@ import checkIsCreatedByUserServer from '../author/checkIsCreatedByUserServer'
 import checkIsLikedByUserServer from '../author/checkIsLikedByUserServer'
 import checkUserIsWatchingServer from '../author/checkUserIsWatchingServer'
 import getPostReactionServer from '../author/getPostReactionServer'
+import { PostTypeQuery } from '../../../types/PostTypeQuery'
 
 const { HASHTAG_LIST_CACHE_TIME, POST_PAGINATION_COUNT, POSTS_COLLECTION } =
   constants
-
-export enum HashtagShowType {
-  Post = 'post',
-  Both = 'both',
-}
 
 const getHashtagPostsServer = async (
   slug: string,
   {
     startAfter,
     uid,
-    showType = HashtagShowType.Post,
+    showType = PostTypeQuery.Post,
     sortMode = HashtagSortMode.Latest,
   }: {
     startAfter?: FirebaseDoc
     uid: string | null
-    showType?: HashtagShowType
+    showType?: PostTypeQuery
     sortMode?: HashtagSortMode
   }
 ) => {
