@@ -107,9 +107,6 @@ const createPostFeedSWRGetKey =
     }
   }
 
-const getPageIndexFromCacheKey = (cacheKey: string) =>
-  cacheKey.split('-').at(-1) as string
-
 const createPostRepliesCacheKey = (
   slug: string,
   {
@@ -514,8 +511,9 @@ export {
   createUserCacheKey,
   createUserIsWatchingCacheKey,
   createUserLikesCacheKey,
+  createUserLikesSWRGetKey,
   createUserPostsCacheKey,
+  createUserPostsSWRGetKey,
   createUserRepliesCacheKey,
   createYouTubeAttachmentCacheKey,
-  getPageIndexFromCacheKey,
 }
