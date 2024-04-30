@@ -1,8 +1,12 @@
 import constants from '../constants'
 import {
   FeedSortMode,
+  Hashtag,
   HashtagSortMode,
   HashtagsSortMode,
+  Person,
+  Post,
+  PostTypeQuery,
   TopicSortMode,
   TopicsSortMode,
 } from '../types'
@@ -77,7 +81,7 @@ const createPostFeedCacheKeyServer = ({
 
 const createPostFeedSWRGetKey =
   ({ uid, sortMode }: { uid: string | null; sortMode: FeedSortMode }) =>
-  (_: number, previousPageData: any) => {
+  (_: number, previousPageData: Post[]) => {
     if (!uid) return null
 
     if (!previousPageData) {
@@ -126,9 +130,8 @@ const createPostRepliesSWRGetKey =
     slug: string | undefined
     uid: string | undefined | null
   }) =>
-  (_: number, previousPageData: any) => {
+  (_: number, previousPageData: Post[]) => {
     if (!slug) return null
-    console.log('previousPageData', previousPageData?.at(-1))
 
     if (!previousPageData) {
       return {
@@ -177,7 +180,7 @@ const createHashtagsCacheKeyServer = (sortMode: HashtagsSortMode) =>
 
 const createHashtagSWRGetKey =
   ({ sortMode }: { sortMode: HashtagsSortMode }) =>
-  (_: number, previousPageData: any) => {
+  (_: number, previousPageData: Hashtag[]) => {
     if (!previousPageData) {
       return {
         key: 'hashtags',
@@ -238,7 +241,7 @@ const createNotificationCacheKey = (
 
 const createNotificationsSWRGetKey =
   ({ skip = false, uid }: { skip?: boolean; uid: string | null }) =>
-  (_: number, previousPageData: any) => {
+  (_: number, previousPageData: Notification[]) => {
     if (!uid || skip) return null
 
     if (!previousPageData) {
@@ -274,7 +277,7 @@ const createPeopleCacheKey = ({
 
 const createPeopleSWRGetKey =
   ({ sortMode }: { sortMode: PeopleSortMode }) =>
-  (_: number, previousPageData: any) => {
+  (_: number, previousPageData: Person[]) => {
     if (!previousPageData) {
       return {
         key: 'people',
