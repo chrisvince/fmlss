@@ -73,15 +73,13 @@ const App = (props: Props) => {
 }
 
 App.getInitialProps = async ({ ctx }: AppContext) => {
-  if (!ctx.req?.headers.cookie) {
-    return {}
-  }
-
-  const cookies = qs.decode(ctx.req.headers.cookie, '; ')
+  const { cookie } = ctx.req?.headers ?? {}
+  const cookies = cookie ? qs.decode(cookie, '; ') : {}
   const auth = await getAuthFromCookies(cookies as Record<string, string>)
+  const colorSchemeCookie = cookies.colorScheme as ColorSchemeSetting
 
   return {
-    colorSchemeCookie: cookies.colorScheme,
+    colorSchemeCookie,
     auth,
   }
 }

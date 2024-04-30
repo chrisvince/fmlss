@@ -13,6 +13,10 @@ const getAuthFromCookies = async (
     [key: string]: string
   }>
 ): Promise<Auth> => {
+  if (!cookies) {
+    return mapTokensToAuth(null)
+  }
+
   const tokens = await getTokensFromObject(cookies, {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY as string,
     cookieName: 'AuthToken',
