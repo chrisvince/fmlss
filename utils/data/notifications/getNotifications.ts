@@ -33,7 +33,6 @@ const getNotifications = async (
   }
 ): Promise<Notification[]> => {
   const db = getFirestore()
-  console.log('uid', uid)
 
   const collectionPath = `${USERS_COLLECTION}/${uid}/${NOTIFICATIONS_COLLECTION}`
 
