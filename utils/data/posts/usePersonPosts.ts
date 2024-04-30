@@ -1,13 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { MutatorCallback, useSWRConfig } from 'swr'
+import { MutatorCallback } from 'swr'
 
-import { FirebaseDoc, Post } from '../../../types'
-import {
-  createPersonPostsCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
+import { Post } from '../../../types'
+import { createPersonPostsSWRGetKey } from '../../createCacheKeys'
 import constants from '../../../constants'
 import { InfiniteData } from '../types'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
@@ -50,50 +46,30 @@ const usePersonPosts: UsePersonPosts = (
   slug,
   { sortMode = PersonPostsSortMode.Popular, swrConfig = {} } = {}
 ) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
-  const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createPersonPostsCacheKey(slug, { sortMode })]
   const { uid } = useAuth()
 
-  const { data, error, isLoading, isValidating, mutate, setSize, size } =
-    useSWRInfinite(
-      (pageIndex, previousPageData) => {
-        if (
-          !uid ||
-          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
-        ) {
-          return null
-        }
-        return createPersonPostsCacheKey(slug, { pageIndex, sortMode })
-      },
-      key => {
-        const pageIndex = getPageIndexFromCacheKey(key)
-        if (!uid) return []
-
-        return getPersonPosts(slug, {
-          sortMode,
-          startAfter: pageStartAfterTrace[pageIndex],
-          uid,
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    setSize,
+    size,
+  } = useSWRInfinite(
+    createPersonPostsSWRGetKey({ slug, sortMode, uid }),
+    ({ startAfter }) =>
+      getPersonPosts(slug, {
+        sortMode,
+        startAfter,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        uid: uid!,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -147,11 +123,8 @@ const usePersonPosts: UsePersonPosts = (
     [mutate]
   )
 
-  const posts = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length ?? 0
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const posts = pages?.flat() ?? []
+  const moreToLoad = pages?.at?.(-1)?.length === POST_PAGINATION_COUNT
 
   return {
     error,

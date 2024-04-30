@@ -1,7 +1,5 @@
-import { pipe } from 'ramda'
-
 import constants from '../../../constants'
-import { FirebaseDoc, PostDocWithAttachments } from '../../../types'
+import { Post, PostDocWithAttachments } from '../../../types'
 import mapPostDocToData from '../../mapPostDocToData'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
@@ -10,6 +8,8 @@ import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWi
 import getPostReaction from '../author/getPostReaction'
 import { PersonPostsSortMode } from '../../../types/PersonPostsSortMode'
 import {
+  QueryConstraint,
+  Timestamp,
   collectionGroup,
   getDocs,
   getFirestore,
@@ -30,26 +30,30 @@ const getPersonPosts = async (
     uid,
   }: {
     sortMode?: PersonPostsSortMode
-    startAfter?: FirebaseDoc
+    startAfter?: Post | null
     uid: string
   }
 ) => {
   const db = getFirestore()
   const lowerCaseSlug = slug.toLowerCase()
+  const isPopularSortMode = sortMode === PersonPostsSortMode.Popular
 
-  const collectionGroupRef = collectionGroup(db, POSTS_COLLECTION)
+  const startAfterValue = startAfterProp
+    ? [
+        isPopularSortMode && startAfterProp.data.popularityScoreRecent,
+        Timestamp.fromMillis(startAfterProp.data.createdAt),
+      ].filter(value => value !== false)
+    : null
 
-  const dbRef = pipe(
-    ref => query(ref, where('peopleSlugs', 'array-contains', lowerCaseSlug)),
-    ref =>
-      sortMode === PersonPostsSortMode.Popular
-        ? query(ref, orderBy('popularityScoreRecent', 'desc'))
-        : ref,
-    ref => query(ref, orderBy('createdAt', 'desc')),
-    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
-    ref => query(ref, limit(POST_PAGINATION_COUNT))
-  )(collectionGroupRef)
+  const queryElements = [
+    where('peopleSlugs', 'array-contains', lowerCaseSlug),
+    isPopularSortMode && orderBy('popularityScoreRecent', 'desc'),
+    orderBy('createdAt', 'desc'),
+    startAfterValue && startAfter(...startAfterValue),
+    limit(POST_PAGINATION_COUNT),
+  ].filter(Boolean) as QueryConstraint[]
 
+  const dbRef = query(collectionGroup(db, POSTS_COLLECTION), ...queryElements)
   const postDocs = await getDocs(dbRef)
   if (postDocs.empty) return []
 

@@ -2,7 +2,7 @@ import { SWRConfig } from 'swr'
 
 import {
   createPersonCacheKey,
-  createPersonPostsCacheKey,
+  createPersonPostsSWRGetKey,
 } from '../../utils/createCacheKeys'
 import isInternalRequest from '../../utils/isInternalRequest'
 import getSidebarDataServer from '../../utils/data/sidebar/getSidebarDataServer'
@@ -12,6 +12,7 @@ import getPersonPostsServer from '../../utils/data/posts/getPersonPostsServer'
 import getPersonServer from '../../utils/data/person/getPersonServer'
 import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 import { GetServerSideProps } from 'next'
+import { unstable_serialize } from 'swr/infinite'
 
 interface Props {
   fallback: {
@@ -33,7 +34,13 @@ export const getServerSideProps: GetServerSideProps = async ({
   const uid = await getUidFromCookies(req.cookies)
   const slug = params?.slug as string
   const personCacheKey = createPersonCacheKey(slug)
-  const personPostsCacheKey = createPersonPostsCacheKey(slug)
+
+  const personPostsCacheKey = createPersonPostsSWRGetKey({
+    slug,
+    sortMode: PersonPostsSortMode.Popular,
+    uid,
+  })
+
   const sidebarDataPromise = getSidebarDataServer()
   const getPersonPromise = getPersonServer(slug)
 
@@ -50,7 +57,6 @@ export const getServerSideProps: GetServerSideProps = async ({
           ...sidebarFallbackData,
         },
         slug,
-        key: personCacheKey,
       },
     }
   }
@@ -68,11 +74,10 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       fallback: {
         [personCacheKey]: person,
-        [personPostsCacheKey]: posts,
+        [unstable_serialize(personPostsCacheKey)]: posts,
         ...sidebarFallbackData,
       },
       slug,
-      key: personCacheKey,
     },
   }
 }

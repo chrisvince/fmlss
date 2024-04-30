@@ -307,6 +307,40 @@ const createPersonPostsCacheKey = (
   }: { pageIndex?: number; sortMode?: PersonPostsSortMode } = {}
 ) => `person/${slug}/${sortMode}/posts-${pageIndex}`
 
+const createPersonPostsSWRGetKey =
+  ({
+    slug,
+    sortMode,
+    uid,
+  }: {
+    slug: string
+    sortMode: PersonPostsSortMode
+    uid: string | null
+  }) =>
+  (_: number, previousPageData: Post[]) => {
+    if (!previousPageData) {
+      return {
+        key: 'person-posts',
+        slug,
+        sortMode,
+        startAfter: null,
+        uid,
+      }
+    }
+
+    if (previousPageData.length < POST_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'person-posts',
+      slug,
+      sortMode,
+      startAfter: previousPageData.at(-1),
+      uid,
+    }
+  }
+
 const createPeopleSearchCacheKey = (searchString: string) =>
   `people/search/${searchString}`
 
@@ -329,6 +363,7 @@ export {
   createPeopleSWRGetKey,
   createPersonCacheKey,
   createPersonPostsCacheKey,
+  createPersonPostsSWRGetKey,
   createPostAuthorCacheKey,
   createPostCacheKey,
   createPostFeedCacheKeyServer,
