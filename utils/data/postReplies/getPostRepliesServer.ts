@@ -18,7 +18,7 @@ import checkIsLikedByUserServer from '../author/checkIsLikedByUserServer'
 import checkUserIsWatchingServer from '../author/checkUserIsWatchingServer'
 import getPostReactionServer from '../author/getPostReactionServer'
 
-const { POST_PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
+const { POST_REPLIES_PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
 
 const getPostRepliesServer = async (
   reference: string,
@@ -26,11 +26,9 @@ const getPostRepliesServer = async (
   {
     startAfter,
     uid,
-    viewMode = 'start',
   }: {
     startAfter?: FirebaseDoc
     uid?: string | null
-    viewMode?: 'start' | 'end'
   } = {}
 ): Promise<Post[]> => {
   if (!isServer) {
@@ -50,12 +48,9 @@ const getPostRepliesServer = async (
     replyDocs = null
   } else {
     replyDocs = await pipe(
-      () =>
-        db
-          .collection(collection)
-          .orderBy('createdAt', viewMode === 'end' ? 'desc' : 'asc'),
+      () => db.collection(collection).orderBy('createdAt', 'asc'),
       query => (startAfter ? query.startAfter(startAfter) : query),
-      query => query.limit(POST_PAGINATION_COUNT).get()
+      query => query.limit(POST_REPLIES_PAGINATION_COUNT).get()
     )()
 
     if (replyDocs.empty) return []
@@ -68,7 +63,9 @@ const getPostRepliesServer = async (
     replyData = replyDocsWithAttachments.map(mapPostDocToData)
 
     const cacheTime =
-      replyData.length < POST_PAGINATION_COUNT ? REPLIES_CACHE_TIME : undefined
+      replyData.length < POST_REPLIES_PAGINATION_COUNT
+        ? REPLIES_CACHE_TIME
+        : undefined
 
     put(postRepliesCacheKey, replyData, cacheTime)
   }

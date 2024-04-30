@@ -1,23 +1,14 @@
-import firebase from 'firebase/app'
-
-import { get, put } from '../../serverCache'
-import { pipe } from 'ramda'
-
-import {
-  FirebaseDoc,
-  Post,
-  PostData,
-  PostDocWithAttachments,
-} from '../../../types'
+import { Post, PostDocWithAttachments } from '../../../types'
 import constants from '../../../constants'
 import mapPostDocToData from '../../mapPostDocToData'
-import { createPostRepliesCacheKey } from '../../createCacheKeys'
 import checkIsCreatedByUser from '../author/checkIsCreatedByUser'
 import checkIsLikedByUser from '../author/checkIsLikedByUser'
 import checkUserIsWatching from '../author/checkUserIsWatching'
 import getPostDocWithAttachmentsFromPostDoc from '../postAttachment/getPostDocWithAttachmentsFromPostDoc'
 import getPostReaction from '../author/getPostReaction'
 import {
+  QueryConstraint,
+  Timestamp,
   collection,
   getDocs,
   getFirestore,
@@ -27,32 +18,28 @@ import {
   startAfter,
 } from 'firebase/firestore'
 
-const { POST_PAGINATION_COUNT, REPLIES_CACHE_TIME } = constants
+const { POST_REPLIES_PAGINATION_COUNT } = constants
 
 const getPostReplies = async (
   reference: string,
-  slug: string,
   {
     startAfter: startAfterProp,
     uid,
-    viewMode = 'start',
   }: {
-    startAfter?: FirebaseDoc
+    startAfter?: Post
     uid?: string | null
-    viewMode?: 'start' | 'end'
   } = {}
 ): Promise<Post[]> => {
   const db = getFirestore()
-  const collectionPath = `${reference}/posts`
-  const collectionRef = collection(db, collectionPath)
 
-  const dbRef = pipe(
-    ref =>
-      query(ref, orderBy('createdAt', viewMode === 'end' ? 'desc' : 'asc')),
-    ref => (startAfterProp ? query(ref, startAfter(startAfterProp)) : ref),
-    ref => query(ref, limit(POST_PAGINATION_COUNT))
-  )(collectionRef)
+  const queryElements = [
+    orderBy('createdAt', 'asc'),
+    startAfterProp &&
+      startAfter(Timestamp.fromMillis(startAfterProp.data.createdAt)),
+    limit(POST_REPLIES_PAGINATION_COUNT),
+  ].filter(Boolean) as QueryConstraint[]
 
+  const dbRef = query(collection(db, `${reference}/posts`), ...queryElements)
   const replyDocs = await getDocs(dbRef)
   if (replyDocs.empty) return []
 

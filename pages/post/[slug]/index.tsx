@@ -3,19 +3,18 @@ import { SWRConfig } from 'swr'
 import PostPage from '../../../components/PostPage'
 import {
   createPostCacheKey,
-  createPostRepliesCacheKey,
-  createUserCacheKey,
+  createPostRepliesSWRGetKey,
 } from '../../../utils/createCacheKeys'
 import constants from '../../../constants'
 import isInternalRequest from '../../../utils/isInternalRequest'
 import getSidebarDataServer from '../../../utils/data/sidebar/getSidebarDataServer'
 import Layout from '../../../components/Layout'
 import { ReactElement } from 'react'
-import getUserDataServer from '../../../utils/data/user/getUserDataServer'
 import getPostRepliesServer from '../../../utils/data/postReplies/getPostRepliesServer'
 import getPostServer from '../../../utils/data/post/getPostServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../../utils/auth/getUidFromCookies'
+import { unstable_serialize } from 'swr/infinite'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, POST_REPLIES_SSR } = constants
 
@@ -48,9 +47,13 @@ export const getServerSideProps: GetServerSideProps = async ({
   const slug = params?.slug as string
   const uid = await getUidFromCookies(req.cookies)
   const postCacheKey = createPostCacheKey(slug)
-  const postRepliesCacheKey = createPostRepliesCacheKey(slug)
+
+  const postRepliesCacheKey = createPostRepliesSWRGetKey({
+    slug: slug,
+    uid,
+  })
+
   const sidebarDataPromise = getSidebarDataServer()
-  const userCacheKey = uid ? createUserCacheKey(uid) : undefined
 
   if (isInternalRequest(req)) {
     const sidebarFallbackData = await sidebarDataPromise
@@ -71,12 +74,11 @@ export const getServerSideProps: GetServerSideProps = async ({
     return { notFound: true }
   }
 
-  const [replies, sidebarFallbackData, userData] = await Promise.all([
+  const [replies, sidebarFallbackData] = await Promise.all([
     POST_REPLIES_SSR
       ? getPostRepliesServer(post.data.reference, slug, { uid })
-      : null,
+      : [],
     sidebarDataPromise,
-    userCacheKey && uid ? getUserDataServer(uid) : null,
   ])
 
   console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
@@ -84,9 +86,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       fallback: {
         [postCacheKey]: post,
-        [postRepliesCacheKey]: replies,
+        [unstable_serialize(postRepliesCacheKey)]: [replies],
         ...sidebarFallbackData,
-        ...(userCacheKey ? { [userCacheKey]: userData } : {}),
       },
       key: postCacheKey,
     },

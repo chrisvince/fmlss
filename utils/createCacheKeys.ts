@@ -15,6 +15,7 @@ const {
   NOTIFICATION_PAGINATION_COUNT,
   PEOPLE_PAGINATION_COUNT,
   POST_PAGINATION_COUNT,
+  POST_REPLIES_PAGINATION_COUNT,
 } = constants
 
 const createHashtagPostsCacheKey = (
@@ -79,6 +80,39 @@ const createPostRepliesCacheKey = (
   `post/${slug}/replies${viewMode === 'end' ? '-reverse' : ''}${
     pageIndex === null ? '' : `-${pageIndex}`
   }`
+
+const createPostRepliesSWRGetKey =
+  ({
+    slug,
+    uid,
+  }: {
+    slug: string | undefined
+    uid: string | undefined | null
+  }) =>
+  (_: number, previousPageData: any) => {
+    if (!slug) return null
+    console.log('previousPageData', previousPageData?.at(-1))
+
+    if (!previousPageData) {
+      return {
+        key: 'post-replies',
+        slug,
+        startAfter: null,
+        uid,
+      }
+    }
+
+    if (previousPageData.length < POST_REPLIES_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'post-replies',
+      slug,
+      startAfter: previousPageData.at(-1),
+      uid,
+    }
+  }
 
 const createPostLikeCacheKey = (postId: string, uid: string) =>
   `post/${postId}/like/${uid}`
@@ -261,6 +295,7 @@ export {
   createPostLikeCacheKey,
   createPostReactionCacheKey,
   createPostRepliesCacheKey,
+  createPostRepliesSWRGetKey,
   createSidebarHashtagsCacheKey,
   createSidebarPeopleCacheKey,
   createSidebarTopicsCacheKey,

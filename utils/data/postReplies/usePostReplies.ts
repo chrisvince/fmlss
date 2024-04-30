@@ -1,16 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { MutatorCallback, useSWRConfig } from 'swr'
-import { reverse } from 'ramda'
+import { MutatorCallback } from 'swr'
 
-import { FirebaseDoc, Post } from '../../../types'
-import {
-  createPostRepliesCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
+import { Post } from '../../../types'
+import { createPostRepliesSWRGetKey } from '../../createCacheKeys'
 import usePost from '../post/usePost'
 import getPostReplies from './getPostReplies'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
 import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
@@ -21,22 +16,18 @@ import { mutateWatchedPostInfiniteData } from '../utils/mutateWatchedPost'
 import checkUserWatchingPost from '../utils/checkUserWatchingPost'
 import useAuth from '../../auth/useAuth'
 
-const { POST_PAGINATION_COUNT } = constants
+const { POST_REPLIES_PAGINATION_COUNT } = constants
 
 const DEFAULT_SWR_CONFIG: SWRInfiniteConfiguration = {
   revalidateOnMount: true,
   revalidateOnFocus: false,
   revalidateFirstPage: false,
-  revalidateAll: true,
+  revalidateAll: false,
 }
 
-type UsePostReplies = (
-  slug?: string,
-  options?: {
-    viewMode?: 'start' | 'end'
-    swrConfig?: SWRInfiniteConfiguration
-  }
-) => {
+const usePostReplies = (
+  slug?: string
+): {
   error: unknown
   isLoading: boolean
   isValidating: boolean
@@ -46,26 +37,12 @@ type UsePostReplies = (
   refresh: () => Promise<void>
   replies: Post[]
   watchPost: (slug: string) => Promise<void>
-}
-
-const usePostReplies: UsePostReplies = (
-  slug,
-  { viewMode = 'start', swrConfig = {} } = {}
-) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
-  const { fallback } = useSWRConfig()
-  const fallbackData = slug
-    ? fallback[createPostRepliesCacheKey(slug, { pageIndex: 0, viewMode })]
-    : undefined
-
-  const { uid } = useAuth() ?? {}
+} => {
+  const { uid } = useAuth()
   const { post, isValidating: postIsValidating } = usePost(slug)
 
   const {
-    data,
+    data: pages,
     error,
     isLoading,
     isValidating: repliesAreValidating,
@@ -73,43 +50,17 @@ const usePostReplies: UsePostReplies = (
     setSize,
     size,
   } = useSWRInfinite(
-    (index, previousPageData) => {
-      if (
-        (previousPageData && previousPageData.length < POST_PAGINATION_COUNT) ||
-        !post ||
-        !slug
-      ) {
-        return null
-      }
-      return createPostRepliesCacheKey(slug, { pageIndex: index, viewMode })
-    },
-    key => {
-      const pageIndex = getPageIndexFromCacheKey(key)
-      return getPostReplies(post!.data.reference, slug!, {
+    createPostRepliesSWRGetKey({ slug: post?.data.slug, uid }),
+    ({ startAfter }) =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      getPostReplies(post!.data.reference, {
         uid,
-        startAfter: pageStartAfterTrace[pageIndex],
-        viewMode,
-      })
-    },
+        startAfter,
+      }),
     {
-      fallbackData,
       ...DEFAULT_SWR_CONFIG,
-      ...swrConfig,
     }
   )
-
-  useEffect(() => {
-    const lastPageLastDoc = getLastDocOfLastPage(data)
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [data, size])
-
-  useEffect(() => {
-    setPageStartAfterTrace({})
-  }, [viewMode])
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -163,12 +114,9 @@ const usePostReplies: UsePostReplies = (
     [mutate]
   )
 
-  const flattenedData = data?.flat() ?? []
-  const replies = viewMode === 'end' ? reverse(flattenedData) : flattenedData
+  const replies = pages?.flat() ?? []
   const isValidating = repliesAreValidating || postIsValidating
-
-  const moreToLoad =
-    post?.data.postsCount === undefined || replies.length < post.data.postsCount
+  const moreToLoad = pages?.at?.(-1)?.length === POST_REPLIES_PAGINATION_COUNT
 
   const refresh = async () => {
     await mutate()

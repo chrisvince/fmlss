@@ -43,7 +43,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
   return (
     <>
       <ScrollLink id="replies" />
-      {loading || repliesAreLoading ? (
+      {loading || (repliesAreLoading && replies.length === 0) ? (
         <ContentSpinner />
       ) : (
         <>
