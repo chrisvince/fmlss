@@ -167,6 +167,30 @@ const createUserLikesCacheKey = (
   { pageIndex = 0 }: { pageIndex?: number | null } = {}
 ) => `post/likes/${uid}${pageIndex === null ? '' : `-${pageIndex}`}`
 
+const createUserLikesSWRGetKey =
+  ({ uid }: { uid: string | null }) =>
+  (_: number, previousPageData: Post[]) => {
+    if (!uid) return null
+
+    if (!previousPageData) {
+      return {
+        key: 'user-likes',
+        startAfter: null,
+        uid,
+      }
+    }
+
+    if (previousPageData.length < POST_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'user-likes',
+      startAfter: previousPageData.at(-1),
+      uid,
+    }
+  }
+
 const createUserPostsCacheKey = (
   uid: string,
   { pageIndex = 0 }: { pageIndex?: number | null } = {}

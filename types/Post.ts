@@ -1,4 +1,5 @@
 import { PostData } from '.'
+import { Like } from './Like'
 import { ReactionId } from './Reaction'
 
 export enum PostType {
@@ -8,6 +9,7 @@ export enum PostType {
 
 export interface Post {
   data: PostData
+  like?: Like
   user?: {
     created: boolean
     like: boolean

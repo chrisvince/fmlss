@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { MutatorCallback, useSWRConfig } from 'swr'
+import { MutatorCallback } from 'swr'
 
-import { FirebaseDoc, Post } from '../../../types'
-import {
-  createUserLikesCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
+import { Post } from '../../../types'
+import { createUserLikesSWRGetKey } from '../../createCacheKeys'
 import getUserLikes from './getUserLikes'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
 import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
@@ -40,53 +36,28 @@ type UseUserLikes = (options?: { swrConfig?: SWRInfiniteConfiguration }) => {
 }
 
 const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
   const { uid } = useAuth()
-  const { fallback } = useSWRConfig()
-  const fallbackData = uid ? fallback[createUserLikesCacheKey(uid)] : null
 
-  if (!uid) {
-    console.error('uid must be set.')
-  }
-
-  const { data, error, isLoading, isValidating, mutate, size, setSize } =
-    useSWRInfinite(
-      (index, previousPageData) => {
-        if (
-          !uid ||
-          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
-        ) {
-          return null
-        }
-        return createUserLikesCacheKey(uid, { pageIndex: index })
-      },
-      key => {
-        if (!uid) return null
-        const pageIndex = getPageIndexFromCacheKey(key)
-        return getUserLikes(uid, {
-          startAfter: pageStartAfterTrace[pageIndex],
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
-
-  console.error(error)
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    size,
+    setSize,
+  } = useSWRInfinite(
+    createUserLikesSWRGetKey({ uid }),
+    ({ startAfter }) =>
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      getUserLikes(uid!, {
+        startAfter,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -140,11 +111,8 @@ const useUserLikes: UseUserLikes = ({ swrConfig = {} } = {}) => {
     [mutate]
   )
 
-  const posts = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const posts = pages?.flat() ?? []
+  const moreToLoad = pages?.at?.(-1)?.length === POST_PAGINATION_COUNT
 
   return {
     error,
