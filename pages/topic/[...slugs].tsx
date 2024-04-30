@@ -4,7 +4,7 @@ import TopicPage from '../../components/TopicPage'
 import { TopicSortMode, TopicsSortMode } from '../../types'
 import {
   createTopicCacheKey,
-  createTopicPostsCacheKey,
+  createTopicPostsSWRGetKey,
   createTopicsCacheKey,
 } from '../../utils/createCacheKeys'
 import constants from '../../constants'
@@ -16,6 +16,7 @@ import getTopicsServer from '../../utils/data/topics/getTopicsServer'
 import getTopicPostsServer from '../../utils/data/posts/getTopicPostsServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../utils/auth/getUidFromCookies'
+import { unstable_serialize } from 'swr/infinite'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, SUBTOPICS_ON_TOPIC_PAGE_LIMIT } =
   constants
@@ -51,7 +52,13 @@ export const getServerSideProps: GetServerSideProps = async ({
   const path = slugs.map(slugify).join('/')
   const uid = await getUidFromCookies(req.cookies)
   const sortMode = SORT_MODE_MAP[sort] ?? TopicSortMode.Popular
-  const topicPostsCacheKey = createTopicPostsCacheKey(path, { sortMode })
+
+  const topicPostsCacheKey = createTopicPostsSWRGetKey({
+    path,
+    sortMode,
+    uid,
+  })
+
   const topicCacheKey = createTopicCacheKey(path)
   const sidebarDataPromise = getSidebarDataServer()
   const topic = await getTopicServer(path)
@@ -88,7 +95,6 @@ export const getServerSideProps: GetServerSideProps = async ({
           [topicsCacheKey]: topics,
         },
         path,
-        key: topicCacheKey,
       },
     }
   }
@@ -107,11 +113,10 @@ export const getServerSideProps: GetServerSideProps = async ({
       fallback: {
         ...sidebarFallbackData,
         [topicCacheKey]: topic,
-        [topicPostsCacheKey]: posts,
+        [unstable_serialize(topicPostsCacheKey)]: posts,
         [topicsCacheKey]: topics,
       },
       path,
-      key: topicCacheKey,
     },
   }
 }

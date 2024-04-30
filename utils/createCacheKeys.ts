@@ -224,6 +224,40 @@ const createTopicPostsCacheKey = (
 ) =>
   `topic/${slug}/posts/${sortMode}${pageIndex === null ? '' : `-${pageIndex}`}`
 
+const createTopicPostsSWRGetKey =
+  ({
+    path,
+    sortMode,
+    uid,
+  }: {
+    path: string
+    sortMode: TopicSortMode
+    uid: string | null
+  }) =>
+  (_: number, previousPageData: Post[]) => {
+    if (!previousPageData) {
+      return {
+        key: 'topic-posts',
+        path,
+        sortMode,
+        startAfter: null,
+        uid,
+      }
+    }
+
+    if (previousPageData.length < POST_PAGINATION_COUNT) {
+      return null
+    }
+
+    return {
+      key: 'topic-posts',
+      path,
+      sortMode,
+      startAfter: previousPageData.at(-1),
+      uid,
+    }
+  }
+
 const createTopicCacheKey = (slug: string) => `topic/${slug}`
 
 const createSidebarHashtagsCacheKey = () => 'sidebar/hashtags'
@@ -377,6 +411,7 @@ export {
   createSidebarTopicsCacheKey,
   createTopicCacheKey,
   createTopicPostsCacheKey,
+  createTopicPostsSWRGetKey,
   createTopicsCacheKey,
   createTopicsStartsWithCacheKey,
   createTwitterAttachmentCacheKey,

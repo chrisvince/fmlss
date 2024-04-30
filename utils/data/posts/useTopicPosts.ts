@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import useSWRInfinite, { SWRInfiniteConfiguration } from 'swr/infinite'
-import { MutatorCallback, useSWRConfig } from 'swr'
+import { MutatorCallback } from 'swr'
 
-import { TopicSortMode, FirebaseDoc, Post } from '../../../types'
-import {
-  createTopicPostsCacheKey,
-  getPageIndexFromCacheKey,
-} from '../../createCacheKeys'
+import { TopicSortMode, Post } from '../../../types'
+import { createTopicPostsSWRGetKey } from '../../createCacheKeys'
 import getTopicPosts from './getTopicPosts'
-import getLastDocOfLastPage from '../../getLastDocOfLastPage'
 import constants from '../../../constants'
 import checkUserLikesPost from '../utils/checkUserLikesPost'
 import updatePostLikeInServer from '../utils/updatePostLikeInServer'
@@ -49,50 +45,34 @@ const useTopicPosts: UseTopicPosts = (
   path,
   { sortMode = TopicSortMode.Popular, swrConfig = {} } = {}
 ) => {
-  const [pageStartAfterTrace, setPageStartAfterTrace] = useState<{
-    [key: string]: FirebaseDoc
-  }>({})
-
-  const { fallback } = useSWRConfig()
-  const fallbackData = fallback[createTopicPostsCacheKey(path, { sortMode })]
   const { uid } = useAuth()
 
-  const { data, error, isLoading, isValidating, mutate, setSize, size } =
-    useSWRInfinite(
-      (index, previousPageData) => {
-        if (
-          !uid ||
-          (previousPageData && previousPageData.length < POST_PAGINATION_COUNT)
-        ) {
-          return null
-        }
-        return createTopicPostsCacheKey(path, { pageIndex: index, sortMode })
-      },
-      key => {
-        const pageIndex = getPageIndexFromCacheKey(key)
-        if (!uid) return []
-
-        return getTopicPosts(path, {
-          sortMode,
-          startAfter: pageStartAfterTrace[pageIndex],
-          uid,
-        })
-      },
-      {
-        fallbackData,
-        ...DEFAULT_SWR_CONFIG,
-        ...swrConfig,
-      }
-    )
-
-  const lastPageLastDoc = getLastDocOfLastPage(data)
-  useEffect(() => {
-    if (!lastPageLastDoc) return
-    setPageStartAfterTrace(currentState => ({
-      ...currentState,
-      [size]: lastPageLastDoc,
-    }))
-  }, [lastPageLastDoc, size])
+  const {
+    data: pages,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    setSize,
+    size,
+  } = useSWRInfinite(
+    createTopicPostsSWRGetKey({
+      path,
+      sortMode,
+      uid,
+    }),
+    ({ startAfter }) =>
+      getTopicPosts(path, {
+        sortMode,
+        startAfter,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        uid: uid!,
+      }),
+    {
+      ...DEFAULT_SWR_CONFIG,
+      ...swrConfig,
+    }
+  )
 
   const loadMore = async () => {
     const data = await setSize(size + 1)
@@ -146,11 +126,8 @@ const useTopicPosts: UseTopicPosts = (
     [mutate]
   )
 
-  const posts = data?.flat() ?? []
-  const lastPageLength = data?.at?.(-1)?.length ?? 0
-
-  const moreToLoad =
-    lastPageLength === undefined || lastPageLength >= POST_PAGINATION_COUNT
+  const posts = pages?.flat() ?? []
+  const moreToLoad = pages?.at?.(-1)?.length === POST_PAGINATION_COUNT
 
   return {
     error,
