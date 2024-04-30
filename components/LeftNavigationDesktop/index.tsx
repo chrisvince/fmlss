@@ -93,8 +93,7 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationDesktop = () => {
-  const user = useAuth()
-  const { email, uid, displayName } = user ?? {}
+  const { email, uid, displayName } = useAuth()
   const theme = useTheme()
   const navMarginBottomSm = theme.spacing(TOP_NAVIGATION_MARGIN_BOTTOM_SM)
   const marginBottom = theme.spacing(LEFT_NAVIGATION_PADDING_BOTTOM)

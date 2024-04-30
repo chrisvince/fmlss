@@ -94,8 +94,7 @@ const NAVIGATION_ITEMS = [
 ]
 
 const LeftNavigationMobile = ({ open, onOpen, onClose }: PropTypes) => {
-  const user = useAuth()
-  const { displayName, email, uid } = user ?? {}
+  const { displayName, email, uid } = useAuth()
   const theme = useTheme()
   const navMarginBottomXs = theme.spacing(4)
 
