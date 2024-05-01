@@ -55,7 +55,7 @@ const useNotifications: UseNotifications = ({
     setSize,
     size,
   } = useSWRInfinite(
-    createNotificationsSWRGetKey({ skip, uid }),
+    createNotificationsSWRGetKey({ limit, skip, uid }),
     ({ startAfter }) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return getNotifications(uid!, {

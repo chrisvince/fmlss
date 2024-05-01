@@ -366,13 +366,22 @@ const createNotificationCacheKey = (
 ) => `notifications/${uid}/limit=${limit}-${pageIndex}`
 
 const createNotificationsSWRGetKey =
-  ({ skip = false, uid }: { skip?: boolean; uid: string | null }) =>
+  ({
+    limit = NOTIFICATION_PAGINATION_COUNT,
+    skip = false,
+    uid,
+  }: {
+    limit: number
+    skip?: boolean
+    uid: string | null
+  }) =>
   (_: number, previousPageData: Notification[]) => {
     if (!uid || skip) return null
 
     if (!previousPageData) {
       return {
         key: 'notifications',
+        limit,
         startAfter: null,
         uid,
       }
@@ -384,6 +393,7 @@ const createNotificationsSWRGetKey =
 
     return {
       key: 'notifications',
+      limit,
       startAfter: previousPageData.at(-1),
       uid,
     }
