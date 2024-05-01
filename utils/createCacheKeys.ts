@@ -371,7 +371,7 @@ const createNotificationsSWRGetKey =
     skip = false,
     uid,
   }: {
-    limit: number
+    limit?: number
     skip?: boolean
     uid: string | null
   }) =>
