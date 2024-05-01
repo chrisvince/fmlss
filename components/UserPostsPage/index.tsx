@@ -6,7 +6,7 @@ import SidebarTopicsSection from '../SidebarTopicsSection'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
-import { PostType } from '../../types'
+import { PostTypeQuery } from '../../types'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
 
@@ -22,7 +22,7 @@ const UserPostsPage = () => {
 
   const { isLoading, likePost, loadMore, moreToLoad, posts, watchPost } =
     useUserPosts({
-      type: PostType.Post,
+      type: PostTypeQuery.Post,
       swrConfig: { onSuccess: handlePostLoadSuccess },
     })
 
