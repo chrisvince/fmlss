@@ -17,12 +17,14 @@ import PostContentOptions from '../PostContentOptions'
 const { MEDIA_ITEMS_MAX_COUNT, POST_ATTACHMENTS_MAX_COUNT } = constants
 
 interface Props {
+  placeholder?: string
   postType?: PostType
   showBottomBorderOnFocus?: boolean
   slug?: string
 }
 
 const InlineCreatePost = ({
+  placeholder,
   postType = PostType.New,
   showBottomBorderOnFocus = false,
   slug,
@@ -106,6 +108,7 @@ const InlineCreatePost = ({
                 onPostAttachmentClose={closePostAttachment}
                 onRemoveMedia={onRemoveMedia}
                 onUrlAdd={onUrlAdd}
+                placeholder={placeholder}
                 postAttachments={postAttachments}
                 postType={postType}
                 textLength={textLength}

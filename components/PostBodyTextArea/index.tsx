@@ -71,6 +71,7 @@ type Props = {
   onPostAttachmentClose?: (url: string) => void
   onRemoveMedia: (id: string) => void
   onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
+  placeholder?: string
   postAttachments?: PostAttachmentInput[]
   postType?: PostType
   size?: PostBodyTextAreaSize
@@ -91,6 +92,7 @@ const PostBodyTextArea = ({
   onPostAttachmentClose,
   onRemoveMedia,
   onUrlAdd,
+  placeholder: placeholderOverride,
   postAttachments = [],
   postType = PostType.New,
   size = PostBodyTextAreaSize.Small,
@@ -177,7 +179,12 @@ const PostBodyTextArea = ({
   }
 
   const plainText = editorState?.getCurrentContent().getPlainText()
-  const placeholder = usePostBodyTextAreaPlaceholder({ postType })
+
+  const placeholder = usePostBodyTextAreaPlaceholder({
+    override: placeholderOverride,
+    postType,
+  })
+
   const large = size === PostBodyTextAreaSize.Large
 
   useEffect(() => {

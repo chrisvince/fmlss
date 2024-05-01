@@ -6,13 +6,20 @@ export enum PostType {
 }
 
 interface Props {
+  override?: string
   postType?: PostType
 }
 
 const usePostBodyTextAreaPlaceholder = ({
+  override,
   postType = PostType.New,
 }: Props = {}) => {
   const { user } = useUserData({ skip: postType === PostType.Reply })
+
+  if (override) {
+    return override
+  }
+
   const userFirstName = user?.data.firstName
 
   const newPost = `${
