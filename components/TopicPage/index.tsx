@@ -28,6 +28,7 @@ import SidebarPeopleSection from '../SidebarPeopleSection'
 import SidebarTopicsSection from '../SidebarTopicsSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import NotFoundPage from '../NotFoundPage'
+import InlineCreatePost from '../InlineCreatePost'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -198,6 +199,10 @@ const TopicPage = ({ path }: PropTypes) => {
           </ButtonGroup>
         </MobileContainer>
       )}
+      <InlineCreatePost
+        showBottomBorderOnFocus
+        placeholder={`Write something about ${topic?.data.title}!`}
+      />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={topicIsLoading || postsAreLoading}

@@ -22,6 +22,7 @@ import {
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import { PostTypeQuery } from '../../types/PostTypeQuery'
+import InlineCreatePost from '../InlineCreatePost'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -165,6 +166,10 @@ const HashtagPage = ({ slug }: PropTypes) => {
           )}
         </MobileContainer>
       )}
+      <InlineCreatePost
+        showBottomBorderOnFocus
+        placeholder={`Use ${title} in your next post!`}
+      />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}

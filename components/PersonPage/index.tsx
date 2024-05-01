@@ -16,6 +16,7 @@ import { CellMeasurerCache } from 'react-virtualized'
 import constants from '../../constants'
 import NotFoundPage from '../NotFoundPage'
 import useAuth from '../../utils/auth/useAuth'
+import InlineCreatePost from '../InlineCreatePost'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -67,6 +68,10 @@ const PersonPage = ({ slug }: Props) => {
         </>
       }
     >
+      <InlineCreatePost
+        showBottomBorderOnFocus
+        placeholder={`Write something about ${person?.data.name}?`}
+      />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}

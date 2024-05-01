@@ -11,7 +11,7 @@ import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 
-const { ENABLE_SORTING, TOPICS_ENABLED } = constants
+const { ENABLE_SORTING } = constants
 
 const SORT_MODE_OPTIONS = [
   {
