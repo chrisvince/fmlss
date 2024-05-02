@@ -119,11 +119,11 @@ const TopicPage = ({ path }: PropTypes) => {
     resourceViewed({ resourceType: ResourceType.Topic, slug: topic.data.slug })
   })
 
-  if (topicIsLoading && !topic) {
+  if (topicIsLoading) {
     return <PageSpinner />
   }
 
-  if (!topicIsLoading && !topic) {
+  if (!topic) {
     return <NotFoundPage />
   }
 
@@ -131,8 +131,8 @@ const TopicPage = ({ path }: PropTypes) => {
 
   return (
     <Page
-      description={`See ${topic?.data.title} posts`}
-      pageTitle={topic?.data.title}
+      description={`See ${topic.data.title} posts`}
+      pageTitle={topic.data.title}
       renderPageTitle
       rightPanelChildren={
         <>
@@ -142,10 +142,10 @@ const TopicPage = ({ path }: PropTypes) => {
         </>
       }
     >
-      {topic?.data.subtopicSegments &&
+      {topic.data.subtopicSegments &&
         topic.data.subtopicSegments.length > 1 && (
           <MobileContainer>
-            <TopicBreadcrumbs subtopicSegments={topic?.data.subtopicSegments} />
+            <TopicBreadcrumbs subtopicSegments={topic.data.subtopicSegments} />
           </MobileContainer>
         )}
       {isTopics && (
@@ -159,7 +159,7 @@ const TopicPage = ({ path }: PropTypes) => {
           {topics.length >= SUBTOPICS_ON_TOPIC_PAGE_LIMIT && (
             <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
               <CaptionLink
-                href={`/topics/${topic?.data.path}`}
+                href={`/topics/${topic.data.path}`}
                 color="secondary.main"
               >
                 View all
@@ -201,7 +201,7 @@ const TopicPage = ({ path }: PropTypes) => {
       )}
       <InlineCreatePost
         showBottomBorderOnFocus
-        placeholder={`Write something about ${topic?.data.title}!`}
+        placeholder={`Write something about ${topic.data.title}!`}
       />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
