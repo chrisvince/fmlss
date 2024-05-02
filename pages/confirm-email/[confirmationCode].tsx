@@ -57,7 +57,7 @@ export const getServerSideProps = async ({
     return createGetServerSidePropsPayload(UI_STATES.VERIFIED)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.code === 'already-exists') {
+    if (error.code === 'functions/already-exists') {
       console.timeEnd(GET_SERVER_SIDE_PROPS_TIME_LABEL)
       return createGetServerSidePropsPayload(UI_STATES.ALREADY_VERIFIED)
     }

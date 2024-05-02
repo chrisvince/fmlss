@@ -53,7 +53,7 @@ const ChangePasswordForm = ({ userHasPassword }: PropTypes) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (
-        error.code === 'invalid-argument' &&
+        error.code === 'functions/invalid-argument' &&
         error.message === '`currentPassword` is incorrect.'
       ) {
         setError(FORM_IDS.CURRENT_PASSWORD, {

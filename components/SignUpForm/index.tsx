@@ -51,7 +51,7 @@ const SignUpForm = ({ onSuccess, showHeading = true }: Props) => {
       router.reload()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      if (error.code === 'already-exists') {
+      if (error.code === 'functions/already-exists') {
         setError(FORM_IDS.EMAIL, { message: 'This email is already in use.' })
         setIsLoading(false)
         return

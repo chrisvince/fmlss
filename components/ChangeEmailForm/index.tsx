@@ -53,7 +53,7 @@ const ChangeEmailForm = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (
-        error.code === 'invalid-argument' &&
+        error.code === 'functions/invalid-argument' &&
         error.message === '`password` is incorrect.'
       ) {
         setError(FORM_IDS.PASSWORD, {
@@ -64,7 +64,7 @@ const ChangeEmailForm = () => {
       }
 
       if (
-        error.code === 'invalid-argument' &&
+        error.code === 'functions/invalid-argument' &&
         error.message === '`email` must be different from the current email.'
       ) {
         setError(FORM_IDS.EMAIL, {
@@ -74,7 +74,7 @@ const ChangeEmailForm = () => {
         return
       }
 
-      if (error.code === 'already-exists') {
+      if (error.code === 'functions/already-exists') {
         setError(FORM_IDS.EMAIL, {
           message: 'This email is already in use. Please try another email.',
         })
