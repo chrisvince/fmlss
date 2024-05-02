@@ -1,11 +1,11 @@
-import LayoutBasicSlimBranded from '../components/LayoutBasicSlimBranded'
+import LayoutBasicBranded from '../components/LayoutBasicBranded'
 import { ReactElement } from 'react'
 import SignInPage from '../components/SignInPage'
 
 const SignIn = () => <SignInPage />
 
 SignIn.getLayout = function getLayout(page: ReactElement) {
-  return <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
+  return <LayoutBasicBranded>{page}</LayoutBasicBranded>
 }
 
 export default SignIn

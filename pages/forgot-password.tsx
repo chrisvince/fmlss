@@ -1,11 +1,11 @@
 import { ReactElement } from 'react'
 import ForgotPasswordPage from '../components/ForgotPasswordPage'
-import LayoutBasicSlimBranded from '../components/LayoutBasicSlimBranded'
+import LayoutBasicBranded from '../components/LayoutBasicBranded'
 
 const ForgotPassword = () => <ForgotPasswordPage />
 
 ForgotPassword.getLayout = (page: ReactElement) => (
-  <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
+  <LayoutBasicBranded>{page}</LayoutBasicBranded>
 )
 
 export default ForgotPassword

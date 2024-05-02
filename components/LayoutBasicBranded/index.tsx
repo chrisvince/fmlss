@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/system'
+import { Box, Container, ContainerProps } from '@mui/system'
 
 import FooterBasic from '../FooterBasic'
 import constants from '../../constants'
@@ -8,11 +8,12 @@ const { FOOTER_BASIC_HEIGHT } = constants
 
 interface PropTypes {
   children: React.ReactNode
+  containerProps?: ContainerProps
 }
 
-const LayoutBasicSlimBranded = ({ children }: PropTypes) => (
+const LayoutBasicBranded = ({ children, containerProps }: PropTypes) => (
   <>
-    <Container maxWidth="xs">
+    <Container maxWidth="xs" {...containerProps}>
       <Box
         sx={{
           minHeight: `calc(100vh - ${FOOTER_BASIC_HEIGHT})`,
@@ -41,4 +42,4 @@ const LayoutBasicSlimBranded = ({ children }: PropTypes) => (
   </>
 )
 
-export default LayoutBasicSlimBranded
+export default LayoutBasicBranded

@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import constants from '../../constants'
 import { checkPasswordResetRequestValid } from '../../utils/callableFirebaseFunctions'
-import LayoutBasicSlimBranded from '../../components/LayoutBasicSlimBranded'
+import LayoutBasicBranded from '../../components/LayoutBasicBranded'
 import ResetPasswordPage from '../../components/ResetPasswordPage'
 import { GetServerSideProps } from 'next'
 
@@ -26,7 +26,7 @@ const ResetPassword = ({ requestId, requestIdStatus }: Props) => (
 )
 
 ResetPassword.getLayout = (page: ReactElement) => (
-  <LayoutBasicSlimBranded>{page}</LayoutBasicSlimBranded>
+  <LayoutBasicBranded>{page}</LayoutBasicBranded>
 )
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
