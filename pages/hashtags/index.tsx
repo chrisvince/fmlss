@@ -1,7 +1,7 @@
 import { SWRConfig } from 'swr'
 
 import HashtagsPage from '../../components/HashtagsPage'
-import type { HashtagsSortMode } from '../../types'
+import { HashtagsSortMode } from '../../types'
 import { createHashtagSWRGetKey } from '../../utils/createCacheKeys'
 import constants from '../../constants'
 import isInternalRequest from '../../utils/isInternalRequest'
@@ -26,32 +26,10 @@ const Hashtags = ({ fallback }: PropTypes) => (
   </SWRConfig>
 )
 
-const SORT_MODE_MAP: {
-  [key: string]: string
-} = {
-  latest: 'latest',
-  popular: 'popular',
-}
-
-export const getServerSideProps: GetServerSideProps = async ({
-  params,
-  req,
-}) => {
-  console.time(GET_SERVER_SIDE_PROPS_TIME_LABEL)
-  const sortModeArray = (params?.sortModeArray as string[] | undefined) ?? []
-
-  if (sortModeArray?.length > 1) {
-    return { notFound: true }
-  }
-
-  const sortModeParam = sortModeArray?.[0] ?? 'popular'
-  const sortMode = SORT_MODE_MAP[sortModeParam] as HashtagsSortMode
-
-  if (!sortMode) {
-    return { notFound: true }
-  }
-
-  const hashtagsCacheKey = createHashtagSWRGetKey({ sortMode })
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const hashtagsCacheKey = createHashtagSWRGetKey({
+    sortMode: HashtagsSortMode.Popular,
+  })
 
   const sidebarDataPromise = getSidebarDataServer({
     exclude: [SidebarResourceKey.Hashtags],
@@ -69,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   const [hashtags, sidebarFallbackData] = await Promise.all([
-    getHashtagsServer({ sortMode }),
+    getHashtagsServer({ sortMode: HashtagsSortMode.Popular }),
     sidebarDataPromise,
   ])
 
