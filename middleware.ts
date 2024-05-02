@@ -5,6 +5,8 @@ import {
   redirectToLogin,
 } from 'next-firebase-auth-edge'
 import constants from './constants'
+import { get as getEdgeConfig } from '@vercel/edge-config'
+import { MaintenaceConfig } from './types/MaintenanceConfig'
 
 const { AUTH_API_LOGIN_PATH, AUTH_API_LOGOUT_PATH } = constants
 const PUBLIC_PATHS = ['/sign-in', '/sign-up', '/forgot-password', '/welcome']
@@ -22,6 +24,14 @@ const PUBLIC_AND_PRIVATE_DYNAMIC_PATHS = [
 const allStaticPublicPaths = [...PUBLIC_PATHS, ...PUBLIC_AND_PRIVATE_PATHS]
 
 export const middleware = async (request: NextRequest) => {
+  const maintenanceModeConfig = (await getEdgeConfig('maintenance_mode')) as
+    | MaintenaceConfig
+    | undefined
+
+  if (maintenanceModeConfig?.enabled) {
+    return NextResponse.rewrite(new URL('/maintenance-mode', request.url))
+  }
+
   const { pathname } = request.nextUrl
 
   const isPublicDynamicPath = PUBLIC_AND_PRIVATE_DYNAMIC_PATHS.some(path =>
