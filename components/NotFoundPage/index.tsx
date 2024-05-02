@@ -38,8 +38,8 @@ const NotFoundPage = () => (
         </Typography>
         <TextAndCta
           ctaHref="/"
-          ctaText="Go back home"
-          message="It looks like the page you're looking for doesn't exist. Click below to go back home."
+          ctaText="Go home"
+          message="It looks like the page you're looking for doesn't exist."
         />
       </Box>
     </MobileContainer>
