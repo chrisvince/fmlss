@@ -22,10 +22,12 @@ const ListItemFrame = ({
   isSidebar = false,
 }: PropTypes) => {
   const [highlight, setHighlight] = useState(false)
-  const { prefetch, push: navigate } = useRouter()
+  const { asPath, prefetch, push: navigate } = useRouter()
   const [ref, inView] = useInView({ triggerOnce: true })
 
   const handleClick = (event: SyntheticEvent) => {
+    if (href === asPath) return
+
     if (isLink) {
       setHighlight(true)
       return
