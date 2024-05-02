@@ -26,7 +26,11 @@ const ListItemFrame = ({
   const [ref, inView] = useInView({ triggerOnce: true })
 
   const handleClick = (event: SyntheticEvent) => {
-    if (isLink) return
+    if (isLink) {
+      setHighlight(true)
+      return
+    }
+
     const isClickableElement = (event.target as HTMLAnchorElement).closest(
       'a, button, [role="presentation"]'
     )
