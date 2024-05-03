@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "fameless-prod"
+    "default": "fameless-prod",
+    "staging": "fameless-staging"
   },
   "targets": {
     "fameless-prod": {
@@ -12,6 +13,16 @@
           "post-assets"
         ]
       }
+    },
+    "fameless-staging": {
+      "storage": {
+        "main": [
+          "fameless-prod.appspot.com"
+        ],
+        "post-assets": [
+          "post-assets-staging"
+        ]
+      }
     }
   },
   "etags": {
@@ -20,5 +31,6 @@
         "storage-resize-images": "8591e51ec65648461049a27043688b77c382183481ecf806c866c3523310acf3"
       }
     }
-  }
+  },
+  "dataconnectEmulatorConfig": {}
 }
