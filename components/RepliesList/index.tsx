@@ -47,7 +47,7 @@ const RepliesList = ({ loading = false, slug }: PropTypes) => {
         <ContentSpinner />
       ) : (
         <>
-          <InlineCreatePost slug={slug} postType={PostType.Reply} />
+          <InlineCreatePost slug={slug} placeholder="Write a reply" />
           <Box sx={{ borderTop: '1px solid', borderTopColor: 'divider' }}>
             <ContentList
               cellMeasurerCache={cellMeasurerCache.current}

@@ -2,6 +2,7 @@ import { Checkbox, FormControlLabel, FormGroup } from '@mui/material'
 
 interface Props {
   adultContentChecked: boolean
+  disabled?: boolean
   offensiveContentChecked: boolean
   onAdultContentChange: (checked: boolean) => void
   onOffensiveContentChange: (checked: boolean) => void
@@ -9,6 +10,7 @@ interface Props {
 
 const PostContentOptions = ({
   adultContentChecked,
+  disabled = false,
   offensiveContentChecked,
   onAdultContentChange,
   onOffensiveContentChange,
@@ -24,6 +26,7 @@ const PostContentOptions = ({
       componentsProps={{ typography: { variant: 'caption' } }}
       control={
         <Checkbox
+          disabled={disabled}
           onChange={() => onOffensiveContentChange(!offensiveContentChecked)}
           size="small"
           value={offensiveContentChecked}
@@ -35,6 +38,7 @@ const PostContentOptions = ({
       componentsProps={{ typography: { variant: 'caption' } }}
       control={
         <Checkbox
+          disabled={disabled}
           onChange={() => onAdultContentChange(!adultContentChecked)}
           size="small"
           value={adultContentChecked}

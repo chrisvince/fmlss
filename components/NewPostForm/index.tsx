@@ -6,15 +6,14 @@ import {
   useMediaQuery,
 } from '@mui/material'
 import { Box, useTheme } from '@mui/system'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import usePost from '../../utils/data/post/usePost'
 import TopicSelect from '../TopicSelect'
-import PostBodyTextArea, { PostBodyTextAreaSize } from '../PostBodyTextArea'
+import PostBodyTextArea from '../PostBodyTextArea'
 import PostItem, { BodySize } from '../PostItem'
 import constants from '../../constants'
-import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAttachmentInputToCreatePostAttachment'
 import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 import { useRouter } from 'next/router'
@@ -28,16 +27,10 @@ const { TOPICS_ENABLED } = constants
 interface Props {
   isInModal?: boolean
   onContentExists?: (contentExists: boolean) => void
-  postType?: PostType
   slug?: string
 }
 
-const NewPostForm = ({
-  isInModal = false,
-  onContentExists,
-  postType = PostType.New,
-  slug,
-}: Props) => {
+const NewPostForm = ({ isInModal = false, onContentExists, slug }: Props) => {
   const { post: replyingToPost } = usePost(slug)
   const { user, update } = useUserData()
 
@@ -127,12 +120,15 @@ const NewPostForm = ({
     allowNavigation.current = false
   }
 
-  const bodyOrSubtopicExists =
-    hasText || (!slug && subtopics.length > 0) || postAttachments.length > 0
+  const contentExists =
+    hasText ||
+    subtopics.length > 0 ||
+    postAttachments.length > 0 ||
+    media.length > 0
 
   useEffect(() => {
-    onContentExists?.(bodyOrSubtopicExists)
-  }, [bodyOrSubtopicExists, onContentExists])
+    onContentExists?.(contentExists)
+  }, [contentExists, onContentExists])
 
   const handleConfirmDiscard = async () => {
     allowNavigation.current = true
@@ -144,28 +140,25 @@ const NewPostForm = ({
     allowNavigation.current = false
   }
 
-  const handleRouteChangeStart = useCallback(
-    (url: string) => {
-      if (!bodyOrSubtopicExists || allowNavigation.current) return
-      routeChangeUrl.current = url
-      setShowCloseConfirmDialog(true)
-      router.events.emit('routeChangeError')
-      throw 'Abort route change. Please ignore this error.'
-    },
-    [bodyOrSubtopicExists, router.events]
-  )
-
   const handleCancelNoTopicDialogConfirm = () => {
     setShowConfirmNoTopicDialog(false)
   }
 
   useEffect(() => {
+    const handleRouteChangeStart = (url: string) => {
+      if (!contentExists || allowNavigation.current) return
+      routeChangeUrl.current = url
+      setShowCloseConfirmDialog(true)
+      router.events.emit('routeChangeError')
+      throw 'Abort route change. Please ignore this error.'
+    }
+
     router.events.on('routeChangeStart', handleRouteChangeStart)
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChangeStart)
     }
-  }, [handleRouteChangeStart, router.events])
+  }, [contentExists, router.events])
 
   const button = (
     <LoadingButton
@@ -186,6 +179,7 @@ const NewPostForm = ({
   const contentOptions = (
     <PostContentOptions
       adultContentChecked={adultContentChecked}
+      disabled={isLoading}
       offensiveContentChecked={offensiveContentChecked}
       onAdultContentChange={handleAdultContentChange}
       onOffensiveContentChange={handleOffensiveContentChange}
@@ -212,7 +206,6 @@ const NewPostForm = ({
       )}
       <PostBodyTextArea
         disabled={isLoading}
-        displayBorderBottom={!replyingToPost}
         editorState={editorState}
         focusOnMount
         media={media}
@@ -223,11 +216,11 @@ const NewPostForm = ({
         onRemoveMedia={onRemoveMedia}
         onUrlAdd={onUrlAdd}
         postAttachments={postAttachments}
-        postType={postType}
-        size={PostBodyTextAreaSize.Large}
         textLength={textLength}
       />
-      {TOPICS_ENABLED && !slug && <TopicSelect onChange={handleTopicChange} />}
+      {TOPICS_ENABLED && !slug && (
+        <TopicSelect onChange={handleTopicChange} disabled={isLoading} />
+      )}
       {(!isInModal || isMobileDevice) && (
         <Box
           sx={{
@@ -252,13 +245,7 @@ const NewPostForm = ({
     <>
       {isInModal ? <DialogContent>{form}</DialogContent> : form}
       {isInModal && !isMobileDevice && (
-        <DialogActions
-          sx={{
-            ml: -1.25,
-            userSelect: isLoading ? 'none' : 'auto',
-            visibility: isLoading ? 'hidden' : 'visible',
-          }}
-        >
+        <DialogActions sx={{ ml: -1.25 }}>
           <Box
             sx={{
               display: 'flex',

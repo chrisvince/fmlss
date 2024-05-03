@@ -49,17 +49,11 @@ export enum PostLengthStatusType {
   None = 'none',
 }
 
-export enum PostBodyTextAreaSize {
-  Small = 'small',
-  Large = 'large',
-}
-
 type Props = {
+  collapsed?: boolean
   disabled?: boolean
-  displayBorderBottom?: boolean
   editorState: EditorState
   focusOnMount?: boolean
-  isInlineReply?: boolean
   media: MediaInputItem[]
   onChange?: (text: EditorState) => void
   onCommandEnter?: () => void
@@ -70,16 +64,14 @@ type Props = {
   onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
   placeholder?: string
   postAttachments?: PostAttachmentInput[]
-  size?: PostBodyTextAreaSize
   textLength: number
 }
 
 const PostBodyTextArea = ({
+  collapsed = false,
   disabled,
-  displayBorderBottom = true,
   editorState,
   focusOnMount,
-  isInlineReply,
   media,
   onChange,
   onCommandEnter,
@@ -90,7 +82,6 @@ const PostBodyTextArea = ({
   onUrlAdd,
   placeholder = 'What are you thinking?',
   postAttachments = [],
-  size = PostBodyTextAreaSize.Small,
   textLength,
 }: Props) => {
   const editorRef = useRef<Editor>()
@@ -174,7 +165,6 @@ const PostBodyTextArea = ({
   }
 
   const plainText = editorState?.getCurrentContent().getPlainText()
-  const large = size === PostBodyTextAreaSize.Large
 
   useEffect(() => {
     setDisplayTagInstruction(currentDisplayTagInstruction => {
@@ -186,8 +176,6 @@ const PostBodyTextArea = ({
   const handleEditorBlur = () => {
     setDisplayTagInstruction(false)
   }
-
-  const shouldShowActionBar = !isInlineReply
 
   return (
     <>
@@ -213,13 +201,11 @@ const PostBodyTextArea = ({
           </Box>
           <Box
             sx={{
-              borderBottomColor: displayBorderBottom
-                ? 'action.disabled'
-                : undefined,
-              borderBottomStyle: displayBorderBottom ? 'solid' : undefined,
-              borderBottomWidth: displayBorderBottom ? '1px' : undefined,
+              borderBottomColor: !collapsed ? 'divider' : undefined,
+              borderBottomStyle: !collapsed ? 'solid' : undefined,
+              borderBottomWidth: !collapsed ? '1px' : undefined,
               pt: 1,
-              pb: isInlineReply ? 3 : 1,
+              pb: collapsed ? 3 : 1,
             }}
           >
             <Typography
@@ -231,7 +217,7 @@ const PostBodyTextArea = ({
                   {
                     color: 'text.disabled',
                   },
-                ...(large
+                ...(!collapsed
                   ? {
                       '.public-DraftEditor-content': {
                         minHeight: '80px',
@@ -260,7 +246,7 @@ const PostBodyTextArea = ({
               open={mentionSuggestionsOpen}
               suggestions={mentionSuggestions}
             />
-            {!isInlineReply && (
+            {!collapsed && (
               <Box
                 sx={{
                   display: 'flex',
@@ -284,7 +270,7 @@ const PostBodyTextArea = ({
                 </Box>
               </Box>
             )}
-            {shouldShowActionBar && (
+            {!collapsed && (
               <PostBodyActionBar
                 disableMediaButton={media.length >= MEDIA_ITEMS_MAX_COUNT}
                 disableUrlButton={

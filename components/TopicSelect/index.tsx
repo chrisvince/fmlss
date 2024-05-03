@@ -71,10 +71,11 @@ const isMaximumSubtopics = (subtopics: string[]) =>
   subtopics.length >= TOPIC_MAX_SUBTOPICS - 1
 
 interface Props {
+  disabled?: boolean
   onChange?: (subtopic: string[]) => void
 }
 
-const TopicSelect = ({ onChange }: Props) => {
+const TopicSelect = ({ disabled = false, onChange }: Props) => {
   const [searchString, setSearchString] = useState<string>()
   const { topics } = useTopicSearch(searchString)
   const [autoCompleteOpen, setAutoCompleteOpen] = useState(false)
@@ -408,6 +409,7 @@ const TopicSelect = ({ onChange }: Props) => {
                 onChange={onEditorStateChange}
                 placeholder={placeholder}
                 preserveSelectionOnBlur
+                readOnly={disabled}
                 stripPastedStyles
               />
             </Typography>

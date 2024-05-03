@@ -59,7 +59,7 @@ const FeedPage = ({ sortMode }: Props) => {
         </>
       }
     >
-      <InlineCreatePost showBottomBorderOnFocus />
+      <InlineCreatePost />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}

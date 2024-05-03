@@ -69,7 +69,6 @@ const PersonPage = ({ slug }: Props) => {
       }
     >
       <InlineCreatePost
-        showBottomBorderOnFocus
         placeholder={`Write something about ${person.data.name}!`}
       />
       <Feed

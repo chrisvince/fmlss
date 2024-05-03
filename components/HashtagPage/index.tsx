@@ -166,10 +166,7 @@ const HashtagPage = ({ slug }: PropTypes) => {
           )}
         </MobileContainer>
       )}
-      <InlineCreatePost
-        showBottomBorderOnFocus
-        placeholder={`Use ${title} in your next post!`}
-      />
+      <InlineCreatePost placeholder={`Use ${title} in your next post!`} />
       <Feed
         cellMeasurerCache={cellMeasurerCache}
         isLoading={isLoading}

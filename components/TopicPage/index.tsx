@@ -200,7 +200,6 @@ const TopicPage = ({ path }: PropTypes) => {
         </MobileContainer>
       )}
       <InlineCreatePost
-        showBottomBorderOnFocus
         placeholder={`Write something about ${topic.data.title}!`}
       />
       <Feed

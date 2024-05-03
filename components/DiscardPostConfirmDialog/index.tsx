@@ -30,7 +30,7 @@ const DiscardPostConfirmDialog: React.FC<Props> = ({
 
   return (
     <ConfirmDialog
-      cancelText="Cancel"
+      cancelText="Keep editing"
       confirmText="Discard"
       content="Are you sure you want to discard this post?"
       onCancel={onCancel}
