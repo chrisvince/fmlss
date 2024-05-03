@@ -14,9 +14,6 @@ import { GlobalStyles, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 
 import PostBodyAttachments from '../PostBodyAttachments'
-import usePostBodyTextAreaPlaceholder, {
-  PostType,
-} from '../../utils/usePostBodyTextAreaPlaceholder'
 import { NotesRounded } from '@mui/icons-material'
 import PluginEditor from '@draft-js-plugins/editor/lib/Editor'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
@@ -73,7 +70,6 @@ type Props = {
   onUrlAdd: (postAttachmentInput: PostAttachmentInput) => void
   placeholder?: string
   postAttachments?: PostAttachmentInput[]
-  postType?: PostType
   size?: PostBodyTextAreaSize
   textLength: number
 }
@@ -92,9 +88,8 @@ const PostBodyTextArea = ({
   onPostAttachmentClose,
   onRemoveMedia,
   onUrlAdd,
-  placeholder: placeholderOverride,
+  placeholder = 'What are you thinking?',
   postAttachments = [],
-  postType = PostType.New,
   size = PostBodyTextAreaSize.Small,
   textLength,
 }: Props) => {
@@ -179,12 +174,6 @@ const PostBodyTextArea = ({
   }
 
   const plainText = editorState?.getCurrentContent().getPlainText()
-
-  const placeholder = usePostBodyTextAreaPlaceholder({
-    override: placeholderOverride,
-    postType,
-  })
-
   const large = size === PostBodyTextAreaSize.Large
 
   useEffect(() => {

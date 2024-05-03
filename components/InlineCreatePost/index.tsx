@@ -6,7 +6,9 @@ import { SyntheticEvent, useState } from 'react'
 import useCreatePost from '../../utils/data/post/useCreatePost'
 import MobileContainer from '../MobileContainer'
 import PostBodyTextArea, { PostBodyTextAreaSize } from '../PostBodyTextArea'
-import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
+import usePostBodyTextAreaPlaceholder, {
+  PostType,
+} from '../../utils/usePostBodyTextAreaPlaceholder'
 import mapPostAttachmentInputToCreatePostAttachment from '../../utils/mapPostAttachmentInputToCreatePostAttachment'
 import usePostBodyEditorState from '../../utils/draft-js/usePostBodyEditorState'
 import PostBodyCounter from '../PostBodyCounter'
@@ -24,7 +26,7 @@ interface Props {
 }
 
 const InlineCreatePost = ({
-  placeholder,
+  placeholder: placeholderOverride,
   postType = PostType.New,
   showBottomBorderOnFocus = false,
   slug,
@@ -43,6 +45,11 @@ const InlineCreatePost = ({
     setEditorState,
     textLength,
   } = usePostBodyEditorState()
+
+  const placeholder = usePostBodyTextAreaPlaceholder({
+    override: placeholderOverride,
+    postType,
+  })
 
   const [editorHasFocused, setEditorHasFocused] = useState(false)
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
@@ -109,7 +116,6 @@ const InlineCreatePost = ({
                 onUrlAdd={onUrlAdd}
                 placeholder={placeholder}
                 postAttachments={postAttachments}
-                postType={postType}
                 textLength={textLength}
                 size={
                   editorHasFocused
