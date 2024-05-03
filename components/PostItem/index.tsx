@@ -197,7 +197,9 @@ const PostItem = ({
           )}
         </Box>
       </Box>
-      <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
+      {post.data.body && (
+        <PostBody body={post.data.body} id={bodyElementId} size={bodySize} />
+      )}
       {post.data.attachments.length > 0 && (
         <PostAttachmentsCensorWrapper censor={!!censorData && !censorBypassed}>
           <PostAttachments attachments={post.data.attachments} />

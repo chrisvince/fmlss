@@ -8,8 +8,8 @@ export interface PostDataRequest {
   attachments: PostAttachmentDb[]
   authorMarkedAdultContent: boolean
   authorMarkedOffensiveContent: boolean
-  body: string
-  bodyText: string
+  body: string | null
+  bodyText: string | null
   topic?: TopicRelation
   createdAt: firestore.Timestamp
   documentDepth: number

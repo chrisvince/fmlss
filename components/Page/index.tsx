@@ -30,7 +30,7 @@ interface Props {
     tags?: string[]
   }
   children: ReactNode
-  description?: string
+  description?: string | null
   layout?: 'rightPanel' | 'none'
   pageTitle?: string
   renderPageTitle?: boolean
@@ -82,9 +82,11 @@ const Page = ({
           content={`${APP_URL}/twitter-image.png`}
         />
         <meta property="twitter:image:alt" content={BRAND_NAME} />
-        <meta name="description" content={description} />
-        <meta name="og:description" content={description} />
-        <meta name="twitter:description" content={description} />
+        {description && <meta name="description" content={description} />}
+        {description && <meta name="og:description" content={description} />}
+        {description && (
+          <meta name="twitter:description" content={description} />
+        )}
         <meta name="twitter:url" content={`${APP_URL}${urlPath ?? asPath}`} />
         {article.publishedTime && (
           <meta name="article:published_time" content={article.publishedTime} />

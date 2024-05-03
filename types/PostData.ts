@@ -6,8 +6,8 @@ export interface PostData {
   attachments: PostAttachment[]
   authorMarkedAdultContent: boolean
   authorMarkedOffensiveContent: boolean
-  body: string
-  bodyText: string
+  body: string | null
+  bodyText: string | null
   topic?: TopicRelation
   createdAt: number
   documentDepth: number

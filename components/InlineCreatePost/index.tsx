@@ -30,6 +30,7 @@ const InlineCreatePost = ({
   slug,
 }: Props) => {
   const {
+    canSubmit,
     closePostAttachment,
     editorState,
     getRaw: getRawEditorState,
@@ -38,14 +39,12 @@ const InlineCreatePost = ({
     onAddMedia,
     onRemoveMedia,
     onUrlAdd,
-    overMaxLength,
     postAttachments,
     setEditorState,
     textLength,
   } = usePostBodyEditorState()
 
   const [editorHasFocused, setEditorHasFocused] = useState(false)
-  const disableButton = overMaxLength || !hasText
   const { createPost, isLoading, errorMessage } = useCreatePost(slug)
   const [adultContentChecked, setAdultContentChecked] = useState(false)
   const [offensiveContentChecked, setOffensiveContentChecked] = useState(false)
@@ -142,7 +141,7 @@ const InlineCreatePost = ({
               }}
             >
               <LoadingButton
-                disabled={disableButton}
+                disabled={!canSubmit}
                 loading={isLoading}
                 type="submit"
                 variant="contained"

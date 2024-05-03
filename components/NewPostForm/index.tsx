@@ -42,6 +42,7 @@ const NewPostForm = ({
   const { user, update } = useUserData()
 
   const {
+    canSubmit,
     closePostAttachment,
     editorState,
     getRaw: getRawEditorState,
@@ -50,7 +51,6 @@ const NewPostForm = ({
     onAddMedia,
     onRemoveMedia,
     onUrlAdd,
-    overMaxLength,
     postAttachments,
     setEditorState,
     textLength,
@@ -130,8 +130,6 @@ const NewPostForm = ({
   const bodyOrSubtopicExists =
     hasText || (!slug && subtopics.length > 0) || postAttachments.length > 0
 
-  const disableButton = !hasText || overMaxLength
-
   useEffect(() => {
     onContentExists?.(bodyOrSubtopicExists)
   }, [bodyOrSubtopicExists, onContentExists])
@@ -171,7 +169,7 @@ const NewPostForm = ({
 
   const button = (
     <LoadingButton
-      disabled={disableButton}
+      disabled={!canSubmit}
       loading={isLoading}
       type="button"
       onClick={submitPost}
