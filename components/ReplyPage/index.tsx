@@ -40,7 +40,7 @@ const ReplyPage = ({ slug }: Props) => {
         <PageSpinner />
       ) : (
         <MobileContainer>
-          <NewPostForm postType={PostType.Reply} slug={slug} />
+          <NewPostForm slug={slug} />
         </MobileContainer>
       )}
     </Page>

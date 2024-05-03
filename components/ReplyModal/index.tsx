@@ -20,7 +20,7 @@ const ReplyModal = ({ onClose, open, slug }: Props) => {
       open={open}
       title="Reply to Post"
     >
-      <NewPostForm isInModal postType={PostType.Reply} slug={slug} />
+      <NewPostForm isInModal slug={slug} />
     </Modal>
   )
 }
