@@ -1,5 +1,5 @@
-import { Image, PostAttachmentUrl } from '../../../types'
-import getMetaData from 'html-metadata-parser'
+import { Image, PostAttachmentType, PostAttachmentUrl } from '../../../types'
+import { Metadata, parser } from 'html-metadata-parser'
 import mapPostAttachmentUrl from './mapPostAttachmentUrl'
 import validateUrl from '../../validateUrl'
 import getImageDimensionsFromUrl, {
@@ -29,7 +29,25 @@ const getUrlMetaServer = async (url: string): Promise<PostAttachmentUrl> => {
     return cachedData
   }
 
-  const meta = await promiseTimeout(getMetaData(url))
+  let meta: Metadata | undefined
+
+  try {
+    meta = await promiseTimeout(parser(url))
+  } catch (error) {
+    const Url = new URL(url)
+
+    const postAttachmentUrl: PostAttachmentUrl = {
+      description: url,
+      href: url,
+      image: null,
+      subtitle: '',
+      title: Url.hostname,
+      type: PostAttachmentType.Url,
+    }
+
+    put(cacheKey, postAttachmentUrl, URL_META_CACHE_TIME)
+    return postAttachmentUrl
+  }
 
   const imageSrc =
     validateUrl(meta.meta.image) ??
