@@ -150,10 +150,11 @@ const UrlDialog = ({ onCancel, onClose, onConfirm, open }: Props) => {
         </Button>
         <Button
           autoFocus
-          variant="contained"
+          disabled={!postAttachmentInput}
+          onClick={handleSubmit(onSubmit)}
           sx={{ px: 2 }}
           type="submit"
-          onClick={handleSubmit(onSubmit)}
+          variant="contained"
         >
           Add
         </Button>
