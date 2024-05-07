@@ -74,6 +74,7 @@ const constants = {
   POST_REACTIONS_CACHE_TIME: secondsToMs(10),
   POST_REPLIES_PAGINATION_COUNT: 15,
   POST_REPLIES_SSR: true,
+  POST_SITEMAPS_COLLECTION: 'postSitemaps',
   POSTS_COLLECTION: 'posts',
   REACTIONS_COLLECTION: 'reactions',
   REPLIES_CACHE_TIME: secondsToMs(10),
