@@ -60,6 +60,7 @@ const constants = {
   PEOPLE_COLLECTION: 'people',
   PEOPLE_PAGINATION_COUNT: 25,
   PEOPLE_SEARCH_CACHE_TIME: secondsToMs(60),
+  PEOPLE_SITEMAPS_COLLECTION: 'peopleSitemaps',
   PERSON_CACHE_TIME: secondsToMs(60),
   PERSON_POSTS_CACHE_TIME: secondsToMs(30),
   POST_ASSETS_BUCKET: 'post-assets',
