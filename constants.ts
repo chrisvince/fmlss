@@ -41,6 +41,7 @@ const constants = {
   },
   GET_SERVER_SIDE_PROPS_TIME_LABEL: 'getServerSideProps processed in',
   HASHTAG_LIST_CACHE_TIME: secondsToMs(30),
+  HASHTAG_SITEMAPS_COLLECTION: 'hashtagSitemaps',
   HASHTAGS_CACHE_TIME: secondsToMs(60),
   HASHTAGS_COLLECTION: 'hashtags',
   HASHTAGS_PAGINATION_COUNT: 25,
