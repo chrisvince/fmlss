@@ -22,6 +22,7 @@ const sitemap = async ({
   return items.map(({ slug, lastModified }) => ({
     changeFrequency: 'daily',
     lastModified: lastModified.toDate(),
+    priority: 0.4,
     url: `${APP_URL}/topic/${slug}`,
   }))
 }
