@@ -9,7 +9,7 @@ const getDbSitemapDoc = async (
   const db = firebase.firestore()
   const collectionRef = db.collection(collection)
   const doc = await collectionRef.doc(id).get()
-  return doc.data()?.posts
+  return doc.data()?.items
 }
 
 export default getDbSitemapDoc
