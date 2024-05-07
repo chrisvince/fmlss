@@ -5,12 +5,12 @@ import { firestore } from 'firebase-admin'
 
 const { APP_URL, POST_SITEMAPS_COLLECTION } = constants
 
-interface PostItem {
+interface PostSitemapItem {
   lastModified: firestore.Timestamp
   slug: string
 }
 
-export async function generateSitemaps() {
+export const generateSitemaps = async () => {
   const firebase = initFirebaseAdmin()
   const db = firebase.firestore()
   const collectionRef = db.collection(POST_SITEMAPS_COLLECTION)
@@ -23,16 +23,16 @@ export async function generateSitemaps() {
   return sitemapIds
 }
 
-export default async function sitemap({
+const sitemap = async ({
   id,
 }: {
   id: string
-}): Promise<MetadataRoute.Sitemap> {
+}): Promise<MetadataRoute.Sitemap> => {
   const firebase = initFirebaseAdmin()
   const db = firebase.firestore()
   const collectionRef = db.collection(POST_SITEMAPS_COLLECTION)
   const doc = await collectionRef.doc(id).get()
-  const posts = doc.data()?.posts as PostItem[] | undefined
+  const posts = doc.data()?.posts as PostSitemapItem[] | undefined
 
   if (!posts) {
     return []
@@ -44,3 +44,5 @@ export default async function sitemap({
     url: `${APP_URL}/post/${slug}`,
   }))
 }
+
+export default sitemap
