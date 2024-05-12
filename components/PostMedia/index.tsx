@@ -1,10 +1,9 @@
-import PostAttachmentBorder from '../PostAttachmentBorder'
 import MediaGrid from '../MediaGrid'
-import { Media } from '../../types/Media'
-import { ButtonBase } from '@mui/material'
+import { Media, MediaType } from '../../types/Media'
 import { useState } from 'react'
-import resolveSrcSetFromMediaSrcs from '../../utils/resolveSrcSetFromMediaSrcs'
 import dynamic from 'next/dynamic'
+import PostMediaImage from '../PostMediaImage'
+import PostMediaVideo from '../PostMediaVideo'
 
 const MediaFullscreenGallery = dynamic(
   () => import('../MediaFullscreenGallery')
@@ -69,30 +68,22 @@ const PostMedia = ({ media }: Props) => {
   return (
     <>
       <MediaGrid gridLayout={renderAsGrid}>
-        {media.map((mediaItem, index) => (
-          <PostAttachmentBorder key={mediaItem.id}>
-            <ButtonBase onClick={handlePictureClick(index)}>
-              <picture>
-                <source
-                  srcSet={resolveSrcSetFromMediaSrcs(mediaItem.srcs)}
-                  type="image/webp"
-                />
-                <img
-                  alt=""
-                  height={mediaItem.height}
-                  sizes={
-                    renderAsGrid
-                      ? '(max-width: 550px) 46vw, (max-width: 599px) 249px, (max-width: 825px) 33vw, (max-width: 899px) 265px, (max-width: 1290px) 20vw, 265px'
-                      : '(max-width: 550px) 92vw, (max-width: 599px) 516px, (max-width: 825px) 66vw, (max-width: 899px) 548px, (max-width: 1290px) 33vw, 548px'
-                  }
-                  src={mediaItem.src}
-                  style={{ maxWidth: '100%', height: '100%', display: 'block' }}
-                  width={mediaItem.width}
-                />
-              </picture>
-            </ButtonBase>
-          </PostAttachmentBorder>
-        ))}
+        {media.map((mediaItem, index) => {
+          if (mediaItem.type === MediaType.Image) {
+            return (
+              <PostMediaImage
+                isInGrid={renderAsGrid}
+                key={mediaItem.id}
+                media={mediaItem}
+                onClick={handlePictureClick(index)}
+              />
+            )
+          }
+
+          if (mediaItem.type === MediaType.Video) {
+            return <PostMediaVideo key={mediaItem.id} media={mediaItem} />
+          }
+        })}
       </MediaGrid>
       {renderDialog && (
         <MediaFullscreenGallery

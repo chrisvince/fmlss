@@ -1,7 +1,9 @@
 import CloseButtonWrapper from '../CloseButtonWrapper'
 import PostAttachmentBorder from '../PostAttachmentBorder'
-import { MediaInputItem } from '../../types/MediaInputItem'
+import { MediaInputItem, MediaInputItemType } from '../../types/MediaInputItem'
 import MediaGrid from '../MediaGrid'
+import PostMediaImageInputItem from '../PostMediaImageInputItem'
+import PostMediaVideo from '../PostMediaVideoInputItem'
 
 interface Props {
   media: MediaInputItem[]
@@ -13,25 +15,27 @@ const PostMediaInput = ({ media, onClose }: Props) => {
 
   return (
     <MediaGrid gridLayout={media.length >= 2}>
-      {media.map(({ id, url, height, width }) => (
-        <CloseButtonWrapper key={id} onClose={closeHandler(id)}>
-          <PostAttachmentBorder>
-            <picture>
-              <img
-                alt="Uploaded image"
-                height={height}
-                src={url}
-                style={{
-                  maxWidth: '100%',
-                  height: '100%',
-                  display: 'block',
-                }}
-                width={width}
-              />
-            </picture>
-          </PostAttachmentBorder>
-        </CloseButtonWrapper>
-      ))}
+      {media.map(mediaItem => {
+        if (mediaItem.type === MediaInputItemType.Image) {
+          return (
+            <PostMediaImageInputItem
+              media={mediaItem}
+              key={mediaItem.id}
+              onClose={closeHandler(mediaItem.id)}
+            />
+          )
+        }
+
+        if (mediaItem.type === MediaInputItemType.Video) {
+          return (
+            <PostMediaVideo
+              media={mediaItem}
+              key={mediaItem.id}
+              onClose={closeHandler(mediaItem.id)}
+            />
+          )
+        }
+      })}
     </MediaGrid>
   )
 }

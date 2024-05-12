@@ -5,11 +5,14 @@ import {
   Typography,
 } from '@mui/material'
 
-const CircularProgressWithLabel = (
-  props: CircularProgressProps & { value: number; fontSize?: number }
-) => (
+const CircularProgressWithLabel = ({
+  fontSize,
+  percentage,
+  variant = 'determinate',
+  ...restProps
+}: CircularProgressProps & { percentage: number; fontSize?: number }) => (
   <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-    <CircularProgress variant="determinate" {...props} />
+    <CircularProgress value={percentage} variant={variant} {...restProps} />
     <Box
       sx={{
         top: 0,
@@ -26,9 +29,9 @@ const CircularProgressWithLabel = (
         variant="caption"
         component="div"
         color="text.secondary"
-        fontSize={props.fontSize}
+        fontSize={fontSize}
       >
-        {`${Math.round(props.value)}%`}
+        {`${Math.round(percentage)}%`}
       </Typography>
     </Box>
   </Box>

@@ -6,6 +6,7 @@ import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState
 import useFileUpload from '../../utils/data/media/useFileUpload'
 import CircularProgressWithLabel from '../CircularProgressWithLabel'
 import { MediaInputItem } from '../../types/MediaInputItem'
+import useVideoUpload from '../../utils/useVideoUpload'
 
 const ItemButton = ({
   children,
@@ -44,8 +45,26 @@ const PostBodyActionBar = ({
 }: Props) => {
   const fileUploadRef = useRef<HTMLInputElement>()
   const [urlDialogOpen, setUrlDialogOpen] = useState(false)
-  const { error, isError, upload, uploadInProgress, uploadProgress } =
-    useFileUpload({ onFileUploaded })
+  const {
+    error: imageUploadError,
+    isError: isImageUploadError,
+    upload: uploadImage,
+    uploadInProgress: imageUploadInProgress,
+    uploadProgress: imageUploadProgress,
+  } = useFileUpload({ onFileUploaded })
+
+  const {
+    error: videoUploadError,
+    isError: isVideoUploadError,
+    progress: videoUploadProgress,
+    upload: uploadVideo,
+    uploading: videoUploadInProgress,
+  } = useVideoUpload({ onUploadComplete: onFileUploaded })
+
+  const error = imageUploadError || videoUploadError
+  const isError = isImageUploadError || isVideoUploadError
+  const uploadProgress = imageUploadProgress || videoUploadProgress
+  const uploadInProgress = imageUploadInProgress || videoUploadInProgress
 
   const handleConfirm = (postAttachmentInput: PostAttachmentInput) => {
     onUrlAdd(postAttachmentInput)
@@ -72,7 +91,17 @@ const PostBodyActionBar = ({
       return
     }
 
-    upload(file)
+    if (file.type.includes('image/')) {
+      uploadImage(file)
+      return
+    }
+
+    if (file.type.includes('video/')) {
+      uploadVideo(file)
+      return
+    }
+
+    throw new Error('Unsupported file type.')
   }
 
   return (
@@ -90,7 +119,7 @@ const PostBodyActionBar = ({
           >
             <ImageRounded fontSize="small" />
             <input
-              accept="image/*"
+              accept="image/*, video/*"
               hidden
               onChange={handleMediaChange}
               ref={fileUploadRef as LegacyRef<HTMLInputElement>}
@@ -99,9 +128,14 @@ const PostBodyActionBar = ({
           </ItemButton>
         ) : (
           <CircularProgressWithLabel
-            value={uploadProgress}
+            percentage={uploadProgress}
             size={34.22}
             fontSize={10}
+            variant={
+              videoUploadInProgress && uploadProgress === 0
+                ? 'indeterminate'
+                : 'determinate'
+            }
           />
         )}
       </Box>

@@ -1,8 +1,9 @@
-enum MediaType {
+export enum MediaType {
   Image = 'image',
+  Video = 'video',
 }
 
-interface MediaImage {
+export interface MediaImage {
   height: number
   id: string
   src: string
@@ -14,4 +15,11 @@ interface MediaImage {
   width: number
 }
 
-export type Media = MediaImage
+export interface MediaVideo {
+  aspectRatio: string
+  id: string
+  playbackId: string
+  type: MediaType.Video
+}
+
+export type Media = MediaImage | MediaVideo

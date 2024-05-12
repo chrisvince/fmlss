@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import createEmptyEditorState from './createEmptyEditorState'
 import { EditorState, convertToRaw } from 'draft-js'
 import constants from '../../constants'
@@ -8,10 +8,20 @@ import debounce from 'lodash.debounce'
 import { pipe } from 'ramda'
 import { extractLinks as extractLinkifyItLinksFromText } from '@draft-js-plugins/linkify'
 import mapLinkifyItMatchToPostAttachment from '../mapLinkifyItMatchToPostAttachment'
-import { MediaInputItem } from '../../types/MediaInputItem'
+import {
+  MediaInputItem,
+  MediaInputItemType,
+  MediaInputItemVideo,
+  MediaInputItemVideoStatus,
+} from '../../types/MediaInputItem'
+import { Unsubscribe, doc, getFirestore, onSnapshot } from 'firebase/firestore'
 
-const { MEDIA_ITEMS_MAX_COUNT, POST_ATTACHMENTS_MAX_COUNT, POST_MAX_LENGTH } =
-  constants
+const {
+  MEDIA_ITEMS_MAX_COUNT,
+  POST_ATTACHMENTS_MAX_COUNT,
+  POST_MAX_LENGTH,
+  VIDEOS_COLLECTION,
+} = constants
 
 export enum PostLengthStatusType {
   Warning = 'warning',
@@ -91,8 +101,12 @@ const postAttachmentRemover =
     })
 
 const usePostBodyEditorState = () => {
+  const db = getFirestore()
   const [editorState, setEditorState] = useState(createEmptyEditorState)
   const [media, setMedia] = useState<MediaInputItem[]>([])
+  const subscribedVideosRef = useRef<
+    { id: string; unsubscribe: Unsubscribe }[]
+  >([])
 
   const [bodyPostAttachments, setBodyPostAttachments] = useState<
     PostAttachmentInput[]
@@ -111,6 +125,58 @@ const usePostBodyEditorState = () => {
     }
     setMedia([...media, mediaItem])
   }
+
+  useEffect(() => {
+    const subscribedVideosRefCurrent = subscribedVideosRef.current
+
+    const pendingVideos = media.filter(
+      mediaItem =>
+        mediaItem.type === MediaInputItemType.Video &&
+        mediaItem.status === MediaInputItemVideoStatus.Processing
+    ) as MediaInputItemVideo[]
+
+    pendingVideos.forEach(mediaItem => {
+      const unsubscribe = onSnapshot(
+        doc(db, VIDEOS_COLLECTION, mediaItem.passthrough),
+        doc => {
+          const data = doc.data() as MediaInputItemVideo
+
+          if (!data) {
+            return
+          }
+
+          if (data?.status !== MediaInputItemVideoStatus.Ready) {
+            return
+          }
+
+          const newMediaItem: MediaInputItemVideo = {
+            ...mediaItem,
+            playbackId: data?.playbackId,
+            status: MediaInputItemVideoStatus.Ready,
+          }
+
+          setMedia(currentMedia =>
+            currentMedia.map(item =>
+              item.id === mediaItem.id ? newMediaItem : item
+            )
+          )
+
+          // remove unsubscribe fn from subscribedVideosRef
+          subscribedVideosRef.current = subscribedVideosRef.current.filter(
+            ({ id }) => id !== mediaItem.id
+          )
+
+          unsubscribe()
+        }
+      )
+
+      subscribedVideosRef.current.push({ id: mediaItem.id, unsubscribe })
+    })
+
+    return () => {
+      subscribedVideosRefCurrent.forEach(({ unsubscribe }) => unsubscribe())
+    }
+  }, [db, media])
 
   const handleRemoveMedia = (id: string) => {
     setMedia(currentMedia =>
@@ -196,6 +262,8 @@ const usePostBodyEditorState = () => {
   )
 
   const canSubmit = !overMaxLength && (hasText || media.length > 0)
+
+  console.log('media', media)
 
   return {
     canSubmit,

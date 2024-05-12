@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { v4 as uuidV4 } from 'uuid'
-import { MediaInputItem } from '../../../types/MediaInputItem'
+import {
+  MediaInputItemImage,
+  MediaInputItemType,
+} from '../../../types/MediaInputItem'
 import constants from '../../../constants'
 import getImageDimensionsFromUrlClient from '../../getImageDimensionsFromUrlClient'
 import {
@@ -8,14 +11,13 @@ import {
   getStorage,
   ref,
   updateMetadata,
-  uploadBytes,
   uploadBytesResumable,
 } from 'firebase/storage'
 
 const { POST_ASSETS_BUCKET, POST_ASSETS_MAX_FILE_SIZE_MB } = constants
 
 interface Options {
-  onFileUploaded?: (mediaItem: MediaInputItem) => void
+  onFileUploaded?: (mediaItem: MediaInputItemImage) => void
 }
 
 const useFileUpload = ({ onFileUploaded }: Options = {}) => {
@@ -73,6 +75,7 @@ const useFileUpload = ({ onFileUploaded }: Options = {}) => {
         onFileUploaded?.({
           height: dimensions.height,
           id: mediaId,
+          type: MediaInputItemType.Image,
           url: downloadURL,
           width: dimensions.width,
         })

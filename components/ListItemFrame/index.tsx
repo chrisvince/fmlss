@@ -34,7 +34,7 @@ const ListItemFrame = ({
     }
 
     const isClickableElement = (event.target as HTMLAnchorElement).closest(
-      'a, button, [role="presentation"]'
+      'a, button, [role="presentation"], mux-player'
     )
     if (isClickableElement) return
     if (window.getSelection()?.toString().length) return
