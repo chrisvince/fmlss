@@ -51,8 +51,10 @@ const WelcomePage = () => (
           }}
         >
           <Brand height={34} width={210} />
-          <Typography component="h2" sx={{ lineHeight: 1 }} variant="h4">
-            The anonymous network.
+          <Typography component="h2" sx={{ lineHeight: 1.1 }} variant="h4">
+            The uncensored,
+            <br />
+            anonymous network.
           </Typography>
         </Box>
         <SignUpForm />
