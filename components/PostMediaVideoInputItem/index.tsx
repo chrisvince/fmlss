@@ -5,7 +5,7 @@ import {
   MediaInputItemVideoStatus,
 } from '../../types/MediaInputItem'
 import MuxPlayer from '@mux/mux-player-react'
-import { useTheme } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import PostAttachmentSkeletonLoader from '../PostAttachmentSkeletonLoader'
 
 interface Props {
@@ -26,11 +26,21 @@ const PostMediaVideoInputItem = ({
   return (
     <CloseButtonWrapper key={id} onClose={onClose}>
       <PostAttachmentBorder>
-        <MuxPlayer
-          playbackId={playbackId}
-          accentColor={theme.palette.grey[800]}
-          style={{ display: 'block' }}
-        />
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            height: '100%',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
+          <MuxPlayer
+            accentColor={theme.palette.grey[800]}
+            playbackId={playbackId}
+            style={{ display: 'block' }}
+          />
+        </Box>
       </PostAttachmentBorder>
     </CloseButtonWrapper>
   )

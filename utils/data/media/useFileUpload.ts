@@ -14,14 +14,18 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage'
 
-const { POST_ASSETS_BUCKET, POST_ASSETS_MAX_FILE_SIZE_MB } = constants
+const { POST_ASSETS_MAX_FILE_SIZE_MB } = constants
 
 interface Options {
   onFileUploaded?: (mediaItem: MediaInputItemImage) => void
 }
 
 const useFileUpload = ({ onFileUploaded }: Options = {}) => {
-  const storage = getStorage(undefined, POST_ASSETS_BUCKET)
+  const storage = getStorage(
+    undefined,
+    process.env.NEXT_PUBLIC_FIREBASE_POST_ASSETS_STORAGE_BUCKET
+  )
+
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
@@ -42,10 +46,6 @@ const useFileUpload = ({ onFileUploaded }: Options = {}) => {
     const mediaId = uuidV4()
     const storageRef = ref(storage, `/${mediaId}.webp`)
     const uploadTask = uploadBytesResumable(storageRef, file)
-
-    // const storageRef = storage.refFromURL(`gs://${POST_ASSETS_BUCKET}`)
-    // const fileRef = storageRef.child(`/${mediaId}.webp`)
-    // const uploadTask = fileRef.put(file)
 
     uploadTask.on(
       'state_changed',

@@ -64,7 +64,6 @@ const constants = {
   PEOPLE_SITEMAPS_COLLECTION: 'peopleSitemaps',
   PERSON_CACHE_TIME: secondsToMs(60),
   PERSON_POSTS_CACHE_TIME: secondsToMs(30),
-  POST_ASSETS_BUCKET: 'post-assets',
   POST_ASSETS_MAX_FILE_SIZE_MB: 10,
   POST_ATTACHMENTS_MAX_COUNT: 2,
   POST_AUTHOR_CACHE_TIME: undefined, // undefined means forever

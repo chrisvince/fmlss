@@ -4,7 +4,7 @@ import {
   CloseRounded,
 } from '@mui/icons-material'
 import { Box, ButtonBase, Dialog } from '@mui/material'
-import { Media } from '../../types/Media'
+import { MediaImage } from '../../types/Media'
 import resolveSrcSetFromMediaSrcs from '../../utils/resolveSrcSetFromMediaSrcs'
 import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
@@ -33,7 +33,7 @@ const NavButton = ({
 
 interface Props {
   currentIndex: number | undefined
-  media: Media[]
+  media: MediaImage[]
   onChange: (index: number) => void
   onClose: () => void
   onNext: () => void

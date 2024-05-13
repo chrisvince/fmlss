@@ -1,6 +1,6 @@
-import { Media } from '../types/Media'
+import { MediaImage } from '../types/Media'
 
-const resolveSrcSetFromMediaSrcs = (srcs: Media['srcs']) =>
+const resolveSrcSetFromMediaSrcs = (srcs: MediaImage['srcs']) =>
   srcs.map(({ url, width }) => `${url} ${width}w`).join(', ')
 
 export default resolveSrcSetFromMediaSrcs

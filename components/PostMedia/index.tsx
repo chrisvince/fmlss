@@ -1,6 +1,6 @@
 import MediaGrid from '../MediaGrid'
-import { Media, MediaType } from '../../types/Media'
-import { useState } from 'react'
+import { Media, MediaImage, MediaType } from '../../types/Media'
+import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import PostMediaImage from '../PostMediaImage'
 import PostMediaVideo from '../PostMediaVideo'
@@ -65,6 +65,15 @@ const PostMedia = ({ media }: Props) => {
     setCurrentMediaIndex(index)
   }
 
+  const imageMedia = useMemo(
+    () =>
+      media.filter(
+        (mediaItem): mediaItem is MediaImage =>
+          mediaItem.type === MediaType.Image
+      ),
+    [media]
+  )
+
   return (
     <>
       <MediaGrid gridLayout={renderAsGrid}>
@@ -87,7 +96,7 @@ const PostMedia = ({ media }: Props) => {
       </MediaGrid>
       {renderDialog && (
         <MediaFullscreenGallery
-          media={media}
+          media={imageMedia}
           onClose={handleCloseDialog}
           open={dialogOpen}
           onNext={handleNextClick}
