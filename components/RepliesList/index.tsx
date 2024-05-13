@@ -11,7 +11,6 @@ import MapLineSegment from '../MapLineSegment'
 import PostListItem from '../PostListItem'
 import RepliesListSubReplies from '../RepliesListSubReplies'
 import { Post } from '../../types'
-import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, NESTED_POST_MARGIN_LEFT } =
   constants

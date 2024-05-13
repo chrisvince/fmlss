@@ -14,6 +14,7 @@ export const GET = async (request: Request) => {
   try {
     const data = await getUrlMetaServer(url)
     return Response.json(data)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     if (error.code === 'ENOTFOUND') {
       const notFoundPostAttachment = mapPostAttachmentUrl(

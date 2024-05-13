@@ -7,7 +7,6 @@ import Page from '../Page'
 import PageSpinner from '../PageSpinner'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
-import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 import NotFoundPage from '../NotFoundPage'
 
 const { TOPICS_ENABLED } = constants

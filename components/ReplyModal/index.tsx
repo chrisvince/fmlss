@@ -1,5 +1,4 @@
 import usePost from '../../utils/data/post/usePost'
-import { PostType } from '../../utils/usePostBodyTextAreaPlaceholder'
 import Modal from '../Modal'
 import NewPostForm from '../NewPostForm'
 

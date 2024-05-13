@@ -1,5 +1,3 @@
-import CloseButtonWrapper from '../CloseButtonWrapper'
-import PostAttachmentBorder from '../PostAttachmentBorder'
 import { MediaInputItem, MediaInputItemType } from '../../types/MediaInputItem'
 import MediaGrid from '../MediaGrid'
 import PostMediaImageInputItem from '../PostMediaImageInputItem'
