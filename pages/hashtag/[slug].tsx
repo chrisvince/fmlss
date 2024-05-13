@@ -10,6 +10,7 @@ import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 import { PostTypeQuery } from '../../types'
 import { unstable_serialize } from 'swr/infinite'
+import handleSWRError from '../../utils/handleSWRError'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -23,7 +24,7 @@ interface PropTypes {
 }
 
 const Hashtag = ({ fallback, slug }: PropTypes) => (
-  <SWRConfig value={{ fallback }}>
+  <SWRConfig value={{ fallback, onError: handleSWRError }}>
     <HashtagPage slug={slug} />
   </SWRConfig>
 )

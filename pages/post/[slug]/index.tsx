@@ -15,6 +15,7 @@ import getPostServer from '../../../utils/data/post/getPostServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../../utils/auth/getUidFromCookies'
 import { unstable_serialize } from 'swr/infinite'
+import handleSWRError from '../../../utils/handleSWRError'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL, POST_REPLIES_SSR } = constants
 
@@ -29,7 +30,7 @@ const Post = ({ fallback }: PropTypes) => {
   const { slug } = router.query as { slug: string }
 
   return (
-    <SWRConfig value={{ fallback }}>
+    <SWRConfig value={{ fallback, onError: handleSWRError }}>
       <PostPage slug={slug} />
     </SWRConfig>
   )

@@ -8,6 +8,7 @@ import getSidebarDataServer from '../../../utils/data/sidebar/getSidebarDataServ
 import getPostServer from '../../../utils/data/post/getPostServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../../utils/auth/getUidFromCookies'
+import handleSWRError from '../../../utils/handleSWRError'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -22,7 +23,7 @@ const ReplyToPost = ({ fallback }: Props) => {
   const { slug } = router.query as { slug: string }
 
   return (
-    <SWRConfig value={{ fallback }}>
+    <SWRConfig value={{ fallback, onError: handleSWRError }}>
       <ReplyPage slug={slug} />
     </SWRConfig>
   )

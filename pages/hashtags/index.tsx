@@ -11,6 +11,7 @@ import getSidebarDataServer, {
 import getHashtagsServer from '../../utils/data/hashtags/getHashtagsServer'
 import { GetServerSideProps } from 'next'
 import { unstable_serialize } from 'swr/infinite'
+import handleSWRError from '../../utils/handleSWRError'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -21,7 +22,7 @@ interface PropTypes {
 }
 
 const Hashtags = ({ fallback }: PropTypes) => (
-  <SWRConfig value={{ fallback }}>
+  <SWRConfig value={{ fallback, onError: handleSWRError }}>
     <HashtagsPage />
   </SWRConfig>
 )

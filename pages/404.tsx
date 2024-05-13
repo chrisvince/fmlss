@@ -3,6 +3,7 @@ import NotFoundPage from '../components/NotFoundPage'
 import constants from '../constants'
 import msToSeconds from '../utils/msToSeconds'
 import getSidebarDataServer from '../utils/data/sidebar/getSidebarDataServer'
+import handleSWRError from '../utils/handleSWRError'
 
 const { SIDEBAR_LIST_CACHE_TIME } = constants
 
@@ -13,7 +14,7 @@ interface Props {
 }
 
 const NotFound = ({ fallback }: Props) => (
-  <SWRConfig value={{ fallback }}>
+  <SWRConfig value={{ fallback, onError: handleSWRError }}>
     <NotFoundPage />
   </SWRConfig>
 )

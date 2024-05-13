@@ -5,6 +5,7 @@ import { SWRConfig } from 'swr/_internal'
 import getUserDataServer from '../../utils/data/user/getUserDataServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../utils/auth/getUidFromCookies'
+import handleSWRError from '../../utils/handleSWRError'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const Settings = ({ fallback }: Props) => (
-  <SWRConfig value={{ fallback }}>
+  <SWRConfig value={{ fallback, onError: handleSWRError }}>
     <SettingsPage />
   </SWRConfig>
 )

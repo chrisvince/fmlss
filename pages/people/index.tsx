@@ -9,6 +9,7 @@ import { PeopleSortMode } from '../../types/PeopleSortMode'
 import getPeopleServer from '../../utils/data/people/getPeopleServer'
 import { GetServerSideProps } from 'next'
 import { unstable_serialize } from 'swr/infinite'
+import handleSWRError from '../../utils/handleSWRError'
 
 const SORT_MODE_MAP: {
   [key: string]: PeopleSortMode
@@ -25,7 +26,7 @@ interface Props {
 
 const PeopleIndex = ({ fallback }: Props) => {
   return (
-    <SWRConfig value={{ fallback }}>
+    <SWRConfig value={{ fallback, onError: handleSWRError }}>
       <PeoplePage />
     </SWRConfig>
   )

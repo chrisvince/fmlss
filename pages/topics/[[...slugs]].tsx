@@ -14,6 +14,7 @@ import getTopicsServer from '../../utils/data/topics/getTopicsServer'
 import getTopicServer from '../../utils/data/topic/getTopicServer'
 import { GetServerSideProps } from 'next'
 import { unstable_serialize } from 'swr/infinite'
+import handleSWRError from '../../utils/handleSWRError'
 
 const { TOPICS_ENABLED, GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -25,7 +26,7 @@ interface Props {
 }
 
 const Topics = ({ fallback, parentTopicPath }: Props) => (
-  <SWRConfig value={{ fallback }}>
+  <SWRConfig value={{ fallback, onError: handleSWRError }}>
     <TopicsPage parentTopicPath={parentTopicPath} />
   </SWRConfig>
 )

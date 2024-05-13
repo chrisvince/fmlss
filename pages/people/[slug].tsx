@@ -13,6 +13,7 @@ import getPersonServer from '../../utils/data/person/getPersonServer'
 import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 import { GetServerSideProps } from 'next'
 import { unstable_serialize } from 'swr/infinite'
+import handleSWRError from '../../utils/handleSWRError'
 
 interface Props {
   fallback: {
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const Person = ({ fallback, slug }: Props) => (
-  <SWRConfig value={{ fallback }}>
+  <SWRConfig value={{ fallback, onError: handleSWRError }}>
     <PersonPage slug={slug} />
   </SWRConfig>
 )

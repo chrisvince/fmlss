@@ -10,6 +10,7 @@ import getPostFeedServer from '../../utils/data/posts/getPostFeedServer'
 import { GetServerSideProps } from 'next'
 import getUidFromCookies from '../../utils/auth/getUidFromCookies'
 import { unstable_serialize } from 'swr/infinite'
+import handleSWRError from '../../utils/handleSWRError'
 
 const { GET_SERVER_SIDE_PROPS_TIME_LABEL } = constants
 
@@ -20,7 +21,7 @@ interface PropTypes {
 }
 
 const Popular = ({ fallback }: PropTypes) => (
-  <SWRConfig value={{ fallback }}>
+  <SWRConfig value={{ fallback, onError: handleSWRError }}>
     <FeedPage sortMode={FeedSortMode.Popular} />
   </SWRConfig>
 )
