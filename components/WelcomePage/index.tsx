@@ -47,7 +47,7 @@ const WelcomePage = () => (
             flexDirection: 'column',
             gap: 3,
             justifyContent: 'flex-start',
-            my: [20, undefined, 0],
+            my: [16, undefined, 0],
           }}
         >
           <Brand height={34} width={210} />
