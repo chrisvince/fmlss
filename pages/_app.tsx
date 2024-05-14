@@ -53,6 +53,9 @@ const App = (props: Props) => {
 
   return (
     <>
+      {!isDevelopment && GOOGLE_TAG_MANAGER_ID && (
+        <GoogleTagManager gtmId={GOOGLE_TAG_MANAGER_ID} />
+      )}
       <AppCacheProvider {...props}>
         <AuthProvider auth={auth}>
           <ReduxProvider store={store}>
@@ -63,9 +66,6 @@ const App = (props: Props) => {
           </ReduxProvider>
         </AuthProvider>
       </AppCacheProvider>
-      {!isDevelopment && GOOGLE_TAG_MANAGER_ID && (
-        <GoogleTagManager gtmId={GOOGLE_TAG_MANAGER_ID} />
-      )}
     </>
   )
 }

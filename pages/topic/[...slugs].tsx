@@ -95,6 +95,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           [topicCacheKey]: topic,
           [topicsCacheKey]: topics,
         },
+        key: topic.data.slug,
         path,
       },
     }
@@ -117,6 +118,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         [unstable_serialize(topicPostsCacheKey)]: posts,
         [topicsCacheKey]: topics,
       },
+      key: topic.data.slug,
       path,
     },
   }

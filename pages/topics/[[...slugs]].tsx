@@ -91,6 +91,7 @@ export const getServerSideProps: GetServerSideProps = async ({
             : {}),
           ...sidebarFallbackData,
         },
+        key: parentTopic?.data.path ?? 'root',
         parentTopicPath,
       },
     }
@@ -128,6 +129,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         ...sidebarFallbackData,
         [unstable_serialize(topicsCacheKey)]: topics,
       },
+      key: parentTopic?.data.path ?? 'root',
       parentTopicPath,
     },
   }

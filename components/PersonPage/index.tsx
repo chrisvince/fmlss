@@ -17,6 +17,7 @@ import NotFoundPage from '../NotFoundPage'
 import InlineCreatePost from '../InlineCreatePost'
 import { sendGTMEvent } from '@next/third-parties/google'
 import { GTMEvent } from '../../types/GTMEvent'
+import useOnMount from '../../utils/useOnMount'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -39,15 +40,16 @@ const PersonPage = ({ slug }: Props) => {
   const { posts, isLoading, moreToLoad, loadMore, likePost, watchPost } =
     usePersonPosts(slug, { swrConfig: { onSuccess: handlePostLoadSuccess } })
 
-  useDelayedOnMount(() => {
-    if (personIsLoading || !person) return
-
+  useOnMount(() => {
     sendGTMEvent({
       event: GTMEvent.PersonView,
       slug,
       name: person?.data.name,
     })
+  }, !personIsLoading && person)
 
+  useDelayedOnMount(() => {
+    if (personIsLoading || !person) return
     resourceViewed({ resourceType: ResourceType.Person, slug })
   })
 

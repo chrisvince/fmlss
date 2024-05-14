@@ -23,6 +23,7 @@ import { PostTypeQuery } from '../../types/PostTypeQuery'
 import InlineCreatePost from '../InlineCreatePost'
 import { sendGTMEvent } from '@next/third-parties/google'
 import { GTMEvent } from '../../types/GTMEvent'
+import useOnMount from '../../utils/useOnMount'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -89,13 +90,15 @@ const HashtagPage = ({ slug }: PropTypes) => {
   const sortOptions = generateSortOptions(slug)
   const title = `#${slug}`
 
-  useDelayedOnMount(() => {
+  useOnMount(() => {
     sendGTMEvent({
       event: GTMEvent.HashtagView,
       slug,
       title,
     })
+  })
 
+  useDelayedOnMount(() => {
     resourceViewed({ resourceType: ResourceType.Hashtag, slug })
   })
 

@@ -23,6 +23,7 @@ import SidebarPeopleSection from '../SidebarPeopleSection'
 import NotFoundPage from '../NotFoundPage'
 import { sendGTMEvent } from '@next/third-parties/google'
 import { GTMEvent } from '../../types/GTMEvent'
+import useOnMount from '../../utils/useOnMount'
 
 const { TOPICS_ENABLED, POST_MAX_DEPTH } = constants
 
@@ -68,14 +69,15 @@ const PostPage = ({ slug }: PropTypes) => {
     firstPostModalHasBeenShownRef.current = true
   }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser, user])
 
-  useDelayedOnMount(() => {
-    if (isLoading || !post) return
-
+  useOnMount(() => {
     sendGTMEvent({
       event: GTMEvent.PostView,
       slug,
     })
+  }, !isLoading && post)
 
+  useDelayedOnMount(() => {
+    if (isLoading || !post) return
     resourceViewed({ resourceType: ResourceType.Post, slug })
   })
 

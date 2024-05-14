@@ -13,7 +13,7 @@ const TopicBreadcrumbs = ({ subtopicSegments }: Props) => (
       index < array.length - 1 ? (
         <MuiLink
           component={Link}
-          href={`/topics/${path}`}
+          href={`/topic/${path}`}
           key={path}
           underline="hover"
         >

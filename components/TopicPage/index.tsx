@@ -28,6 +28,7 @@ import NotFoundPage from '../NotFoundPage'
 import InlineCreatePost from '../InlineCreatePost'
 import { sendGTMEvent } from '@next/third-parties/google'
 import { GTMEvent } from '../../types/GTMEvent'
+import useOnMount from '../../utils/useOnMount'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -98,15 +99,18 @@ const TopicPage = ({ path }: PropTypes) => {
 
   const sortOptions = generateSortOptions(path)
 
-  useDelayedOnMount(() => {
-    if (topicIsLoading || !topic) return
-
+  useOnMount(() => {
     sendGTMEvent({
       event: GTMEvent.TopicView,
-      slug: topic.data.slug,
-      title: topic.data.title,
+      path: topic?.data.path,
+      pathTitle: topic?.data.pathTitle,
+      slug: topic?.data.slug,
+      title: topic?.data.title,
     })
+  }, !topicIsLoading && topic)
 
+  useDelayedOnMount(() => {
+    if (topicIsLoading || !topic) return
     resourceViewed({ resourceType: ResourceType.Topic, slug: topic.data.slug })
   })
 

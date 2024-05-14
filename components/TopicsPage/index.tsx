@@ -12,6 +12,9 @@ import useTopic from '../../utils/data/topic/useTopic'
 import TopicBreadcrumbs from '../TopicBreadcrumbs'
 import constants from '../../constants'
 import SidebarPeopleSection from '../SidebarPeopleSection'
+import useOnMount from '../../utils/useOnMount'
+import { GTMEvent } from '../../types/GTMEvent'
+import { sendGTMEvent } from '@next/third-parties/google'
 
 const { ENABLE_SORTING } = constants
 
@@ -47,12 +50,26 @@ const TopicsPage = ({ parentTopicPath }: PropTypes) => {
       ? (sortModeParam as TopicsSortMode)
       : TopicsSortMode.Popular
 
-  const { topic: parentTopic } = useTopic(parentTopicPath)
+  const { topic: parentTopic, isLoading: parentTopicIsLoading } =
+    useTopic(parentTopicPath)
 
   const { topics, isLoading, loadMore, moreToLoad } = useTopics({
     parentRef: parentTopic?.data.ref,
     sortMode,
   })
+
+  useOnMount(
+    () => {
+      sendGTMEvent({
+        event: GTMEvent.TopicsView,
+        parentTopicPath: parentTopic?.data.path,
+        parentTopicPathTitle: parentTopic?.data.pathTitle,
+        parentTopicSlug: parentTopic?.data.slug,
+        parentTopicTitle: parentTopic?.data.title,
+      })
+    },
+    parentTopicPath ? !parentTopicIsLoading && parentTopic : true
+  )
 
   return (
     <Page
