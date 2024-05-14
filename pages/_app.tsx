@@ -6,6 +6,7 @@ import { store } from '../store'
 import { Provider as ReduxProvider } from 'react-redux'
 import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter'
 import qs from 'querystring'
+import { Assistant } from 'next/font/google'
 import { GoogleTagManager } from '@next/third-parties/google'
 
 import initFirebaseClient from '../utils/initFirebaseClient'
@@ -20,6 +21,13 @@ import getAuthFromCookies from '../utils/auth/getAuthFromCookies'
 import { Auth } from '../types/Auth'
 
 initFirebaseClient()
+
+const assistant = Assistant({
+  weight: ['400', '500', '600', '700'],
+  style: ['normal'],
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
@@ -40,7 +48,7 @@ const App = (props: Props) => {
     ssrValue: colorSchemeCookie,
   })
 
-  const theme = useMemo(() => resolveTheme(colorScheme), [colorScheme])
+  const theme = resolveTheme({ colorScheme, fontStyles: assistant.style })
   const getLayout = Component.getLayout ?? (page => <Layout>{page}</Layout>)
 
   return (

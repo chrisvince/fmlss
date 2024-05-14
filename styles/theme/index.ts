@@ -16,7 +16,17 @@ export enum ColorScheme {
   Dark = 'dark',
 }
 
-const resolveTheme = (colorScheme: ColorScheme) => {
+const resolveTheme = ({
+  colorScheme,
+  fontStyles,
+}: {
+  colorScheme: ColorScheme
+  fontStyles: {
+    fontFamily: string
+    fontWeight?: number | undefined
+    fontStyle?: string | undefined
+  }
+}) => {
   const resolveSchemeValue = (lightValue: string, darkValue: string) =>
     colorScheme === ColorScheme.Dark ? darkValue : lightValue
 
@@ -32,8 +42,7 @@ const resolveTheme = (colorScheme: ColorScheme) => {
       },
     },
     typography: {
-      fontFamily:
-        '"Assistant", "Helvetica Neue", "Helvetica", "Arial", sans-serif',
+      ...fontStyles,
       fontSize: 15,
       fontWeightLight: 300,
       fontWeightRegular: 400,

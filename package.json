@@ -23,7 +23,7 @@
     "@mui/icons-material": "^5.15.17",
     "@mui/lab": "^5.0.0-alpha.132",
     "@mui/material": "^5.15.17",
-    "@mui/material-nextjs": "^5.15.3",
+    "@mui/material-nextjs": "^5.15.11",
     "@mui/styles": "^5.15.17",
     "@mux/mux-node": "^8.5.3",
     "@mux/mux-player-react": "^2.6.0",
