@@ -8,8 +8,6 @@ import useTopicPosts from '../../utils/data/posts/useTopicPosts'
 import { TopicSortMode, TopicsSortMode } from '../../types'
 import MobileContainer from '../MobileContainer'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
-import useTracking from '../../utils/tracking/useTracking'
-import { useEffect } from 'react'
 import useTopic from '../../utils/data/topic/useTopic'
 import useTopics from '../../utils/data/topics/useTopics'
 import TopicSubtopicsList from '../TopicSubtopicsList'
@@ -19,7 +17,6 @@ import { Box } from '@mui/system'
 import TopicBreadcrumbs from '../TopicBreadcrumbs'
 import PageSpinner from '../PageSpinner'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
-import useUserData from '../../utils/data/user/useUserData'
 import {
   ResourceType,
   resourceViewed,
@@ -29,6 +26,8 @@ import SidebarTopicsSection from '../SidebarTopicsSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import NotFoundPage from '../NotFoundPage'
 import InlineCreatePost from '../InlineCreatePost'
+import { sendGTMEvent } from '@next/third-parties/google'
+import { GTMEvent } from '../../types/GTMEvent'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -60,8 +59,6 @@ const generateSortOptions = (path: string) => [
 
 const TopicPage = ({ path }: PropTypes) => {
   const { topic, isLoading: topicIsLoading } = useTopic(path)
-  const { track } = useTracking()
-  const { user } = useUserData()
   const {
     query: { sort },
   } = useRouter()
@@ -101,21 +98,15 @@ const TopicPage = ({ path }: PropTypes) => {
 
   const sortOptions = generateSortOptions(path)
 
-  useEffect(() => {
-    if (topicIsLoading) return
-    track(
-      'topic',
-      {
-        topic: topic?.data.title,
-        path,
-      },
-      { onceOnly: true }
-    )
-  }, [topic?.data.title, topicIsLoading, path, track])
-
   useDelayedOnMount(() => {
-    if (!user || topicIsLoading || !topic) return
-    track('post', { slug: topic.data.slug }, { onceOnly: true })
+    if (topicIsLoading || !topic) return
+
+    sendGTMEvent({
+      event: GTMEvent.TopicView,
+      slug: topic.data.slug,
+      title: topic.data.title,
+    })
+
     resourceViewed({ resourceType: ResourceType.Topic, slug: topic.data.slug })
   })
 

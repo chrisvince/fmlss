@@ -12,9 +12,7 @@ import SidebarTopicsSection from '../SidebarTopicsSection'
 import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
-import useTracking from '../../utils/tracking/useTracking'
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
-import useUserData from '../../utils/data/user/useUserData'
 import {
   ResourceType,
   resourceViewed,
@@ -23,6 +21,8 @@ import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import { PostTypeQuery } from '../../types/PostTypeQuery'
 import InlineCreatePost from '../InlineCreatePost'
+import { sendGTMEvent } from '@next/third-parties/google'
+import { GTMEvent } from '../../types/GTMEvent'
 
 const {
   CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT,
@@ -60,9 +60,6 @@ const HashtagPage = ({ slug }: PropTypes) => {
 
   const [showType, setShowType] = useState<PostTypeQuery>(PostTypeQuery.Post)
 
-  const { track } = useTracking()
-  const { user } = useUserData()
-
   const lowercaseSortMode =
     sort && typeof sort === 'string' ? sort.toLowerCase() : undefined
 
@@ -92,21 +89,13 @@ const HashtagPage = ({ slug }: PropTypes) => {
   const sortOptions = generateSortOptions(slug)
   const title = `#${slug}`
 
-  useEffect(() => {
-    if (isLoading) return
-    track(
-      'hashtag',
-      {
-        slug,
-        title,
-      },
-      { onceOnly: true }
-    )
-  }, [isLoading, slug, title, track])
-
   useDelayedOnMount(() => {
-    if (!user) return
-    track('post', { slug }, { onceOnly: true })
+    sendGTMEvent({
+      event: GTMEvent.HashtagView,
+      slug,
+      title,
+    })
+
     resourceViewed({ resourceType: ResourceType.Hashtag, slug })
   })
 

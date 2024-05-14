@@ -13,7 +13,6 @@ import PageSpinner from '../PageSpinner'
 import useUserData from '../../utils/data/user/useUserData'
 import MobileContainer from '../MobileContainer'
 import constants from '../../constants'
-import useTracking from '../../utils/tracking/useTracking'
 import PostPageParentPostsReference from '../PostPageParentPostsReference'
 import {
   ResourceType,
@@ -22,6 +21,8 @@ import {
 import useDelayedOnMount from '../../utils/useDelayedOnMount'
 import SidebarPeopleSection from '../SidebarPeopleSection'
 import NotFoundPage from '../NotFoundPage'
+import { sendGTMEvent } from '@next/third-parties/google'
+import { GTMEvent } from '../../types/GTMEvent'
 
 const { TOPICS_ENABLED, POST_MAX_DEPTH } = constants
 
@@ -41,7 +42,6 @@ const PostPage = ({ slug }: PropTypes) => {
   const { shownFirstPostMessage } = user?.data ?? {}
   const createdByUser = !!post?.user?.created
   const handleFirstPostModalClose = () => setFirstPostModalOpen(false)
-  const { track } = useTracking()
   const theme = useTheme()
   const pageTitle = truncateString(post?.data.bodyText)
   const handleParentPostLoad = () => setParentPostLoaded(true)
@@ -69,8 +69,13 @@ const PostPage = ({ slug }: PropTypes) => {
   }, [userIsLoading, updateUser, shownFirstPostMessage, createdByUser, user])
 
   useDelayedOnMount(() => {
-    if (!user || isLoading || (!isLoading && !post)) return
-    track('post', { slug }, { onceOnly: true })
+    if (isLoading || !post) return
+
+    sendGTMEvent({
+      event: GTMEvent.PostView,
+      slug,
+    })
+
     resourceViewed({ resourceType: ResourceType.Post, slug })
   })
 

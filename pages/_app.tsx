@@ -1,13 +1,12 @@
-import Head from 'next/head'
-import { ReactElement, ReactNode, useMemo } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import type { AppContext, AppProps } from 'next/app'
 import { CssBaseline } from '@mui/material'
-import Script from 'next/script'
 import { NextPage } from 'next'
 import { store } from '../store'
 import { Provider as ReduxProvider } from 'react-redux'
 import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter'
 import qs from 'querystring'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 import initFirebaseClient from '../utils/initFirebaseClient'
 import Layout from '../components/Layout'
@@ -45,30 +44,21 @@ const App = (props: Props) => {
   const getLayout = Component.getLayout ?? (page => <Layout>{page}</Layout>)
 
   return (
-    <AppCacheProvider {...props}>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
+    <>
+      <AppCacheProvider {...props}>
+        <AuthProvider auth={auth}>
+          <ReduxProvider store={store}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              {getLayout(<Component {...pageProps} />)}
+            </ThemeProvider>
+          </ReduxProvider>
+        </AuthProvider>
+      </AppCacheProvider>
       {!isDevelopment && GOOGLE_TAG_MANAGER_ID && (
-        <Script id="google-tag-manager" strategy="afterInteractive">
-          {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','${GOOGLE_TAG_MANAGER_ID}');
-        `}
-        </Script>
+        <GoogleTagManager gtmId={GOOGLE_TAG_MANAGER_ID} />
       )}
-      <AuthProvider auth={auth}>
-        <ReduxProvider store={store}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {getLayout(<Component {...pageProps} />)}
-          </ThemeProvider>
-        </ReduxProvider>
-      </AuthProvider>
-    </AppCacheProvider>
+    </>
   )
 }
 

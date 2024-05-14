@@ -5,7 +5,6 @@ import SidebarHashtagsSection from '../SidebarHashtagsSection'
 import usePerson from '../../utils/data/person/usePerson'
 import usePersonPosts from '../../utils/data/posts/usePersonPosts'
 import PageSpinner from '../PageSpinner'
-import useTracking from '../../utils/tracking/useTracking'
 import {
   ResourceType,
   resourceViewed,
@@ -15,8 +14,9 @@ import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import constants from '../../constants'
 import NotFoundPage from '../NotFoundPage'
-import useAuth from '../../utils/auth/useAuth'
 import InlineCreatePost from '../InlineCreatePost'
+import { sendGTMEvent } from '@next/third-parties/google'
+import { GTMEvent } from '../../types/GTMEvent'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT } = constants
 
@@ -31,8 +31,6 @@ type Props = {
 
 const PersonPage = ({ slug }: Props) => {
   const { person, isLoading: personIsLoading } = usePerson(slug)
-  const { track } = useTracking()
-  const { uid } = useAuth()
 
   const handlePostLoadSuccess = () => {
     cellMeasurerCache.clearAll()
@@ -42,8 +40,14 @@ const PersonPage = ({ slug }: Props) => {
     usePersonPosts(slug, { swrConfig: { onSuccess: handlePostLoadSuccess } })
 
   useDelayedOnMount(() => {
-    if (!uid || personIsLoading || (!personIsLoading && !person)) return
-    track('post', { slug }, { onceOnly: true })
+    if (personIsLoading || !person) return
+
+    sendGTMEvent({
+      event: GTMEvent.PersonView,
+      slug,
+      name: person?.data.name,
+    })
+
     resourceViewed({ resourceType: ResourceType.Person, slug })
   })
 
