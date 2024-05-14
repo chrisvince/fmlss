@@ -263,8 +263,6 @@ const usePostBodyEditorState = () => {
 
   const canSubmit = !overMaxLength && (hasText || media.length > 0)
 
-  console.log('media', media)
-
   return {
     canSubmit,
     closePostAttachment: handlePostAttachmentClose,
