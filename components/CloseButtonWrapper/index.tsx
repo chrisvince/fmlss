@@ -4,10 +4,11 @@ import { Box } from '@mui/system'
 
 interface Props {
   children: React.ReactNode
+  disabled?: boolean
   onClose?: () => void
 }
 
-const CloseButtonWrapper = ({ children, onClose }: Props) => (
+const CloseButtonWrapper = ({ children, disabled = false, onClose }: Props) => (
   <Box
     sx={{
       position: 'relative',
@@ -27,7 +28,7 @@ const CloseButtonWrapper = ({ children, onClose }: Props) => (
       },
     }}
   >
-    {onClose && (
+    {!disabled && (
       <ButtonBase
         onClick={onClose}
         aria-label="Close"

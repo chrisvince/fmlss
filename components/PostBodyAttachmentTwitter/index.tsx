@@ -6,12 +6,17 @@ import usePostBodyAttachmentTwitter from '../../utils/data/twitter/usePostBodyAt
 import PostAttachmentTwitter from '../PostAttachmentTwitter'
 
 interface Props {
+  closingDisabled?: boolean
   onClose?: () => void
   onError?: (error: Error) => void
   postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachmentTwitter = ({ onClose, postAttachment }: Props) => {
+const PostBodyAttachmentTwitter = ({
+  closingDisabled = false,
+  onClose,
+  postAttachment,
+}: Props) => {
   const isTwitterUrl =
     resolvePostAttachmentTypeFromUrl(postAttachment.url) ===
     PostAttachmentType.Twitter
@@ -25,7 +30,7 @@ const PostBodyAttachmentTwitter = ({ onClose, postAttachment }: Props) => {
   }
 
   return (
-    <CloseButtonWrapper onClose={onClose}>
+    <CloseButtonWrapper disabled={closingDisabled} onClose={onClose}>
       <PostAttachmentTwitter attachment={data} />
     </CloseButtonWrapper>
   )

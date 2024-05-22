@@ -6,12 +6,17 @@ import usePostBodyAttachmentYouTube from '../../utils/data/youtube/usePostBodyAt
 import PostAttachmentYouTube from '../PostAttachmentYouTube'
 
 interface Props {
+  closingDisabled?: boolean
   onClose?: () => void
   onError?: (error: Error) => void
   postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachmentYouTube = ({ onClose, postAttachment }: Props) => {
+const PostBodyAttachmentYouTube = ({
+  closingDisabled = false,
+  onClose,
+  postAttachment,
+}: Props) => {
   const isYouTubeUrl =
     resolvePostAttachmentTypeFromUrl(postAttachment.url) ===
     PostAttachmentType.Youtube
@@ -25,7 +30,7 @@ const PostBodyAttachmentYouTube = ({ onClose, postAttachment }: Props) => {
   }
 
   return (
-    <CloseButtonWrapper onClose={onClose}>
+    <CloseButtonWrapper disabled={closingDisabled} onClose={onClose}>
       <PostAttachmentYouTube attachment={data} />
     </CloseButtonWrapper>
   )

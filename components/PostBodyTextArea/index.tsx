@@ -69,7 +69,7 @@ type Props = {
 
 const PostBodyTextArea = ({
   collapsed = false,
-  disabled,
+  disabled = false,
   editorState,
   focusOnMount,
   media,
@@ -272,15 +272,19 @@ const PostBodyTextArea = ({
             )}
             {!collapsed && (
               <PostBodyActionBar
-                disableMediaButton={media.length >= MEDIA_ITEMS_MAX_COUNT}
+                disableMediaButton={
+                  media.length >= MEDIA_ITEMS_MAX_COUNT || disabled
+                }
                 disableUrlButton={
-                  postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT
+                  postAttachments.length >= POST_ATTACHMENTS_MAX_COUNT ||
+                  disabled
                 }
                 onFileUploaded={onFileUploaded}
                 onUrlAdd={onUrlAdd}
               />
             )}
             <PostBodyAttachments
+              closingDisabled={disabled}
               onClose={onPostAttachmentClose}
               onError={onPostAttachmentClose}
               postAttachments={postAttachments}

@@ -51,7 +51,6 @@ const useCreatePost = (parentSlug?: string) => {
         subtopics,
       })
       await navigate(`/post/${data.slug}`)
-      setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
       setErrorMessage('There was an error. Please try again later.')

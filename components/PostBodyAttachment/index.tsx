@@ -2,8 +2,6 @@ import dynamic from 'next/dynamic'
 import { PostAttachmentType } from '../../types'
 import { resolvePostAttachmentTypeFromUrl } from '../../utils/socialPlatformUrls'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
-import PostBodyAttachmentTwitter from '../PostBodyAttachmentTwitter'
-import PostBodyAttachmentYouTube from '../PostBodyAttachmentYouTube'
 
 const PostBodyAttachmentTiktok = dynamic(
   () => import('../PostBodyAttachmentTiktok')
@@ -11,14 +9,28 @@ const PostBodyAttachmentTiktok = dynamic(
 
 const PostBodyAttachmentUrl = dynamic(() => import('../PostBodyAttachmentUrl'))
 
+const PostBodyAttachmentTwitter = dynamic(
+  () => import('../PostBodyAttachmentTwitter')
+)
+
+const PostBodyAttachmentYouTube = dynamic(
+  () => import('../PostBodyAttachmentYouTube')
+)
+
 interface Props {
+  closingDisabled?: boolean
   isAboveFold?: boolean // should do something with this
   onClose?: (url: string) => void
   onError?: (error: Error) => void
   postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
+const PostBodyAttachment = ({
+  closingDisabled = false,
+  onClose,
+  onError,
+  postAttachment,
+}: Props) => {
   const type = resolvePostAttachmentTypeFromUrl(postAttachment.url)
 
   const handleClose = () => {
@@ -28,6 +40,7 @@ const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
   if (type === PostAttachmentType.Tiktok) {
     return (
       <PostBodyAttachmentTiktok
+        closingDisabled={closingDisabled}
         onClose={handleClose}
         postAttachment={postAttachment}
       />
@@ -37,6 +50,7 @@ const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
   if (type === PostAttachmentType.Url) {
     return (
       <PostBodyAttachmentUrl
+        closingDisabled={closingDisabled}
         onClose={handleClose}
         onError={onError}
         postAttachment={postAttachment}
@@ -47,6 +61,7 @@ const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
   if (type === PostAttachmentType.Twitter) {
     return (
       <PostBodyAttachmentTwitter
+        closingDisabled={closingDisabled}
         onClose={handleClose}
         onError={onError}
         postAttachment={postAttachment}
@@ -57,6 +72,7 @@ const PostBodyAttachment = ({ onClose, onError, postAttachment }: Props) => {
   if (type === PostAttachmentType.Youtube) {
     return (
       <PostBodyAttachmentYouTube
+        closingDisabled={closingDisabled}
         onClose={handleClose}
         onError={onError}
         postAttachment={postAttachment}

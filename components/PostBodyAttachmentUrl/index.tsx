@@ -6,12 +6,18 @@ import PostAttachmentUrl from '../PostAttachmentUrl'
 import { PostAttachmentInput } from '../../utils/draft-js/usePostBodyEditorState'
 
 interface Props {
+  closingDisabled?: boolean
   onClose?: () => void
   onError?: (error: Error) => void
   postAttachment: PostAttachmentInput
 }
 
-const PostBodyAttachmentUrl = ({ onClose, onError, postAttachment }: Props) => {
+const PostBodyAttachmentUrl = ({
+  closingDisabled = false,
+  onClose,
+  onError,
+  postAttachment,
+}: Props) => {
   const isUrlLink =
     resolvePostAttachmentTypeFromUrl(postAttachment.url) ===
     PostAttachmentType.Url
@@ -26,7 +32,7 @@ const PostBodyAttachmentUrl = ({ onClose, onError, postAttachment }: Props) => {
   }
 
   return (
-    <CloseButtonWrapper onClose={onClose}>
+    <CloseButtonWrapper disabled={closingDisabled} onClose={onClose}>
       <PostAttachmentUrl attachment={data} />
     </CloseButtonWrapper>
   )
