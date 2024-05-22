@@ -12,8 +12,9 @@ const MediaGrid = ({ children, gridLayout = false }: Props) => (
       gridLayout
         ? {
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
             gap: 2,
+            gridTemplateColumns: '1fr 1fr',
+            gridTemplateRows: 'minmax(100%, 1fr)',
             '& img': {
               aspectRatio: '1 / 1',
               objectFit: 'cover',
