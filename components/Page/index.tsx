@@ -6,7 +6,7 @@ import NestedLayout from '../NestedLayout'
 import RightSideBar from '../RightSideBar'
 import { useRouter } from 'next/router'
 
-const { APP_URL, BRAND_NAME, TWITTER_USERNAME } = constants
+const { BRAND_NAME, TWITTER_USERNAME } = constants
 const DEFAULT_DESCRIPTION = `${BRAND_NAME}, the nameless, faceless networking platform.`
 const APPLE_ICON_SIZES = [16, 32, 64, 128, 256, 512, 1024]
 
@@ -68,11 +68,17 @@ const Page = ({
         {type && <meta property="og:type" content={type} />}
         <meta property="twitter:site" content={TWITTER_USERNAME} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="og:url" content={`${APP_URL}${computedUrlPath}`} />
-        <meta property="og:image" content={`${APP_URL}/og-image.png`} />
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_APP_URL}${computedUrlPath}`}
+        />
+        <meta
+          property="og:image"
+          content={`${process.env.NEXT_PUBLIC_APP_URL}/og-image.png`}
+        />
         <meta
           property="og:image:secure_url"
-          content={`${APP_URL}/og-image.png`}
+          content={`${process.env.NEXT_PUBLIC_APP_URL}/og-image.png`}
         />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
@@ -80,7 +86,7 @@ const Page = ({
         <meta property="og:image:alt" content={BRAND_NAME} />
         <meta
           property="twitter:image"
-          content={`${APP_URL}/twitter-image.png`}
+          content={`${process.env.NEXT_PUBLIC_APP_URL}/twitter-image.png`}
         />
         <meta property="twitter:image:alt" content={BRAND_NAME} />
         {description && <meta name="description" content={description} />}
@@ -88,7 +94,10 @@ const Page = ({
         {description && (
           <meta name="twitter:description" content={description} />
         )}
-        <meta name="twitter:url" content={`${APP_URL}${computedUrlPath}`} />
+        <meta
+          name="twitter:url"
+          content={`${process.env.NEXT_PUBLIC_APP_URL}${computedUrlPath}`}
+        />
         {article.publishedTime && (
           <meta name="article:published_time" content={article.publishedTime} />
         )}
@@ -120,7 +129,7 @@ const Page = ({
         <link rel="manifest" href="manifest.json" />
         <link
           rel="canonical"
-          href={`${APP_URL}${computedUrlPath}`}
+          href={`${process.env.NEXT_PUBLIC_APP_URL}${computedUrlPath}`}
           key="canonical"
         />
       </Head>

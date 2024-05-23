@@ -1,12 +1,9 @@
-import constants from '../../../constants'
 import { generateSitemaps } from '../sitemap'
-
-const { APP_URL } = constants
 
 export const revalidate = 3600
 
 const resolveSitemap = (id: string) =>
-  `<sitemap><loc>${`${APP_URL}/hashtag/sitemap/${id}.xml`}</loc></sitemap>`
+  `<sitemap><loc>${`${process.env.NEXT_PUBLIC_APP_URL}/hashtag/sitemap/${id}.xml`}</loc></sitemap>`
 
 export const GET = async () => {
   const siteMapItems = await generateSitemaps()
