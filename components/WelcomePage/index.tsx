@@ -9,6 +9,7 @@ const WelcomePage = () => (
     description="Join the conversation. Join Fameless."
     layout="none"
     pageTitle="Sign in or create an account"
+    urlPath="/"
   >
     <Container
       sx={{

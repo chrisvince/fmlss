@@ -57,6 +57,7 @@ const Page = ({
   urlPath,
 }: Props) => {
   const { asPath } = useRouter()
+  const computedUrlPath = urlPath ?? asPath
 
   return (
     <>
@@ -67,7 +68,7 @@ const Page = ({
         {type && <meta property="og:type" content={type} />}
         <meta property="twitter:site" content={TWITTER_USERNAME} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="og:url" content={`${APP_URL}${urlPath ?? asPath}`} />
+        <meta property="og:url" content={`${APP_URL}${computedUrlPath}`} />
         <meta property="og:image" content={`${APP_URL}/og-image.png`} />
         <meta
           property="og:image:secure_url"
@@ -87,7 +88,7 @@ const Page = ({
         {description && (
           <meta name="twitter:description" content={description} />
         )}
-        <meta name="twitter:url" content={`${APP_URL}${urlPath ?? asPath}`} />
+        <meta name="twitter:url" content={`${APP_URL}${computedUrlPath}`} />
         {article.publishedTime && (
           <meta name="article:published_time" content={article.publishedTime} />
         )}
@@ -117,6 +118,11 @@ const Page = ({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <link rel="manifest" href="manifest.json" />
+        <link
+          rel="canonical"
+          href={`${APP_URL}${computedUrlPath}`}
+          key="canonical"
+        />
       </Head>
       {layout === 'rightPanel' ? (
         <NestedLayout
