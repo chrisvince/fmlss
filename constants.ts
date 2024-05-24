@@ -78,6 +78,7 @@ const constants = {
   POSTS_COLLECTION: 'posts',
   REACTIONS_COLLECTION: 'reactions',
   REPLIES_CACHE_TIME: secondsToMs(10),
+  SHOW_VIEW_COUNTS: false,
   SIDEBAR_GAP_MD: 8,
   SIDEBAR_GAP_SM: 6,
   SIDEBAR_LIST_CACHE_TIME: hoursToMs(12),

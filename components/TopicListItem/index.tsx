@@ -6,6 +6,9 @@ import formatPostCount from '../../utils/formatting/formatPostCount'
 import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
 import formatSubtopicsCount from '../../utils/formatting/formatSubtopicsCount'
+import constants from '../../constants'
+
+const { SHOW_VIEW_COUNTS } = constants
 
 type PropTypes = {
   topic: Topic
@@ -61,7 +64,7 @@ const TopicListItem = ({ topic }: PropTypes) => {
               {subtopicCountRecursive}
             </Typography>
           )}
-          {viewCount && (
+          {viewCount && SHOW_VIEW_COUNTS && (
             <Typography variant="caption" component="div" align="right">
               {viewCount}
             </Typography>

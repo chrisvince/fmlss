@@ -5,6 +5,9 @@ import { Hashtag } from '../../types'
 import formatPostCount from '../../utils/formatting/formatPostCount'
 import formatViewCount from '../../utils/formatting/formatViewCount'
 import ListItemFrame from '../ListItemFrame'
+import constants from '../../constants'
+
+const { SHOW_VIEW_COUNTS } = constants
 
 type PropTypes = {
   hashtag: Hashtag
@@ -44,7 +47,7 @@ const HashtagListItem = ({ hashtag }: PropTypes) => {
               {postCount}
             </Typography>
           )}
-          {viewCount && (
+          {viewCount && SHOW_VIEW_COUNTS && (
             <Typography variant="caption" component="div" align="right">
               {viewCount}
             </Typography>
