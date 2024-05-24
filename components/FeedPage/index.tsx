@@ -9,6 +9,7 @@ import SidebarPeopleSection from '../SidebarPeopleSection'
 import { CellMeasurerCache } from 'react-virtualized'
 import InlineCreatePost from '../InlineCreatePost'
 import NotFoundPage from '../NotFoundPage'
+import { useEffect } from 'react'
 
 const { CELL_CACHE_MEASURER_POST_ITEM_MIN_HEIGHT, TOPICS_ENABLED } = constants
 
@@ -27,10 +28,6 @@ const cellMeasurerCache = new CellMeasurerCache({
 })
 
 const FeedPage = ({ sortMode }: Props) => {
-  const handlePostLoadSuccess = () => {
-    cellMeasurerCache.clearAll()
-  }
-
   const {
     isLoading,
     likePost,
@@ -39,7 +36,11 @@ const FeedPage = ({ sortMode }: Props) => {
     posts,
     reactToPost,
     watchPost,
-  } = usePostFeed({ sortMode, swrConfig: { onSuccess: handlePostLoadSuccess } })
+  } = usePostFeed({ sortMode })
+
+  useEffect(() => {
+    cellMeasurerCache.clearAll()
+  }, [sortMode])
 
   if (!sortMode) {
     return <NotFoundPage />
