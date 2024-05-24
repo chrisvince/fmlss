@@ -42,7 +42,7 @@ const PostActionBar = ({
   showReplyButton = true,
   slug,
 }: PropTypes) => {
-  const isLoggedIn = !!useAuth()
+  const { uid } = useAuth()
   const [renderSignUpModal, setRenderSignUpModal] = useState(false)
   const [modalActionText, setModalActionText] = useState('')
   const [renderReplyModal, setRenderReplyModal] = useState(false)
@@ -53,7 +53,7 @@ const PostActionBar = ({
   const handleReplyModalClose = () => setReplyModalOpen(false)
 
   const handleLikeButtonClick = () => {
-    if (!isLoggedIn) {
+    if (!uid) {
       setModalActionText('Sign up to like this post.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
@@ -63,8 +63,8 @@ const PostActionBar = ({
   }
 
   const handleReplyButtonClick = () => {
-    if (!isLoggedIn) {
-      setModalActionText('Sign up to reply.')
+    if (!uid) {
+      setModalActionText('Sign up to reply to this post.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
       return
@@ -74,7 +74,7 @@ const PostActionBar = ({
   }
 
   const handleSaveButtonClick = () => {
-    if (!isLoggedIn) {
+    if (!uid) {
       setModalActionText('Sign up to save this post.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
@@ -84,7 +84,7 @@ const PostActionBar = ({
   }
 
   const handlePostReactionChange = (reaction: ReactionId | undefined) => {
-    if (!isLoggedIn) {
+    if (!uid) {
       setModalActionText('Sign up to react to this post.')
       setRenderSignUpModal(true)
       setSignUpModalOpen(true)
